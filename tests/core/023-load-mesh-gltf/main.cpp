@@ -13,19 +13,13 @@
 
 #include <filesystem>
 
-using Meshes         = std::tuple<vcl::TriMesh, vcl::PolyMesh>;
-using Meshesf        = std::tuple<vcl::TriMeshf, vcl::PolyMeshf>;
+using Meshes    = std::tuple<vcl::TriMesh, vcl::PolyMesh>;
+using Meshesf   = std::tuple<vcl::TriMeshf, vcl::PolyMeshf>;
 using Meshes64  = std::tuple<vcl::TriMesh64, vcl::PolyMesh64>;
 using Meshes64f = std::tuple<vcl::TriMesh64f, vcl::PolyMesh64f>;
 
 // Test to load obj from a istringstream
-TEMPLATE_TEST_CASE(
-    "Load gltf",
-    "",
-    Meshes,
-    Meshesf,
-    Meshes64,
-    Meshes64f)
+TEMPLATE_TEST_CASE("Load gltf", "", Meshes, Meshesf, Meshes64, Meshes64f)
 {
     using TriMesh  = std::tuple_element_t<0, TestType>;
     using PolyMesh = std::tuple_element_t<1, TestType>;
@@ -108,7 +102,8 @@ TEMPLATE_TEST_CASE(
 TEST_CASE("Non-indexed glTF primitive loading on PolyMesh", "[io][gltf]")
 {
     vcl::PolyMesh pm;
-    // Add 9 vertices: vertices 0..2 from a first primitive, vertices 3..8 from a second non-indexed primitive
+    // Add 9 vertices: vertices 0..2 from a first primitive, vertices 3..8 from
+    // a second non-indexed primitive
     pm.addVertices(9);
     bool ok = vcl::detail::populateGltfTriangles<vcl::PolyMesh, vcl::uint>(
         pm, 3, nullptr, 0);

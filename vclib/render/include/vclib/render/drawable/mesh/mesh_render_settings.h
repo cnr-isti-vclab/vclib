@@ -873,8 +873,7 @@ public:
                         // the normal map texture).
                         if (hasTexCoords && m.materialCount() > 0 &&
                             m.isVertexNormalAvailable()) {
-                            mHasVertexTangent =
-                                m.isVertexTangentAvailable();
+                            mHasVertexTangent = m.isVertexTangentAvailable();
 
                             if (mHasVertexTangent) {
                                 setSurfaceCapability(

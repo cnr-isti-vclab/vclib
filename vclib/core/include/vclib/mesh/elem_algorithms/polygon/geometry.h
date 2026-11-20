@@ -165,9 +165,9 @@ template<FaceConcept FaceType>
 auto faceAngleOnVertexRad(const FaceType& f, uint vi)
 {
     using PositionType = PositionType<VertexType<FaceType>>;
-    const auto&  p0 = f.vertex(vi).position();
-    PositionType v1 = f.vertexMod((int) vi + 1).position() - p0;
-    PositionType v2 = f.vertexMod((int) vi - 1).position() - p0;
+    const auto&  p0    = f.vertex(vi).position();
+    PositionType v1    = f.vertexMod((int) vi + 1).position() - p0;
+    PositionType v2    = f.vertexMod((int) vi - 1).position() - p0;
     return v2.angle(v1);
 }
 

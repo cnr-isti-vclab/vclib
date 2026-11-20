@@ -180,16 +180,16 @@ void replaceFaceVertexIndicesByVertexDuplicationToBuffer(
 
     assert(vertsToDuplicate.size() == facesToReassign.size());
 
-    const IndexType NUM_ROWS = mesh.faceCount();
-    auto faceCompIndices = detail::faceCompactIndices(mesh, true);
+    const IndexType NUM_ROWS        = mesh.faceCount();
+    auto            faceCompIndices = detail::faceCompactIndices(mesh, true);
 
     IndexType vFirst = mesh.vertexCount();
     IndexType vLast  = mesh.vertexCount() + vertsToDuplicate.size();
     for (IndexType vi = vFirst; const auto& faces : facesToReassign) {
         for (const auto& f : faces) {
-            IndexType fRow = faceCompIndices.empty() ? f.first : faceCompIndices[f.first];
-            at(buffer, fRow, f.second, NUM_ROWS, largestFaceSize, storage) =
-                vi;
+            IndexType fRow =
+                faceCompIndices.empty() ? f.first : faceCompIndices[f.first];
+            at(buffer, fRow, f.second, NUM_ROWS, largestFaceSize, storage) = vi;
         }
         ++vi;
     }
@@ -265,8 +265,8 @@ void replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
     IndexType vFirst = mesh.vertexCount();
     IndexType vLast  = mesh.vertexCount() + vertsToDuplicate.size();
 
-    const IndexType NUM_ROWS = indexMap.triangleCount();
-    auto vertCompIndices = detail::vertCompactIndices(mesh, true);
+    const IndexType NUM_ROWS        = indexMap.triangleCount();
+    auto            vertCompIndices = detail::vertCompactIndices(mesh, true);
 
     // the facesToReassign lists for each vertex contain pairs that in the
     // second element store the index of the vertex in the face. However, the
@@ -278,7 +278,8 @@ void replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
                                     vertsToDuplicate, facesToReassign)) {
         // vert is the vertex index in the mesh that we need to reassign with
         // the index vi in the buffer
-        IndexType targetVert = vertCompIndices.empty() ? vert : vertCompIndices[vert];
+        IndexType targetVert =
+            vertCompIndices.empty() ? vert : vertCompIndices[vert];
 
         // for each face f that has at least a vertex to reassign
         for (const auto& f : faces) {
@@ -357,14 +358,15 @@ void permuteFaceVertexIndicesByFunctionToBuffer(
         indexMapCopy.reserve(indexMap.triangleCount(), indexMap.polygonCount());
 
     IndexType copiedTriangles = 0;
-    auto faceCompIndices = detail::faceCompactIndices(mesh, true);
+    auto      faceCompIndices = detail::faceCompactIndices(mesh, true);
 
     for (std::size_t i = 0; i < sortedFaceContainerIndices.size(); ++i) {
         // place the triangles associated to the face at new position i
         IndexType polyIndex = sortedFaceContainerIndices[i];
         IndexType firstTri =
             isIndexMapEmpty ?
-                (faceCompIndices.empty() ? polyIndex : faceCompIndices[polyIndex]) :
+                (faceCompIndices.empty() ? polyIndex :
+                                           faceCompIndices[polyIndex]) :
                 indexMap.triangleBegin(polyIndex);
         IndexType nTris =
             isIndexMapEmpty ? 1 : indexMap.triangleCount(polyIndex);

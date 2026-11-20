@@ -644,8 +644,9 @@ void loadObj(
                 }
 
                 // material index
-                if constexpr (HasMaterials<MeshType> &&
-                              HasVertexMaterialIndex<MeshType>) {
+                if constexpr (
+                    HasMaterials<MeshType> &&
+                    HasVertexMaterialIndex<MeshType>) {
                     if (m.materialCount() > 0) {
                         if (settings.enableOptionalComponents) {
                             enableIfVertexMaterialIndexOptional(m);

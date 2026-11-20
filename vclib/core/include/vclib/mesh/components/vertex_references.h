@@ -127,10 +127,7 @@ public:
      * @brief Returns the number of vertices of the element.
      * @return The number of vertices of the element.
      */
-    uint vertexCount(this auto&& self)
-    {
-        return Base::container(self).size();
-    }
+    uint vertexCount(this auto&& self) { return Base::container(self).size(); }
 
     /**
      * @brief Returns the i-th vertex of the element.
@@ -145,9 +142,10 @@ public:
     }
 
     /**
-     * @brief Returns the global index in the VertexContainer of the i-th vertex of
-     * the element.
-     * @param[in] i: the 0-based local corner/position of the required vertex in this container (0 <= i < vertexCount()).
+     * @brief Returns the global index in the VertexContainer of the i-th vertex
+     * of the element.
+     * @param[in] i: the 0-based local corner/position of the required vertex in
+     * this container (0 <= i < vertexCount()).
      * @return The global index (IndexType) of the i-th vertex of the element.
      */
     IndexType vertexIndex(this auto&& self, uint i)
@@ -356,11 +354,12 @@ public:
     }
 
     /**
-     * @brief Returns the 0-based local corner/position in this container of the vertex with the
-     * given global index. If not found, returns UINT_NULL.
+     * @brief Returns the 0-based local corner/position in this container of the
+     * vertex with the given global index. If not found, returns UINT_NULL.
      *
      * @param[in] vi: the global index (IndexType) of the vertex to search.
-     * @return The 0-based local position (uint) in this container, or UINT_NULL if not found.
+     * @return The 0-based local position (uint) in this container, or UINT_NULL
+     * if not found.
      */
     uint indexOfVertex(this auto&& self, IndexType vi)
     {
@@ -388,17 +387,20 @@ public:
     }
 
     /**
-     * @brief Returns the 0-based local index of the edge composed of the two vertices with
-     * the given global indices in this element.
+     * @brief Returns the 0-based local index of the edge composed of the two
+     * vertices with the given global indices in this element.
      *
-     * The order of the two vertices is not important. The local index of the edge
-     * corresponds to the local position of the first vertex found in the container
-     * (i.e. edge i connects vertex i and vertex (i+1)%n). If the edge is not
-     * found, returns UINT_NULL.
+     * The order of the two vertices is not important. The local index of the
+     * edge corresponds to the local position of the first vertex found in the
+     * container (i.e. edge i connects vertex i and vertex (i+1)%n). If the edge
+     * is not found, returns UINT_NULL.
      *
-     * @param[in] vi1: the global index (IndexType) of the first vertex of the edge.
-     * @param[in] vi2: the global index (IndexType) of the second vertex of the edge.
-     * @return The 0-based local edge position (uint), or UINT_NULL if not found.
+     * @param[in] vi1: the global index (IndexType) of the first vertex of the
+     * edge.
+     * @param[in] vi2: the global index (IndexType) of the second vertex of the
+     * edge.
+     * @return The 0-based local edge position (uint), or UINT_NULL if not
+     * found.
      */
     uint indexOfEdge(this auto&& self, IndexType vi1, IndexType vi2)
     {
@@ -541,8 +543,7 @@ public:
     auto vertexIndices(this auto&& self)
     {
         return vcl::View(
-            Base::container(self).begin(),
-            Base::container(self).end());
+            Base::container(self).begin(), Base::container(self).end());
     }
 
 protected:

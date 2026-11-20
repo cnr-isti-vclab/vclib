@@ -153,8 +153,8 @@ using Normal = comp::Normal<Point<ScalarType, N>, OPT>;
 template<typename ScalarType, bool OPT = false>
 using Normal3 = comp::Normal3<ScalarType, OPT>;
 
-using Normal3f         = comp::Normal3f;
-using Normal3d         = comp::Normal3d;
+using Normal3f = comp::Normal3f;
+using Normal3d = comp::Normal3d;
 template<typename ScalarType>
 using OptionalNormal3  = comp::OptionalNormal3<ScalarType>;
 using OptionalNormal3f = comp::OptionalNormal3f;
@@ -197,42 +197,44 @@ template<typename Point = Point3f, int N = 3, bool OPT = false>
 using WedgeNormals = comp::WedgeNormals<Point, N, OPT>;
 
 // Triangle wedge aliases (N = 3)
-using TriangleWedgeColors              = comp::TriangleWedgeColors;
-using OptionalTriangleWedgeColors      = comp::OptionalTriangleWedgeColors;
+using TriangleWedgeColors         = comp::TriangleWedgeColors;
+using OptionalTriangleWedgeColors = comp::OptionalTriangleWedgeColors;
 
 template<typename Scalar = float, bool OPT = false>
-using TriangleWedgeTexCoords           = comp::TriangleWedgeTexCoords<Scalar, OPT>;
+using TriangleWedgeTexCoords = comp::TriangleWedgeTexCoords<Scalar, OPT>;
 template<typename Scalar = float>
-using OptionalTriangleWedgeTexCoords   = comp::OptionalTriangleWedgeTexCoords<Scalar>;
+using OptionalTriangleWedgeTexCoords =
+    comp::OptionalTriangleWedgeTexCoords<Scalar>;
 
-using TriangleWedgeTexCoordsf          = comp::TriangleWedgeTexCoordsf;
-using OptionalTriangleWedgeTexCoordsf  = comp::OptionalTriangleWedgeTexCoordsf;
-using TriangleWedgeTexCoordsd          = comp::TriangleWedgeTexCoordsd;
-using OptionalTriangleWedgeTexCoordsd  = comp::OptionalTriangleWedgeTexCoordsd;
+using TriangleWedgeTexCoordsf         = comp::TriangleWedgeTexCoordsf;
+using OptionalTriangleWedgeTexCoordsf = comp::OptionalTriangleWedgeTexCoordsf;
+using TriangleWedgeTexCoordsd         = comp::TriangleWedgeTexCoordsd;
+using OptionalTriangleWedgeTexCoordsd = comp::OptionalTriangleWedgeTexCoordsd;
 
-using TriangleWedgeNormals3f           = comp::TriangleWedgeNormals3f;
-using OptionalTriangleWedgeNormals3f   = comp::OptionalTriangleWedgeNormals3f;
-using TriangleWedgeNormals3d           = comp::TriangleWedgeNormals3d;
-using OptionalTriangleWedgeNormals3d   = comp::OptionalTriangleWedgeNormals3d;
+using TriangleWedgeNormals3f         = comp::TriangleWedgeNormals3f;
+using OptionalTriangleWedgeNormals3f = comp::OptionalTriangleWedgeNormals3f;
+using TriangleWedgeNormals3d         = comp::TriangleWedgeNormals3d;
+using OptionalTriangleWedgeNormals3d = comp::OptionalTriangleWedgeNormals3d;
 
 // Polygon wedge aliases (N = -1)
-using PolygonWedgeColors               = comp::PolygonWedgeColors;
-using OptionalPolygonWedgeColors       = comp::OptionalPolygonWedgeColors;
+using PolygonWedgeColors         = comp::PolygonWedgeColors;
+using OptionalPolygonWedgeColors = comp::OptionalPolygonWedgeColors;
 
 template<typename Scalar = float, bool OPT = false>
-using PolygonWedgeTexCoords            = comp::PolygonWedgeTexCoords<Scalar, OPT>;
+using PolygonWedgeTexCoords = comp::PolygonWedgeTexCoords<Scalar, OPT>;
 template<typename Scalar = float>
-using OptionalPolygonWedgeTexCoords    = comp::OptionalPolygonWedgeTexCoords<Scalar>;
+using OptionalPolygonWedgeTexCoords =
+    comp::OptionalPolygonWedgeTexCoords<Scalar>;
 
-using PolygonWedgeTexCoordsf           = comp::PolygonWedgeTexCoordsf;
-using OptionalPolygonWedgeTexCoordsf   = comp::OptionalPolygonWedgeTexCoordsf;
-using PolygonWedgeTexCoordsd           = comp::PolygonWedgeTexCoordsd;
-using OptionalPolygonWedgeTexCoordsd   = comp::OptionalPolygonWedgeTexCoordsd;
+using PolygonWedgeTexCoordsf         = comp::PolygonWedgeTexCoordsf;
+using OptionalPolygonWedgeTexCoordsf = comp::OptionalPolygonWedgeTexCoordsf;
+using PolygonWedgeTexCoordsd         = comp::PolygonWedgeTexCoordsd;
+using OptionalPolygonWedgeTexCoordsd = comp::OptionalPolygonWedgeTexCoordsd;
 
-using PolygonWedgeNormals3f            = comp::PolygonWedgeNormals3f;
-using OptionalPolygonWedgeNormals3f    = comp::OptionalPolygonWedgeNormals3f;
-using PolygonWedgeNormals3d            = comp::PolygonWedgeNormals3d;
-using OptionalPolygonWedgeNormals3d    = comp::OptionalPolygonWedgeNormals3d;
+using PolygonWedgeNormals3f         = comp::PolygonWedgeNormals3f;
+using OptionalPolygonWedgeNormals3f = comp::OptionalPolygonWedgeNormals3f;
+using PolygonWedgeNormals3d         = comp::PolygonWedgeNormals3d;
+using OptionalPolygonWedgeNormals3d = comp::OptionalPolygonWedgeNormals3d;
 
 } // namespace vcl::face
 

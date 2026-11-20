@@ -563,8 +563,8 @@ bool populateGltfTriangles(
             }
         }
         else {
-            triCount = (m.vertexCount() - firstVertex) / 3;
-            IndexType fi  = m.addFaces(triCount);
+            triCount     = (m.vertexCount() - firstVertex) / 3;
+            IndexType fi = m.addFaces(triCount);
             for (uint i = 0; i < triCount * 3; i += 3, ++fi) {
                 auto f = m.face(fi);
                 if constexpr (HasPolygons<MeshType>) {
@@ -600,8 +600,8 @@ bool populateGltfLines(
             }
         }
         else {
-            lineCount = m.vertexCount() / 2 - firstVertex;
-            IndexType ei   = m.addEdges(lineCount);
+            lineCount    = m.vertexCount() / 2 - firstVertex;
+            IndexType ei = m.addEdges(lineCount);
             for (uint i = 0; i < lineCount * 2; i += 2, ++ei) {
                 auto e = m.edge(ei);
                 e.setVertices(firstVertex + i, firstVertex + i + 1);
@@ -850,9 +850,7 @@ bool loadGltfAttribute(
  * @param model
  * @param p
  */
-template<
-    MeshConcept   MeshType,
-    LoggerConcept LogType>
+template<MeshConcept MeshType, LoggerConcept LogType>
 void loadGltfMeshPrimitive(
     MeshType&                  m,
     MeshInfo&                  info,

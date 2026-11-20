@@ -45,9 +45,9 @@ public:
     using IndexType     = typename ContainerType::IndexType;
     using Components    = typename ContainerType::Components;
     using ElementType   = std::conditional_t<
-        std::is_const_v<Container>,
-        typename ContainerType::ConstElementType,
-        typename ContainerType::ElementType>;
+          std::is_const_v<Container>,
+          typename ContainerType::ConstElementType,
+          typename ContainerType::ElementType>;
     using Iterator = std::conditional_t<
         std::is_const_v<Container>,
         typename ContainerType::ConstIterator,
@@ -101,15 +101,13 @@ public:
 
     bool empty() const { return size() == 0; }
 
-    bool isCompact() const
-    {
-        return mContainer && mContainer->isCompact();
-    }
+    bool isCompact() const { return mContainer && mContainer->isCompact(); }
 
     template<CompId COMP_ID>
     bool isComponentAvailable() const
     {
-        return mContainer && mContainer->template isComponentAvailable<COMP_ID>();
+        return mContainer &&
+               mContainer->template isComponentAvailable<COMP_ID>();
     }
 
     template<CompId COMP_ID>
@@ -126,13 +124,15 @@ public:
         mContainer->template disableOptionalComponent<COMP_ID>();
     }
 
-    void enableAllOptionalComponents() const requires (!std::is_const_v<Container>)
+    void enableAllOptionalComponents() const
+        requires (!std::is_const_v<Container>)
     {
         assert(mContainer != nullptr);
         mContainer->enableAllOptionalComponents();
     }
 
-    void disableAllOptionalComponents() const requires (!std::is_const_v<Container>)
+    void disableAllOptionalComponents() const
+        requires (!std::is_const_v<Container>)
     {
         assert(mContainer != nullptr);
         mContainer->disableAllOptionalComponents();
@@ -176,7 +176,8 @@ public:
     }
 
     /**
-     * @brief Returns a ComponentView over the principal curvatures of the elements.
+     * @brief Returns a ComponentView over the principal curvatures of the
+     * elements.
      */
     auto principalCurvatures() const
         requires comp::HasPrincipalCurvature<Container>
@@ -227,7 +228,7 @@ public:
     requires comp::HasComponent<COMP_ID, Container> &&
              (comp::IsAttributeComponent<COMP_ID> ||
               (COMP_ID == CompId::VERTEX_REFERENCES &&
-               comp::HasStaticVertexReferences<Container>))
+               comp::HasStaticVertexReferences<Container>) )
     auto component() const
     {
         assert(mContainer != nullptr);

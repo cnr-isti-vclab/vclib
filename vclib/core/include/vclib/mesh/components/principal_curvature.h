@@ -83,8 +83,8 @@ protected:
 
 /**
  * @brief A concept that checks whether a type T (which can be a TypeWrapper of
- * components, an ElementProxy, an ElementContainer, or a Mesh) has the PrincipalCurvature
- * component (COMP_ID = CompId::PRINCIPAL_CURVATURE).
+ * components, an ElementProxy, an ElementContainer, or a Mesh) has the
+ * PrincipalCurvature component (COMP_ID = CompId::PRINCIPAL_CURVATURE).
  *
  * @tparam T: The type to be tested for conformity to HasPrincipalCurvature.
  *
@@ -103,7 +103,8 @@ concept HasPrincipalCurvature = HasComponent<CompId::PRINCIPAL_CURVATURE, T>;
  */
 template<typename T>
 concept HasOptionalPrincipalCurvature =
-    HasPrincipalCurvature<T> && HasOptionalComponent<CompId::PRINCIPAL_CURVATURE, T>;
+    HasPrincipalCurvature<T> &&
+    HasOptionalComponent<CompId::PRINCIPAL_CURVATURE, T>;
 
 /* Detector function to check if a class has PrincipalCurvature available */
 
@@ -112,7 +113,7 @@ concept HasOptionalPrincipalCurvature =
 template<typename Scalar, bool OPT>
 template<typename OtherElement>
 void PrincipalCurvature<Scalar, OPT>::importFrom(
-    this auto&& self,
+    this auto&&         self,
     const OtherElement& e,
     bool)
 {

@@ -75,10 +75,9 @@ std::istringstream objTriCube()
     return ss;
 }
 
-using Meshes  = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
-using Meshesf = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
-using Meshes64 =
-    std::tuple<vcl::TriMesh64, vcl::PolyMesh64, vcl::EdgeMesh64>;
+using Meshes   = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
+using Meshesf  = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
+using Meshes64 = std::tuple<vcl::TriMesh64, vcl::PolyMesh64, vcl::EdgeMesh64>;
 using Meshes64f =
     std::tuple<vcl::TriMesh64f, vcl::PolyMesh64f, vcl::EdgeMesh64f>;
 
@@ -259,7 +258,7 @@ TEMPLATE_TEST_CASE(
     SECTION("Face 0 without usemtl followed by usemtl")
     {
         info.clear();
-        TriMesh tm;
+        TriMesh     tm;
         std::string objStr =
             "v 0 0 0\nv 1 0 0\nv 0 1 0\n"
             "v 0 0 1\nv 1 0 1\nv 0 1 1\n"
@@ -269,8 +268,8 @@ TEMPLATE_TEST_CASE(
         std::string mtlStr =
             "newmtl mat1\n"
             "Kd 1.0 0.5 0.2\n";
-        std::istringstream objStream(objStr);
-        std::istringstream mtlStream(mtlStr);
+        std::istringstream         objStream(objStr);
+        std::istringstream         mtlStream(mtlStr);
         std::vector<std::istream*> mtlStreams = {&mtlStream};
         vcl::loadObj(tm, objStream, mtlStreams, info);
         REQUIRE(tm.vertexCount() == 6);
@@ -285,7 +284,7 @@ TEST_CASE("ObjMaterial serialization with map_Ke", "[io][obj]")
 {
     vcl::detail::ObjMaterial mat;
     mat.matName = "test_material";
-    mat.map_Ke = "emissive.png";
+    mat.map_Ke  = "emissive.png";
     std::ostringstream ss;
     ss << mat;
     std::string s = ss.str();

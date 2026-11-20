@@ -25,11 +25,9 @@ void initMaterials(pybind11::class_<MeshType, Options...>& c)
 
     c.def("material_count", &MeshType::materialCount);
     c.def("texture_image_count", &MeshType::textureImageCount);
-    c.def(
-        "mesh_base_path",
-        [](const MeshType& t) -> const std::string& {
-            return t.meshBasePath();
-        });
+    c.def("mesh_base_path", [](const MeshType& t) -> const std::string& {
+        return t.meshBasePath();
+    });
     c.def(
         "set_mesh_base_path",
         [](MeshType& t, const std::string& p) { t.meshBasePath() = p; },

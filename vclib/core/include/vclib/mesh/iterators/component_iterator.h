@@ -66,9 +66,9 @@ public:
     using CompType        = comp::ComponentTypeT<COMP_ID, ContainerType>;
     using RawDataType     = CompType::DataType;
     using DataType        = std::conditional_t<
-        std::is_const_v<ContainerType>,
-        const RawDataType,
-        RawDataType>;
+               std::is_const_v<ContainerType>,
+               const RawDataType,
+               RawDataType>;
     using reference       = Base::reference;
     using pointer         = Base::pointer;
     using difference_type = Base::difference_type;

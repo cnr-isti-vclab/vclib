@@ -122,7 +122,7 @@ void Wedges<Comp, N, OPT>::importFrom(
     bool)
 {
     static constexpr CompId COMP_ID = Base::COMPONENT_ID;
-    using ValueType               = typename Base::ValueType;
+    using ValueType                 = typename Base::ValueType;
 
     if constexpr (HasComponent<COMP_ID, OtherElement>) {
         if (other.template isComponentAvailable<COMP_ID>()) {
@@ -173,27 +173,27 @@ template<typename Point = Point3f, int N = 3, bool OPT = false>
 using WedgeNormals = WedgesNormals<Point, N, OPT>;
 
 // Triangle wedge aliases (N = 3)
-using TriangleWedgeColors          = WedgeColors<3, false>;
-using OptionalTriangleWedgeColors  = WedgeColors<3, true>;
+using TriangleWedgeColors         = WedgeColors<3, false>;
+using OptionalTriangleWedgeColors = WedgeColors<3, true>;
 
 template<typename Scalar = float, bool OPT = false>
 using TriangleWedgeTexCoords = WedgeTexCoords<Scalar, 3, OPT>;
 template<typename Scalar = float>
 using OptionalTriangleWedgeTexCoords = TriangleWedgeTexCoords<Scalar, true>;
 
-using TriangleWedgeTexCoordsf          = WedgeTexCoords<float, 3, false>;
-using OptionalTriangleWedgeTexCoordsf  = WedgeTexCoords<float, 3, true>;
-using TriangleWedgeTexCoordsd          = WedgeTexCoords<double, 3, false>;
-using OptionalTriangleWedgeTexCoordsd  = WedgeTexCoords<double, 3, true>;
+using TriangleWedgeTexCoordsf         = WedgeTexCoords<float, 3, false>;
+using OptionalTriangleWedgeTexCoordsf = WedgeTexCoords<float, 3, true>;
+using TriangleWedgeTexCoordsd         = WedgeTexCoords<double, 3, false>;
+using OptionalTriangleWedgeTexCoordsd = WedgeTexCoords<double, 3, true>;
 
-using TriangleWedgeNormals3f          = WedgeNormals<Point3f, 3, false>;
-using OptionalTriangleWedgeNormals3f  = WedgeNormals<Point3f, 3, true>;
-using TriangleWedgeNormals3d          = WedgeNormals<Point3d, 3, false>;
-using OptionalTriangleWedgeNormals3d  = WedgeNormals<Point3d, 3, true>;
+using TriangleWedgeNormals3f         = WedgeNormals<Point3f, 3, false>;
+using OptionalTriangleWedgeNormals3f = WedgeNormals<Point3f, 3, true>;
+using TriangleWedgeNormals3d         = WedgeNormals<Point3d, 3, false>;
+using OptionalTriangleWedgeNormals3d = WedgeNormals<Point3d, 3, true>;
 
 // Polygon wedge aliases (N = -1)
-using PolygonWedgeColors          = WedgeColors<-1, false>;
-using OptionalPolygonWedgeColors  = WedgeColors<-1, true>;
+using PolygonWedgeColors         = WedgeColors<-1, false>;
+using OptionalPolygonWedgeColors = WedgeColors<-1, true>;
 
 template<typename Scalar = float, bool OPT = false>
 using PolygonWedgeTexCoords = WedgeTexCoords<Scalar, -1, OPT>;

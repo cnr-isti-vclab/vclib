@@ -35,15 +35,18 @@ struct EdgesView : std::ranges::range_adaptor_closure<EdgesView>
     constexpr EdgesView() = default;
 
     template<typename R>
-    requires requires (R&& r) { { r.edges() } -> std::ranges::range; }
+    requires requires (R&& r) {
+        { r.edges() } -> std::ranges::range;
+    }
     constexpr auto operator()(R&& r) const
     {
         return r.edges();
     }
 
     template<typename R>
-    requires (!std::ranges::range<R>) &&
-             requires (R&& r) { { r.edges() } -> std::ranges::range; }
+    requires (!std::ranges::range<R>) && requires (R&& r) {
+        { r.edges() } -> std::ranges::range;
+    }
     friend constexpr auto operator|(R&& r, EdgesView)
     {
         return r.edges();
@@ -53,7 +56,8 @@ struct EdgesView : std::ranges::range_adaptor_closure<EdgesView>
 } // namespace detail
 
 /**
- * @brief A view adaptor that allows to iterate over the Edge elements of an object.
+ * @brief A view adaptor that allows to iterate over the Edge elements of an
+ * object.
  *
  * Can be applied to Meshes: `mesh | views::edges`
  *

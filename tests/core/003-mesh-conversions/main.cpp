@@ -11,8 +11,8 @@
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
 
-using Meshes         = std::pair<vcl::TriMesh, vcl::PolyMesh>;
-using Meshesf        = std::pair<vcl::TriMeshf, vcl::PolyMeshf>;
+using Meshes    = std::pair<vcl::TriMesh, vcl::PolyMesh>;
+using Meshesf   = std::pair<vcl::TriMeshf, vcl::PolyMeshf>;
 using Meshes64  = std::pair<vcl::TriMesh64, vcl::PolyMesh64>;
 using Meshes64f = std::pair<vcl::TriMesh64f, vcl::PolyMesh64f>;
 
@@ -201,7 +201,9 @@ TEMPLATE_TEST_CASE(
         TriMesh tm;
         tm.importFrom(pmDeg);
 
-        THEN("The degenerate face is deleted and the quad is triangulated into 2 faces")
+        THEN(
+            "The degenerate face is deleted and the quad is triangulated into "
+            "2 faces")
         {
             REQUIRE(tm.faceCount() == 2);
             REQUIRE(tm.face(f1).deleted());

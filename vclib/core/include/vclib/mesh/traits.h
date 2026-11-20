@@ -321,7 +321,8 @@ struct ParentMeshTypeHelper<M>
     using type = M;
 };
 
-// 2. Types exposing ParentMeshType directly (e.g. ElementContainer, ElementProxy, Face, Vertex, Edge, WedgeProxy)
+// 2. Types exposing ParentMeshType directly (e.g. ElementContainer,
+// ElementProxy, Face, Vertex, Edge, WedgeProxy)
 template<typename T>
 requires (!MeshConcept<T> && requires { typename T::ParentMeshType; })
 struct ParentMeshTypeHelper<T>
@@ -333,7 +334,7 @@ struct ParentMeshTypeHelper<T>
 template<typename T>
 requires (
     !MeshConcept<T> && !requires { typename T::ParentMeshType; } &&
-    requires(T& t) { t.parentContainer(); })
+    requires (T& t) { t.parentContainer(); })
 struct ParentMeshTypeHelper<T>
 {
     using Container =
@@ -346,8 +347,7 @@ template<WedgeConcept W>
 requires (!requires { typename W::ParentMeshType; })
 struct ParentMeshTypeHelper<W>
 {
-    using Face =
-        std::remove_cvref_t<decltype(std::declval<W&>().parentFace())>;
+    using Face = std::remove_cvref_t<decltype(std::declval<W&>().parentFace())>;
     using type = typename ParentMeshTypeHelper<Face>::type;
 };
 
@@ -394,8 +394,7 @@ struct ScalarTypeHelper
 template<typename T>
 requires (
     !MeshConcept<T> && !VertexConcept<T> && !FaceConcept<T> &&
-    !EdgeConcept<T> && !WedgeConcept<T> &&
-    requires { typename T::ScalarType; })
+    !EdgeConcept<T> && !WedgeConcept<T> && requires { typename T::ScalarType; })
 struct ScalarTypeHelper<T>
 {
     using type = typename T::ScalarType;
@@ -419,21 +418,24 @@ struct ScalarTypeHelper<M>
 template<FaceConcept F>
 struct ScalarTypeHelper<F>
 {
-    using type = typename ScalarTypeHelper<typename VertexTypeHelper<F>::type>::type;
+    using type =
+        typename ScalarTypeHelper<typename VertexTypeHelper<F>::type>::type;
 };
 
 // 5. EdgeConcept (scalar of the referenced vertices)
 template<EdgeConcept E>
 struct ScalarTypeHelper<E>
 {
-    using type = typename ScalarTypeHelper<typename VertexTypeHelper<E>::type>::type;
+    using type =
+        typename ScalarTypeHelper<typename VertexTypeHelper<E>::type>::type;
 };
 
 // 6. WedgeConcept (scalar of the referenced vertex)
 template<WedgeConcept W>
 struct ScalarTypeHelper<W>
 {
-    using type = typename ScalarTypeHelper<typename VertexTypeHelper<W>::type>::type;
+    using type =
+        typename ScalarTypeHelper<typename VertexTypeHelper<W>::type>::type;
 };
 
 // ============================================================================

@@ -9,8 +9,8 @@
 #include "nearest.h"
 #include "sphere.h"
 
-using Meshes         = std::tuple<vcl::TriMesh, vcl::PolyMesh>;
-using Meshesf        = std::tuple<vcl::TriMeshf, vcl::PolyMeshf>;
+using Meshes    = std::tuple<vcl::TriMesh, vcl::PolyMesh>;
+using Meshesf   = std::tuple<vcl::TriMeshf, vcl::PolyMeshf>;
 using Meshes64  = std::tuple<vcl::TriMesh64, vcl::PolyMesh64>;
 using Meshes64f = std::tuple<vcl::TriMesh64f, vcl::PolyMesh64f>;
 

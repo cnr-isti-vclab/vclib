@@ -45,7 +45,7 @@ BENCH("space/grid/radius_search", []<typename Mesh>(bench::State<Mesh>& s) {
     std::vector<Sphere> queries;
     queries.reserve(nQueries);
 
-    std::mt19937 gen(s.seed());
+    std::mt19937                           gen(s.seed());
     std::uniform_real_distribution<Scalar> disX(bbox.min().x(), bbox.max().x());
     std::uniform_real_distribution<Scalar> disY(bbox.min().y(), bbox.max().y());
     std::uniform_real_distribution<Scalar> disZ(bbox.min().z(), bbox.max().z());

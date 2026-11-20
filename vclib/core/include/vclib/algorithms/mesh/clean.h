@@ -78,7 +78,7 @@ public:
 
     template<Range RangeType>
     SortedIndexContainer(SentinelType s, RangeType&& rng) :
-        s(s), v(std::forward<RangeType>(rng))
+            s(s), v(std::forward<RangeType>(rng))
     {
         std::sort(v.begin(), v.end());
     }
@@ -135,15 +135,14 @@ void deleteElementsWithDeletedVertices(
 {
     if constexpr (comp::HasVertexReferences<typename Cont::ElementType>) {
         constexpr ElemId ELEM_ID = Cont::ElementType::ELEMENT_ID;
-        deletedCount +=
-            deleteElementsIf<MeshType, ELEM_ID>(m, [](auto el) {
-                for (auto v : el.vertices()) {
-                    if (v == nullptr || v.deleted()) {
-                        return true;
-                    }
+        deletedCount += deleteElementsIf<MeshType, ELEM_ID>(m, [](auto el) {
+            for (auto v : el.vertices()) {
+                if (v == nullptr || v.deleted()) {
+                    return true;
                 }
-                return false;
-            });
+            }
+            return false;
+        });
     }
 }
 
@@ -258,7 +257,8 @@ auto removeDuplicateVertices(MeshType& m)
         std::size_t j = i + 1;
         while (j < perm.size() &&
                m.vertex(perm[i]).position() == m.vertex(perm[j]).position()) {
-            // j will be deleted, so we map its index to the i-th vertex's index.
+            // j will be deleted, so we map its index to the i-th vertex's
+            // index.
             newVertexIndices[perm[j]] = perm[i]; // map j -> i
             m.deleteVertex(perm[j]);
             j++;
@@ -290,7 +290,8 @@ auto removeDuplicateVertices(MeshType& m)
  * the mesh's vertices have already been unified.
  *
  * @note This function automatically updates all internal topological references
- * to the deleted faces, invalidating them (setting them to `MeshType::NULL_INDEX`).
+ * to the deleted faces, invalidating them (setting them to
+ * `MeshType::NULL_INDEX`).
  *
  * @tparam MeshType: The type of the input Mesh. It must satisfy the
  * FaceMeshConcept.
@@ -310,10 +311,9 @@ auto removeDuplicateFaces(MeshType& m)
 
     // create a vector of sorted tuples of indices, where each tuple represents
     // a face's vertices and its face index.
-    std::vector<detail::SortedIndexContainer<
-        IndexType,
-        IndexType,
-        FaceType::VERTEX_COUNT>>
+    std::vector<
+        detail::
+            SortedIndexContainer<IndexType, IndexType, FaceType::VERTEX_COUNT>>
         fvec;
     fvec.reserve(m.faceCount());
 
@@ -360,12 +360,14 @@ auto removeDuplicateFaces(MeshType& m)
  * @ingroup clean
  */
 template<MeshConcept MeshType>
-auto removeDegenerateVertices(MeshType& m, bool deleteAlsoIncidentElements = false)
+auto removeDegenerateVertices(
+    MeshType& m,
+    bool      deleteAlsoIncidentElements = false)
 {
     using IndexType = typename MeshType::IndexType;
 
-    auto count_vd = deleteVerticesIf(
-        m, [](auto v) { return v.position().isDegenerate(); });
+    auto count_vd =
+        deleteVerticesIf(m, [](auto v) { return v.position().isDegenerate(); });
 
     if (deleteAlsoIncidentElements && count_vd > 0) {
         IndexType dummy = 0;
@@ -395,7 +397,8 @@ auto removeDegenerateVertices(MeshType& m, bool deleteAlsoIncidentElements = fal
  * these kinds of faces, you should call `removeDuplicateVertices(m)` first.
  *
  * @note This function automatically updates all internal topological references
- * to the deleted faces, invalidating them (setting them to `MeshType::NULL_INDEX`).
+ * to the deleted faces, invalidating them (setting them to
+ * `MeshType::NULL_INDEX`).
  *
  * @tparam MeshType The type of the input Mesh. It must satisfy the
  * FaceMeshConcept.

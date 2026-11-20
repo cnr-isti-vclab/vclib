@@ -55,9 +55,10 @@ constexpr BufferValueType bufferSentinel()
 }
 
 /**
- * @brief Converts a buffer or matrix scalar value to a valid ushort MaterialIndex,
- * mapping sentinels (-1, negative values, USHORT_NULL, or bufferSentinel<T>()) to USHORT_NULL
- * safely without undefined behavior when casting negative floating point values to unsigned types.
+ * @brief Converts a buffer or matrix scalar value to a valid ushort
+ * MaterialIndex, mapping sentinels (-1, negative values, USHORT_NULL, or
+ * bufferSentinel<T>()) to USHORT_NULL safely without undefined behavior when
+ * casting negative floating point values to unsigned types.
  */
 template<typename BufferValueType>
 constexpr ushort toMaterialIndex(BufferValueType val)

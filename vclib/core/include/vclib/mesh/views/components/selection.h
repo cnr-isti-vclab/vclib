@@ -15,13 +15,14 @@
 namespace vcl {
 
 template<typename T>
-concept SelectableConcept = requires(T&& t) {
+concept SelectableConcept = requires (T&& t) {
     { t.selected() };
 };
 
 template<typename R>
 concept SelectableRangeConcept =
-    std::ranges::range<R> && SelectableConcept<std::ranges::range_reference_t<R>>;
+    std::ranges::range<R> &&
+    SelectableConcept<std::ranges::range_reference_t<R>>;
 
 namespace views {
 
@@ -69,10 +70,11 @@ struct SelectionView : std::ranges::range_adaptor_closure<SelectionView>
 } // namespace detail
 
 /**
- * @brief View adaptor that transforms a range of elements into a range of boolean-like
- * selection values (e.selected()).
+ * @brief View adaptor that transforms a range of elements into a range of
+ * boolean-like selection values (e.selected()).
  *
- * Can be used with pipe syntax (`range | views::selection`) or function call syntax
+ * Can be used with pipe syntax (`range | views::selection`) or function call
+ * syntax
  * (`views::selection(range)`).
  *
  * @ingroup views
@@ -80,9 +82,11 @@ struct SelectionView : std::ranges::range_adaptor_closure<SelectionView>
 inline constexpr detail::SelectionView selection;
 
 /**
- * @brief View adaptor that filters a range of elements, yielding only those that are selected.
+ * @brief View adaptor that filters a range of elements, yielding only those
+ * that are selected.
  *
- * Can be used with pipe syntax (`range | views::selected`) or function call syntax
+ * Can be used with pipe syntax (`range | views::selected`) or function call
+ * syntax
  * (`views::selected(range)`).
  *
  * @ingroup views
@@ -90,9 +94,11 @@ inline constexpr detail::SelectionView selection;
 inline constexpr detail::SelectedView selected;
 
 /**
- * @brief View adaptor that filters a range of elements, yielding only those that are not selected.
+ * @brief View adaptor that filters a range of elements, yielding only those
+ * that are not selected.
  *
- * Can be used with pipe syntax (`range | views::notSelected`) or function call syntax
+ * Can be used with pipe syntax (`range | views::notSelected`) or function call
+ * syntax
  * (`views::notSelected(range)`).
  *
  * @ingroup views

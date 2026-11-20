@@ -55,9 +55,8 @@ TEMPLATE_TEST_CASE(
     REQUIRE(m.vertex(9).template customComponent<int>("flag") == 8);
 
     // Test Iterator operator[] and random_access_iterator concept
-    static_assert(
-        std::random_access_iterator<
-            typename vcl::CustomComponentVectorHandle<int>::Iterator>);
+    static_assert(std::random_access_iterator<
+                  typename vcl::CustomComponentVectorHandle<int>::Iterator>);
     static_assert(
         std::random_access_iterator<
             typename vcl::CustomComponentVectorHandle<int>::ConstIterator>);

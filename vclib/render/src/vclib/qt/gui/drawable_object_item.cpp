@@ -78,9 +78,7 @@ void DrawableObjectItem::updateMeshInfo()
                 QString rowLabel = "";
                 for (int c = 0; c < 4; ++c) {
                     rowLabel += QString::number(
-                        mesh->meshProvider().transformMatrix()(r, c),
-                        'f',
-                        3);
+                        mesh->meshProvider().transformMatrix()(r, c), 'f', 3);
                     if (c < 3)
                         rowLabel += "\t";
                 }

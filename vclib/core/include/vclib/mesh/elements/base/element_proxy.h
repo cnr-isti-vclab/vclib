@@ -103,7 +103,8 @@ public:
     {
         assert(self.isValid() && "Element proxy is invalid");
         using SelfType = std::remove_reference_t<decltype(self)>;
-        if constexpr (std::is_const_v<SelfType> || std::is_const_v<ContainerType>) {
+        if constexpr (
+            std::is_const_v<SelfType> || std::is_const_v<ContainerType>) {
             return std::as_const(*self.mContainer).parentMesh();
         }
         else {
@@ -122,10 +123,7 @@ public:
      * index is the NULL_INDEX value. This naturally represents missing topology
      * references (e.g., boundary faces).
      */
-    bool isValid() const
-    {
-        return mContainer && mIndex != NULL_INDEX;
-    }
+    bool isValid() const { return mContainer && mIndex != NULL_INDEX; }
 
     /**
      * @brief Implicit conversion to bool to check if the proxy is valid.
@@ -138,9 +136,9 @@ public:
      * element).
      */
     template<typename OtherContainer>
-        requires std::same_as<
-            std::remove_const_t<ContainerType>,
-            std::remove_const_t<OtherContainer>>
+    requires std::same_as<
+        std::remove_const_t<ContainerType>,
+        std::remove_const_t<OtherContainer>>
     bool operator==(
         const ElementProxy<ELEM_ID, OtherContainer, vcl::TypeWrapper<Comps...>>&
             other) const
@@ -156,9 +154,9 @@ public:
      * Two invalid proxies are considered equal.
      */
     template<typename OtherContainer>
-        requires std::same_as<
-            std::remove_const_t<ContainerType>,
-            std::remove_const_t<OtherContainer>>
+    requires std::same_as<
+        std::remove_const_t<ContainerType>,
+        std::remove_const_t<OtherContainer>>
     auto operator<=>(
         const ElementProxy<ELEM_ID, OtherContainer, vcl::TypeWrapper<Comps...>>&
             other) const
@@ -202,18 +200,17 @@ public:
      * @note This swaps only the lightweight proxy handles (container pointer
      * and element index), not the underlying element data in the container.
      */
-    friend void swap(ElementProxy& a, ElementProxy& b) noexcept
-    {
-        a.swap(b);
-    }
+    friend void swap(ElementProxy& a, ElementProxy& b) noexcept { a.swap(b); }
 
     /**
-     * @brief Checks if the component with COMP_ID is available (present and enabled).
+     * @brief Checks if the component with COMP_ID is available (present and
+     * enabled).
      */
     template<CompId COMP_ID>
     bool isComponentAvailable() const
     {
-        return mContainer && mContainer->template isComponentAvailable<COMP_ID>();
+        return mContainer &&
+               mContainer->template isComponentAvailable<COMP_ID>();
     }
 
     /**
@@ -228,9 +225,9 @@ public:
      * Constness is propagated automatically from the ElementProxy / Container.
      */
     template<CompId COMP_ID>
-    decltype(auto) componentValue(this auto&& self)
-        requires (comp::HasComponent<COMP_ID, Components> &&
-                  comp::IsAttributeComponent<COMP_ID>)
+    decltype(auto) componentValue(this auto&& self) requires (
+        comp::HasComponent<COMP_ID, Components> &&
+        comp::IsAttributeComponent<COMP_ID>)
     {
         assert(self.isValid());
         assert(
@@ -260,9 +257,12 @@ public:
             "Cannot import from an element of a different type.");
 
         auto importSingleComponent = [&]<typename Comp>() {
-            if constexpr (requires { this->Comp::importFrom(other, importRefs); }) {
+            if constexpr (requires {
+                              this->Comp::importFrom(other, importRefs);
+                          }) {
                 if constexpr (requires { Comp::COMPONENT_ID; }) {
-                    if (this->template isComponentAvailable<Comp::COMPONENT_ID>()) {
+                    if (this->template isComponentAvailable<
+                            Comp::COMPONENT_ID>()) {
                         this->Comp::importFrom(other, importRefs);
                     }
                 }
@@ -300,8 +300,7 @@ protected:
     void updateReferences(const std::vector<IndexType>& newIndices)
     {
         auto updateIfMatching = [&]<typename Comp>() {
-            if constexpr (
-                comp::HasReferencesTo<TARGET_ELEM_ID, Comp>) {
+            if constexpr (comp::HasReferencesTo<TARGET_ELEM_ID, Comp>) {
                 if constexpr (requires { Comp::COMPONENT_ID; }) {
                     if (this->template isComponentAvailable<
                             Comp::COMPONENT_ID>()) {
@@ -323,8 +322,7 @@ protected:
     void shiftReferences(IndexType offset)
     {
         auto shiftIfMatching = [&]<typename Comp>() {
-            if constexpr (
-                comp::HasReferencesTo<TARGET_ELEM_ID, Comp>) {
+            if constexpr (comp::HasReferencesTo<TARGET_ELEM_ID, Comp>) {
                 if constexpr (requires { Comp::COMPONENT_ID; }) {
                     if (this->template isComponentAvailable<
                             Comp::COMPONENT_ID>()) {

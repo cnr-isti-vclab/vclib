@@ -14,9 +14,9 @@ void vertexReferencesComponentStaticAsserts()
 {
     using namespace vcl;
 
-    using TriMeshFace  = FaceType<TriMesh>;
+    using TriMeshFace = FaceType<TriMesh>;
 
-    using EdgeMeshEdge  = EdgeType<EdgeMesh>;
+    using EdgeMeshEdge = EdgeType<EdgeMesh>;
 
     using VRComponent = face::TriangleVertexReferences<>;
 

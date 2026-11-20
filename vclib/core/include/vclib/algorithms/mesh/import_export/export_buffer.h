@@ -838,8 +838,8 @@ void faceNormalsToBuffer(
  *
  * The function requires an already computed index map, which maps each triangle
  * to the face index and vice versa. You can use the @ref
- * vcl::triangulatedFaceVertexIndicesToBuffer function to get the index map. You can
- * use the function @ref vcl::triangulatedFaceCount to get the number of
+ * vcl::triangulatedFaceVertexIndicesToBuffer function to get the index map. You
+ * can use the function @ref vcl::triangulatedFaceCount to get the number of
  * resulting triangles and allocate the buffer accordingly.
  *
  * @param[in] mesh: input mesh
@@ -1126,8 +1126,8 @@ void faceColorsToBuffer(
  *
  * The function requires an already computed index map, which maps each triangle
  * to the face index and vice versa. You can use the @ref
- * vcl::triangulatedFaceVertexIndicesToBuffer function to get the index map. You can
- * use the function @ref vcl::triangulatedFaceCount to get the number of
+ * vcl::triangulatedFaceVertexIndicesToBuffer function to get the index map. You
+ * can use the function @ref vcl::triangulatedFaceCount to get the number of
  * resulting triangles and allocate the buffer accordingly.
  *
  * @param[in] mesh: input mesh
@@ -1161,8 +1161,8 @@ void triangulatedFaceColorsToBuffer(
 
     for (const auto& f : mesh.faces()) {
         const auto& c     = f.color();
-        auto first = indexMap.triangleBegin(f.index());
-        auto last  = first + indexMap.triangleCount(f.index());
+        auto        first = indexMap.triangleBegin(f.index());
+        auto        last  = first + indexMap.triangleCount(f.index());
         for (auto t = first; t < last; ++t) {
             at(buffer, t, 0, NUM_ROWS, 4, storage) = R_INT ? c.red() : c.redF();
             at(buffer, t, 1, NUM_ROWS, 4, storage) =
@@ -1216,8 +1216,8 @@ void faceColorsToBuffer(
  *
  * The function requires an already computed index map, which maps each triangle
  * to the face index and vice versa. You can use the @ref
- * vcl::triangulatedFaceVertexIndicesToBuffer function to get the index map. You can
- * use the function @ref vcl::triangulatedFaceCount to get the number of
+ * vcl::triangulatedFaceVertexIndicesToBuffer function to get the index map. You
+ * can use the function @ref vcl::triangulatedFaceCount to get the number of
  * resulting triangles and allocate the buffer accordingly.
  *
  * @param[in] mesh: input mesh
@@ -1238,8 +1238,8 @@ void triangulatedFaceColorsToBuffer(
 
     for (const auto& f : mesh.faces()) {
         const auto& c     = f.color();
-        auto first = indexMap.triangleBegin(f.index());
-        auto last  = first + indexMap.triangleCount(f.index());
+        auto        first = indexMap.triangleBegin(f.index());
+        auto        last  = first + indexMap.triangleCount(f.index());
         for (auto t = first; t < last; ++t) {
             switch (colorFormat) {
                 using enum Color::Format;
@@ -1546,15 +1546,16 @@ void vertexTexCoordsToBuffer(
 template<MeshConcept MeshType>
 void vertexMaterialIndicesToBuffer(const MeshType& mesh, auto* buffer)
 {
-    using IndexType = typename MeshType::IndexType;
+    using IndexType       = typename MeshType::IndexType;
     using BufferValueType = std::remove_cvref_t<decltype(buffer[0])>;
-    const auto SENTINEL = detail::bufferSentinel<BufferValueType>();
+    const auto SENTINEL   = detail::bufferSentinel<BufferValueType>();
 
     requireVertexMaterialIndex(mesh);
 
     for (IndexType i = 0; const auto& v : mesh.vertices()) {
         auto mi = v.materialIndex();
-        buffer[i] = (mi == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(mi);
+        buffer[i] =
+            (mi == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(mi);
         ++i;
     }
 }
@@ -1593,15 +1594,16 @@ void vertexMaterialIndicesAsFaceMaterialIndicesToBuffer(
     const MeshType& mesh,
     auto*           buffer)
 {
-    using IndexType = typename MeshType::IndexType;
+    using IndexType       = typename MeshType::IndexType;
     using BufferValueType = std::remove_cvref_t<decltype(buffer[0])>;
-    const auto SENTINEL = detail::bufferSentinel<BufferValueType>();
+    const auto SENTINEL   = detail::bufferSentinel<BufferValueType>();
 
     requireVertexMaterialIndex(mesh);
 
     for (IndexType i = 0; const auto& f : mesh.faces()) {
         auto mi = f.vertex(0).materialIndex();
-        buffer[i] = (mi == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(mi);
+        buffer[i] =
+            (mi == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(mi);
         ++i;
     }
 }
@@ -1643,13 +1645,14 @@ void vertexMaterialIndicesAsTriangulatedFaceMaterialIndicesToBuffer(
     const TriPolyIndexBiMap& indexMap)
 {
     using BufferValueType = std::remove_cvref_t<decltype(buffer[0])>;
-    const auto SENTINEL = detail::bufferSentinel<BufferValueType>();
+    const auto SENTINEL   = detail::bufferSentinel<BufferValueType>();
 
     requireVertexMaterialIndex(mesh);
 
     for (const auto& f : mesh.faces()) {
-        auto mi    = f.vertex(0).materialIndex();
-        auto val   = (mi == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(mi);
+        auto mi = f.vertex(0).materialIndex();
+        auto val =
+            (mi == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(mi);
         auto first = indexMap.triangleBegin(f.index());
         auto last  = first + indexMap.triangleCount(f.index());
         for (auto t = first; t < last; ++t) {
@@ -1758,15 +1761,16 @@ void faceWedgeTexCoordsToBuffer(
 template<FaceMeshConcept MeshType>
 void faceMaterialIndicesToBuffer(const MeshType& mesh, auto* buffer)
 {
-    using IndexType = typename MeshType::IndexType;
+    using IndexType       = typename MeshType::IndexType;
     using BufferValueType = std::remove_cvref_t<decltype(buffer[0])>;
-    const auto SENTINEL = detail::bufferSentinel<BufferValueType>();
+    const auto SENTINEL   = detail::bufferSentinel<BufferValueType>();
 
     requireFaceMaterialIndex(mesh);
 
     for (IndexType i = 0; const auto& f : mesh.faces()) {
         auto mi = f.materialIndex();
-        buffer[i] = (mi == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(mi);
+        buffer[i] =
+            (mi == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(mi);
         ++i;
     }
 }
@@ -1789,8 +1793,8 @@ void faceMaterialIndicesToBuffer(const MeshType& mesh, auto* buffer)
  *
  * The function requires an already computed index map, which maps each triangle
  * to the face index and vice versa. You can use the @ref
- * vcl::triangulatedFaceVertexIndicesToBuffer function to get the index map. You can
- * use the function @ref vcl::triangulatedFaceCount to get the number of
+ * vcl::triangulatedFaceVertexIndicesToBuffer function to get the index map. You
+ * can use the function @ref vcl::triangulatedFaceCount to get the number of
  * resulting triangles and allocate the buffer accordingly.
  *
  * @param[in] mesh: input mesh
@@ -1806,13 +1810,14 @@ void triangulatedFaceMaterialIndicesToBuffer(
     const TriPolyIndexBiMap& indexMap)
 {
     using BufferValueType = std::remove_cvref_t<decltype(buffer[0])>;
-    const auto SENTINEL = detail::bufferSentinel<BufferValueType>();
+    const auto SENTINEL   = detail::bufferSentinel<BufferValueType>();
 
     requireFaceMaterialIndex(mesh);
 
     for (const auto& f : mesh.faces()) {
-        auto mi    = f.materialIndex();
-        auto val   = (mi == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(mi);
+        auto mi = f.materialIndex();
+        auto val =
+            (mi == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(mi);
         auto first = indexMap.triangleBegin(f.index());
         auto last  = first + indexMap.triangleCount(f.index());
         for (auto t = first; t < last; ++t) {
@@ -1868,10 +1873,11 @@ void triangulatedFaceMaterialIndicesToBuffer(
  */
 template<FaceMeshConcept MeshType>
 void wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
-    const MeshType&                                                   mesh,
-    const std::vector<std::pair<IndexType<MeshType>, uint>>&          vertWedgeMap,
-    const std::list<std::list<std::pair<IndexType<MeshType>, uint>>>& facesToReassign,
-    auto*                                                             buffer,
+    const MeshType&                                          mesh,
+    const std::vector<std::pair<IndexType<MeshType>, uint>>& vertWedgeMap,
+    const std::list<std::list<std::pair<IndexType<MeshType>, uint>>>&
+                      facesToReassign,
+    auto*             buffer,
     MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
 {
     using namespace detail;
@@ -1968,14 +1974,15 @@ void wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
  */
 template<FaceMeshConcept MeshType>
 void faceMaterialIndicesAsDuplicatedVertexMaterialIndicesToBuffer(
-    const MeshType&                                                   mesh,
-    const std::vector<std::pair<IndexType<MeshType>, uint>>&          vertWedgeMap,
-    const std::list<std::list<std::pair<IndexType<MeshType>, uint>>>& facesToReassign,
-    auto*                                                             buffer)
+    const MeshType&                                          mesh,
+    const std::vector<std::pair<IndexType<MeshType>, uint>>& vertWedgeMap,
+    const std::list<std::list<std::pair<IndexType<MeshType>, uint>>>&
+          facesToReassign,
+    auto* buffer)
 {
-    using IndexType = typename MeshType::IndexType;
+    using IndexType       = typename MeshType::IndexType;
     using BufferValueType = std::remove_cvref_t<decltype(buffer[0])>;
-    const auto SENTINEL = detail::bufferSentinel<BufferValueType>();
+    const auto SENTINEL   = detail::bufferSentinel<BufferValueType>();
 
     requireFaceMaterialIndex(mesh);
 
@@ -1985,10 +1992,11 @@ void faceMaterialIndicesAsDuplicatedVertexMaterialIndicesToBuffer(
     // the vertWedgeMap to get the material index in the face
     IndexType vi = 0; // current vertex (or current row in the matrix)
     for (const auto& v : mesh.vertices()) {
-        auto fInd  = vertWedgeMap[v.index()].first;
+        auto fInd = vertWedgeMap[v.index()].first;
         if (fInd != MeshType::NULL_INDEX) {
             auto ti    = mesh.face(fInd).materialIndex();
-            buffer[vi] = (ti == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(ti);
+            buffer[vi] = (ti == USHORT_NULL) ? SENTINEL :
+                                               static_cast<BufferValueType>(ti);
         }
         else {
             buffer[vi] = SENTINEL;
@@ -2005,7 +2013,8 @@ void faceMaterialIndicesAsDuplicatedVertexMaterialIndicesToBuffer(
 
         if (fInd != MeshType::NULL_INDEX) {
             auto ti    = mesh.face(fInd).materialIndex();
-            buffer[vi] = (ti == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(ti);
+            buffer[vi] = (ti == USHORT_NULL) ? SENTINEL :
+                                               static_cast<BufferValueType>(ti);
         }
         else {
             buffer[vi] = SENTINEL;
@@ -2073,9 +2082,8 @@ void vertexAdjacentVerticesToBuffer(
         uint adjIndex = 0;
         for (auto idx : v.adjVertexIndices()) {
             at(buffer, i, adjIndex, NUM_ROWS, NUM_COLS, storage) =
-                idx == MeshType::NULL_INDEX ?
-                    SENTINEL :
-                    static_cast<BufferValueType>(idx);
+                idx == MeshType::NULL_INDEX ? SENTINEL :
+                                              static_cast<BufferValueType>(idx);
             ++adjIndex;
         }
         // fill the remaining entries with the sentinel value
@@ -2146,9 +2154,8 @@ void elementAdjacentFacesToBuffer(
         uint adjIndex = 0;
         for (auto idx : v.adjFaceIndices()) {
             at(buffer, i, adjIndex, NUM_ROWS, NUM_COLS, storage) =
-                idx == MeshType::NULL_INDEX ?
-                    SENTINEL :
-                    static_cast<BufferValueType>(idx);
+                idx == MeshType::NULL_INDEX ? SENTINEL :
+                                              static_cast<BufferValueType>(idx);
             ++adjIndex;
         }
         // fill the remaining entries with the sentinel value
@@ -2341,9 +2348,8 @@ void elementAdjacentEdgesToBuffer(
         uint adjIndex = 0;
         for (auto idx : v.adjEdgeIndices()) {
             at(buffer, i, adjIndex, NUM_ROWS, NUM_COLS, storage) =
-                idx == MeshType::NULL_INDEX ?
-                    SENTINEL :
-                    static_cast<BufferValueType>(idx);
+                idx == MeshType::NULL_INDEX ? SENTINEL :
+                                              static_cast<BufferValueType>(idx);
             ++adjIndex;
         }
         // fill the remaining entries with the sentinel value

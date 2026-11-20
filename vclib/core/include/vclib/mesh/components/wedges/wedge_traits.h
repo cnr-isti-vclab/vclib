@@ -30,8 +30,8 @@ template<PointConcept P, bool OPT>
 class Normal;
 
 /**
- * @brief Traits class mapping a component or raw type to its Wedge representation
- * (COMP_ID and ValueType).
+ * @brief Traits class mapping a component or raw type to its Wedge
+ * representation (COMP_ID and ValueType).
  */
 template<typename Comp>
 struct WedgeTraits;
@@ -62,10 +62,14 @@ struct WedgeTraits<Normal<P, OPT>>
 
 // Specialization for raw types:
 template<>
-struct WedgeTraits<vcl::Color> : WedgeTraits<Color<false>> {};
+struct WedgeTraits<vcl::Color> : WedgeTraits<Color<false>>
+{
+};
 
 template<typename Scalar>
-struct WedgeTraits<vcl::TexCoord<Scalar>> : WedgeTraits<TexCoord<Scalar, false>> {};
+struct WedgeTraits<vcl::TexCoord<Scalar>> : WedgeTraits<TexCoord<Scalar, false>>
+{
+};
 
 template<typename Scalar, uint Dim>
 requires (Dim == 3)

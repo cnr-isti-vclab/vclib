@@ -123,8 +123,7 @@ inline auto meshCustomComponents()
     std::cout << "Added face custom component 'materialID'\n";
 
     // Assign material IDs based on face area
-    auto faceAreaHandle =
-        mesh.faceCustomComponentVectorHandle<double>("area");
+    auto faceAreaHandle = mesh.faceCustomComponentVectorHandle<double>("area");
     double totalArea =
         std::accumulate(faceAreaHandle.begin(), faceAreaHandle.end(), 0.0);
     double avgArea = totalArea / mesh.faceCount();
@@ -335,14 +334,12 @@ inline auto meshCustomComponents()
     std::cout << "1. VERTEX CUSTOM COMPONENTS:\n";
     std::cout
         << "   - addVertexCustomComponent<T>(name): add typed component\n";
-    std::cout
-        << "   - vertex.customComponent<T>(name): access vertex component data\n";
-    std::cout
-        << "   - vertexCustomComponentVectorHandle<T>(): bulk access\n\n";
+    std::cout << "   - vertex.customComponent<T>(name): access vertex "
+                 "component data\n";
+    std::cout << "   - vertexCustomComponentVectorHandle<T>(): bulk access\n\n";
 
     std::cout << "2. FACE CUSTOM COMPONENTS:\n";
-    std::cout
-        << "   - addFaceCustomComponent<T>(name): add typed component\n";
+    std::cout << "   - addFaceCustomComponent<T>(name): add typed component\n";
     std::cout << "   - face.customComponent<T>(name): access component data\n";
     std::cout
         << "   - Support for various types: int, double, string, Point3d\n\n";
@@ -354,10 +351,8 @@ inline auto meshCustomComponents()
 
     std::cout << "4. COMPONENT MANAGEMENT:\n";
     std::cout << "   - hasVertexCustomComponent(name): check existence\n";
-    std::cout
-        << "   - isVertexCustomComponentOfType<T>(name): type checking\n";
-    std::cout
-        << "   - deleteVertexCustomComponent(name): remove component\n\n";
+    std::cout << "   - isVertexCustomComponentOfType<T>(name): type checking\n";
+    std::cout << "   - deleteVertexCustomComponent(name): remove component\n\n";
 
     std::cout << "Custom components are essential for:\n";
     std::cout << "- Algorithm development and intermediate data storage\n";

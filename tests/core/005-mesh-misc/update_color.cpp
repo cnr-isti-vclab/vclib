@@ -600,8 +600,7 @@ TEST_CASE("Update Color - Color Exceptions")
     // setFaceColorScattering
     {
         vcl::TriMesh m = vcl::createTetrahedron<vcl::TriMesh>();
-        assertThrowsMissingComponent(
-            [&]() { vcl::setFaceColorScattering(m); });
+        assertThrowsMissingComponent([&]() { vcl::setFaceColorScattering(m); });
     }
 
     // setVertexColorPerlinNoise

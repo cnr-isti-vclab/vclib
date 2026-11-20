@@ -38,11 +38,11 @@ template<
     std::unsigned_integral    Index = uint,
     typename ParentMesh             = void>
 class EdgeContainer :
-    public ElementContainer<
-        typename comp::detail::ComponentListHelper<CompList>::type,
-        ParentMesh,
-        Index,
-        Edge>
+        public ElementContainer<
+            typename comp::detail::ComponentListHelper<CompList>::type,
+            ParentMesh,
+            Index,
+            Edge>
 {
     using Base = ElementContainer<
         typename comp::detail::ComponentListHelper<CompList>::type,
@@ -67,10 +67,7 @@ public:
      */
     EdgeContainer() = default;
 
-    friend void swap(EdgeContainer& a, EdgeContainer& b) noexcept
-    {
-        a.swap(b);
-    }
+    friend void swap(EdgeContainer& a, EdgeContainer& b) noexcept { a.swap(b); }
 
     /**
      * @brief Returns the Edge at the i-th position in the Edge Container of
@@ -343,8 +340,8 @@ public:
     }
 
     /**
-     * @brief Returns an ElementContainerProxy object that allows to iterate over
-     * the edges of the container, providing begin() and end() member
+     * @brief Returns an ElementContainerProxy object that allows to iterate
+     * over the edges of the container, providing begin() and end() member
      * functions.
      *
      * This member function is very useful when you want to iterate over the
@@ -365,14 +362,11 @@ public:
      * @return An object having begin() and end() functions, allowing to
      * iterate over the container.
      */
-    auto edges(bool jumpDeleted = true)
-    {
-        return Base::elements(jumpDeleted);
-    }
+    auto edges(bool jumpDeleted = true) { return Base::elements(jumpDeleted); }
 
     /**
-     * @brief Returns an ElementContainerProxy object that allows to iterate over
-     * the edges of the container, providing begin() and end() member
+     * @brief Returns an ElementContainerProxy object that allows to iterate
+     * over the edges of the container, providing begin() and end() member
      * functions.
      *
      * This member function is very useful when you want to iterate over the
@@ -414,7 +408,8 @@ public:
      * @param[in] end: the index of the last edge to be included in the
      * range (exclusive). If NULL_INDEX (default) or greater than
      * edgeContainerSize(), it will be set to edgeContainerSize().
-     * @return A View object allowing to iterate over the given range of the container.
+     * @return A View object allowing to iterate over the given range of the
+     * container.
      */
     auto edges(Index begin, Index end = NULL_INDEX)
     {
@@ -437,7 +432,8 @@ public:
      * @param[in] end: the index of the last edge to be included in the
      * range (exclusive). If NULL_INDEX (default) or greater than
      * edgeContainerSize(), it will be set to edgeContainerSize().
-     * @return A View object allowing to iterate over the given range of the container.
+     * @return A View object allowing to iterate over the given range of the
+     * container.
      */
     auto edges(Index begin, Index end = NULL_INDEX) const
     {
@@ -507,19 +503,13 @@ public:
      * @brief Enables all optional edge components in the container.
      * Alias for enableAllEdgeOptionalComponents().
      */
-    void enableAllEdgeComponents()
-    {
-        Base::enableAllOptionalComponents();
-    }
+    void enableAllEdgeComponents() { Base::enableAllOptionalComponents(); }
 
     /**
      * @brief Disables all optional edge components in the container.
      * Alias for disableAllEdgeOptionalComponents().
      */
-    void disableAllEdgeComponents()
-    {
-        Base::disableAllOptionalComponents();
-    }
+    void disableAllEdgeComponents() { Base::disableAllOptionalComponents(); }
 
     VCL_COMMON_CONTAINER_COMPONENT_METHODS(Edge)
     VCL_CONTAINER_COMPONENT_METHODS(Edge, AdjacentEdges, ADJACENT_EDGES)
@@ -665,8 +655,10 @@ public:
      * @note This function is available only if the Edge Element has the
      * CustomComponents Component.
      *
-     * @tparam K: The type of the custom component for which to return the handle.
-     * @param[in] name: Name of the custom component for which to return the handle.
+     * @tparam K: The type of the custom component for which to return the
+     * handle.
+     * @param[in] name: Name of the custom component for which to return the
+     * handle.
      * @return A vector handle that allows access to the custom component.
      */
     template<typename K>
@@ -684,8 +676,10 @@ public:
      * @note This function is available only if the Edge Element has the
      * CustomComponents Component.
      *
-     * @tparam K: The type of the custom component for which to return the handle.
-     * @param[in] name: Name of the custom component for which to return the handle.
+     * @tparam K: The type of the custom component for which to return the
+     * handle.
+     * @param[in] name: Name of the custom component for which to return the
+     * handle.
      * @return A const vector handle that allows access to the custom
      * component.
      */

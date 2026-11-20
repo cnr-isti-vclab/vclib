@@ -17,7 +17,7 @@
 namespace vcl {
 
 template<typename T>
-concept HasAdjFacesMember = requires(T&& t) {
+concept HasAdjFacesMember = requires (T&& t) {
     { t.adjFaces() } -> std::ranges::range;
 };
 
@@ -73,8 +73,8 @@ struct AdjFacesView : std::ranges::range_adaptor_closure<AdjFacesView>
  * for (auto af : e | views::adjFaces | views::notNull) { ... }
  * @endcode
  *
- * When applied to a range of elements (e.g. `mesh.faces() | views::adjFaces`), it
- * transforms each element to the range of its adjacent faces.
+ * When applied to a range of elements (e.g. `mesh.faces() | views::adjFaces`),
+ * it transforms each element to the range of its adjacent faces.
  *
  * @ingroup views
  */

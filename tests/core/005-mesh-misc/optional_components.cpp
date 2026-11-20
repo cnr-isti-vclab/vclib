@@ -139,7 +139,8 @@ TEST_CASE("Optional Components - Non Optional Components")
     REQUIRE((mesh.isElementComponentAvailable<ElemId::FACE, CompId::COLOR>()));
 }
 
-TEST_CASE("Optional Components - PolyMesh TTVC Enabled on Mesh With Deleted Faces")
+TEST_CASE(
+    "Optional Components - PolyMesh TTVC Enabled on Mesh With Deleted Faces")
 {
     vcl::PolyMesh pm;
     pm.addVertices(5);
@@ -151,7 +152,7 @@ TEST_CASE("Optional Components - PolyMesh TTVC Enabled on Mesh With Deleted Face
     f0.setVertices(0, 1, 2, 3); // 4 vertices
 
     auto f1 = pm.face(pm.addFace());
-    f1.setVertices(1, 2, 4);    // 3 vertices
+    f1.setVertices(1, 2, 4); // 3 vertices
 
     // Delete face 1
     pm.deleteFace(1);
@@ -171,7 +172,8 @@ TEST_CASE("Optional Components - PolyMesh TTVC Enabled on Mesh With Deleted Face
     // Active face 0 must be sized to 4
     REQUIRE(pm.face(0).wedges().size() == 4);
 
-    // Deleted face 1 MUST also be sized to its vertexCount (3), and NOT left at size 0!
+    // Deleted face 1 MUST also be sized to its vertexCount (3), and NOT left at
+    // size 0!
     REQUIRE(pm.face(1).vertexCount() == 3);
     REQUIRE(pm.face(1).wedges().size() == 3);
 
@@ -179,7 +181,8 @@ TEST_CASE("Optional Components - PolyMesh TTVC Enabled on Mesh With Deleted Face
     pm.enableFaceAdjacentFaces();
     REQUIRE(pm.isFaceAdjacentFacesAvailable());
 
-    // Both active and deleted faces must have adjacent faces sized to their vertex count
+    // Both active and deleted faces must have adjacent faces sized to their
+    // vertex count
     REQUIRE(pm.face(0).adjFaceCount() == 4);
     REQUIRE(pm.face(1).adjFaceCount() == 3);
 }

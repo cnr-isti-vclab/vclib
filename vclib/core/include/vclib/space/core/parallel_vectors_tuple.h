@@ -66,7 +66,8 @@ public:
     ParallelVectorsTuple() = default;
 
     /**
-     * @brief Copy constructor. Deep copies all vectors, enabled flags, and size.
+     * @brief Copy constructor. Deep copies all vectors, enabled flags, and
+     * size.
      */
     ParallelVectorsTuple(const ParallelVectorsTuple&) = default;
 
@@ -77,9 +78,8 @@ public:
      * @param other The tuple to move from.
      */
     ParallelVectorsTuple(ParallelVectorsTuple&& other) noexcept :
-        mVecTuple(std::move(other.mVecTuple)),
-        mVecEnabled(other.mVecEnabled),
-        mSize(std::exchange(other.mSize, 0))
+            mVecTuple(std::move(other.mVecTuple)),
+            mVecEnabled(other.mVecEnabled), mSize(std::exchange(other.mSize, 0))
     {
     }
 
@@ -429,12 +429,13 @@ public:
         vcl::serialize(os, mSize);
         if constexpr (VECTOR_COUNT > 0) {
             vcl::serialize(os, mVecEnabled);
-            serializeVectors(os, std::make_index_sequence<VECTOR_COUNT>{});
+            serializeVectors(os, std::make_index_sequence<VECTOR_COUNT> {});
         }
     }
 
     /**
-     * @brief Deserializes the parallel vectors tuple from the given input stream.
+     * @brief Deserializes the parallel vectors tuple from the given input
+     * stream.
      *
      * Reads the size, the enabled flags of all vectors, and the contents of
      * each enabled vector. Disabled vectors are cleared. For trivially copyable
@@ -448,7 +449,7 @@ public:
         vcl::deserialize(is, mSize);
         if constexpr (VECTOR_COUNT > 0) {
             vcl::deserialize(is, mVecEnabled);
-            deserializeVectors(is, std::make_index_sequence<VECTOR_COUNT>{});
+            deserializeVectors(is, std::make_index_sequence<VECTOR_COUNT> {});
         }
     }
 
@@ -528,7 +529,7 @@ private:
     {
         if (mVecEnabled[I]) {
             const auto& vec = std::get<I>(mVecTuple);
-            using IType  = std::tuple_element_t<I, std::tuple<Types...>>;
+            using IType     = std::tuple_element_t<I, std::tuple<Types...>>;
             if constexpr (detail::IsRawSerializable<IType>) {
                 if (mSize > 0) {
                     os.write(

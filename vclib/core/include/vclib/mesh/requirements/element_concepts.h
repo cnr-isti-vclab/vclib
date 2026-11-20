@@ -58,7 +58,8 @@ concept QuadFaceConcept = FaceConcept<T> && requires {
 };
 
 /**
- * @brief Concept that checks whether a type T is a general polygon (dynamic size) Face element.
+ * @brief Concept that checks whether a type T is a general polygon (dynamic
+ * size) Face element.
  *
  * @ingroup element_concepts
  */
@@ -72,7 +73,8 @@ concept PolygonFaceConcept = FaceConcept<T> && requires {
  * ========================================================================= */
 
 /**
- * @brief Checks whether an Element or component list has the Position component.
+ * @brief Checks whether an Element or component list has the Position
+ * component.
  * @tparam E: The element or component list type.
  * @ingroup element_concepts
  */
@@ -107,19 +109,21 @@ template<typename E>
 concept HasOptionalColor = comp::HasOptionalColor<E>;
 
 /**
- * @brief Checks whether an Element or component list has the TexCoord component.
+ * @brief Checks whether an Element or component list has the TexCoord
+ * component.
  * @tparam E: The element or component list type.
  * @ingroup element_concepts
  */
 template<typename E>
-concept HasTexCoord =
-    comp::HasTexCoord<E> || (WedgeConcept<E> && requires (E& e) { e.texCoord(); });
+concept HasTexCoord = comp::HasTexCoord<E> ||
+                      (WedgeConcept<E> && requires (E& e) { e.texCoord(); });
 
 template<typename E>
 concept HasOptionalTexCoord = comp::HasOptionalTexCoord<E>;
 
 /**
- * @brief Checks whether an Element or component list has the AdjacentFaces component.
+ * @brief Checks whether an Element or component list has the AdjacentFaces
+ * component.
  * @tparam E: The element or component list type.
  * @ingroup element_concepts
  */
@@ -130,7 +134,8 @@ template<typename E>
 concept HasOptionalAdjacentFaces = comp::HasOptionalAdjacentFaces<E>;
 
 /**
- * @brief Checks whether an Element or component list has the AdjacentEdges component.
+ * @brief Checks whether an Element or component list has the AdjacentEdges
+ * component.
  * @tparam E: The element or component list type.
  * @ingroup element_concepts
  */
@@ -141,7 +146,8 @@ template<typename E>
 concept HasOptionalAdjacentEdges = comp::HasOptionalAdjacentEdges<E>;
 
 /**
- * @brief Checks whether an Element or component list has the AdjacentVertices component.
+ * @brief Checks whether an Element or component list has the AdjacentVertices
+ * component.
  * @tparam E: The element or component list type.
  * @ingroup element_concepts
  */
@@ -152,7 +158,8 @@ template<typename E>
 concept HasOptionalAdjacentVertices = comp::HasOptionalAdjacentVertices<E>;
 
 /**
- * @brief Checks whether an Element or component list has the BitFlags component.
+ * @brief Checks whether an Element or component list has the BitFlags
+ * component.
  * @tparam E: The element or component list type.
  * @ingroup element_concepts
  */
@@ -171,7 +178,8 @@ template<typename E>
 concept HasOptionalQuality = comp::HasOptionalQuality<E>;
 
 /**
- * @brief Checks whether an Element or component list has the PrincipalCurvature component.
+ * @brief Checks whether an Element or component list has the PrincipalCurvature
+ * component.
  * @tparam E: The element or component list type.
  * @ingroup element_concepts
  */
@@ -193,7 +201,8 @@ template<typename E>
 concept HasOptionalTangent = comp::HasOptionalTangent<E>;
 
 /**
- * @brief Checks whether an Element or component list has the MaterialIndex component.
+ * @brief Checks whether an Element or component list has the MaterialIndex
+ * component.
  * @tparam E: The element or component list type.
  * @ingroup element_concepts
  */
@@ -204,7 +213,8 @@ template<typename E>
 concept HasOptionalMaterialIndex = comp::HasOptionalMaterialIndex<E>;
 
 /**
- * @brief Checks whether an Element or component list has the VertexReferences component.
+ * @brief Checks whether an Element or component list has the VertexReferences
+ * component.
  * @tparam E: The element or component list type.
  * @ingroup element_concepts
  */
@@ -212,7 +222,8 @@ template<typename E>
 concept HasVertexReferences = comp::HasVertexReferences<E>;
 
 /**
- * @brief Checks whether an Element or component list has the CustomComponents component.
+ * @brief Checks whether an Element or component list has the CustomComponents
+ * component.
  * @tparam E: The element or component list type.
  * @ingroup element_concepts
  */

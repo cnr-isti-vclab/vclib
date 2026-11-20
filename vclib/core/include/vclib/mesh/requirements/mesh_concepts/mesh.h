@@ -56,4 +56,3 @@ concept RangeOfMeshes =
 } // namespace vcl
 
 #endif // VCL_MESH_REQUIREMENTS_MESH_CONCEPTS_MESH_H
-

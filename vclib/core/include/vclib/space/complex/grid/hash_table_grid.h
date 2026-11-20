@@ -220,20 +220,16 @@ using HashTableGrid3 =
 
 template<PointIteratorConcept It>
 HashTableGrid(It, It) -> HashTableGrid<
-    RegularGrid<
-        typename It::value_type::ScalarType,
-        It::value_type::DIM>,
+    RegularGrid<typename It::value_type::ScalarType, It::value_type::DIM>,
     typename It::value_type>;
 
 template<PointIteratorConcept It, typename F>
 HashTableGrid(It, It, F) -> HashTableGrid<
-    RegularGrid<
-        typename It::value_type::ScalarType,
-        It::value_type::DIM>,
+    RegularGrid<typename It::value_type::ScalarType, It::value_type::DIM>,
     typename It::value_type>;
 
 template<Range Rng>
-    requires PointConcept<std::ranges::range_value_t<Rng>>
+requires PointConcept<std::ranges::range_value_t<Rng>>
 HashTableGrid(Rng) -> HashTableGrid<
     RegularGrid<
         typename std::ranges::range_value_t<Rng>::ScalarType,
@@ -241,7 +237,7 @@ HashTableGrid(Rng) -> HashTableGrid<
     std::ranges::range_value_t<Rng>>;
 
 template<Range Rng, typename F>
-    requires PointConcept<std::ranges::range_value_t<Rng>>
+requires PointConcept<std::ranges::range_value_t<Rng>>
 HashTableGrid(Rng, F) -> HashTableGrid<
     RegularGrid<
         typename std::ranges::range_value_t<Rng>::ScalarType,

@@ -17,14 +17,13 @@
 namespace vcl {
 
 template<typename T>
-concept HasTexCoordMember = requires(T&& t) {
+concept HasTexCoordMember = requires (T&& t) {
     { t.texCoord() };
 };
 
 template<typename R>
 concept TexCoordRangeConcept =
-    std::ranges::range<R> &&
-    (requires(R&& r) {
+    std::ranges::range<R> && (requires (R&& r) {
         { std::forward<R>(r).texCoords() } -> std::ranges::range;
     } || HasTexCoordMember<std::ranges::range_reference_t<R>>);
 
@@ -68,8 +67,8 @@ struct TexCoordsView : std::ranges::range_adaptor_closure<TexCoordsView>
  * element to its texture coordinate reference.
  *
  * When applied to a range of wedge elements (e.g.
- * `face.wedges() | views::texCoords` or `face | views::wedges | views::texCoords`),
- * it returns the range of its wedge texture coordinates.
+ * `face.wedges() | views::texCoords` or `face | views::wedges |
+ * views::texCoords`), it returns the range of its wedge texture coordinates.
  *
  * @ingroup views
  */

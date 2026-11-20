@@ -17,14 +17,13 @@
 namespace vcl {
 
 template<typename T>
-concept HasQualityMember = requires(T&& t) {
+concept HasQualityMember = requires (T&& t) {
     { t.quality() };
 };
 
 template<typename R>
 concept QualitiesRangeConcept =
-    std::ranges::range<R> &&
-    (requires(R&& r) {
+    std::ranges::range<R> && (requires (R&& r) {
         { std::forward<R>(r).qualities() } -> std::ranges::range;
     } || HasQualityMember<std::ranges::range_reference_t<R>>);
 
@@ -60,19 +59,21 @@ struct QualitiesView : std::ranges::range_adaptor_closure<QualitiesView>
 } // namespace detail
 
 /**
- * @brief View adaptor that transforms a range of elements into a range of their qualities.
+ * @brief View adaptor that transforms a range of elements into a range of their
+ * qualities.
  *
- * When applied directly to an ElementContainerProxy (e.g. `mesh.vertices() | views::qualities` or
- * `mesh.faces() | views::qualities`), it directly returns a contiguous ComponentView over the SoA buffer
- * without proxy overhead.
+ * When applied directly to an ElementContainerProxy (e.g. `mesh.vertices() |
+ * views::qualities` or `mesh.faces() | views::qualities`), it directly returns
+ * a contiguous ComponentView over the SoA buffer without proxy overhead.
  *
- * When applied to a filtered or transformed range (e.g. `mesh.vertices() | views::selected | views::qualities`),
- * it transforms each element to its quality reference.
+ * When applied to a filtered or transformed range (e.g. `mesh.vertices() |
+ * views::selected | views::qualities`), it transforms each element to its
+ * quality reference.
  *
  * @ingroup views
  */
 inline constexpr detail::QualitiesView qualities;
-inline constexpr auto quality = qualities;
+inline constexpr auto                  quality = qualities;
 
 template<>
 inline constexpr auto component<CompId::QUALITY> = qualities;

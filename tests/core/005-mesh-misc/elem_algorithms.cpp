@@ -63,8 +63,9 @@ TEST_CASE("Elem Algorithms - Polygon Normal")
     };
     REQUIRE(Polygon3d::normal(pentagon).isApprox(expectedZ, 1e-12));
 
-    REQUIRE(Polygon3d::normal(std::vector<Point3d> {}).isApprox(
-        Point3d::Zero(), 1e-12));
+    REQUIRE(
+        Polygon3d::normal(std::vector<Point3d> {})
+            .isApprox(Point3d::Zero(), 1e-12));
 }
 
 TEST_CASE("Elem Algorithms - Ear Cut Quad")

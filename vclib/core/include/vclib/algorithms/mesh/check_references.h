@@ -37,18 +37,21 @@ void checkContainerReferences(const MeshType& mesh)
                 const auto targetContainerSize =
                     mesh.template containerSize<TARGET_ELEM_ID>();
 
-                for (const auto& el : mesh.template elements<SOURCE_ELEM_ID>()) {
+                for (const auto& el :
+                     mesh.template elements<SOURCE_ELEM_ID>()) {
                     const uint count = Comp::refCount(el);
                     for (uint i = 0; i < count; ++i) {
                         const auto ref = Comp::refIndex(el, i);
                         if (ref == MeshType::NULL_INDEX) {
-                            if constexpr (Comp::COMPONENT_ID ==
-                                          CompId::VERTEX_REFERENCES) {
+                            if constexpr (
+                                Comp::COMPONENT_ID ==
+                                CompId::VERTEX_REFERENCES) {
                                 throw InconsistentMeshException(
                                     elementEnumString<SOURCE_ELEM_ID>() + " " +
                                     std::to_string(el.index()) + " at vertex " +
                                     std::to_string(i) +
-                                    " references an unassigned/null vertex (NULL_INDEX).");
+                                    " references an unassigned/null vertex "
+                                    "(NULL_INDEX).");
                             }
                         }
                         else {
@@ -62,7 +65,8 @@ void checkContainerReferences(const MeshType& mesh)
                                     " >= container size " +
                                     std::to_string(targetContainerSize) + ").");
                             }
-                            if (mesh.template element<TARGET_ELEM_ID>(ref).deleted()) {
+                            if (mesh.template element<TARGET_ELEM_ID>(ref)
+                                    .deleted()) {
                                 throw InconsistentMeshException(
                                     elementEnumString<SOURCE_ELEM_ID>() + " " +
                                     std::to_string(el.index()) +
@@ -79,7 +83,7 @@ void checkContainerReferences(const MeshType& mesh)
 
     [&]<typename... Comps>(TypeWrapper<Comps...>) {
         (checkComp.template operator()<Comps>(), ...);
-    }(SourceComponents{});
+    }(SourceComponents {});
 }
 
 } // namespace detail
@@ -93,15 +97,17 @@ void checkContainerReferences(const MeshType& mesh)
  * another element type:
  * 1. Vertex references (in faces, edges, etc.) do not point to NULL_INDEX,
  *    are within [0, containerSize), and do not reference deleted vertices.
- * 2. Adjacency references (adjacent faces, edges, vertices), when not NULL_INDEX,
- *    are within their valid target container size and do not reference deleted elements.
+ * 2. Adjacency references (adjacent faces, edges, vertices), when not
+ * NULL_INDEX, are within their valid target container size and do not reference
+ * deleted elements.
  *
  * If an inconsistency is detected, an InconsistentMeshException is thrown.
  *
  * @tparam MeshType: The type of the mesh to check.
  * @param[in] mesh: The mesh to check.
  * @return true if all references in the mesh are consistent.
- * @throws InconsistentMeshException if an invalid reference or adjacency is found.
+ * @throws InconsistentMeshException if an invalid reference or adjacency is
+ * found.
  *
  * @ingroup clean
  */
@@ -118,12 +124,12 @@ bool checkMeshReferences(const MeshType& mesh)
 
         [&]<typename... SConts>(TypeWrapper<SConts...>) {
             (checkSource.template operator()<SConts>(), ...);
-        }(Containers{});
+        }(Containers {});
     };
 
     [&]<typename... TConts>(TypeWrapper<TConts...>) {
         (checkTarget.template operator()<TConts>(), ...);
-    }(Containers{});
+    }(Containers {});
 
     return true;
 }

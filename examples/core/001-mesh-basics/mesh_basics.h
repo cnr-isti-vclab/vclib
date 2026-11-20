@@ -93,8 +93,7 @@ inline auto meshBasics()
     std::println("\n=== Optional Components ===");
 
     // Check if color component is available
-    std::println(
-        "Vertex color available: {}", mesh.isVertexColorAvailable());
+    std::println("Vertex color available: {}", mesh.isVertexColorAvailable());
 
     // Enable vertex color component
     mesh.enableVertexColor();

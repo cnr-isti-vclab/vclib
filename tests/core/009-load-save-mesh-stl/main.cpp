@@ -165,7 +165,9 @@ TEMPLATE_TEST_CASE(
     }
 }
 
-TEST_CASE("Save binary STL polygon mesh writes triangulated face count", "[io][stl]")
+TEST_CASE(
+    "Save binary STL polygon mesh writes triangulated face count",
+    "[io][stl]")
 {
     vcl::PolyMesh pm = vcl::createCube<vcl::PolyMesh>();
     REQUIRE(pm.faceCount() == 6);
@@ -188,8 +190,8 @@ TEST_CASE("Save binary STL polygon mesh writes triangulated face count", "[io][s
 
     // Reloading into TriMesh should successfully load all 12 triangles
     std::istringstream iss(str);
-    vcl::TriMesh tm;
-    vcl::MeshInfo info;
+    vcl::TriMesh       tm;
+    vcl::MeshInfo      info;
     vcl::loadStl(tm, iss, info, true);
     REQUIRE(tm.faceCount() == 12);
 }

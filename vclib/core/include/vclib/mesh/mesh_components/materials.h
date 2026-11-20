@@ -102,10 +102,7 @@ public:
      * @brief Returns the number of materials of the mesh.
      * @return The total number of materials.
      */
-    ushort materialCount() const
-    {
-        return static_cast<ushort>(mats().size());
-    }
+    ushort materialCount() const { return static_cast<ushort>(mats().size()); }
 
     /**
      * @brief Returns the number of texture images stored in the component.
@@ -291,15 +288,9 @@ protected:
     template<typename OtherMesh>
     void importFrom(const OtherMesh& m);
 
-    void serialize(std::ostream& os) const
-    {
-        vcl::serialize(os, mMaterials);
-    }
+    void serialize(std::ostream& os) const { vcl::serialize(os, mMaterials); }
 
-    void deserialize(std::istream& is)
-    {
-        vcl::deserialize(is, mMaterials);
-    }
+    void deserialize(std::istream& is) { vcl::deserialize(is, mMaterials); }
 
 private:
     // members that allow to access the data

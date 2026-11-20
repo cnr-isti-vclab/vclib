@@ -165,6 +165,7 @@ bool intersect(
         }
     }
 }
+
 /**
  * @copydoc vcl::intersect(const FaceType&, const Sphere<SScalar>&,
  * PointType&, std::pair<SScalar, SScalar>&)
@@ -246,9 +247,8 @@ std::optional<typename RayType::PointType> intersection(
     const RayType&                                                      ray,
     const FaceType&                                                     face,
     std::optional<std::reference_wrapper<typename RayType::ScalarType>> t = {})
-    requires std::same_as<
-        typename RayType::ScalarType,
-        ScalarType<VertexType<FaceType>>>
+    requires std::
+        same_as<typename RayType::ScalarType, ScalarType<VertexType<FaceType>>>
 {
     using PointType  = typename RayType::PointType;
     using ScalarType = typename PointType::ScalarType;
@@ -301,9 +301,8 @@ std::optional<typename RayType::PointType> intersection(
     const FaceType&                                                     face,
     const RayType&                                                      ray,
     std::optional<std::reference_wrapper<typename RayType::ScalarType>> t = {})
-    requires std::same_as<
-        typename RayType::ScalarType,
-        ScalarType<VertexType<FaceType>>>
+    requires std::
+        same_as<typename RayType::ScalarType, ScalarType<VertexType<FaceType>>>
 {
     return intersection(ray, face, t);
 }

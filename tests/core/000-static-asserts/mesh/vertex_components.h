@@ -75,8 +75,7 @@ inline void vertexComponentsStaticAsserts()
         "TriMesh does not satisfy the HasVertexOptionalAdjacentVertices");
 
     static_assert(
-        HasVertexColor<TriMesh>,
-        "TriMesh does not satisfy the HasVertexColor");
+        HasVertexColor<TriMesh>, "TriMesh does not satisfy the HasVertexColor");
     static_assert(
         HasVertexColor<const TriMesh>,
         "const TriMesh does not satisfy the HasVertexColor");

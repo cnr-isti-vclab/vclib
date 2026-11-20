@@ -343,7 +343,8 @@ void updateFaceAdjacentFaces(MeshType& mesh)
             auto i = base;
             auto j = i + 1;
             if (j == vec.end() || *i != *j) {
-                // case of cluster composed of one element. adj of i is NULL_INDEX
+                // case of cluster composed of one element. adj of i is
+                // NULL_INDEX
                 mesh.face(i->f).setAdjFace(i->e, MeshType::NULL_INDEX);
             }
             else { // at least two edges in the cluster
@@ -410,9 +411,8 @@ void updateFaceAdjacentEdges(MeshType& mesh) requires EdgeMeshConcept<MeshType>
 {
     using FaceType = FaceType<MeshType>;
 
-    using AdjacentEdgesType = comp::ComponentTypeT<
-        CompId::ADJACENT_EDGES,
-        typename FaceType::Components>;
+    using AdjacentEdgesType = comp::
+        ComponentTypeT<CompId::ADJACENT_EDGES, typename FaceType::Components>;
 
     clearFaceAdjacentEdges(mesh);
 

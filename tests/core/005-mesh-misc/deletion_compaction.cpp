@@ -144,7 +144,7 @@ inline void testIteratorDistanceWithDeleted(MyMesh& mesh)
     REQUIRE((--vertices.end())->index() == mesh.vertexContainerSize() - 2);
 
     // parallelFor must visit exactly the active elements
-    std::atomic<std::size_t> visited = 0;
+    std::atomic<std::size_t> visited        = 0;
     std::atomic<bool>        visitedDeleted = false;
     vcl::parallelFor(mesh.vertices(), [&](auto v) {
         if (v.deleted()) {
@@ -190,9 +190,7 @@ TEST_CASE("Deletion Compaction - parallelFor on non compact mesh")
     REQUIRE(!mesh.isCompact());
 
     std::vector<int> hits(N, 0);
-    vcl::parallelFor(mesh.vertices(), [&](auto v) {
-        ++hits[v.index()];
-    });
+    vcl::parallelFor(mesh.vertices(), [&](auto v) { ++hits[v.index()]; });
     for (std::size_t i = 0; i < N; ++i) {
         REQUIRE(hits[i] == (mesh.vertex(i).deleted() ? 0 : 1));
     }

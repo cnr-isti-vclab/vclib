@@ -17,7 +17,7 @@
 namespace vcl {
 
 template<typename T>
-concept HasAdjEdgesMember = requires(T&& t) {
+concept HasAdjEdgesMember = requires (T&& t) {
     { t.adjEdges() } -> std::ranges::range;
 };
 
@@ -73,8 +73,8 @@ struct AdjEdgesView : std::ranges::range_adaptor_closure<AdjEdgesView>
  * for (auto ae : e | views::adjEdges | views::notNull) { ... }
  * @endcode
  *
- * When applied to a range of elements (e.g. `mesh.edges() | views::adjEdges`), it
- * transforms each element to the range of its adjacent edges.
+ * When applied to a range of elements (e.g. `mesh.edges() | views::adjEdges`),
+ * it transforms each element to the range of its adjacent edges.
  *
  * @ingroup views
  */

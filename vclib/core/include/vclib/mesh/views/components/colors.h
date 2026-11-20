@@ -17,14 +17,13 @@
 namespace vcl {
 
 template<typename T>
-concept HasColorMember = requires(T&& t) {
+concept HasColorMember = requires (T&& t) {
     { t.color() };
 };
 
 template<typename R>
 concept ColorRangeConcept =
-    std::ranges::range<R> &&
-    (requires(R&& r) {
+    std::ranges::range<R> && (requires (R&& r) {
         { std::forward<R>(r).colors() } -> std::ranges::range;
     } || HasColorMember<std::ranges::range_reference_t<R>>);
 
@@ -42,9 +41,7 @@ struct ColorsView : std::ranges::range_adaptor_closure<ColorsView>
     constexpr auto operator()(R&& r) const
     {
         if constexpr (requires {
-                          {
-                              std::forward<R>(r).colors()
-                          } -> std::ranges::range;
+                          { std::forward<R>(r).colors() } -> std::ranges::range;
                       }) {
             return std::forward<R>(r).colors();
         }
@@ -57,14 +54,16 @@ struct ColorsView : std::ranges::range_adaptor_closure<ColorsView>
 } // namespace detail
 
 /**
- * @brief View adaptor that transforms a range of elements into a range of their colors.
+ * @brief View adaptor that transforms a range of elements into a range of their
+ * colors.
  *
- * When applied directly to an ElementContainerProxy (e.g. `mesh.vertices() | views::colors` or
- * `mesh.faces() | views::colors`), it directly returns a contiguous ComponentView over the SoA buffer
- * without proxy overhead.
+ * When applied directly to an ElementContainerProxy (e.g. `mesh.vertices() |
+ * views::colors` or `mesh.faces() | views::colors`), it directly returns a
+ * contiguous ComponentView over the SoA buffer without proxy overhead.
  *
- * When applied to a filtered or transformed range (e.g. `mesh.vertices() | views::selected | views::colors`),
- * it transforms each element to its color reference.
+ * When applied to a filtered or transformed range (e.g. `mesh.vertices() |
+ * views::selected | views::colors`), it transforms each element to its color
+ * reference.
  *
  * @ingroup views
  */

@@ -25,8 +25,8 @@ template<ElemId ELEM_ID, MeshConcept MeshType>
 auto elementSelectionCount(const MeshType& m)
 {
     using IndexType = typename MeshType::IndexType;
-    return static_cast<IndexType>(
-        std::ranges::distance(m.template elements<ELEM_ID>() | views::selected));
+    return static_cast<IndexType>(std::ranges::distance(
+        m.template elements<ELEM_ID>() | views::selected));
 }
 
 /**

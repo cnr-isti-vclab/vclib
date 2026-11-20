@@ -34,6 +34,7 @@ namespace vcl::mesh {
 class Color : public comp::Component<CompId::COLOR, vcl::Color>
 {
     vcl::Color mColor;
+
 public:
     /**
      * @brief Expose the type of the Color.
@@ -85,7 +86,6 @@ protected:
  */
 template<typename T>
 concept HasColor = comp::HasColor<T>;
-
 
 } // namespace vcl::mesh
 

@@ -318,8 +318,7 @@ void readOffVertices(
         }
 
         if constexpr (HasVertexNormal<MeshType>) {
-            if (mesh.isVertexNormalAvailable() &&
-                fileInfo.hasVertexNormal()) {
+            if (mesh.isVertexNormalAvailable() && fileInfo.hasVertexNormal()) {
                 // Read 3 normal coordinates
                 for (unsigned int j = 0; j < 3; j++) {
                     v.normal()[j] = io::readDouble<double>(token);
@@ -445,8 +444,7 @@ void readOffFaces(
                             token, tokens.size() - (token - tokens.begin()));
                         // in case the loaded polygon has been triangulated in
                         // the last n triangles
-                        for (uint ff = f.index(); ff < mesh.faceCount();
-                             ++ff) {
+                        for (uint ff = f.index(); ff < mesh.faceCount(); ++ff) {
                             mesh.face(ff).color() = f.color();
                         }
                     }

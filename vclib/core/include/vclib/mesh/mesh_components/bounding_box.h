@@ -62,7 +62,8 @@ public:
     using BoundingBoxType = Box<Point>;
 
     /**
-     * @brief Default constructor. Initializes the bounding box to an invalid/null bounding box.
+     * @brief Default constructor. Initializes the bounding box to an
+     * invalid/null bounding box.
      */
     BoundingBox() = default;
 
@@ -72,29 +73,20 @@ public:
      * @brief Returns a reference to the bounding box of the mesh.
      * @return A reference to the bounding box of the mesh.
      */
-    decltype(auto) boundingBox(this auto&& self)
-    {
-        return (self.mBoundingBox);
-    }
+    decltype(auto) boundingBox(this auto&& self) { return (self.mBoundingBox); }
 
 protected:
     /**
      * @brief Serializes the bounding box to the given output stream.
      * @param[out] os: The output stream.
      */
-    void serialize(std::ostream& os) const
-    {
-        mBoundingBox.serialize(os);
-    }
+    void serialize(std::ostream& os) const { mBoundingBox.serialize(os); }
 
     /**
      * @brief Deserializes the bounding box from the given input stream.
      * @param[in] is: The input stream.
      */
-    void deserialize(std::istream& is)
-    {
-        mBoundingBox.deserialize(is);
-    }
+    void deserialize(std::istream& is) { mBoundingBox.deserialize(is); }
 
     template<typename OtherMesh>
     void importFrom(const OtherMesh& m);

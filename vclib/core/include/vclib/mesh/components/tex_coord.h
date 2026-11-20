@@ -79,7 +79,8 @@ template<typename T>
 concept HasTexCoord = HasComponent<CompId::TEX_COORD, T>;
 
 /**
- * @brief A concept that checks whether a type T has the TexCoord component and it is optional.
+ * @brief A concept that checks whether a type T has the TexCoord component and
+ * it is optional.
  *
  * @tparam T: The type to be tested for conformity to HasOptionalTexCoord.
  *

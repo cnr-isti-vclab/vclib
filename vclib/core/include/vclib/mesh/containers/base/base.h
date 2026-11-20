@@ -53,9 +53,8 @@ template<ElemId ELEM_ID, typename Head, typename... Tail>
 struct FindContainer<ELEM_ID, Head, Tail...>
 {
 private:
-    static constexpr bool matches = requires {
-        requires Head::ELEMENT_ID == ELEM_ID;
-    };
+    static constexpr bool matches =
+        requires { requires Head::ELEMENT_ID == ELEM_ID; };
 
 public:
     using type = std::conditional_t<
@@ -66,7 +65,8 @@ public:
         matches || FindContainer<ELEM_ID, Tail...>::found;
 };
 
-// Trait to check if a component has a static vector column (DataType is not void)
+// Trait to check if a component has a static vector column (DataType is not
+// void)
 template<typename Comp>
 struct HasVectorColumnPred
 {

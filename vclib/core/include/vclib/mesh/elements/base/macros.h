@@ -20,14 +20,15 @@
  * Example:
  *   VCL_ELEMENT_COMPONENT_METHODS(Color, COLOR)
  * generates:
- *   bool isColorAvailable() const { return isComponentAvailable<CompId::COLOR>(); }
+ *   bool isColorAvailable() const { return
+ * isComponentAvailable<CompId::COLOR>(); }
  *
  * TODO: Remove this macro when C++26 static reflection is available.
  */
 #define VCL_ELEMENT_COMPONENT_METHODS(CompName, COMP_ID) \
-    bool is##CompName##Available() const \
-    { \
-        return isComponentAvailable<CompId::COMP_ID>(); \
+    bool is##CompName##Available() const                 \
+    {                                                    \
+        return isComponentAvailable<CompId::COMP_ID>();  \
     }
 
 /**
@@ -36,8 +37,8 @@
  *
  * TODO: Remove this macro when C++26 static reflection is available.
  */
-#define VCL_COMMON_ELEMENT_COMPONENT_METHODS \
-    VCL_ELEMENT_COMPONENT_METHODS(Color, COLOR) \
+#define VCL_COMMON_ELEMENT_COMPONENT_METHODS      \
+    VCL_ELEMENT_COMPONENT_METHODS(Color, COLOR)   \
     VCL_ELEMENT_COMPONENT_METHODS(Normal, NORMAL) \
     VCL_ELEMENT_COMPONENT_METHODS(Quality, QUALITY)
 
@@ -47,22 +48,19 @@
  *
  * TODO: Remove this macro when C++26 static reflection is available.
  */
-#define VCL_ALL_ELEMENT_COMPONENT_METHODS \
-    VCL_COMMON_ELEMENT_COMPONENT_METHODS \
-    VCL_ELEMENT_COMPONENT_METHODS(AdjacentEdges, ADJACENT_EDGES) \
-    VCL_ELEMENT_COMPONENT_METHODS(AdjacentFaces, ADJACENT_FACES) \
-    VCL_ELEMENT_COMPONENT_METHODS(AdjacentVertices, ADJACENT_VERTICES) \
-    VCL_ELEMENT_COMPONENT_METHODS(MaterialIndex, MATERIAL_INDEX) \
-    VCL_ELEMENT_COMPONENT_METHODS( \
-        PrincipalCurvature, \
-        PRINCIPAL_CURVATURE) \
-    VCL_ELEMENT_COMPONENT_METHODS(Tangent, TANGENT) \
-    VCL_ELEMENT_COMPONENT_METHODS(TexCoord, TEX_COORD) \
-    VCL_ELEMENT_COMPONENT_METHODS(WedgeColors, WEDGE_COLORS) \
-    VCL_ELEMENT_COMPONENT_METHODS(WedgeNormals, WEDGE_NORMALS) \
+#define VCL_ALL_ELEMENT_COMPONENT_METHODS                                  \
+    VCL_COMMON_ELEMENT_COMPONENT_METHODS                                   \
+    VCL_ELEMENT_COMPONENT_METHODS(AdjacentEdges, ADJACENT_EDGES)           \
+    VCL_ELEMENT_COMPONENT_METHODS(AdjacentFaces, ADJACENT_FACES)           \
+    VCL_ELEMENT_COMPONENT_METHODS(AdjacentVertices, ADJACENT_VERTICES)     \
+    VCL_ELEMENT_COMPONENT_METHODS(MaterialIndex, MATERIAL_INDEX)           \
+    VCL_ELEMENT_COMPONENT_METHODS(PrincipalCurvature, PRINCIPAL_CURVATURE) \
+    VCL_ELEMENT_COMPONENT_METHODS(Tangent, TANGENT)                        \
+    VCL_ELEMENT_COMPONENT_METHODS(TexCoord, TEX_COORD)                     \
+    VCL_ELEMENT_COMPONENT_METHODS(WedgeColors, WEDGE_COLORS)               \
+    VCL_ELEMENT_COMPONENT_METHODS(WedgeNormals, WEDGE_NORMALS)             \
     VCL_ELEMENT_COMPONENT_METHODS(WedgeTexCoords, WEDGE_TEX_COORDS)
 
 #define VCL_ELEMENT_PROXY_COMPONENT_METHODS VCL_ALL_ELEMENT_COMPONENT_METHODS
 
 #endif // VCL_MESH_ELEMENTS_BASE_MACROS_H
-

@@ -17,14 +17,13 @@
 namespace vcl {
 
 template<typename T>
-concept HasPrincipalCurvatureMember = requires(T&& t) {
+concept HasPrincipalCurvatureMember = requires (T&& t) {
     { t.principalCurvature() };
 };
 
 template<typename R>
 concept PrincipalCurvaturesRangeConcept =
-    std::ranges::range<R> &&
-    (requires(R&& r) {
+    std::ranges::range<R> && (requires (R&& r) {
         { std::forward<R>(r).principalCurvatures() } -> std::ranges::range;
     } || HasPrincipalCurvatureMember<std::ranges::range_reference_t<R>>);
 
@@ -59,14 +58,16 @@ struct PrincipalCurvaturesView :
 } // namespace detail
 
 /**
- * @brief View adaptor that transforms a range of elements into a range of their principal curvatures.
+ * @brief View adaptor that transforms a range of elements into a range of their
+ * principal curvatures.
  *
- * When applied directly to an ElementContainerProxy (e.g. `mesh.vertices() | views::principalCurvatures`),
- * it directly returns a contiguous ComponentView over the SoA buffer
- * without proxy overhead.
+ * When applied directly to an ElementContainerProxy (e.g. `mesh.vertices() |
+ * views::principalCurvatures`), it directly returns a contiguous ComponentView
+ * over the SoA buffer without proxy overhead.
  *
- * When applied to a filtered or transformed range (e.g. `mesh.vertices() | views::selected | views::principalCurvatures`),
- * it transforms each element to its principal curvature reference.
+ * When applied to a filtered or transformed range (e.g. `mesh.vertices() |
+ * views::selected | views::principalCurvatures`), it transforms each element to
+ * its principal curvature reference.
  *
  * @ingroup views
  */

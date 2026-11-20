@@ -500,9 +500,8 @@ TEST_CASE("Update Quality - Update Quality Exceptions")
         vcl::TriMesh tet = vcl::createTetrahedron<vcl::TriMesh>();
         // Quality is initially disabled in TriMesh
 
-        assertThrowsMissingQualityComponent([&]() {
-            vcl::setElementQuality<vcl::ElemId::VERTEX>(tet, 1.0);
-        });
+        assertThrowsMissingQualityComponent(
+            [&]() { vcl::setElementQuality<vcl::ElemId::VERTEX>(tet, 1.0); });
         assertThrowsMissingQualityComponent(
             [&]() { vcl::setVertexQuality(tet, 1.0); });
 
@@ -514,9 +513,8 @@ TEST_CASE("Update Quality - Update Quality Exceptions")
         assertThrowsMissingQualityComponent(
             [&]() { vcl::clampVertexQuality(tet, 0.0, 1.0); });
 
-        assertThrowsMissingQualityComponent([&]() {
-            vcl::normalizeElementQuality<vcl::ElemId::VERTEX>(tet);
-        });
+        assertThrowsMissingQualityComponent(
+            [&]() { vcl::normalizeElementQuality<vcl::ElemId::VERTEX>(tet); });
         assertThrowsMissingQualityComponent(
             [&]() { vcl::normalizeVertexQuality(tet); });
         assertThrowsMissingQualityComponent(
@@ -561,9 +559,8 @@ TEST_CASE("Update Quality - Update Quality Exceptions")
         assertThrowsMissingQualityComponent([&]() {
             vcl::setVertexQualityFromPrincipalCurvatureGaussian(tetA);
         });
-        assertThrowsMissingQualityComponent([&]() {
-            vcl::setVertexQualityFromPrincipalCurvatureMean(tetA);
-        });
+        assertThrowsMissingQualityComponent(
+            [&]() { vcl::setVertexQualityFromPrincipalCurvatureMean(tetA); });
         assertThrowsMissingQualityComponent([&]() {
             vcl::setVertexQualityFromPrincipalCurvatureMinValue(tetA);
         });
@@ -583,9 +580,8 @@ TEST_CASE("Update Quality - Update Quality Exceptions")
         assertThrowsMissingQualityComponent([&]() {
             vcl::setVertexQualityFromPrincipalCurvatureGaussian(tetB);
         });
-        assertThrowsMissingQualityComponent([&]() {
-            vcl::setVertexQualityFromPrincipalCurvatureMean(tetB);
-        });
+        assertThrowsMissingQualityComponent(
+            [&]() { vcl::setVertexQualityFromPrincipalCurvatureMean(tetB); });
         assertThrowsMissingQualityComponent([&]() {
             vcl::setVertexQualityFromPrincipalCurvatureMinValue(tetB);
         });
@@ -605,9 +601,8 @@ TEST_CASE("Update Quality - Update Quality Exceptions")
         assertThrowsMissingQualityComponent([&]() {
             vcl::setVertexQualityFromPrincipalCurvatureGaussian(tetC);
         });
-        assertThrowsMissingQualityComponent([&]() {
-            vcl::setVertexQualityFromPrincipalCurvatureMean(tetC);
-        });
+        assertThrowsMissingQualityComponent(
+            [&]() { vcl::setVertexQualityFromPrincipalCurvatureMean(tetC); });
         assertThrowsMissingQualityComponent([&]() {
             vcl::setVertexQualityFromPrincipalCurvatureMinValue(tetC);
         });

@@ -46,7 +46,7 @@ inline auto polymeshSpecifics()
 
     // Create a hexagonal face
     vcl::uint fid     = polyMesh.addFace();
-    auto     hexFace = polyMesh.face(fid);
+    auto      hexFace = polyMesh.face(fid);
 
     // Add vertices to the face one by one
     for (vcl::uint i = 0; i < 6; ++i) {
@@ -141,7 +141,7 @@ inline auto polymeshSpecifics()
 
     // Create a square face
     vcl::uint sfi        = dynamicMesh.addFace();
-    auto     squareFace = dynamicMesh.face(sfi);
+    auto      squareFace = dynamicMesh.face(sfi);
     std::cout << "Created empty face, vertices: " << squareFace.vertexCount()
               << "\n";
 
