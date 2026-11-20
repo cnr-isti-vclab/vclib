@@ -41,10 +41,8 @@ double volume(const MeshType& m)
 template<FaceMeshConcept MeshType>
 double surfaceArea(const MeshType& m)
 {
-    using FaceType = MeshType::FaceType;
-
     double area = 0;
-    for (const FaceType& f : m.faces()) {
+    for (auto&& f : m.faces()) {
         area += faceArea(f);
     }
     return area;
@@ -64,16 +62,13 @@ double surfaceArea(const MeshType& m)
 template<FaceMeshConcept MeshType>
 double borderLength(const MeshType& m)
 {
-    using FaceType = MeshType::FaceType;
-
-    requirePerFaceAdjacentFaces(m);
+    requireFaceAdjacentFaces(m);
 
     double l = 0;
-    for (const FaceType& f : m.faces()) {
+    for (auto&& f : m.faces()) {
         for (uint i = 0; i < f.vertexCount(); ++i) {
             if (f.adjFace(i) == nullptr) {
-                l += f.vertex(i)->position().dist(
-                    f.vertexMod(i + 1)->position());
+                l += f.vertex(i).position().dist(f.vertexMod(i + 1).position());
             }
         }
     }
@@ -93,8 +88,7 @@ double borderLength(const MeshType& m)
 template<MeshConcept MeshType>
 auto covarianceMatrixOfPointCloud(const MeshType& m)
 {
-    using VertexType   = MeshType::VertexType;
-    using PositionType = VertexType::PositionType;
+    using PositionType = PositionType<MeshType>;
     using ScalarType   = PositionType::ScalarType;
 
     PositionType bar = barycenter(m);
@@ -102,7 +96,7 @@ auto covarianceMatrixOfPointCloud(const MeshType& m)
     Matrix33<ScalarType> mm;
     mm.setZero();
     // compute covariance matrix
-    for (const VertexType& v : m.vertices()) {
+    for (auto&& v : m.vertices()) {
         PositionType e = v.position() - bar;
         mm += e.outerProduct(e);
     }
@@ -120,9 +114,7 @@ auto covarianceMatrixOfPointCloud(const MeshType& m)
 template<FaceMeshConcept MeshType>
 auto covarianceMatrixOfMesh(const MeshType& m)
 {
-    using VertexType   = MeshType::VertexType;
-    using FaceType     = MeshType::FaceType;
-    using PositionType = VertexType::PositionType;
+    using PositionType = PositionType<MeshType>;
     using ScalarType   = PositionType::ScalarType;
 
     PositionType         bar = shellBarycenter(m);
@@ -139,10 +131,10 @@ auto covarianceMatrixOfMesh(const MeshType& m)
     Matrix33<ScalarType> A; // matrix that bring the vertices to (v1-v0,v2-v0,n)
     Matrix33<ScalarType> DC;
 
-    for (const FaceType& f : m.faces()) {
-        const PositionType& p0 = f.vertex(0)->position();
-        const PositionType& p1 = f.vertex(1)->position();
-        const PositionType& p2 = f.vertex(2)->position();
+    for (auto&& f : m.faces()) {
+        const PositionType& p0 = f.vertex(0).position();
+        const PositionType& p1 = f.vertex(1).position();
+        const PositionType& p2 = f.vertex(2).position();
         PositionType        n  = (p1 - p0).cross(p2 - p0);
         double              da = n.norm();
         n /= da * da;
@@ -177,8 +169,8 @@ auto covarianceMatrixOfMesh(const MeshType& m)
 
 /**
  * @brief When performing an adptive pruning for each sample we expect a varying
- * radius to be removed. The radius is a PerVertex attribute that we compute
- * from the current per vertex weights given as argument. The expected radius of
+ * radius to be removed. The radius is a vertex attribute that we compute
+ * from the current vertex weights given as argument. The expected radius of
  * the sample is computed so that it linearly maps the quality between
  * diskradius and diskradius*variance
  *
@@ -198,8 +190,7 @@ auto vertexRadiusFromWeights(
     double          radiusVariance,
     bool            invert = false)
 {
-    using VertexType = MeshType::VertexType;
-    using ScalarType = VertexType::PositionType::ScalarType;
+    using ScalarType = ScalarType<MeshType>;
 
     assert(std::ranges::size(weights) == m.vertexContainerSize());
 
@@ -211,7 +202,7 @@ auto vertexRadiusFromWeights(
     auto it = std::ranges::begin(weights);
     auto activeWeights =
         m.vertices() |
-        std::views::transform([&](const auto& v) { return it[m.index(v)]; });
+        std::views::transform([&](const auto& v) { return it[v.index()]; });
     const auto [min, max] = std::ranges::minmax(activeWeights);
 
     double minRad   = diskRadius;
@@ -221,12 +212,12 @@ auto vertexRadiusFromWeights(
 
     for (const auto& v : m.vertices()) {
         if (deltaQ == 0.0) {
-            radius[m.index(v)] = minRad;
+            radius[v.index()] = minRad;
         }
         else {
-            auto   w           = it[m.index(v)];
-            double num         = invert ? (max - w) : (w - min);
-            radius[m.index(v)] = minRad + deltaRad * (num / deltaQ);
+            auto   w          = it[v.index()];
+            double num        = invert ? (max - w) : (w - min);
+            radius[v.index()] = minRad + deltaRad * (num / deltaQ);
         }
     }
 
@@ -249,19 +240,21 @@ auto vertexRadiusFromWeights(
  * dihedral angle outside the given range.
  */
 template<FaceMeshConcept MeshType>
-std::vector<std::pair<uint, uint>> creaseFaceEdges(
+std::vector<std::pair<IndexType<MeshType>, uint>> creaseFaceEdges(
     const MeshType& m,
     double          angleRadNeg,
     double          angleRadPos,
     bool            alsoBorderEdges = false)
 {
-    requirePerFaceAdjacentFaces(m);
+    requireFaceAdjacentFaces(m);
 
-    std::vector<std::pair<uint, uint>> creaseEdges;
+    using IndexType = IndexType<MeshType>;
 
-    for (const auto& f : m.faces()) {
+    std::vector<std::pair<IndexType, uint>> creaseEdges;
+
+    for (auto&& f : m.faces()) {
         for (uint i = 0; i < f.vertexCount(); ++i) {
-            if (f.adjFace(i) == nullptr) {
+            if (!f.adjFace(i)) {
                 // border edge
                 if (alsoBorderEdges) {
                     creaseEdges.push_back({f.index(), i});

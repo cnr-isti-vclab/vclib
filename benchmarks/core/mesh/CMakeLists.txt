@@ -21,10 +21,15 @@ set(SOURCES
     import_export/render_buffers.cpp
     io/load_mesh.cpp
     io/save_mesh.cpp
+    io/serialize.cpp
+    mesh/append.cpp
     mesh/copy.cpp
     mesh/delete_and_compact.cpp
+    mesh/views_stream.cpp
     point_sampling.cpp
+    polygon/geometry.cpp
     smooth.cpp
+    space/grid.cpp
     space/mesh_inertia.cpp
     stat/barycenter.cpp
     stat/bounding_box.cpp

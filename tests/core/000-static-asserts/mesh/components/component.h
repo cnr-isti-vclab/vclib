@@ -14,20 +14,74 @@ void componentStaticAsserts()
 {
     using namespace vcl;
 
-    using TEMVertex = triedgemesh::Vertex<float, false>;
-    using TEMFace   = triedgemesh::Face<float, false>;
-    using TEMFaceI  = triedgemesh::Face<float, true>;
-    using TEMEdge   = triedgemesh::Edge<float, false>;
-    using TEMEdgeI  = triedgemesh::Edge<float, true>;
+    using TEMVertex = VertexType<TriEdgeMesh>;
+    using TEMFace   = FaceType<TriEdgeMesh>;
+    using TEMEdge   = EdgeType<TriEdgeMesh>;
 
-    using VerticalColor = vert::VerticalColor<trimesh::Vertex<float, false>>;
-    using OptionalColor = vert::OptionalColor<trimesh::Vertex<float, false>>;
+    using OptionalAdjEdges    = face::OptionalAdjacentEdges<>;
+    using OptionalWedgeColors = face::OptionalPolygonWedgeColors;
 
-    using OptionalAdjEdges =
-        face::OptionalAdjacentEdges<false, TEMEdge, TEMFace>;
-    using OptionalAdjEdgesI =
-        face::OptionalAdjacentEdges<true, TEMEdgeI, TEMFaceI>;
-    using OptionalWedgeColors = face::OptionalPolygonWedgeColors<TEMFace>;
+    // ComponentData
+    static_assert(
+        comp::ComponentData<void>,
+        "void does not satisfy the ComponentData concept");
+    static_assert(
+        comp::ComponentData<int>,
+        "int does not satisfy the ComponentData concept");
+    static_assert(
+        comp::ComponentData<double>,
+        "double does not satisfy the ComponentData concept");
+    static_assert(
+        comp::ComponentData<Point3f>,
+        "Point3f does not satisfy the ComponentData concept");
+    static_assert(
+        comp::ComponentData<Color>,
+        "Color does not satisfy the ComponentData concept");
+    static_assert(
+        comp::ComponentData<std::string>,
+        "std::string does not satisfy the ComponentData concept");
+    static_assert(
+        comp::ComponentData<std::vector<int>>,
+        "std::vector<int> does not satisfy the ComponentData concept");
+    static_assert(
+        comp::ComponentData<vcl::mesh::detail::MData>,
+        "MData does not satisfy the ComponentData concept");
+
+    struct NonSerializableData
+    {
+        int a;
+    };
+
+    static_assert(
+        !comp::ComponentData<NonSerializableData>,
+        "NonSerializableData does satisfy the ComponentData concept");
+
+    struct NonCopyableData
+    {
+        NonCopyableData()                       = default;
+        NonCopyableData(const NonCopyableData&) = delete;
+
+        void serialize(std::ostream&) const {}
+
+        void deserialize(std::istream&) {}
+    };
+
+    static_assert(
+        !comp::ComponentData<NonCopyableData>,
+        "NonCopyableData does satisfy the ComponentData concept");
+
+    struct NonDefaultConstructibleData
+    {
+        NonDefaultConstructibleData(int) {}
+
+        void serialize(std::ostream&) const {}
+
+        void deserialize(std::istream&) {}
+    };
+
+    static_assert(
+        !comp::ComponentData<NonDefaultConstructibleData>,
+        "NonDefaultConstructibleData does satisfy the ComponentData concept");
 
     // ComponentConcept
     static_assert(
@@ -47,35 +101,19 @@ void componentStaticAsserts()
         "vert::Color&& does not satisfy the Component concept");
 
     static_assert(
-        comp::ComponentConcept<VerticalColor>,
-        "vert::VerticalColor does not satisfy the Component concept");
-    static_assert(
-        comp::ComponentConcept<const VerticalColor>,
-        "const vert::VerticalColor does not satisfy the Component concept");
-    static_assert(
-        comp::ComponentConcept<VerticalColor&>,
-        "vert::VerticalColor& does not satisfy the Component concept");
-    static_assert(
-        comp::ComponentConcept<const VerticalColor&>,
-        "const vert::VerticalColor& does not satisfy the Component concept");
-    static_assert(
-        comp::ComponentConcept<VerticalColor&&>,
-        "vert::VerticalColor&& does not satisfy the Component concept");
-
-    static_assert(
-        comp::ComponentConcept<OptionalColor>,
+        comp::ComponentConcept<vert::OptionalColor>,
         "vert::OptionalColor does not satisfy the Component concept");
     static_assert(
-        comp::ComponentConcept<const OptionalColor>,
+        comp::ComponentConcept<const vert::OptionalColor>,
         "const vert::OptionalColor does not satisfy the Component concept");
     static_assert(
-        comp::ComponentConcept<OptionalColor&>,
+        comp::ComponentConcept<vert::OptionalColor&>,
         "vert::OptionalColor& does not satisfy the Component concept");
     static_assert(
-        comp::ComponentConcept<const OptionalColor&>,
+        comp::ComponentConcept<const vert::OptionalColor&>,
         "const vert::OptionalColor& does not satisfy the Component concept");
     static_assert(
-        comp::ComponentConcept<OptionalColor&&>,
+        comp::ComponentConcept<vert::OptionalColor&&>,
         "vert::OptionalColor&& does not satisfy the Component concept");
 
     static_assert(
@@ -93,59 +131,6 @@ void componentStaticAsserts()
     static_assert(
         !comp::ComponentConcept<TEMVertex&&>,
         "TEMVertex&& does satisfy the Component concept");
-
-    // IsVerticalComponent
-    static_assert(
-        !comp::IsVerticalComponent<vert::Color>,
-        "vert::Color does satisfy the VerticalComponent concept");
-    static_assert(
-        !comp::IsVerticalComponent<const vert::Color>,
-        "const vert::Color does satisfy the VerticalComponent concept");
-    static_assert(
-        !comp::IsVerticalComponent<vert::Color&>,
-        "vert::Color& does satisfy the VerticalComponent concept");
-    static_assert(
-        !comp::IsVerticalComponent<const vert::Color&>,
-        "const vert::Color& does satisfy the VerticalComponent concept");
-    static_assert(
-        !comp::IsVerticalComponent<vert::Color&&>,
-        "vert::Color&& does satisfy the VerticalComponent concept");
-
-    static_assert(
-        comp::IsVerticalComponent<VerticalColor>,
-        "vert::VerticalColor does not satisfy the VerticalComponent concept");
-    static_assert(
-        comp::IsVerticalComponent<const VerticalColor>,
-        "const vert::VerticalColor does not satisfy the VerticalComponent "
-        "concept");
-    static_assert(
-        comp::IsVerticalComponent<VerticalColor&>,
-        "vert::VerticalColor& does not satisfy the VerticalComponent concept");
-    static_assert(
-        comp::IsVerticalComponent<const VerticalColor&>,
-        "const vert::VerticalColor& does not satisfy the VerticalComponent "
-        "concept");
-    static_assert(
-        comp::IsVerticalComponent<VerticalColor&&>,
-        "vert::VerticalColor&& does not satisfy the VerticalComponent concept");
-
-    static_assert(
-        comp::IsVerticalComponent<OptionalColor>,
-        "vert::OptionalColor does not satisfy the VerticalComponent concept");
-    static_assert(
-        comp::IsVerticalComponent<const OptionalColor>,
-        "const vert::OptionalColor does not satisfy the VerticalComponent "
-        "concept");
-    static_assert(
-        comp::IsVerticalComponent<OptionalColor&>,
-        "vert::OptionalColor& does not satisfy the VerticalComponent concept");
-    static_assert(
-        comp::IsVerticalComponent<const OptionalColor&>,
-        "const vert::OptionalColor& does not satisfy the VerticalComponent "
-        "concept");
-    static_assert(
-        comp::IsVerticalComponent<OptionalColor&&>,
-        "vert::OptionalColor&& does not satisfy the VerticalComponent concept");
 
     // IsOptionalComponent
     static_assert(
@@ -165,99 +150,22 @@ void componentStaticAsserts()
         "vert::Color&& does satisfy the OptionalComponent concept");
 
     static_assert(
-        !comp::IsOptionalComponent<VerticalColor>,
-        "vert::VerticalColor does satisfy the OptionalComponent concept");
-    static_assert(
-        !comp::IsOptionalComponent<const VerticalColor>,
-        "const vert::VerticalColor does satisfy the OptionalComponent concept");
-    static_assert(
-        !comp::IsOptionalComponent<VerticalColor&>,
-        "vert::VerticalColor& does satisfy the OptionalComponent concept");
-    static_assert(
-        !comp::IsOptionalComponent<const VerticalColor&>,
-        "const vert::VerticalColor& does satisfy the OptionalComponent "
-        "concept");
-    static_assert(
-        !comp::IsOptionalComponent<VerticalColor&&>,
-        "vert::VerticalColor&& does satisfy the OptionalComponent concept");
-
-    static_assert(
-        comp::IsOptionalComponent<OptionalColor>,
+        comp::IsOptionalComponent<vert::OptionalColor>,
         "vert::OptionalColor does not satisfy the OptionalComponent concept");
     static_assert(
-        comp::IsOptionalComponent<const OptionalColor>,
+        comp::IsOptionalComponent<const vert::OptionalColor>,
         "const vert::OptionalColor does not satisfy the OptionalComponent "
         "concept");
     static_assert(
-        comp::IsOptionalComponent<OptionalColor&>,
+        comp::IsOptionalComponent<vert::OptionalColor&>,
         "vert::OptionalColor& does not satisfy the OptionalComponent concept");
     static_assert(
-        comp::IsOptionalComponent<const OptionalColor&>,
+        comp::IsOptionalComponent<const vert::OptionalColor&>,
         "const vert::OptionalColor& does not satisfy the OptionalComponent "
         "concept");
     static_assert(
-        comp::IsOptionalComponent<OptionalColor&&>,
+        comp::IsOptionalComponent<vert::OptionalColor&&>,
         "vert::OptionalColor&& does not satisfy the OptionalComponent concept");
-
-    // HasInitMemberFunction
-    static_assert(
-        !comp::HasInitMemberFunction<vert::Color>,
-        "vert::Color does satisfy the HasInitMemberFunction concept");
-    static_assert(
-        !comp::HasInitMemberFunction<const vert::Color>,
-        "const vert::Color does satisfy the HasInitMemberFunction concept");
-    static_assert(
-        !comp::HasInitMemberFunction<vert::Color&>,
-        "vert::Color& does satisfy the HasInitMemberFunction concept");
-    static_assert(
-        !comp::HasInitMemberFunction<const vert::Color&>,
-        "const vert::Color& does satisfy the HasInitMemberFunction concept");
-    static_assert(
-        !comp::HasInitMemberFunction<vert::Color&&>,
-        "vert::Color&& does satisfy the HasInitMemberFunction concept");
-
-    static_assert(
-        comp::HasInitMemberFunction<mesh::TransformMatrixd>,
-        "mesh::TransformMatrixd does not satisfy the HasInitMemberFunction "
-        "concept");
-    static_assert(
-        !comp::HasInitMemberFunction<const mesh::TransformMatrixd>,
-        "const mesh::TransformMatrixd does satisfy the "
-        "HasInitMemberFunction concept");
-    static_assert(
-        comp::HasInitMemberFunction<mesh::TransformMatrixd&>,
-        "mesh::TransformMatrixd& does not satisfy the HasInitMemberFunction "
-        "concept");
-    static_assert(
-        !comp::HasInitMemberFunction<const mesh::TransformMatrixd&>,
-        "const mesh::TransformMatrixd& does satisfy the "
-        "HasInitMemberFunction concept");
-    static_assert(
-        comp::HasInitMemberFunction<mesh::TransformMatrixd&&>,
-        "mesh::TransformMatrixd&& does not satisfy the HasInitMemberFunction "
-        "concept");
-
-    // HasIsAvailableMemberFunction
-    static_assert(
-        comp::HasIsAvailableMemberFunction<vert::Color>,
-        "vert::Color does not satisfy the HasIsAvailableMemberFunction "
-        "concept");
-    static_assert(
-        comp::HasIsAvailableMemberFunction<const vert::Color>,
-        "const vert::Color does not satisfy the HasIsAvailableMemberFunction "
-        "concept");
-    static_assert(
-        comp::HasIsAvailableMemberFunction<vert::Color&>,
-        "vert::Color& does not satisfy the HasIsAvailableMemberFunction "
-        "concept");
-    static_assert(
-        comp::HasIsAvailableMemberFunction<const vert::Color&>,
-        "const vert::Color& does not satisfy the HasIsAvailableMemberFunction "
-        "concept");
-    static_assert(
-        comp::HasIsAvailableMemberFunction<vert::Color&&>,
-        "vert::Color&& does not satisfy the HasIsAvailableMemberFunction "
-        "concept");
 
     // IsTiedToVertexCount
     static_assert(
@@ -296,583 +204,189 @@ void componentStaticAsserts()
         "OptionalWedgeColors&& does not satisfy the IsTiedToVertexCount "
         "concept");
 
-    // HasReferencesOfType
+    // HasReferencesTo
     static_assert(
-        comp::HasReferencesOfType<OptionalAdjEdges, TEMEdge>,
-        "OptionalAdjEdges does not satisfy the HasReferencesOfType TEMEdge "
+        comp::HasReferencesTo<ElemId::EDGE, OptionalAdjEdges>,
+        "OptionalAdjEdges does not satisfy the HasReferencesTo EDGE concept");
+    static_assert(
+        comp::HasReferencesTo<ElemId::EDGE, const OptionalAdjEdges>,
+        "const OptionalAdjEdges does not satisfy the HasReferencesTo EDGE "
         "concept");
     static_assert(
-        comp::HasReferencesOfType<const OptionalAdjEdges, TEMEdge>,
-        "const OptionalAdjEdges does not satisfy the HasReferencesOfType "
-        "TEMEdge concept");
+        comp::HasReferencesTo<ElemId::EDGE, OptionalAdjEdges&>,
+        "OptionalAdjEdges& does not satisfy the HasReferencesTo EDGE concept");
     static_assert(
-        comp::HasReferencesOfType<OptionalAdjEdges&, TEMEdge>,
-        "OptionalAdjEdges& does not satisfy the HasReferencesOfType TEMEdge "
+        comp::HasReferencesTo<ElemId::EDGE, const OptionalAdjEdges&>,
+        "const OptionalAdjEdges& does not satisfy the HasReferencesTo EDGE "
         "concept");
     static_assert(
-        comp::HasReferencesOfType<const OptionalAdjEdges&, TEMEdge>,
-        "const OptionalAdjEdges& does not satisfy the HasReferencesOfType "
-        "TEMEdge concept");
+        comp::HasReferencesTo<ElemId::EDGE, OptionalAdjEdges&&>,
+        "OptionalAdjEdges&& does not satisfy the HasReferencesTo EDGE concept");
+
     static_assert(
-        comp::HasReferencesOfType<OptionalAdjEdges&&, TEMEdge>,
-        "OptionalAdjEdges&& does not satisfy the HasReferencesOfType TEMEdge "
+        !comp::HasReferencesTo<ElemId::FACE, OptionalAdjEdges>,
+        "OptionalAdjEdges does satisfy the HasReferencesTo FACE concept");
+    static_assert(
+        !comp::HasReferencesTo<ElemId::FACE, const OptionalAdjEdges>,
+        "const OptionalAdjEdges does satisfy the HasReferencesTo FACE concept");
+    static_assert(
+        !comp::HasReferencesTo<ElemId::FACE, OptionalAdjEdges&>,
+        "OptionalAdjEdges& does satisfy the HasReferencesTo FACE concept");
+    static_assert(
+        !comp::HasReferencesTo<ElemId::FACE, const OptionalAdjEdges&>,
+        "const OptionalAdjEdges& does satisfy the HasReferencesTo FACE "
         "concept");
     static_assert(
-        comp::HasReferencesOfType<OptionalAdjEdges, TEMEdge&>,
-        "OptionalAdjEdges does not satisfy the HasReferencesOfType TEMEdge& "
+        !comp::HasReferencesTo<ElemId::FACE, OptionalAdjEdges&&>,
+        "OptionalAdjEdges&& does satisfy the HasReferencesTo FACE concept");
+
+    static_assert(
+        comp::HasReferencesTo<ElemId::EDGE, TEMFace>,
+        "TEMFace does not satisfy the HasReferencesTo EDGE concept");
+    static_assert(
+        comp::HasReferencesTo<ElemId::VERTEX, TEMFace>,
+        "TEMFace does not satisfy the HasReferencesTo VERTEX concept");
+    static_assert(
+        comp::HasReferencesTo<ElemId::EDGE, TEMVertex>,
+        "TEMVertex does not satisfy the HasReferencesTo EDGE concept");
+
+    // HasOptionalReferencesTo
+    static_assert(
+        comp::HasOptionalReferencesTo<ElemId::EDGE, OptionalAdjEdges>,
+        "OptionalAdjEdges does not satisfy the HasOptionalReferencesTo EDGE "
         "concept");
     static_assert(
-        comp::HasReferencesOfType<OptionalAdjEdges, TEMEdge&&>,
-        "OptionalAdjEdges does not satisfy the HasReferencesOfType TEMEdge&& "
+        comp::HasOptionalReferencesTo<ElemId::EDGE, const OptionalAdjEdges>,
+        "const OptionalAdjEdges does not satisfy the HasOptionalReferencesTo "
+        "EDGE concept");
+    static_assert(
+        comp::HasOptionalReferencesTo<ElemId::EDGE, OptionalAdjEdges&>,
+        "OptionalAdjEdges& does not satisfy the HasOptionalReferencesTo EDGE "
         "concept");
     static_assert(
-        !comp::HasReferencesOfType<OptionalAdjEdges, const TEMEdge&>,
-        "OptionalAdjEdges does satisfy the HasReferencesOfType const TEMEdge& "
+        comp::HasOptionalReferencesTo<ElemId::EDGE, const OptionalAdjEdges&>,
+        "const OptionalAdjEdges& does not satisfy the HasOptionalReferencesTo "
+        "EDGE concept");
+    static_assert(
+        comp::HasOptionalReferencesTo<ElemId::EDGE, OptionalAdjEdges&&>,
+        "OptionalAdjEdges&& does not satisfy the HasOptionalReferencesTo EDGE "
         "concept");
 
     static_assert(
-        comp::HasReferencesOfType<OptionalAdjEdgesI, TEMEdgeI>,
-        "OptionalAdjEdgesI does not satisfy the HasReferencesOfType TEMEdgeI "
+        !comp::HasOptionalReferencesTo<ElemId::FACE, OptionalAdjEdges>,
+        "OptionalAdjEdges does satisfy the HasOptionalReferencesTo FACE "
         "concept");
     static_assert(
-        comp::HasReferencesOfType<const OptionalAdjEdgesI, TEMEdgeI>,
-        "const OptionalAdjEdgesI does not satisfy the HasReferencesOfType "
-        "TEMEdgeI concept");
-    static_assert(
-        comp::HasReferencesOfType<OptionalAdjEdgesI&, TEMEdgeI>,
-        "OptionalAdjEdgesI& does not satisfy the HasReferencesOfType TEMEdgeI "
+        !comp::HasOptionalReferencesTo<ElemId::FACE, const OptionalAdjEdges>,
+        "const OptionalAdjEdges does satisfy the HasOptionalReferencesTo FACE "
         "concept");
     static_assert(
-        comp::HasReferencesOfType<const OptionalAdjEdgesI&, TEMEdgeI>,
-        "const OptionalAdjEdgesI& does not satisfy the HasReferencesOfType "
-        "TEMEdgeI concept");
-    static_assert(
-        comp::HasReferencesOfType<OptionalAdjEdgesI&&, TEMEdgeI>,
-        "OptionalAdjEdgesI&& does not satisfy the HasReferencesOfType TEMEdgeI "
+        !comp::HasOptionalReferencesTo<ElemId::FACE, OptionalAdjEdges&>,
+        "OptionalAdjEdges& does satisfy the HasOptionalReferencesTo FACE "
         "concept");
     static_assert(
-        comp::HasReferencesOfType<OptionalAdjEdgesI, TEMEdgeI&>,
-        "OptionalAdjEdgesI does not satisfy the HasReferencesOfType TEMEdgeI& "
+        !comp::HasOptionalReferencesTo<ElemId::FACE, const OptionalAdjEdges&>,
+        "const OptionalAdjEdges& does satisfy the HasOptionalReferencesTo FACE "
         "concept");
     static_assert(
-        comp::HasReferencesOfType<OptionalAdjEdgesI, TEMEdgeI&&>,
-        "OptionalAdjEdgesI does not satisfy the HasReferencesOfType TEMEdgeI&& "
-        "concept");
-    static_assert(
-        !comp::HasReferencesOfType<OptionalAdjEdgesI, const TEMEdgeI&>,
-        "OptionalAdjEdgesI does satisfy the HasReferencesOfType const "
-        "TEMEdgeI& "
+        !comp::HasOptionalReferencesTo<ElemId::FACE, OptionalAdjEdges&&>,
+        "OptionalAdjEdges&& does satisfy the HasOptionalReferencesTo FACE "
         "concept");
 
     static_assert(
-        !comp::HasReferencesOfType<OptionalAdjEdges, TEMFace>,
-        "OptionalAdjEdges does satisfy the HasReferencesOfType TEMFace "
-        "concept");
+        comp::HasOptionalReferencesTo<ElemId::EDGE, TEMFace>,
+        "TEMFace does not satisfy the HasOptionalReferencesTo EDGE concept");
     static_assert(
-        !comp::HasReferencesOfType<const OptionalAdjEdges, TEMFace>,
-        "const OptionalAdjEdges does satisfy the HasReferencesOfType TEMFace "
-        "concept");
-    static_assert(
-        !comp::HasReferencesOfType<OptionalAdjEdges&, TEMFace>,
-        "OptionalAdjEdges& does satisfy the HasReferencesOfType TEMFace "
-        "concept");
-    static_assert(
-        !comp::HasReferencesOfType<const OptionalAdjEdges&, TEMFace>,
-        "const OptionalAdjEdges& does satisfy the HasReferencesOfType TEMFace "
-        "concept");
-    static_assert(
-        !comp::HasReferencesOfType<OptionalAdjEdges&&, TEMFace>,
-        "OptionalAdjEdges&& does satisfy the HasReferencesOfType TEMFace "
-        "concept");
-    static_assert(
-        !comp::HasReferencesOfType<OptionalAdjEdges, TEMFace&>,
-        "OptionalAdjEdges does satisfy the HasReferencesOfType TEMFace "
-        "concept");
-    static_assert(
-        !comp::HasReferencesOfType<OptionalAdjEdges, TEMFace&&>,
-        "OptionalAdjEdges does satisfy the HasReferencesOfType TEMFace "
-        "concept");
-    static_assert(
-        !comp::HasReferencesOfType<OptionalAdjEdges, const TEMFace&>,
-        "OptionalAdjEdges does satisfy the HasReferencesOfType TEMFace "
-        "concept");
+        !comp::HasOptionalReferencesTo<ElemId::VERTEX, TEMFace>,
+        "TEMFace does satisfy the HasOptionalReferencesTo VERTEX concept");
 
-    // HasOptionalReferencesOfType
+    // HasComponent
     static_assert(
-        comp::HasOptionalReferencesOfType<OptionalAdjEdges, TEMEdge>,
-        "OptionalAdjEdges does not satisfy the HasOptionalReferencesOfType "
-        "TEMEdge concept");
+        comp::HasComponent<CompId::POSITION, TEMVertex>,
+        "TEMVertex does not satisfy the HasComponent POSITION concept");
     static_assert(
-        comp::HasOptionalReferencesOfType<const OptionalAdjEdges, TEMEdge>,
-        "const OptionalAdjEdges does not satisfy the "
-        "HasOptionalReferencesOfType TEMEdge concept");
+        comp::HasComponent<CompId::POSITION, const TEMVertex>,
+        "const TEMVertex does not satisfy the HasComponent POSITION concept");
     static_assert(
-        comp::HasOptionalReferencesOfType<OptionalAdjEdges&, TEMEdge>,
-        "OptionalAdjEdges& does not satisfy the HasOptionalReferencesOfType "
-        "TEMEdge concept");
+        comp::HasComponent<CompId::POSITION, TEMVertex&>,
+        "TEMVertex& does not satisfy the HasComponent POSITION concept");
     static_assert(
-        comp::HasOptionalReferencesOfType<const OptionalAdjEdges&, TEMEdge>,
-        "const OptionalAdjEdges& does not satisfy the "
-        "HasOptionalReferencesOfType TEMEdge concept");
+        comp::HasComponent<CompId::POSITION, const TEMVertex&>,
+        "const TEMVertex& does not satisfy the HasComponent POSITION concept");
     static_assert(
-        comp::HasOptionalReferencesOfType<OptionalAdjEdges&&, TEMEdge>,
-        "OptionalAdjEdges&& does not satisfy the HasOptionalReferencesOfType "
-        "TEMEdge concept");
-    static_assert(
-        comp::HasOptionalReferencesOfType<OptionalAdjEdges, TEMEdge&>,
-        "OptionalAdjEdges does not satisfy the HasOptionalReferencesOfType "
-        "TEMEdge& concept");
-    static_assert(
-        comp::HasOptionalReferencesOfType<OptionalAdjEdges, TEMEdge&&>,
-        "OptionalAdjEdges does not satisfy the HasOptionalReferencesOfType "
-        "TEMEdge&& concept");
-    static_assert(
-        !comp::HasOptionalReferencesOfType<OptionalAdjEdges, const TEMEdge&>,
-        "OptionalAdjEdges does satisfy the HasOptionalReferencesOfType const "
-        "TEMEdge& concept");
+        comp::HasComponent<CompId::POSITION, TEMVertex&&>,
+        "TEMVertex&& does not satisfy the HasComponent POSITION concept");
 
     static_assert(
-        comp::HasOptionalReferencesOfType<OptionalAdjEdgesI, TEMEdgeI>,
-        "OptionalAdjEdgesI does not satisfy the HasOptionalReferencesOfType "
-        "TEMEdgeI concept");
+        comp::HasComponent<CompId::COLOR, TEMVertex>,
+        "TEMVertex does not satisfy the HasComponent COLOR concept");
     static_assert(
-        comp::HasOptionalReferencesOfType<const OptionalAdjEdgesI, TEMEdgeI>,
-        "const OptionalAdjEdgesI does not satisfy the "
-        "HasOptionalReferencesOfType TEMEdgeI concept");
+        comp::HasComponent<CompId::COLOR, const TEMVertex>,
+        "const TEMVertex does not satisfy the HasComponent COLOR concept");
     static_assert(
-        comp::HasOptionalReferencesOfType<OptionalAdjEdgesI&, TEMEdgeI>,
-        "OptionalAdjEdgesI& does not satisfy the HasOptionalReferencesOfType "
-        "TEMEdgeI concept");
+        comp::HasComponent<CompId::COLOR, TEMVertex&>,
+        "TEMVertex& does not satisfy the HasComponent COLOR concept");
     static_assert(
-        comp::HasOptionalReferencesOfType<const OptionalAdjEdgesI&, TEMEdgeI>,
-        "const OptionalAdjEdgesI& does not satisfy the "
-        "HasOptionalReferencesOfType TEMEdgeI concept");
+        comp::HasComponent<CompId::COLOR, const TEMVertex&>,
+        "const TEMVertex& does not satisfy the HasComponent COLOR concept");
     static_assert(
-        comp::HasOptionalReferencesOfType<OptionalAdjEdgesI&&, TEMEdgeI>,
-        "OptionalAdjEdgesI&& does not satisfy the HasOptionalReferencesOfType "
-        "TEMEdgeI concept");
-    static_assert(
-        comp::HasOptionalReferencesOfType<OptionalAdjEdgesI, TEMEdgeI&>,
-        "OptionalAdjEdgesI does not satisfy the HasOptionalReferencesOfType "
-        "TEMEdgeI& concept");
-    static_assert(
-        comp::HasOptionalReferencesOfType<OptionalAdjEdgesI, TEMEdgeI&&>,
-        "OptionalAdjEdgesI does not satisfy the HasOptionalReferencesOfType "
-        "TEMEdgeI&& concept");
-    static_assert(
-        !comp::HasOptionalReferencesOfType<OptionalAdjEdgesI, const TEMEdgeI&>,
-        "OptionalAdjEdgesI does satisfy the HasOptionalReferencesOfType const "
-        "TEMEdgeI& concept");
-
-    // HasPointersOfType
-    static_assert(
-        comp::HasPointersOfType<OptionalAdjEdges, TEMEdge>,
-        "OptionalAdjEdges does not satisfy the HasPointersOfType TEMEdge "
-        "concept");
-    static_assert(
-        comp::HasPointersOfType<const OptionalAdjEdges, TEMEdge>,
-        "const OptionalAdjEdges does not satisfy the HasPointersOfType "
-        "TEMEdge concept");
-    static_assert(
-        comp::HasPointersOfType<OptionalAdjEdges&, TEMEdge>,
-        "OptionalAdjEdges& does not satisfy the HasPointersOfType TEMEdge "
-        "concept");
-    static_assert(
-        comp::HasPointersOfType<const OptionalAdjEdges&, TEMEdge>,
-        "const OptionalAdjEdges& does not satisfy the HasPointersOfType "
-        "TEMEdge concept");
-    static_assert(
-        comp::HasPointersOfType<OptionalAdjEdges&&, TEMEdge>,
-        "OptionalAdjEdges&& does not satisfy the HasPointersOfType TEMEdge "
-        "concept");
-    static_assert(
-        comp::HasPointersOfType<OptionalAdjEdges, TEMEdge&>,
-        "OptionalAdjEdges does not satisfy the HasPointersOfType TEMEdge& "
-        "concept");
-    static_assert(
-        comp::HasPointersOfType<OptionalAdjEdges, TEMEdge&&>,
-        "OptionalAdjEdges does not satisfy the HasPointersOfType TEMEdge&& "
-        "concept");
-    static_assert(
-        !comp::HasPointersOfType<OptionalAdjEdges, const TEMEdge&>,
-        "OptionalAdjEdges does satisfy the HasPointersOfType const TEMEdge& "
-        "concept");
+        comp::HasComponent<CompId::COLOR, TEMVertex&&>,
+        "TEMVertex&& does not satisfy the HasComponent COLOR concept");
 
     static_assert(
-        !comp::HasPointersOfType<OptionalAdjEdgesI, TEMEdgeI>,
-        "OptionalAdjEdgesI does satisfy the HasPointersOfType TEMEdgeI "
+        !comp::HasComponent<CompId::VERTEX_REFERENCES, TEMVertex>,
+        "TEMVertex does satisfy the HasComponent VERTEX_REFERENCES concept");
+    static_assert(
+        !comp::HasComponent<CompId::VERTEX_REFERENCES, const TEMVertex>,
+        "const TEMVertex does satisfy the HasComponent VERTEX_REFERENCES "
         "concept");
     static_assert(
-        !comp::HasPointersOfType<const OptionalAdjEdgesI, TEMEdgeI>,
-        "const OptionalAdjEdgesI does satisfy the HasPointersOfType "
-        "TEMEdgeI concept");
+        !comp::HasComponent<CompId::VERTEX_REFERENCES, TEMVertex&>,
+        "TEMVertex& does satisfy the HasComponent VERTEX_REFERENCES concept");
     static_assert(
-        !comp::HasPointersOfType<OptionalAdjEdgesI&, TEMEdgeI>,
-        "OptionalAdjEdgesI& does satisfy the HasPointersOfType TEMEdgeI "
+        !comp::HasComponent<CompId::VERTEX_REFERENCES, const TEMVertex&>,
+        "const TEMVertex& does satisfy the HasComponent VERTEX_REFERENCES "
         "concept");
     static_assert(
-        !comp::HasPointersOfType<const OptionalAdjEdgesI&, TEMEdgeI>,
-        "const OptionalAdjEdgesI& does satisfy the HasPointersOfType "
-        "TEMEdgeI concept");
+        !comp::HasComponent<CompId::VERTEX_REFERENCES, TEMVertex&&>,
+        "TEMVertex&& does satisfy the HasComponent VERTEX_REFERENCES concept");
+
+    // HasOptionalComponent
     static_assert(
-        !comp::HasPointersOfType<OptionalAdjEdgesI&&, TEMEdgeI>,
-        "OptionalAdjEdgesI&& does satisfy the HasPointersOfType TEMEdgeI "
+        !comp::HasOptionalComponent<CompId::POSITION, TEMVertex>,
+        "TEMVertex does satisfy the HasOptionalComponent POSITION concept");
+    static_assert(
+        !comp::HasOptionalComponent<CompId::POSITION, const TEMVertex>,
+        "const TEMVertex does satisfy the HasOptionalComponent POSITION "
         "concept");
     static_assert(
-        !comp::HasPointersOfType<OptionalAdjEdgesI, TEMEdgeI&>,
-        "OptionalAdjEdgesI does satisfy the HasPointersOfType TEMEdgeI& "
+        !comp::HasOptionalComponent<CompId::POSITION, TEMVertex&>,
+        "TEMVertex& does satisfy the HasOptionalComponent POSITION concept");
+    static_assert(
+        !comp::HasOptionalComponent<CompId::POSITION, const TEMVertex&>,
+        "const TEMVertex& does satisfy the HasOptionalComponent POSITION "
         "concept");
     static_assert(
-        !comp::HasPointersOfType<OptionalAdjEdgesI, TEMEdgeI&&>,
-        "OptionalAdjEdgesI does satisfy the HasPointersOfType TEMEdgeI&& "
-        "concept");
-    static_assert(
-        !comp::HasPointersOfType<OptionalAdjEdgesI, const TEMEdgeI&>,
-        "OptionalAdjEdgesI does satisfy the HasPointersOfType const TEMEdgeI& "
-        "concept");
+        !comp::HasOptionalComponent<CompId::POSITION, TEMVertex&&>,
+        "TEMVertex&& does satisfy the HasOptionalComponent POSITION concept");
 
     static_assert(
-        !comp::HasPointersOfType<OptionalAdjEdges, TEMFace>,
-        "OptionalAdjEdges does satisfy the HasPointersOfType TEMFace concept");
+        comp::HasOptionalComponent<CompId::COLOR, TEMVertex>,
+        "TEMVertex does not satisfy the HasOptionalComponent COLOR concept");
     static_assert(
-        !comp::HasPointersOfType<const OptionalAdjEdges, TEMFace>,
-        "const OptionalAdjEdges does satisfy the HasPointersOfType "
-        "TEMFace concept");
-    static_assert(
-        !comp::HasPointersOfType<OptionalAdjEdges&, TEMFace>,
-        "OptionalAdjEdges& does satisfy the HasPointersOfType TEMFace concept");
-    static_assert(
-        !comp::HasPointersOfType<const OptionalAdjEdges&, TEMFace>,
-        "const OptionalAdjEdges& does satisfy the HasPointersOfType "
-        "TEMFace concept");
-    static_assert(
-        !comp::HasPointersOfType<OptionalAdjEdges&&, TEMFace>,
-        "OptionalAdjEdges&& does satisfy the HasPointersOfType TEMFace "
+        comp::HasOptionalComponent<CompId::COLOR, const TEMVertex>,
+        "const TEMVertex does not satisfy the HasOptionalComponent COLOR "
         "concept");
     static_assert(
-        !comp::HasPointersOfType<OptionalAdjEdges, TEMFace&>,
-        "OptionalAdjEdges does satisfy the HasPointersOfType TEMFace& concept");
+        comp::HasOptionalComponent<CompId::COLOR, TEMVertex&>,
+        "TEMVertex& does not satisfy the HasOptionalComponent COLOR concept");
     static_assert(
-        !comp::HasPointersOfType<OptionalAdjEdges, TEMFace&&>,
-        "OptionalAdjEdges does satisfy the HasPointersOfType TEMFace&& "
+        comp::HasOptionalComponent<CompId::COLOR, const TEMVertex&>,
+        "const TEMVertex& does not satisfy the HasOptionalComponent COLOR "
         "concept");
     static_assert(
-        !comp::HasPointersOfType<OptionalAdjEdges, const TEMFace&>,
-        "OptionalAdjEdges does satisfy the HasPointersOfType const TEMFace& "
-        "concept");
-
-    // HasOptionalPointersOfType
-    static_assert(
-        comp::HasOptionalPointersOfType<OptionalAdjEdges, TEMEdge>,
-        "OptionalAdjEdges does not satisfy the HasOptionalPointersOfType "
-        "TEMEdge concept");
-    static_assert(
-        comp::HasOptionalPointersOfType<const OptionalAdjEdges, TEMEdge>,
-        "const OptionalAdjEdges does not satisfy the HasOptionalPointersOfType "
-        "TEMEdge concept");
-    static_assert(
-        comp::HasOptionalPointersOfType<OptionalAdjEdges&, TEMEdge>,
-        "OptionalAdjEdges& does not satisfy the HasOptionalPointersOfType "
-        "TEMEdge concept");
-    static_assert(
-        comp::HasOptionalPointersOfType<const OptionalAdjEdges&, TEMEdge>,
-        "const OptionalAdjEdges& does not satisfy the "
-        "HasOptionalPointersOfType TEMEdge concept");
-    static_assert(
-        comp::HasOptionalPointersOfType<OptionalAdjEdges&&, TEMEdge>,
-        "OptionalAdjEdges&& does not satisfy the HasOptionalPointersOfType "
-        "TEMEdge concept");
-    static_assert(
-        comp::HasOptionalPointersOfType<OptionalAdjEdges, TEMEdge&>,
-        "OptionalAdjEdges does not satisfy the HasOptionalPointersOfType "
-        "TEMEdge& concept");
-    static_assert(
-        comp::HasOptionalPointersOfType<OptionalAdjEdges, TEMEdge&&>,
-        "OptionalAdjEdges does not satisfy the HasOptionalPointersOfType "
-        "TEMEdge&& concept");
-    static_assert(
-        !comp::HasOptionalPointersOfType<OptionalAdjEdges, const TEMEdge&>,
-        "OptionalAdjEdges does satisfy the HasOptionalPointersOfType const "
-        "TEMEdge& concept");
-
-    // HasIndicesOfType
-    static_assert(
-        !comp::HasIndicesOfType<OptionalAdjEdges, TEMEdge>,
-        "OptionalAdjEdges does satisfy the HasIndicesOfType TEMEdge "
-        "concept");
-    static_assert(
-        !comp::HasIndicesOfType<const OptionalAdjEdges, TEMEdge>,
-        "const OptionalAdjEdges does satisfy the HasIndicesOfType "
-        "TEMEdge concept");
-    static_assert(
-        !comp::HasIndicesOfType<OptionalAdjEdges&, TEMEdge>,
-        "OptionalAdjEdges& does satisfy the HasIndicesOfType TEMEdge "
-        "concept");
-    static_assert(
-        !comp::HasIndicesOfType<const OptionalAdjEdges&, TEMEdge>,
-        "const OptionalAdjEdges& does satisfy the HasIndicesOfType "
-        "TEMEdge concept");
-    static_assert(
-        !comp::HasIndicesOfType<OptionalAdjEdges&&, TEMEdge>,
-        "OptionalAdjEdges&& does satisfy the HasIndicesOfType TEMEdge "
-        "concept");
-    static_assert(
-        !comp::HasIndicesOfType<OptionalAdjEdges, TEMEdge&>,
-        "OptionalAdjEdges does satisfy the HasIndicesOfType TEMEdge& "
-        "concept");
-    static_assert(
-        !comp::HasIndicesOfType<OptionalAdjEdges, TEMEdge&&>,
-        "OptionalAdjEdges does satisfy the HasIndicesOfType TEMEdge&& "
-        "concept");
-    static_assert(
-        !comp::HasIndicesOfType<OptionalAdjEdges, const TEMEdge&>,
-        "OptionalAdjEdges does satisfy the HasIndicesOfType const TEMEdge& "
-        "concept");
-
-    static_assert(
-        comp::HasIndicesOfType<OptionalAdjEdgesI, TEMEdgeI>,
-        "OptionalAdjEdgesI does not satisfy the HasIndicesOfType TEMEdgeI "
-        "concept");
-    static_assert(
-        comp::HasIndicesOfType<const OptionalAdjEdgesI, TEMEdgeI>,
-        "const OptionalAdjEdgesI does not satisfy the HasIndicesOfType "
-        "TEMEdgeI concept");
-    static_assert(
-        comp::HasIndicesOfType<OptionalAdjEdgesI&, TEMEdgeI>,
-        "OptionalAdjEdgesI& does not satisfy the HasIndicesOfType TEMEdgeI "
-        "concept");
-    static_assert(
-        comp::HasIndicesOfType<const OptionalAdjEdgesI&, TEMEdgeI>,
-        "const OptionalAdjEdgesI& does not satisfy the HasIndicesOfType "
-        "TEMEdgeI concept");
-    static_assert(
-        comp::HasIndicesOfType<OptionalAdjEdgesI&&, TEMEdgeI>,
-        "OptionalAdjEdgesI&& does not satisfy the HasIndicesOfType TEMEdgeI "
-        "concept");
-    static_assert(
-        comp::HasIndicesOfType<OptionalAdjEdgesI, TEMEdgeI&>,
-        "OptionalAdjEdgesI does not satisfy the HasIndicesOfType TEMEdgeI& "
-        "concept");
-    static_assert(
-        comp::HasIndicesOfType<OptionalAdjEdgesI, TEMEdgeI&&>,
-        "OptionalAdjEdgesI does not satisfy the HasIndicesOfType TEMEdgeI&& "
-        "concept");
-    static_assert(
-        !comp::HasIndicesOfType<OptionalAdjEdgesI, const TEMEdgeI&>,
-        "OptionalAdjEdgesI does satisfy the HasIndicesOfType const TEMEdgeI& "
-        "concept");
-
-    static_assert(
-        !comp::HasIndicesOfType<OptionalAdjEdgesI, TEMFaceI>,
-        "OptionalAdjEdgesI does satisfy the HasIndicesOfType TEMFaceI concept");
-    static_assert(
-        !comp::HasIndicesOfType<const OptionalAdjEdgesI, TEMFaceI>,
-        "const OptionalAdjEdgesI does satisfy the HasIndicesOfType "
-        "TEMFaceI concept");
-    static_assert(
-        !comp::HasIndicesOfType<OptionalAdjEdgesI&, TEMFaceI>,
-        "OptionalAdjEdgesI& does satisfy the HasIndicesOfType TEMFaceI "
-        "concept");
-    static_assert(
-        !comp::HasIndicesOfType<const OptionalAdjEdgesI&, TEMFaceI>,
-        "const OptionalAdjEdgesI& does satisfy the HasIndicesOfType "
-        "TEMFaceI concept");
-    static_assert(
-        !comp::HasIndicesOfType<OptionalAdjEdgesI&&, TEMFaceI>,
-        "OptionalAdjEdgesI&& does satisfy the HasIndicesOfType TEMFaceI "
-        "concept");
-    static_assert(
-        !comp::HasIndicesOfType<OptionalAdjEdgesI, TEMFaceI&>,
-        "OptionalAdjEdgesI does satisfy the HasIndicesOfType TEMFaceI& "
-        "concept");
-    static_assert(
-        !comp::HasIndicesOfType<OptionalAdjEdgesI, TEMFaceI&&>,
-        "OptionalAdjEdgesI does satisfy the HasIndicesOfType TEMFaceI&& "
-        "concept");
-    static_assert(
-        !comp::HasIndicesOfType<OptionalAdjEdgesI, const TEMFaceI&>,
-        "OptionalAdjEdgesI does satisfy the HasIndicesOfType const TEMFaceI& "
-        "concept");
-
-    // HasOptionalIndicesOfType
-    static_assert(
-        comp::HasOptionalIndicesOfType<OptionalAdjEdgesI, TEMEdgeI>,
-        "OptionalAdjEdgesI does not satisfy the HasOptionalIndicesOfType "
-        "TEMEdgeI concept");
-    static_assert(
-        comp::HasOptionalIndicesOfType<const OptionalAdjEdgesI, TEMEdgeI>,
-        "const OptionalAdjEdgesI does not satisfy the HasOptionalIndicesOfType "
-        "TEMEdgeI concept");
-    static_assert(
-        comp::HasOptionalIndicesOfType<OptionalAdjEdgesI&, TEMEdgeI>,
-        "OptionalAdjEdgesI& does not satisfy the HasOptionalIndicesOfType "
-        "TEMEdgeI concept");
-    static_assert(
-        comp::HasOptionalIndicesOfType<const OptionalAdjEdgesI&, TEMEdgeI>,
-        "const OptionalAdjEdgesI& does not satisfy the "
-        "HasOptionalIndicesOfType TEMEdgeI concept");
-    static_assert(
-        comp::HasOptionalIndicesOfType<OptionalAdjEdgesI&&, TEMEdgeI>,
-        "OptionalAdjEdgesI&& does not satisfy the HasOptionalIndicesOfType "
-        "TEMEdgeI concept");
-    static_assert(
-        comp::HasOptionalIndicesOfType<OptionalAdjEdgesI, TEMEdgeI&>,
-        "OptionalAdjEdgesI does not satisfy the HasOptionalIndicesOfType "
-        "TEMEdgeI& concept");
-    static_assert(
-        comp::HasOptionalIndicesOfType<OptionalAdjEdgesI, TEMEdgeI&&>,
-        "OptionalAdjEdgesI does not satisfy the HasOptionalIndicesOfType "
-        "TEMEdgeI&& concept");
-    static_assert(
-        !comp::HasOptionalIndicesOfType<OptionalAdjEdgesI, const TEMEdgeI&>,
-        "OptionalAdjEdgesI does satisfy the HasOptionalIndicesOfType const "
-        "TEMEdgeI& concept");
-
-    // HasComponentOfType
-    static_assert(
-        comp::HasComponentOfType<TEMVertex, CompId::POSITION>,
-        "TEMVertex does not satisfy the HasComponentOfType POSITION concept");
-    static_assert(
-        comp::HasComponentOfType<const TEMVertex, CompId::POSITION>,
-        "const TEMVertex does not satisfy the HasComponentOfType POSITION "
-        "concept");
-    static_assert(
-        comp::HasComponentOfType<TEMVertex&, CompId::POSITION>,
-        "TEMVertex& does not satisfy the HasComponentOfType POSITION "
-        "concept");
-    static_assert(
-        comp::HasComponentOfType<const TEMVertex&, CompId::POSITION>,
-        "const TEMVertex& does not satisfy the HasComponentOfType POSITION "
-        "concept");
-    static_assert(
-        comp::HasComponentOfType<TEMVertex&&, CompId::POSITION>,
-        "TEMVertex&& does not satisfy the HasComponentOfType POSITION "
-        "concept");
-
-    static_assert(
-        comp::HasComponentOfType<TEMVertex, CompId::COLOR>,
-        "TEMVertex does not satisfy the HasComponentOfType COLOR concept");
-    static_assert(
-        comp::HasComponentOfType<const TEMVertex, CompId::COLOR>,
-        "const TEMVertex does not satisfy the HasComponentOfType COLOR "
-        "concept");
-    static_assert(
-        comp::HasComponentOfType<TEMVertex&, CompId::COLOR>,
-        "TEMVertex& does not satisfy the HasComponentOfType COLOR concept");
-    static_assert(
-        comp::HasComponentOfType<const TEMVertex&, CompId::COLOR>,
-        "const TEMVertex& does not satisfy the HasComponentOfType COLOR "
-        "concept");
-    static_assert(
-        comp::HasComponentOfType<TEMVertex&&, CompId::COLOR>,
-        "TEMVertex&& does not satisfy the HasComponentOfType COLOR concept");
-
-    static_assert(
-        !comp::HasComponentOfType<TEMVertex, CompId::VERTEX_REFERENCES>,
-        "TEMVertex does satisfy the HasComponentOfType VERTEX_REFERENCES "
-        "concept");
-    static_assert(
-        !comp::HasComponentOfType<const TEMVertex, CompId::VERTEX_REFERENCES>,
-        "const TEMVertex does satisfy the HasComponentOfType VERTEX_REFERENCES "
-        "concept");
-    static_assert(
-        !comp::HasComponentOfType<TEMVertex&, CompId::VERTEX_REFERENCES>,
-        "TEMVertex& does satisfy the HasComponentOfType VERTEX_REFERENCES "
-        "concept");
-    static_assert(
-        !comp::HasComponentOfType<const TEMVertex&, CompId::VERTEX_REFERENCES>,
-        "const TEMVertex& does satisfy the HasComponentOfType "
-        "VERTEX_REFERENCES concept");
-    static_assert(
-        !comp::HasComponentOfType<TEMVertex&&, CompId::VERTEX_REFERENCES>,
-        "TEMVertex&& does satisfy the HasComponentOfType VERTEX_REFERENCES "
-        "concept");
-
-    // HasVerticalComponentOfType
-    static_assert(
-        !comp::HasVerticalComponentOfType<TEMVertex, CompId::POSITION>,
-        "TEMVertex does satisfy the HasVerticalComponentOfType POSITION "
-        "concept");
-    static_assert(
-        !comp::HasVerticalComponentOfType<const TEMVertex, CompId::POSITION>,
-        "const TEMVertex does satisfy the HasVerticalComponentOfType "
-        "POSITION concept");
-    static_assert(
-        !comp::HasVerticalComponentOfType<TEMVertex&, CompId::POSITION>,
-        "TEMVertex& does satisfy the HasVerticalComponentOfType POSITION "
-        "concept");
-    static_assert(
-        !comp::HasVerticalComponentOfType<const TEMVertex&, CompId::POSITION>,
-        "const TEMVertex& does satisfy the HasVerticalComponentOfType "
-        "POSITION concept");
-    static_assert(
-        !comp::HasVerticalComponentOfType<TEMVertex&&, CompId::POSITION>,
-        "TEMVertex&& does satisfy the HasVerticalComponentOfType POSITION "
-        "concept");
-
-    static_assert(
-        comp::HasVerticalComponentOfType<TEMVertex, CompId::COLOR>,
-        "TEMVertex does not satisfy the HasVerticalComponentOfType COLOR "
-        "concept");
-    static_assert(
-        comp::HasVerticalComponentOfType<const TEMVertex, CompId::COLOR>,
-        "const TEMVertex does not satisfy the HasVerticalComponentOfType COLOR "
-        "concept");
-    static_assert(
-        comp::HasVerticalComponentOfType<TEMVertex&, CompId::COLOR>,
-        "TEMVertex& does not satisfy the HasVerticalComponentOfType COLOR "
-        "concept");
-    static_assert(
-        comp::HasVerticalComponentOfType<const TEMVertex&, CompId::COLOR>,
-        "const TEMVertex& does not satisfy the HasVerticalComponentOfType "
-        "COLOR concept");
-    static_assert(
-        comp::HasVerticalComponentOfType<TEMVertex&&, CompId::COLOR>,
-        "TEMVertex&& does not satisfy the HasVerticalComponentOfType COLOR "
-        "concept");
-
-    // HasOptionalComponentOfType
-    static_assert(
-        !comp::HasOptionalComponentOfType<TEMVertex, CompId::POSITION>,
-        "TEMVertex does satisfy the HasOptionalComponentOfType POSITION "
-        "concept");
-    static_assert(
-        !comp::HasOptionalComponentOfType<const TEMVertex, CompId::POSITION>,
-        "const TEMVertex does satisfy the HasOptionalComponentOfType "
-        "POSITION concept");
-    static_assert(
-        !comp::HasOptionalComponentOfType<TEMVertex&, CompId::POSITION>,
-        "TEMVertex& does satisfy the HasOptionalComponentOfType POSITION "
-        "concept");
-    static_assert(
-        !comp::HasOptionalComponentOfType<const TEMVertex&, CompId::POSITION>,
-        "const TEMVertex& does satisfy the HasOptionalComponentOfType "
-        "POSITION concept");
-    static_assert(
-        !comp::HasOptionalComponentOfType<TEMVertex&&, CompId::POSITION>,
-        "TEMVertex&& does satisfy the HasOptionalComponentOfType POSITION "
-        "concept");
-
-    static_assert(
-        comp::HasOptionalComponentOfType<TEMVertex, CompId::COLOR>,
-        "TEMVertex does not satisfy the HasOptionalComponentOfType COLOR "
-        "concept");
-    static_assert(
-        comp::HasOptionalComponentOfType<const TEMVertex, CompId::COLOR>,
-        "const TEMVertex does not satisfy the HasOptionalComponentOfType COLOR "
-        "concept");
-    static_assert(
-        comp::HasOptionalComponentOfType<TEMVertex&, CompId::COLOR>,
-        "TEMVertex& does not satisfy the HasOptionalComponentOfType COLOR "
-        "concept");
-    static_assert(
-        comp::HasOptionalComponentOfType<const TEMVertex&, CompId::COLOR>,
-        "const TEMVertex& does not satisfy the HasOptionalComponentOfType "
-        "COLOR concept");
-    static_assert(
-        comp::HasOptionalComponentOfType<TEMVertex&&, CompId::COLOR>,
-        "TEMVertex&& does not satisfy the HasOptionalComponentOfType COLOR "
-        "concept");
+        comp::HasOptionalComponent<CompId::COLOR, TEMVertex&&>,
+        "TEMVertex&& does not satisfy the HasOptionalComponent COLOR concept");
 }
 
 #endif // COMP_COMPONENT_H

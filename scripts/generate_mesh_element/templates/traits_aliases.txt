@@ -1,0 +1,20 @@
+/**
+ * @brief Extracts the %EL_UC% proxy type from %EL_A% %EL_UC%Mesh or %EL_A% %EL_UC%
+ * itself.
+ * @tparam T: The type to query (cv-ref stripped automatically).
+ * @ingroup mesh_traits
+ */
+template<typename T>
+using %EL_UC%Type =
+    typename detail::%EL_UC%TypeHelper<std::remove_cvref_t<T>>::type;
+
+/**
+ * @brief Extracts the Const%EL_UC% proxy type from %EL_A% %EL_UC%Mesh or %EL_A%
+ * %EL_UC% itself.
+ * @tparam T: The type to query (cv-ref stripped automatically).
+ * @ingroup mesh_traits
+ */
+template<typename T>
+using Const%EL_UC%Type =
+    typename detail::Const%EL_UC%TypeHelper<std::remove_cvref_t<T>>::type;
+

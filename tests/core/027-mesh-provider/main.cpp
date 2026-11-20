@@ -21,12 +21,12 @@ TEMPLATE_TEST_CASE(
     "",
     vcl::TriMesh,
     vcl::TriMeshf,
-    vcl::TriMeshIndexed,
-    vcl::TriMeshIndexedf,
+    vcl::TriMesh64,
+    vcl::TriMesh64f,
     vcl::TriEdgeMesh)
 {
     using MeshType = vcl::MeshProvider<TestType>;
-    using PointT   = typename TestType::VertexType::PositionType;
+    using PointT   = typename vcl::PositionType<TestType>;
     using Provider = const vcl::AbstractMeshProvider*;
 
     MeshType m;
@@ -100,6 +100,11 @@ TEMPLATE_TEST_CASE(
         REQUIRE(
             provider->boundingBox().isNull() ==
             (!vcl::HasBoundingBox<TestType>) );
+
+        REQUIRE(provider->vertexContainerSize() == 4);
+        REQUIRE(provider->faceContainerSize() == 2);
+        REQUIRE(!provider->isVertexDeleted(0));
+        REQUIRE(!provider->isFaceDeleted(0));
     }
 
     THEN("Callback Getters work")
@@ -107,6 +112,42 @@ TEMPLATE_TEST_CASE(
         provider->queryVertexPosition(0, [&](const vcl::Point3d& p) {
             REQUIRE(p == m.vertex(0).position().template cast<double>());
         });
+    }
+
+    THEN("Non-compact mesh with deleted elements and normal availability")
+    {
+        m.deleteVertex(0);
+        m.deleteFace(0);
+
+        REQUIRE(provider->vertexCount() == 3);
+        REQUIRE(provider->vertexContainerSize() == 4);
+        REQUIRE(provider->isVertexDeleted(0));
+        REQUIRE(!provider->isVertexDeleted(1));
+
+        REQUIRE(provider->faceCount() == 1);
+        REQUIRE(provider->faceContainerSize() == 2);
+        REQUIRE(provider->isFaceDeleted(0));
+        REQUIRE(!provider->isFaceDeleted(1));
+
+        // Deleted elements return safe default Point3d(0, 0, 0)
+        REQUIRE(provider->vertexPosition(0) == vcl::Point3d(0, 0, 0));
+        REQUIRE(provider->facePositions(0).empty());
+        REQUIRE(provider->faceBarycenter(0) == vcl::Point3d(0, 0, 0));
+
+        // queryVertexPosition does not invoke callback for deleted vertex
+        bool called = false;
+        provider->queryVertexPosition(
+            0, [&](const vcl::Point3d&) { called = true; });
+        REQUIRE(!called);
+
+        // Active vertex 1 works
+        REQUIRE(
+            provider->vertexPosition(1) ==
+            m.vertex(1).position().template cast<double>());
+
+        // Normals safely return Point3d() if unavailable or deleted
+        REQUIRE(provider->vertexNormal(0) == vcl::Point3d(0, 0, 0));
+        REQUIRE(provider->faceNormal(0) == vcl::Point3d(0, 0, 0));
     }
 
     THEN("Standalone MeshProviderReference works")

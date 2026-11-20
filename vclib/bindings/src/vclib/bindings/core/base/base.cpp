@@ -14,7 +14,8 @@ namespace vcl::bind {
 
 void initBaseBase(pybind11::module& m)
 {
-    m.attr("UINT_NULL") = pybind11::int_(vcl::UINT_NULL);
+    m.attr("UINT_NULL")   = pybind11::int_(vcl::UINT_NULL);
+    m.attr("USHORT_NULL") = pybind11::int_(vcl::USHORT_NULL);
 }
 
 } // namespace vcl::bind

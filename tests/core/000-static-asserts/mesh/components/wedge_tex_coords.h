@@ -14,8 +14,8 @@ void wedgeTexCoordsComponentStaticAsserts()
 {
     using namespace vcl;
 
-    using TriMeshFace  = trimesh::Face<float, true>;
-    using PolyMeshFace = polymesh::Face<float, true>;
+    using TriMeshFace  = FaceType<TriMesh>;
+    using PolyMeshFace = FaceType<PolyMesh>;
 
     // test only the TriangleWedgeTexCoords and PolygonWedgeTexCoords components
     static_assert(

@@ -467,6 +467,17 @@ public:
     }
 
     /**
+     * @brief Add a default-constructed element to the end of the Vector.
+     *
+     * Appends a new element to the end of the Vector by calling the
+     * `emplace_back()` member function of the underlying `std::vector`. This
+     * member function is only available if the size of the Vector is not known
+     * at compile-time, as specified by the concept requirement `requires (N <
+     * 0)`.
+     */
+    void pushBack() requires (N < 0) { mContainer.emplace_back(); }
+
+    /**
      * @brief Add an element to the end of the Vector.
      *
      * Adds the element `v` to the end of the Vector by calling the
@@ -493,6 +504,24 @@ public:
     void pushBack(T&& v) requires (N < 0)
     {
         mContainer.push_back(std::move(v));
+    }
+
+    /**
+     * @brief Insert a default-constructed element at the specified position in
+     * the Vector.
+     *
+     * Inserts a new element at the position specified by `i` in the Vector by
+     * calling the `emplace()` member function of the underlying `std::vector`.
+     * This member function is only available if the size of the Vector is not
+     * known at compile-time, as specified by the concept requirement `requires
+     * (N < 0)`.
+     *
+     * @param[in] i: The index at which to insert the element.
+     */
+    void insert(uint i) requires (N < 0)
+    {
+        assert(i < size() + 1);
+        mContainer.emplace(mContainer.begin() + i);
     }
 
     /**

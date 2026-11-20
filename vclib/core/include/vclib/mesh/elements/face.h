@@ -8,305 +8,198 @@
 #ifndef VCL_MESH_ELEMENTS_FACE_H
 #define VCL_MESH_ELEMENTS_FACE_H
 
-#include "base/element.h"
 #include "face_components.h"
 
-#include <vclib/base.h>
+#include <vclib/mesh/components/bit_flags.h>
+#include <vclib/mesh/components/vertex_references.h>
+#include <vclib/mesh/elements/base/base.h>
+#include <vclib/mesh/elements/base/element_proxy.h>
+
+#include <ranges>
 
 namespace vcl {
 
 /**
- * @brief The Face class represents an Face element of the vcl::Mesh class.
+ * @brief The Face class represents the runtime proxy (view) of a
+ * Face element in a mesh container.
  *
- * Using the FaceContainer class, it is possible to add a vector of Face
- * elements to a mesh, and manage them with the member functions exposed by the
- * FaceContainer. Each Face element exposes all the member functions of its
- * Component types.
+ * It inherits from ElementProxy and provides object-oriented access to
+ * the per-face components stored in the container's Structure of Arrays.
  *
- * @tparam MeshType The type of the parent mesh.
- * @tparam Comps The types of the components of the element.
+ * @tparam ContainerType: The type of the container (mutable or const).
  *
  * @ingroup elements
  */
-template<typename MeshType, comp::ComponentConcept... Comps>
-class Face : public Element<ElemId::FACE, MeshType, Comps...>
+template<typename ContainerType>
+class Face : public ElementProxy<ElemId::FACE, ContainerType>
 {
-    using Base = Element<ElemId::FACE, MeshType, Comps...>;
+    using Base = ElementProxy<ElemId::FACE, ContainerType>;
 
-    // VertexPointers or VertexIndices component of the Face
-    using VRefs = typename Face::VertexReferences;
-
-    static const int NV = VRefs::VERTEX_COUNT; // If dynamic, NV will be -1
+    template<typename Self>
+    using ResolvedFace = std::conditional_t<
+        std::is_const_v<std::remove_reference_t<Self>> ||
+            std::is_const_v<ContainerType>,
+        Face<const std::remove_const_t<ContainerType>>,
+        Face<ContainerType>>;
 
 public:
-    using VertexType = typename VRefs::VertexType;
+    using Base::NULL_INDEX;
+    using typename Base::Components;
+    using typename Base::IndexType;
+    using typename Base::ParentMeshType;
 
-    /**
-     * @brief Empty constructor.
-     *
-     * Calls automatically all the empty constructors of all the components
-     * available in the Face (for all the components non-available, their empty
-     * constructor is called only when they become available).
-     */
+public:
+    static constexpr int VERTEX_COUNT = comp::
+        ComponentTypeT<CompId::VERTEX_REFERENCES, Components>::VERTEX_COUNT;
+
+    static_assert(
+        comp::HasVertexReferences<Components>,
+        "A Face must have the VertexReferences component (e.g. "
+        "TriangleVertexReferences).");
+    static_assert(
+        comp::HasBitFlags<Components>,
+        "A Face must have the BitFlags component "
+        "(vcl::comp::BitFlags).");
+
     Face() = default;
 
-    /**
-     * @brief Swap function that delegates to the base Element swap.
-     *
-     * This friend function enables ADL (Argument Dependent Lookup) to find
-     * the correct swap function when swapping Face objects.
-     */
-    friend void swap(Face& a, Face& b) { a.swap(b); }
-
-    /**
-     * @brief Sets all the Vertices to the face.
-     *
-     * If the Face size is static, the number of vertices of the input range
-     * must be equal to the size of the Face (the value returned by
-     * vertexCount()). If the Face size is dynamic, it will take care to update
-     * the also the size of the components tied to the vertex count of the face.
-     *
-     * @tparam Rng: A range of vertex pointers or vertex indices in
-     * counterclockwise order.
-     *
-     * @param[in] r: a range of vertex pointers or vertex indices in
-     * counterclockwise order that will be set as vertices of the face.
-     */
-    template<Range Rng>
-    void setVertices(Rng&& r)
-        requires (InputRange<Rng, VertexType*> || InputRange<Rng, uint>)
+    // Implicit conversion constructor from mutable Face to const Face
+    template<typename OtherContainerType>
+    requires std::is_same_v<ContainerType, const OtherContainerType>
+    Face(const Face<OtherContainerType>& other) : Base(other)
     {
-        VRefs::setVertices(r);
+    }
 
-        // if polygonal, I need to resize all the TTVC components
-        if constexpr (NV < 0) {
-            (resizeTTVCComponent<Comps>(std::ranges::size(r)), ...);
+    /**
+     * @brief Swaps this Face proxy handle with another one.
+     */
+    void swap(Face& other) noexcept { Base::swap(other); }
+
+    /**
+     * @brief Swaps two Face proxy handles.
+     */
+    friend void swap(Face& a, Face& b) noexcept { a.swap(b); }
+
+    template<typename OtherElement>
+    void importFrom(const OtherElement& other, bool importRefs = true)
+        requires (!std::is_const_v<ContainerType>)
+    {
+        if (importRefs) {
+            if constexpr (
+                comp::HasPolygonVertexReferences<Components> &&
+                comp::HasVertexReferences<OtherElement>) {
+                this->resizeVertices(other.vertexCount());
+            }
         }
+        Base::importFrom(other, importRefs);
     }
 
     /**
-     * @brief Sets a list of Vertices to the face.
-     *
-     * If the Face size is static, the number of vertices of the list must be
-     * equal to the size of the Face (the value returned by vertexCount()). If
-     * the Face size is dynamic, it will take care to update the also the size
-     * of the components tied to the vertex count of the face.
-     *
-     * @tparam V: A list of vertex pointers or vertex indices in
-     * counterclockwise order.
-     *
-     * @param[in] args: a variable number of vertex pointers or vertex indices
-     * in counterclockwise order that will be set as vertices of the face.
+     * @brief Returns a proxy to the i-th wedge (corner) of the face.
+     * @param[in] i: The 0-based local corner index (0 <= i < vertexCount()).
+     * @return A WedgeProxy for the i-th corner.
      */
-    template<typename... V>
-    void setVertices(V... args) requires (
-        (std::convertible_to<V, VertexType*> || std::convertible_to<V, uint>) &&
-        ...)
+    decltype(auto) wedge(this auto&& self, uint i)
     {
-        setVertices(std::list({args...}));
+        assert(i < self.vertexCount());
+        using TargetFace = ResolvedFace<decltype(self)>;
+        return comp::WedgeProxy<TargetFace>(self, i);
     }
 
     /**
-     * @brief Resize the number of Vertex Pointers of the Face, taking care of
-     * updating also the other components of the Face that are tied to that
-     * number.
-     *
-     * If n is greater than the old number of vertex pointers, n vertex pointers
-     * (and relative tied components) will be added. If n is lower than the old
-     * number of vertex pointers, the difference of vertex pointers (and
-     * relative tied components) will be removed.
-     *
-     * This member function is available only **if the face is polygonal (its
-     * size is dynamic, N < 0)**.
-     *
-     * @param n: the new number of vertices.
+     * @brief Returns a proxy to the modularized i-th wedge (corner) of the
+     * face.
+     * @param[in] i: The modularized corner index (modularized on
+     * vertexCount()).
+     * @return A WedgeProxy for the modularized corner.
      */
-    void resizeVertices(uint n) requires (NV < 0)
+    decltype(auto) wedgeMod(this auto&& self, int i)
     {
-        VRefs::resizeVertices(n);
-
-        // Now I need to resize all the TTVC components
-        (resizeTTVCComponent<Comps>(n), ...);
+        const int n = self.vertexCount();
+        assert(n > 0);
+        return self.wedge(((i % n) + n) % n);
     }
 
-    void pushVertex(VertexType* v) requires (NV < 0)
+    /**
+     * @brief Returns the container proxy for all wedges of the face.
+     * Allows iterating over wedges (for auto w : f.wedges()) or direct
+     * column container access (for auto& n : f.wedges().normals()).
+     * @return A WedgeContainerProxy for this face.
+     */
+    decltype(auto) wedges(this auto&& self)
     {
-        VRefs::pushVertex(v);
-
-        // Now I need to pushBack in all the TTVC components
-        (pushBackTTVCComponent<Comps>(), ...);
+        using TargetFace = ResolvedFace<decltype(self)>;
+        return comp::WedgeContainerProxy<TargetFace>(self);
     }
 
-    void pushVertex(uint vi) requires (NV < 0)
-    {
-        VRefs::pushVertex(vi);
-
-        // Now I need to pushBack in all the TTVC components
-        (pushBackTTVCComponent<Comps>(), ...);
-    }
-
-    void insertVertex(uint i, VertexType* v) requires (NV < 0)
-    {
-        VRefs::insertVertex(i, v);
-
-        // Now I need to insert in all the TTVC components
-        (insertTTVCComponent<Comps>(i), ...);
-    }
-
-    void insertVertex(uint i, uint vi) requires (NV < 0)
-    {
-        VRefs::insertVertex(i, vi);
-
-        // Now I need to insert in all the TTVC components
-        (insertTTVCComponent<Comps>(i), ...);
-    }
-
-    void eraseVertex(uint i) requires (NV < 0)
-    {
-        VRefs::eraseVertex(i);
-
-        // Now I need to erase in all the TTVC components
-        (eraseTTVCComponent<Comps>(i), ...);
-    }
-
-    void clearVertices() requires (NV < 0)
-    {
-        VRefs::clearVertices();
-
-        // Now I need to clear all the TTVC components
-        (clearTTVCComponent<Comps>(), ...);
-    }
-
-    template<typename ElType>
-    void importFrom(const ElType& v, bool importRefs = true)
-    {
-        if constexpr (comp::HasVertexReferences<ElType> && NV < 0) {
-            VRefs::resizeVertices(v.vertexCount());
-            // Now I need to resize all the TTVC components
-            (resizeTTVCComponent<Comps>(v.vertexCount()), ...);
-        }
-
-        Base::importFrom(v, importRefs);
-    }
+protected:
+    Face(ContainerType& container, IndexType index) : Base(container, index) {}
 
 private:
-    /**
-     * Calls the resize(n) on all the component containers that are tied to the
-     * vertex count
-     */
-    template<typename Comp>
-    void resizeTTVCComponent(uint n)
-    {
-        if constexpr (comp::IsTiedToVertexCount<Comp>) {
-            if (Comp::isAvailable())
-                Comp::resize(n);
-        }
-    }
+    /// friend classes declarations
 
-    /**
-     * Calls the pushBack() on all the component containers that are tied to the
-     * vertex count
-     */
-    template<typename Comp>
-    void pushBackTTVCComponent()
-    {
-        if constexpr (comp::IsTiedToVertexCount<Comp>) {
-            if (Comp::isAvailable())
-                Comp::pushBack();
-        }
-    }
+    template<
+        typename,
+        typename,
+        std::unsigned_integral,
+        template<typename...> class>
+    friend class mesh::ElementContainer;
 
-    /**
-     * Calls the insert(i) on all the component containers that are tied to the
-     * vertex count
-     */
-    template<typename Comp>
-    void insertTTVCComponent(uint i)
-    {
-        if constexpr (comp::IsTiedToVertexCount<Comp>) {
-            if (Comp::isAvailable())
-                Comp::insert(i);
-        }
-    }
+    template<typename>
+    friend class mesh::ElementIterator;
 
-    /**
-     * Calls the erase(i) on all the component containers that are tied to the
-     * vertex count
-     */
-    template<typename Comp>
-    void eraseTTVCComponent(uint i)
-    {
-        if constexpr (comp::IsTiedToVertexCount<Comp>) {
-            if (Comp::isAvailable())
-                Comp::erase(i);
-        }
-    }
-
-    /**
-     * Calls the clear() on all the component containers that are tied to the
-     * vertex count
-     */
-    template<typename Comp>
-    void clearTTVCComponent()
-    {
-        if constexpr (comp::IsTiedToVertexCount<Comp>) {
-            if (Comp::isAvailable())
-                Comp::clear();
-        }
-    }
+    template<typename>
+    friend class Face;
 };
 
-template<typename MeshType, comp::ComponentConcept... Comps>
-class Face<MeshType, TypeWrapper<Comps...>> : public Face<MeshType, Comps...>
+/**
+ * @brief The FaceComponents struct defines a type-wrapper for the components
+ * of a Face, checking at compile-time that the required components (BitFlags,
+ * VertexReferences) are present.
+ *
+ * @tparam Comps: The components that compose the Face.
+ *
+ * @ingroup elements
+ */
+template<typename... Comps>
+struct FaceComponents : vcl::TypeWrapper<Comps...>
+{
+    static_assert(
+        comp::HasVertexReferences<vcl::TypeWrapper<Comps...>>,
+        "Face components must include VertexReferences (e.g. "
+        "TriangleVertexReferences).");
+    static_assert(
+        comp::HasBitFlags<vcl::TypeWrapper<Comps...>>,
+        "Face components must include BitFlags (vcl::comp::BitFlags).");
+};
+
+template<typename... Comps>
+struct FaceComponents<vcl::TypeWrapper<Comps...>> : FaceComponents<Comps...>
 {
 };
 
 /* Concepts */
 
 /**
- * @brief A concept that checks whether a class has (inherits from) an
- * Face class.
+ * @brief Concept that checks whether a type T is a Face element.
  *
- * The concept is satisfied when `T` is a class that instantiates or derives
- * from a Face class having any ParentMesh type and any Component types.
- * The concept checks also that the Face has:
- *  - a BitFlags component;
- *  - VertexPointers or VertexIndices components
- *  - the number of vertices is less than 0 (dynamic size) or at least 3
- *    (static size);
- *  - if the Face has the TriangleBitFlags component, the number of vertices
- *    must be 3 (static size);
- *  - all the components tied to the vertex count of the Face are consistent
- *    437387with the number of vertices;
- *
- * @tparam T: The type to be tested for conformity to the EdgeConcept.
- *
- * @ingroup face_concepts
+ * @ingroup element_concepts
  */
 template<typename T>
 concept FaceConcept =
-    IsDerivedFromSpecializationOfV<T, Face> &&
-    RemoveRef<T>::ELEMENT_ID == ElemId::FACE && face::HasBitFlags<T> &&
-    face::HasVertexReferences<T> &&
-    (RemoveRef<T>::VERTEX_COUNT < 0 || RemoveRef<T>::VERTEX_COUNT >= 3) &&
-    (!face::HasTriangleBitFlags<T> || RemoveRef<T>::VERTEX_COUNT == 3) &&
-    comp::SanityCheckAdjacentEdges<T> && comp::SanityCheckAdjacentFaces<T> &&
-    comp::SanityCheckWedgeColors<T> && comp::SanityCheckWedgeTexCoords<T>;
-
-template<typename T>
-concept TriangleFaceConcept = RemoveRef<T>::VERTEX_COUNT == 3 && FaceConcept<T>;
+    ElementConcept<T> && (std::remove_cvref_t<T>::ELEMENT_ID == ElemId::FACE) &&
+    comp::HasBitFlags<typename std::remove_cvref_t<T>::Components> &&
+    comp::HasVertexReferences<typename std::remove_cvref_t<T>::Components>;
 
 /**
- * @brief A concpet that checks whether a class has (inherits from) a
- * Face class and that the Face is polygonal (dynamic size, N < 0).
+ * @brief Concept that checks whether a type T is a valid component list for a
+ * Face.
  *
- * The concept is satisfied when `T` satisfies the FaceConcept and the number
- * of vertices is less than 0 (dynamic size).
- *
- * @ingroup face_concepts
+ * @ingroup element_concepts
  */
 template<typename T>
-concept PolygonFaceConcept = RemoveRef<T>::VERTEX_COUNT < 0 && FaceConcept<T>;
+concept HasRequiredFaceComponents =
+    comp::HasBitFlags<T> && comp::HasVertexReferences<T>;
 
 } // namespace vcl
 

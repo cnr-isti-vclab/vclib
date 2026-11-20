@@ -26,8 +26,7 @@ namespace vcl {
 template<FaceMeshConcept MeshType>
 MeshType createIcosahedron(bool normalizeVertices = false)
 {
-    using VertexType   = MeshType::VertexType;
-    using PositionType = VertexType::PositionType;
+    using PositionType = PositionType<MeshType>;
 
     MeshType mesh;
 
@@ -48,8 +47,8 @@ MeshType createIcosahedron(bool normalizeVertices = false)
     mesh.addVertex(PositionType(-t, 0.0, 1.0));
 
     if (normalizeVertices) {
-        for (VertexType& v : mesh.vertices())
-            v.position().normalize();
+        for (auto& p : mesh.vertices().positions())
+            p.normalize();
     }
 
     // Faces

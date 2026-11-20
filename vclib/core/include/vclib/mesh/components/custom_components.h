@@ -8,88 +8,45 @@
 #ifndef VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
 #define VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
 
-#include "base/base.h"
-#include "detail/custom_components_data.h"
+#include "base/component.h"
+#include "base/component_predicates.h"
 
-#include <vclib/base.h>
-
-#include <any>
 #include <string>
+#include <typeindex>
 #include <vector>
 
 namespace vcl::comp {
 
 /**
- * @brief The CustomComponents Component is a container of additional components
- * associated to an Element (e.g. Vertex, Face).
+ * @brief The CustomComponents class is an Element component that manages the
+ * access to runtime-defined custom components (e.g. per-vertex or per-face
+ * dynamic attributes).
  *
  * CustomComponents are components that can be added at runtime. Each custom
  * component is composed of:
  * - a name, which is an std::string
- * - a type, which needs to be known at compile time
+ * - a type, which needs to be known at compile time when accessed
  *
- * E.g., to access to a CustomComponent of type 'int' called "myCustomComponent"
- * from an element el:
+ * E.g., to access a CustomComponent of type 'int' called "myCustomComponent"
+ * from an element proxy `el`:
  *
  * @code{.cpp}
  * el.customComponent<int>("myCustomComponent");
  * @endcode
  *
- * CustomComponents can be stored horizontally or vertically.
- *
- * If the CustomComponents component is horizontal (this happens mostly on Mesh
- * data structures), a custom component can be added or removed from the object
- * itself.
- *
- * For example, having a Mesh m of type 'MyMesh' that has horizontal
- * CustomComponents:
- *
- * @code{.cpp}
- * m.addCustomComponent<int>("myCustomComponent");
- * @endcode
- *
- * Otherwise, if the CustomComponents component is vertical (this happens mostly
- * on Element types stored in a container, like Vertex, Face...), the
- * addition/deletion of a custom component cannot be performed by the object,
- * because its storage its managed by the Container of objects (that must
- * provide a proper member function to do that).
- *
- * For example, having a Mesh m of type MyMesh that has a VertexContainer where
- * its Vertex has (vertical) CustomComponents:
- *
- * @code{.cpp}
- * m.addPerVertexCustomComponent<int>("myCustomComponent");
- * @endcode
- *
- * After this call, all the Vertices of the VertexContainer will have their
- * custom component of type int called "myCustomComponent". The member function
- * addPerVertexCustomComponent is provided by the VertexContainer and can be
- * accessed directly from the Mesh.
- *
- * @tparam ParentElemType: This template argument must be `void` if the
- * component needs to be stored horizontally, or the type of the parent element
- * that will contain this component if the component needs to be stored
- * vertically.
+ * Since the element proxy is a flyweight view over the container's Structure of
+ * Arrays (SoA), this component delegates the actual storage and lookup to the
+ * underlying ElementContainer.
  *
  * @ingroup components
  */
-template<typename ParentElemType = void>
-class CustomComponents
+class CustomComponents : public Component<CompId::CUSTOM_COMPONENTS, void>
 {
-    static const bool IS_VERTICAL = !std::is_same_v<ParentElemType, void>;
-
-    detail::CustomComponentsData<ParentElemType, IS_VERTICAL> mData;
-
 public:
-    /**
-     * @brief The ID of component.
-     */
-    static const uint COMPONENT_ID = CompId::CUSTOM_COMPONENTS;
-
     /* Constructors */
 
     /**
-     * @brief Initilizes an empty container of custom components.
+     * @brief Initializes the CustomComponents component.
      */
     CustomComponents() = default;
 
@@ -99,218 +56,130 @@ public:
      * @brief Returns true if the element has a custom component with the given
      * name, false otherwise. The type of the custom component is not checked.
      *
-     * @param[in] compName: the name of the custom component.
+     * @param[in] compName: The name of the custom component.
      * @return true if the element has a custom component with the given name,
      * false otherwise.
      */
-    bool hasCustomComponent(const std::string& compName) const
+    bool hasCustomComponent(this const auto& self, const std::string& compName)
     {
-        return mData.componentExists(
-            compName, static_cast<const ParentElemType*>(this));
+        return self.parentContainer().hasElemCustomComponent(compName);
     }
 
     /**
      * @brief Returns true if the custom component of the given name is of the
      * type given as template argument, false otherwise.
      *
-     * @note The element must have a custom component with the given name,
-     * otherwise a std::out_of_range exception is thrown. If you don't know if
-     * the element has a custom component with the given name, use the
-     * CustomComponents::hasCustomComponent() member function.
-     *
-     * @throws std::out_of_range if the element does not have a custom component
-     * with the given name.
-     *
-     * @tparam CompType: the type of the custom component to check.
-     * @param[in] compName: the name of the custom component.
+     * @tparam CompType: The type of the custom component to check.
+     * @param[in] compName: The name of the custom component.
      * @return true if the custom component of the given name is of the type
      * CompType, false otherwise.
      */
     template<typename CompType>
-    bool isCustomComponentOfType(const std::string& compName) const
+    bool isCustomComponentOfType(
+        this const auto&   self,
+        const std::string& compName)
     {
-        return mData.template isComponentOfType<CompType>(
-            compName, static_cast<const ParentElemType*>(this));
+        return self.parentContainer()
+            .template isElemCustomComponentOfType<CompType>(compName);
     }
 
     /**
      * @brief Returns the `std::type_index` of the custom component of the given
      * name.
      *
-     * @note The element must have a custom component with the given name,
-     * otherwise a std::out_of_range exception is thrown. If you don't know if
-     * the element has a custom component with the given name, use the
-     * CustomComponents::hasCustomComponent() member function.
-     *
-     * @throws std::out_of_range if the element does not have a custom component
-     * with the given name.
-     *
-     * @param[in] compName: the name of the custom component.
-     * @return the `std::type_index` of the custom component of the given name.
+     * @param[in] compName: The name of the custom component.
+     * @return The `std::type_index` of the custom component of the given name.
      */
-    std::type_index customComponentType(const std::string& compName) const
+    std::type_index customComponentType(
+        this const auto&   self,
+        const std::string& compName)
     {
-        return mData.componentType(
-            compName, static_cast<const ParentElemType*>(this));
+        return self.parentContainer().elemCustomComponentType(compName);
     }
 
     /**
-     * @brief Returns a std::vector of std::strings containing the names of the
-     * custom components of the type given as template argument.
+     * @brief Returns a vector of strings containing the names of all the custom
+     * components associated to the element.
      *
-     * @tparam CompType: the type of the custom components to retrieve.
-     * @return a std::vector of std::strings containing the names of the custom
+     * @return A vector of strings containing the names of all custom
+     * components.
+     */
+    std::vector<std::string> customComponentNames(this const auto& self)
+    {
+        return self.parentContainer().elemCustomComponentNames();
+    }
+
+    /**
+     * @brief Returns a vector of strings containing the names of the custom
+     * components of the type given as template argument.
+     *
+     * @tparam CompType: The type of the custom components to retrieve.
+     * @return A vector of strings containing the names of the custom
      * components of the type given as template argument.
      */
     template<typename CompType>
-    std::vector<std::string> customComponentNamesOfType() const
+    std::vector<std::string> customComponentNamesOfType(this const auto& self)
     {
-        return mData.template componentNamesOfType<CompType>(
-            static_cast<const ParentElemType*>(this));
+        return self.parentContainer()
+            .template elemCustomComponentNamesOfType<CompType>();
     }
 
     /**
-     * @brief Returns the const reference to the custom component of the given
-     * name having the type given as template argument.
-     *
-     * @note The element must have a custom component with the given name,
-     * otherwise a std::out_of_range exception is thrown. If you don't know if
-     * the element has a custom component with the given name, use the
-     * CustomComponents::hasCustomComponent() member function.
-     *
-     * @note The custom component must be of the type given as template
-     * argument, otherwise a std::bad_any_cast exception is thrown. The type of
-     * the custom component must be known at compile time.
-     *
-     * @throws std::out_of_range if the element does not have a custom component
-     * with the given name.
-     * @throws std::bad_any_cast if the custom component is not of the type
-     * given as template argument.
-     *
-     * @tparam CompType: the type of the custom component to retrieve.
-     * @param[in] compName: the name of the custom component.
-     * @return the const reference to the custom component of the given name
+     * @brief Returns a reference to the custom component of the given name
      * having the type given as template argument.
+     * Propagates constness automatically from the caller (proxy).
+     *
+     * @throws std::out_of_range if the custom component does not exist.
+     * @throws vcl::BadCustomComponentTypeException if the custom component
+     * is not of type CompType.
+     *
+     * @tparam CompType: The type of the custom component to retrieve.
+     * @param[in] compName: The name of the custom component.
+     * @return A reference to the custom component of the given name.
      */
     template<typename CompType>
-    const CompType& customComponent(const std::string& compName) const
+    decltype(auto) customComponent(
+        this auto&&        self,
+        const std::string& compName)
     {
-        return mData.template get<CompType>(
-            compName, static_cast<const ParentElemType*>(this));
-    }
-
-    /**
-     * @brief Returns the reference to the custom component of the given
-     * name having the type given as template argument.
-     *
-     * @note The element must have a custom component with the given name,
-     * otherwise a std::out_of_range exception is thrown. If you don't know if
-     * the element has a custom component with the given name, use the
-     * CustomComponents::hasCustomComponent() member function.
-     *
-     * @note The custom component must be of the type given as template
-     * argument, otherwise a std::bad_any_cast exception is thrown. The type of
-     * the custom component must be known at compile time.
-     *
-     * @throws std::out_of_range if the element does not have a custom component
-     * with the given name.
-     * @throws std::bad_any_cast if the custom component is not of the type
-     * given as template argument.
-     *
-     * @tparam CompType: the type of the custom component to retrieve.
-     * @param[in] compName: the name of the custom component.
-     * @return the reference to the custom component of the given name having
-     * the type given as template argument.
-     */
-    template<typename CompType>
-    CompType& customComponent(const std::string& compName)
-    {
-        return mData.template get<CompType>(
-            compName, static_cast<ParentElemType*>(this));
-    }
-
-    template<typename CompType>
-    void addCustomComponent(
-        const std::string& compName,
-        const CompType&    value = CompType()) requires (!IS_VERTICAL)
-    {
-        return mData.template addCustomComponent<CompType>(compName, value);
-    }
-
-    void deleteCustomComponent(const std::string& compName)
-        requires (!IS_VERTICAL)
-    {
-        return mData.deleteCustomComponent(compName);
-    }
-
-    template<typename CompType>
-    void serializeCustomComponentsOfType(std::ostream& os) const
-        requires (!IS_VERTICAL)
-    {
-        std::vector<std::string> compNames =
-            customComponentNamesOfType<CompType>();
-        vcl::serialize(os, compNames);
-        for (const auto& name : compNames) {
-            const CompType& c = customComponent<CompType>(name);
-            vcl::serialize(os, c);
-        }
-    }
-
-    template<typename CompType>
-    void deserializeCustomComponentsOfType(std::istream& is)
-        requires (!IS_VERTICAL)
-    {
-        std::vector<std::string> compNames;
-        vcl::deserialize(is, compNames);
-        for (const auto& name : compNames) {
-            CompType c;
-            vcl::deserialize(is, c);
-            addCustomComponent<CompType>(name, c);
-        }
+        return self.parentContainer().template elemCustomComponent<CompType>(
+            compName, self.index());
     }
 
 protected:
-    template<typename Element>
-    void importFrom(const Element& e, bool = true);
-
-    void serialize(std::ostream& os) const
-    {
-        // todo
-    }
-
-    void deserialize(std::istream& is)
-    {
-        // todo
-    }
+    template<typename OtherElement>
+    void importFrom(this auto&& self, const OtherElement& other, bool = true);
 };
 
-/* concept */
+/* Concepts */
 
 /**
- * @brief A concept that checks whether a type T (that should be an Element or a
- * Mesh) has the CustomComponents component (inherits from it).
+ * @brief A concept that checks whether a type T (which can be a TypeWrapper of
+ * components, an ElementProxy, an ElementContainer, or a Mesh) has the
+ * CustomComponents component (COMP_ID = CompId::CUSTOM_COMPONENTS).
  *
- * The concept is satisfied if T is a class that inherits from
- * vcl::comp::CustomComponents, with any template arguments.
- *
- * @tparam T: The type to be tested for conformity to the HasCustomComponents.
+ * @tparam T: The type to be tested for conformity to HasCustomComponents.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasCustomComponents =
-    IsDerivedFromSpecializationOfV<T, CustomComponents>;
+concept HasCustomComponents = HasComponent<CompId::CUSTOM_COMPONENTS, T>;
 
-/* importFrom function */
+/* Implementation of member functions */
 
-template<typename ParentElemType>
-template<typename Element>
-void CustomComponents<ParentElemType>::importFrom(const Element& e, bool)
+template<typename OtherElement>
+void CustomComponents::importFrom(
+    this auto&&         self,
+    const OtherElement& other,
+    bool)
 {
-    // if the component is vertical, the import is managed by the container.
-    // if is horizontal, it must be managed by the component itself.
-    if constexpr (!IS_VERTICAL && HasCustomComponents<Element>) {
-        mData = e.CustomComponents::mData;
+    if constexpr (HasCustomComponents<OtherElement>) {
+        auto&       thisCC  = self.parentContainer().mCustomComponents;
+        const auto& otherCC = other.parentContainer().mCustomComponents;
+        for (const auto& name : thisCC.allComponentNames()) {
+            thisCC.importSameCustomComponentFrom(
+                self.index(), other.index(), name, otherCC);
+        }
     }
 }
 

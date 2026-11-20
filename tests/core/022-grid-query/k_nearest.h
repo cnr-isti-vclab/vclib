@@ -23,7 +23,7 @@ auto bruteForceKNearestFaces(
     vcl::uint                     k)
 {
     using ScalarType = PointType::ScalarType;
-    using FaceType   = MeshType::FaceType;
+    using FaceType   = MeshType::ConstFace;
 
     auto distFun = vcl::distFunction<PointType, FaceType>();
 
@@ -66,7 +66,7 @@ auto gridKNearestFaces(
     vcl::uint                     k,
     const std::string&            gridName)
 {
-    using FaceType   = MeshType::FaceType;
+    using FaceType   = MeshType::ConstFace;
     using ScalarType = PointType::ScalarType;
 
     auto distFun = vcl::distFunction<PointType, FaceType>();
@@ -81,8 +81,8 @@ auto gridKNearestFaces(
         auto vec = grid.kClosestValues(points[i], k);
         nearestGrid[i].resize(vec.size());
         for (vcl::uint j = 0; j < vec.size(); j++) {
-            ScalarType dist   = distFun(points[i], *vec[j]->second);
-            nearestGrid[i][j] = {vec[j]->second->index(), dist};
+            ScalarType dist   = distFun(points[i], vec[j]->second);
+            nearestGrid[i][j] = {vec[j]->second.index(), dist};
         }
     }
     t.stopAndPrint();

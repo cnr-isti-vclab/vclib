@@ -42,11 +42,11 @@ inline auto meshMatrixConversion()
     vcl::updateVertexNormals(mesh);
 
     // Enable and set some colors for demonstration
-    mesh.enablePerVertexColor();
-    mesh.enablePerFaceColor();
-    for (auto& v : mesh.vertices())
+    mesh.enableVertexColor();
+    mesh.enableFaceColor();
+    for (auto v : mesh.vertices())
         v.color() = randomColor();
-    for (auto& f : mesh.faces())
+    for (auto f : mesh.faces())
         f.color() = randomColor();
 
     std::cout << "Loaded mesh: " << mesh.vertexCount() << " vertices, "

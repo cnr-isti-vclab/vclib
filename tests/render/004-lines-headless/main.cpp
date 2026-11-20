@@ -22,7 +22,7 @@ vcl::DrawableMesh<vcl::EdgeMesh> getDrawableEdgeMesh()
     vcl::updateVertexNormalsFromFaceNormals(icosahedron);
 
     // 3. Compute adjacency
-    icosahedron.enablePerFaceAdjacentFaces();
+    icosahedron.enableFaceAdjacentFaces();
     vcl::updateFaceAdjacentFaces(icosahedron);
 
     // 4. Select crease edges (all edges of icosahedron since it's angular)
@@ -33,11 +33,11 @@ vcl::DrawableMesh<vcl::EdgeMesh> getDrawableEdgeMesh()
         vcl::faceEdgeSelectionMeshFilter<vcl::EdgeMesh>(icosahedron);
 
     // Ensure the edge mesh has the required components
-    em.enablePerVertexColor();
-    em.enablePerEdgeColor();
+    em.enableVertexColor();
+    em.enableEdgeColor();
 
     // Deterministically assign colors
-    for (auto& v : em.vertices()) {
+    for (auto v : em.vertices()) {
         if (v.index() % 3 == 0)
             v.color() = vcl::Color::Red;
         else if (v.index() % 3 == 1)
@@ -46,7 +46,7 @@ vcl::DrawableMesh<vcl::EdgeMesh> getDrawableEdgeMesh()
             v.color() = vcl::Color::Blue;
     }
 
-    for (auto& e : em.edges()) {
+    for (auto e : em.edges()) {
         if (e.index() % 3 == 0)
             e.color() = vcl::Color::Yellow;
         else if (e.index() % 3 == 1)
@@ -204,7 +204,7 @@ TEST_CASE("Lines Selection")
                 mesh.updateRenderSettingsCapabilities();
 
                 // Deterministically assign selection to edges
-                for (auto& e : mesh.edges()) {
+                for (auto e : mesh.edges()) {
                     if (e.index() % 2 == 0)
                         e.selected() = true;
                 }

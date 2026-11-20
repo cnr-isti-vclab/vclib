@@ -8,74 +8,98 @@
 #ifndef VCL_MESH_CONTAINERS_VERTEX_CONTAINER_H
 #define VCL_MESH_CONTAINERS_VERTEX_CONTAINER_H
 
-#include "base/element_container.h"
-
+#include <vclib/mesh/components/base/component_predicates.h>
+#include <vclib/mesh/containers/base/element_container.h>
+#include <vclib/mesh/containers/base/macros.h>
 #include <vclib/mesh/elements/vertex.h>
 #include <vclib/mesh/elements/vertex_components.h>
 
-#include <typeindex>
+#include <vclib/base.h>
 
-namespace vcl {
-namespace mesh {
+namespace vcl::mesh {
 
 /**
- * @brief The Vertex Container class, will be used when the template argument
- * given to the Mesh is a Vertex.
+ * @brief VertexContainer stores the per-vertex data in a Structure of Arrays
+ * (SoA), and it is meant to be used as a template parameter of the Mesh class.
  *
- * This class adds a container (vector) of vertices to the Mesh, making
- * available the accessors members to the vertices, the vertex number,
- * iterators... This class will also take care to add enablers/disablers of the
- * eventual optional components of the vertex.
+ * It accepts the Vertex component list (satisfying
+ * HasRequiredVertexComponents), instantiates the underlying storage and exposes
+ * the Vertex element view.
  *
- * This container can be templated on a type that satisfies the VertexConcept
- * concept.
+ * @tparam CompList: The vertex components type (e.g. VertexComponents<BitFlags,
+ * Position3f, Normal3f>).
+ * @tparam Index: The index type (default uint).
+ * @tparam ParentMesh: The parent mesh type. On Mesh instantiation, this is
+ * automatically set to the Mesh type. Default is void.
  *
  * @ingroup containers
  */
-template<VertexConcept T>
-class VertexContainer : public ElementContainer<T>
+template<
+    HasRequiredVertexComponents CompList,
+    std::unsigned_integral      Index = uint,
+    typename ParentMesh               = void>
+class VertexContainer :
+        public ElementContainer<
+            typename comp::detail::ComponentListHelper<CompList>::type,
+            ParentMesh,
+            Index,
+            Vertex>
 {
-    template<VertexConcept U>
-    friend class VertexContainer;
-
-    using VertexContainerType = VertexContainer<T>;
-    using Base                = ElementContainer<T>;
+    using Base = ElementContainer<
+        typename comp::detail::ComponentListHelper<CompList>::type,
+        ParentMesh,
+        Index,
+        Vertex>;
 
 public:
-    using Vertex              = T;
-    using VertexType          = T;
-    using VertexIterator      = Base::ElementIterator;
-    using ConstVertexIterator = Base::ConstElementIterator;
+    using Vertex           = typename Base::ElementType;
+    using ConstVertex      = typename Base::ConstElementType;
+    using VertexComponents = typename Base::Components;
+    using PositionType     = typename Vertex::PositionType;
+    using Base::NULL_INDEX;
+
+    // Rebind idiom to allow changing the ParentMesh type while keeping the same
+    // component list and index type.
+    template<typename NewParent>
+    using Rebind = VertexContainer<CompList, Index, NewParent>;
 
     /**
      * @brief Empty constructor that creates an empty container of Vertices.
      */
     VertexContainer() = default;
 
-    /**
-     * @brief Returns a const reference of the vertex at the i-th position in
-     * the Vertex Container of the Mesh, which will be the vertex having index =
-     * i.
-     *
-     * This function does not perform any sanity check: if i is less than
-     * vertexContainerSize(), this function will return a valid Vertex reference
-     * (note that the Vertex may have been flagged as deleted).
-     *
-     * @param[in] i: the index of the vertex that will be returned.
-     */
-    const VertexType& vertex(uint i) const { return Base::element(i); }
+    friend void swap(VertexContainer& a, VertexContainer& b) noexcept
+    {
+        a.swap(b);
+    }
 
     /**
-     * @brief Returns a reference of the vertex at the i-th position in the
-     * Vertex Container of the Mesh, which will be the vertex having index = i.
+     * @brief Returns the Vertex at the i-th position in the Vertex Container of
+     * the Mesh, which will be the vertex having index = i.
      *
      * This function does not perform any sanity check: if i is less than
-     * vertexContainerSize(), this function will return a valid Vertex reference
+     * vertexContainerSize(), this function will return a valid Vertex
      * (note that the Vertex may have been flagged as deleted).
      *
      * @param[in] i: the index of the vertex that will be returned.
+     *
+     * @return The i-th Vertex of the Vertex Container.
      */
-    VertexType& vertex(uint i) { return Base::element(i); }
+    Vertex vertex(Index i) { return Base::element(i); }
+
+    /**
+     * @brief Returns the const Vertex at the i-th position in the Vertex
+     * Container of the Mesh, which will be the vertex having index = i.
+     *
+     * This function does not perform any sanity check: if i is less than
+     * vertexContainerSize(), this function will return a valid ConstVertex
+     * (note that the Vertex may have been flagged as deleted).
+     *
+     * @param[in] i: the index of the vertex that will be returned.
+     *
+     * @return The i-th const Vertex of the Vertex Container.
+     */
+    ConstVertex vertex(Index i) const { return Base::element(i); }
 
     /**
      * @brief Returns the number of **non-deleted** vertices contained in the
@@ -86,7 +110,7 @@ public:
      *
      * @return The number of non-deleted vertices of the Mesh.
      */
-    uint vertexCount() const { return Base::elementCount(); }
+    std::size_t vertexCount() const { return Base::elementCount(); }
 
     /**
      * @brief Returns the number of vertices (also deleted) contained in the
@@ -97,7 +121,10 @@ public:
      *
      * @return The number of all the vertices contained in the Mesh.
      */
-    uint vertexContainerSize() const { return Base::elementContainerSize(); }
+    std::size_t vertexContainerSize() const
+    {
+        return Base::elementContainerSize();
+    }
 
     /**
      * @brief Returns the number of deleted vertices in the Vertex container,
@@ -105,57 +132,45 @@ public:
      *
      * @return The number of deleted vertices in the container.
      */
-    uint deletedVertexCount() const { return Base::deletedElementCount(); }
-
-    /**
-     * @brief Add a new vertex into the vertex container, returning the index of
-     * the added vertex.
-     *
-     * If the call of this function will cause a reallocation of the Vertex
-     * container, the function will automatically take care of updating all the
-     * Vertex pointers contained in the Mesh.
-     *
-     * @return the index of the new vertex.
-     */
-    uint addVertex() { return Base::addElement(); }
-
-    /**
-     * @brief Add a new vertex with the given position into the vertex
-     * container, returning the id of the added vertex.
-     *
-     * If the call of this function will cause a reallocation of the Vertex
-     * container, the function will automatically take care of updating all the
-     * Vertex pointers contained in the Mesh.
-     *
-     * @param p: position of the new vertex.
-     * @return the id of the new vertex.
-     */
-    uint addVertex(const typename T::PositionType& p)
+    std::size_t deletedVertexCount() const
     {
-        uint vid               = addVertex();
-        vertex(vid).position() = p; // set the position to the vertex
+        return Base::deletedElementCount();
+    }
+
+    /**
+     * @brief Adds a new vertex into the Vertex container, returning the index
+     * of the added vertex.
+     *
+     * @return The index of the new vertex.
+     */
+    Index addVertex() { return Base::addElement(); }
+
+    /**
+     * @brief Adds a new vertex with the given position into the vertex
+     * container, returning the index of the added vertex.
+     *
+     * @param[in] p: position of the new vertex.
+     * @return The index of the new vertex.
+     */
+    Index addVertex(const PositionType& p)
+    {
+        Index vid              = addVertex();
+        vertex(vid).position() = p;
         return vid;
     }
 
     /**
-     * @brief Add an arbitrary number of n vertices, returning the id of the
+     * @brief Adds an arbitrary number of n vertices, returning the index of the
      * first added vertex.
      *
-     * This means that, if you want to add 5 vertices and this member function
-     * returns 4, the added vertices will have id from 4 to id 8 included.
-     *
-     * If the call of this function will cause a reallocation of the Vertex
-     * container, the function will automatically take care of updating all the
-     * Vertex pointers contained in the Mesh.
-     *
-     * @param n: the number of vertices to add to the mesh.
-     * @return the id of the first added vertex.
+     * @param[in] n: the number of vertices to add to the mesh.
+     * @return The index of the first added vertex.
      */
-    uint addVertices(uint n) { return Base::addElements(n); }
+    Index addVertices(std::size_t n) { return Base::addElements(n); }
 
     /**
-     * @brief Add an arbitrary number of vertices with the given positions,
-     * returning the id of the first added vertex.
+     * @brief Adds an arbitrary number of vertices with the given positions,
+     * returning the index of the first added vertex.
      *
      * You can call this member function like:
      *
@@ -167,45 +182,37 @@ public:
      *
      * The number of accepted PositionType arguments is variable.
      *
-     * If the call of this function will cause a reallocation of the Vertex
-     * container, the function will automatically take care of updating all the
-     * Vertex pointers contained in the Mesh.
-     *
-     * @param p: first vertex position
-     * @param v: list of other vertex positions
-     * @return the id of the first added vertex.
+     * @param[in] p: first vertex position.
+     * @param[in] v: list of other vertex positions.
+     * @return The index of the first added vertex.
      */
     template<typename... VC>
-    uint addVertices(const typename T::PositionType& p, const VC&... v)
+    Index addVertices(const PositionType& p, const VC&... v)
+        requires (std::is_constructible_v<PositionType, VC> && ...)
     {
-        uint vid = vertexContainerSize();
-        // reserve the new number of vertices
+        Index vid = vertexContainerSize();
         reserveVertices(vid + sizeof...(VC) + 1);
         addVertex(p);
-        // pack expansion: will be translated at compile time as an addVertex()
-        // call for each argument of the addVertices member function
         (addVertex(v), ...);
         return vid;
     }
 
     /**
-     * @brief Add an arbitrary number of vertices with the positions contained
-     * in the given range, returning the id of the first added vertex.
+     * @brief Adds an arbitrary number of vertices with the positions contained
+     * in the given range, returning the index of the first added vertex.
      *
-     * If the call of this function will cause a reallocation of the Vertex
-     * container, the function will automatically take care of updating all the
-     * Vertex pointers contained in the Mesh.
-     *
-     * @param range: the range of positions of the vertices to add.
-     * @return the id of the first added vertex.
+     * @param[in] range: the range of positions of the vertices to add.
+     * @return The index of the first added vertex.
      */
-    template<vcl::Range R>
-    uint addVertices(R&& range) requires RangeOf<R, typename T::PositionType>
+    template<InputRange<PositionType> R>
+    Index addVertices(R&& range)
     {
-        uint vid = vertexContainerSize();
-        reserveVertices(vid + std::ranges::size(range));
-        for (const auto& v : range) {
-            addVertex(v);
+        Index vid = vertexContainerSize();
+        if constexpr (std::ranges::sized_range<R>) {
+            reserveVertices(vid + std::ranges::size(range));
+        }
+        for (const auto& p : range) {
+            addVertex(p);
         }
         return vid;
     }
@@ -214,17 +221,12 @@ public:
      * @brief Clears the Vertex container of the Mesh, deleting all the
      * vertices.
      *
-     * The contained vertices are actually removed from the container, not only
-     * marked as deleted. Therefore, the container will have size 0
+     * The contained vertex components are actually removed from the container,
+     * not only marked as deleted. Therefore, the container will have size 0
      * (`vertexContainerSize() == 0`) after the call of this function.
      *
-     * @note This function does not cause a reallocation of the Vertex
-     * container.
-     *
-     * @warning Any pointer to vertices in the Mesh will be left unchanged, and
-     * therefore will point to invalid vertices. This means that, if you have a
-     * pointer to a vertex and you call this function, you will have a dangling
-     * pointer.
+     * @warning Any index or reference to vertices in the Mesh will be left
+     * unchanged, and therefore will point to invalid vertices.
      */
     void clearVertices() { Base::clearElements(); }
 
@@ -232,59 +234,41 @@ public:
      * @brief Resizes the Vertex container to contain `n` vertices.
      *
      * If the new size is greater than the old one, new vertices are added to
-     * the container, and a reallocation may happen. If the new size is smaller
-     * than the old one, the container will keep its first non-deleted `n`
-     * vertices, and the remaining vertices are marked as deleted.
+     * the container. If the new size is smaller than the old one, the container
+     * is truncated to `n` vertices (vertices beyond `n` are removed).
      *
-     * If the call of this function will cause a reallocation of the Vertex
-     * container, the function will automatically take care of updating all the
-     * Vertex pointers contained in the Mesh.
-     *
-     * @warning The given size `n` is relative to the number of non-deleted
-     * vertices, not to the size of the vertex container. For example, if you
-     * have a mesh with 10 vertices and vertexContainerSize() == 20, calling
-     * resizeVertices(5) will not cause a reallocation of the container, but
-     * will mark as deleted the least 5 non-deleted vertices of the container.
-     * In the same scenario, calling resizeVertices(15) will result in a vertex
-     * container having 15 vertices and vertexContainerSize() == 25. The latest
-     * 5 vertices will be the newly added.
-     *
-     * @warning Any pointer to deleted vertices in the Mesh will be left
-     * unchanged, and therefore will point to invalid vertices. This means that
-     * if you call this member function with a lower number of vertices, you'll
-     * need to manually manage the pointers to the deleted vertices.
+     * @warning Any index to removed vertices in the Mesh will be left
+     * unchanged, and therefore will point to invalid vertices.
      *
      * @param[in] n: the new size of the Vertex container.
      */
-    void resizeVertices(uint n) { Base::resizeElements(n); }
+    void resizeVertices(std::size_t n) { Base::resizeElements(n); }
 
     /**
-     * @brief Reserve a number of vertices in the container of Vertices. This is
-     * useful when you know (or you have an idea) of how much vertices are going
-     * to add into a newly or existing mesh. Calling this function before any
-     * add_vertex() call will avoid unuseful reallocations of the container,
+     * @brief Reserves a number of vertices in the container of Vertices. This
+     * is useful when you know (or you have an idea) of how many vertices will
+     * be added to a new or existing mesh. Calling this function before any
+     * addVertex() call will avoid unnecessary reallocations of the container,
      * saving execution time.
      *
-     * The filosofy of this function is similar to the one of the
+     * The philosophy of this function is similar to the one of the
      * [reserve()](https://en.cppreference.com/w/cpp/container/vector/reserve)
      * function of the [std::vector
      * class](https://en.cppreference.com/w/cpp/container/vector).
      *
-     * If the call of this function will cause a reallocation of the Vertex
-     * container, the function will automatically take care of updating all the
-     * Vertex pointers contained in the Mesh.
-     *
-     * @param n: the new capacity of the vertex container.
+     * @param[in] n: the new capacity of the vertex container.
      */
-    void reserveVertices(uint n) { Base::reserveElements(n); }
+    void reserveVertices(std::size_t n) { Base::reserveElements(n); }
 
     /**
      * @brief Compacts the Vertex Container, removing all the vertices marked as
-     * deleted. Vertices indices will change accordingly. The function will
-     * automatically take care of updating all the Vertex pointers contained in
-     * the Mesh.
+     * deleted. Vertex references will automatically change accordingly in all
+     * the containers of the Mesh.
+     *
+     * @return A vector that maps each old vertex index to its new index in the
+     * compacted container (or NULL_INDEX if it was deleted).
      */
-    void compactVertices() { Base::compactElements(); }
+    std::vector<Index> compactVertices() { return Base::compactElements(); }
 
     /**
      * @brief Marks as deleted the vertex with the given id.
@@ -296,13 +280,12 @@ public:
      * Deleted vertices are automatically jumped by the iterators provided by
      * the Vertex Container.
      *
-     * @param[in] i: the id of the vertex that will be marked as deleted.
+     * @param[in] i: the index of the vertex that will be marked as deleted.
      */
-    void deleteVertex(uint i) { Base::deleteElement(i); }
+    void deleteVertex(Index i) { Base::deleteElement(i); }
 
     /**
-     * @brief Marks as deleted the given vertex, before asserting that the
-     * vertex belongs to this container.
+     * @brief Marks as deleted the given vertex.
      *
      * This member function does not perform any reallocation of the vertices:
      * the deleted vertices will stay in the Vertex Container, but will be
@@ -311,13 +294,13 @@ public:
      * Deleted vertices are automatically jumped by the iterators provided by
      * the Vertex Container.
      *
-     * @param[in] v: the pointer of the vertex that will be marked as deleted.
+     * @param[in] v: the vertex that will be marked as deleted.
      */
-    void deleteVertex(const VertexType* v) { Base::deleteElement(v); }
+    void deleteVertex(const Vertex& v) { Base::deleteElement(v.index()); }
 
     /**
-     * @brief This is an utility member function that returns the index of an
-     * element if the container would be compact, that is the number of
+     * @brief This is a utility member function that returns the index of an
+     * element if the container were compact, that is the number of
      * non-deleted elements before the vertex with the given index.
      *
      * Complexity: O(n), with n the number of vertices in the container.
@@ -326,9 +309,9 @@ public:
      *
      * @param[in] i: the index of a vertex of the container.
      * @return The index that the vertex with index i would have if this
-     * container would be compact.
+     * container were compact.
      */
-    uint vertexIndexIfCompact(uint i) const
+    Index vertexIndexIfCompact(Index i) const
     {
         return Base::elementIndexIfCompact(i);
     }
@@ -336,114 +319,62 @@ public:
     /**
      * @brief Returns a vector that tells, for each actual vertex index, the new
      * index that the vertex would have in a compacted container. For each
-     * deleted vertex index, the value of the vector will be UINT_NULL.
+     * deleted vertex index, the value of the vector will be NULL_INDEX.
      *
      * This is useful if you need to know the indices of the vertices that they
      * would have in a compact container, without considering the deleted ones.
      *
      * @return A vector containing, for each vertex index, its index if the
-     * container would be compact.
+     * container were compact.
      */
-    std::vector<uint> vertexCompactIndices() const
+    std::vector<Index> vertexCompactIndices() const
     {
         return Base::elementCompactIndices();
     }
 
     /**
-     * @brief Updates all the indices and pointers of the vertices of this
-     * container that are stored in any container of the mesh, according to the
-     * mapping stored in the newIndices vector, that tells for each old vertex
-     * index, the new vertex index.
+     * @brief Updates references to the vertices of this mesh according to the
+     * mapping stored in the newIndices vector.
      *
-     * This function is useful when some vertices, and you want to update the
-     * indices/pointers stored in all the containers of the mesh accordingly.
+     * This function is useful when vertices are deleted, compacted, or
+     * permuted, and you want to update all references stored across the
+     * mesh containers to point to their new indices.
      *
-     * E.g. Supposing you deleted a set of vertices, you can give to this
-     * function the vector telling, for each of the old vertex indices, the new
-     * vertex index (or UINT_NULL if you want to leave it unreferenced). This
-     * function will update all the pointers stored in the mesh containers
-     * accordingly (if they store adjacencies to the vertices).
+     * @note This function does not change the position of the vertices in this
+     * container. It updates vertex references stored in this and other
+     * containers of the mesh.
      *
-     * @note This function *does not change the position of the vertices in this
-     * container*. It just updates the indices/pointers of the vertices stored
-     * in this or other containers.
-     *
-     * @param[in] newIndices: a vector that tells, for each old vertex index,
-     * the new vertex index. If the old vertex must be left as unreferenced
-     * (setting `nullptr` to the pointers), the value of the vector must be
-     * UINT_NULL.
+     * @param[in] newIndices: A vector mapping old vertex indices to new ones.
+     * If a vertex was deleted or should become unreferenced, its mapping entry
+     * must be NULL_INDEX.
      */
-    void updateVertexReferences(const std::vector<uint>& newIndices)
+    void updateVertexReferences(const std::vector<Index>& newIndices)
     {
         Base::updateElementReferences(newIndices);
     }
 
     /**
-     * @brief Returns an iterator to the beginning of the container.
-     *
-     * The iterator is automatically initialized to jump deleted vertices of the
-     * container. You can change this option by calling this function with
-     * jumpDeleted=false.
-     *
-     * @param[in] jumpDeleted (def: true): boolean that tells if the iterator
-     * should jump deleted vertices.
-     * @return An iterator the the first vertex of the container.
-     */
-    VertexIterator vertexBegin(bool jumpDeleted = true)
-    {
-        return Base::elementBegin(jumpDeleted);
-    }
-
-    /**
-     * @brief Returns an iterator to the end of the container.
-     * @return An iterator to the end of the container.
-     */
-    VertexIterator vertexEnd() { return Base::elementEnd(); }
-
-    /**
-     * @brief Returns a const iterator to the beginning of the container.
-     *
-     * The iterator is automatically initialized to jump deleted vertices of the
-     * container. You can change this option by calling this function with
-     * jumpDeleted=false.
-     *
-     * @param[in] jumpDeleted (def: true): boolean that tells if the iterator
-     * should jump deleted vertices.
-     * @return A const iterator the the first vertex of the container.
-     */
-    ConstVertexIterator vertexBegin(bool jumpDeleted = true) const
-    {
-        return Base::elementBegin(jumpDeleted);
-    }
-
-    /**
-     * @brief Returns a const iterator to the end of the container.
-     * @return A const iterator to the end of the container.
-     */
-    ConstVertexIterator vertexEnd() const { return Base::elementEnd(); }
-
-    /**
-     * @brief Returns a small utility object that allows to iterate over the
-     * vertices of the containers, providing two member functions begin() and
-     * end().
+     * @brief Returns an ElementContainerProxy object that allows to iterate
+     * over the vertices of the container, providing begin() and end() member
+     * functions.
      *
      * This member function is very useful when you want to iterate over the
-     * vertices using the C++ foreach syntax:
+     * vertices using the C++ range-based for loop syntax:
      *
      * @code{.cpp}
-     * for (Vertex& v : m.vertices()){
+     * for (Vertex v : m.vertices()) {
      *     // do something with this vertex
      * }
      * @endcode
      *
      * The iterator used to iterate over vertices is automatically initialized
      * to jump deleted vertices of the container. You can change this option by
-     * calling this function with jumpDeleted=false.
+     * calling this function with jumpDeleted = false.
      *
-     * @param[in] jumpDeleted (def: true): boolean that tells if the iterator
-     * should jump deleted vertices.
-     * @return An object having begin() and end() function, allowing to iterate
-     * over the container.
+     * @param[in] jumpDeleted (default: true): boolean that tells if the
+     * iterator should jump deleted vertices.
+     * @return An object having begin() and end() functions, allowing to
+     * iterate over the container.
      */
     auto vertices(bool jumpDeleted = true)
     {
@@ -451,56 +382,27 @@ public:
     }
 
     /**
-     * @brief Returns a view object that allows to iterate over the Vertices
-     * of the container in the given range:
-     *
-     * @code{.cpp}
-     * for (Vertex& e : m.vertices(3, 10)){
-     *     // iterate over the Vertices from index 3 to 10
-     *     // do something with e
-     * }
-     * @endcode
-     *
-     * @note Unlike the vertices() function, this member function does not
-     * automatically jump deleted vertices, but it iterates over the
-     * vertices in the given range, regardless of whether they are deleted or
-     * not.
-     *
-     * @param[in] begin: the index of the first vertex to be included in the
-     * range. It must be less or equal to vertexContainerSize() and less or
-     * equal to the end index.
-     * @param[in] end: the index of the last vertex to be included in the
-     * range.
-     * @return An object having begin() and end() function, allowing to iterate
-     * over the given range of the container.
-     */
-    auto vertices(uint begin, uint end = UINT_NULL)
-    {
-        return Base::elements(begin, end);
-    }
-
-    /**
-     * @brief Returns a small utility object that allows to iterate over the
-     * vertices of the containers, providing two member functions begin() and
-     * end().
+     * @brief Returns an ElementContainerProxy object that allows to iterate
+     * over the vertices of the container, providing begin() and end() member
+     * functions.
      *
      * This member function is very useful when you want to iterate over the
-     * vertices using the C++ foreach syntax:
+     * vertices using the C++ range-based for loop syntax:
      *
      * @code{.cpp}
-     * for (const Vertex& v : m.vertices()){
+     * for (ConstVertex v : m.vertices()) {
      *     // do something with this vertex
      * }
      * @endcode
      *
      * The iterator used to iterate over vertices is automatically initialized
      * to jump deleted vertices of the container. You can change this option by
-     * calling this function with jumpDeleted=false.
+     * calling this function with jumpDeleted = false.
      *
-     * @param[in] jumpDeleted (def: true): boolean that tells if the iterator
-     * should jump deleted vertices.
-     * @return An object having begin() and end() function, allowing to iterate
-     * over the container.
+     * @param[in] jumpDeleted (default: true): boolean that tells if the
+     * iterator should jump deleted vertices.
+     * @return An object having begin() and end() functions, allowing to
+     * iterate over the container.
      */
     auto vertices(bool jumpDeleted = true) const
     {
@@ -508,15 +410,9 @@ public:
     }
 
     /**
-     * @brief Returns a view object that allows to iterate over the Vertices
-     * of the container in the given range:
-     *
-     * @code{.cpp}
-     * for (const Vertex& e : m.vertices(3, 10)){
-     *     // iterate over the Vertices from index 3 to 10
-     *     // do something with e
-     * }
-     * @endcode
+     * @brief Returns a view object that allows to iterate over the vertices of
+     * the container in the range [begin, end), providing begin() and end()
+     * member functions.
      *
      * @note Unlike the vertices() function, this member function does not
      * automatically jump deleted vertices, but it iterates over the
@@ -524,476 +420,130 @@ public:
      * not.
      *
      * @param[in] begin: the index of the first vertex to be included in the
-     * range. It must be less or equal to vertexContainerSize() and less or
-     * equal to the end index.
+     * range. It must be less than or equal to vertexContainerSize() and less
+     * than or equal to the end index.
      * @param[in] end: the index of the last vertex to be included in the
-     * range.
-     * @return An object having begin() and end() function, allowing to iterate
-     * over the given range of the container.
+     * range (exclusive). If NULL_INDEX (default) or greater than
+     * vertexContainerSize(), it will be set to vertexContainerSize().
+     * @return A View object allowing to iterate over the given range of the
+     * container.
      */
-    auto vertices(uint begin, uint end = UINT_NULL) const
+    auto vertices(Index begin, Index end = NULL_INDEX)
     {
         return Base::elements(begin, end);
     }
 
     /**
-     * @brief Enables all the optional components associated to the Vertex type
-     * contained in the VertexContainer.
+     * @brief Returns a view object that allows to iterate over the vertices of
+     * the container in the range [begin, end), providing begin() and end()
+     * member functions.
+     *
+     * @note Unlike the vertices() function, this member function does not
+     * automatically jump deleted vertices, but it iterates over the
+     * vertices in the given range, regardless of whether they are deleted or
+     * not.
+     *
+     * @param[in] begin: the index of the first vertex to be included in the
+     * range. It must be less than or equal to vertexContainerSize() and less
+     * than or equal to the end index.
+     * @param[in] end: the index of the last vertex to be included in the
+     * range (exclusive). If NULL_INDEX (default) or greater than
+     * vertexContainerSize(), it will be set to vertexContainerSize().
+     * @return A View object allowing to iterate over the given range of the
+     * container.
      */
-    void enableAllPerVertexOptionalComponents()
+    auto vertices(Index begin, Index end = NULL_INDEX) const
+    {
+        return Base::elements(begin, end);
+    }
+
+    // --- Components ---
+
+    /**
+     * @brief Checks if the vertex component with the given COMP_ID is
+     * available (present at compile time and enabled at run time).
+     *
+     * Non-optional components are always available (true).
+     * Optional components return true if currently enabled, false otherwise.
+     *
+     * @tparam COMP_ID: The ID of the component to check.
+     * @return `true` if currently available, `false` otherwise.
+     */
+    template<CompId COMP_ID>
+    bool isVertexComponentAvailable() const
+    {
+        return Base::template isComponentAvailable<COMP_ID>();
+    }
+
+    /**
+     * @brief Enables the optional vertex component with the given COMP_ID.
+     *
+     * @tparam COMP_ID: The ID of the component to enable.
+     */
+    template<CompId COMP_ID>
+    void enableVertexComponent()
+        requires comp::HasOptionalComponent<COMP_ID, VertexComponents>
+    {
+        Base::template enableOptionalComponent<COMP_ID>();
+    }
+
+    /**
+     * @brief Disables the optional vertex component with the given COMP_ID.
+     * Note: Non-optional components cannot be disabled.
+     *
+     * @tparam COMP_ID: The ID of the component to disable.
+     */
+    template<CompId COMP_ID>
+    void disableVertexComponent()
+        requires comp::HasOptionalComponent<COMP_ID, VertexComponents>
+    {
+        Base::template disableOptionalComponent<COMP_ID>();
+    }
+
+    /**
+     * @brief Enables all optional vertex components in the container.
+     */
+    void enableAllVertexOptionalComponents()
     {
         Base::enableAllOptionalComponents();
     }
 
     /**
-     * @brief Disables all the optional components associated to the Vertex type
-     * contained in the VertexContainer.
+     * @brief Disables all optional vertex components in the container.
      */
-    void disableAllPerVertexOptionalComponents()
+    void disableAllVertexOptionalComponents()
     {
         Base::disableAllOptionalComponents();
     }
 
-    // Adjacent Edges
-
     /**
-     * @brief Checks if the vertex Optional Adjacent Edges component is enabled.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalAdjacentEdges Component.
-     *
-     * @return true if the Optional Adjacent Edges is enabled, false otherwise.
+     * @brief Enables all optional vertex components in the container.
+     * Alias for enableAllVertexOptionalComponents().
      */
-    bool isPerVertexAdjacentEdgesEnabled() const
-        requires vert::HasOptionalAdjacentEdges<T>
-    {
-        return Base::template isOptionalComponentEnabled<
-            typename T::AdjacentEdges>();
-    }
+    void enableAllVertexComponents() { Base::enableAllOptionalComponents(); }
 
     /**
-     * @brief Enables the Optional Adjacent Edges of the vertex.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalAdjacentEdges Component.
+     * @brief Disables all optional vertex components in the container.
+     * Alias for disableAllVertexOptionalComponents().
      */
-    void enablePerVertexAdjacentEdges()
-        requires vert::HasOptionalAdjacentEdges<T>
-    {
-        Base::template enableOptionalComponent<typename T::AdjacentEdges>();
-    }
+    void disableAllVertexComponents() { Base::disableAllOptionalComponents(); }
+
+    VCL_COMMON_CONTAINER_COMPONENT_METHODS(Vertex)
+    VCL_CONTAINER_COMPONENT_METHODS(Vertex, AdjacentEdges, ADJACENT_EDGES)
+    VCL_CONTAINER_COMPONENT_METHODS(Vertex, AdjacentFaces, ADJACENT_FACES)
+    VCL_CONTAINER_COMPONENT_METHODS(Vertex, AdjacentVertices, ADJACENT_VERTICES)
+    VCL_CONTAINER_COMPONENT_METHODS(Vertex, MaterialIndex, MATERIAL_INDEX)
+    VCL_CONTAINER_COMPONENT_METHODS(
+        Vertex,
+        PrincipalCurvature,
+        PRINCIPAL_CURVATURE)
+    VCL_CONTAINER_COMPONENT_METHODS(Vertex, Tangent, TANGENT)
+    VCL_CONTAINER_COMPONENT_METHODS(Vertex, TexCoord, TEX_COORD)
+
+    // --- Custom Components ---
 
     /**
-     * @brief Disables the Optional Adjacent Edges of the vertex.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalAdjacentEdges Component.
-     */
-    void disablePerVertexAdjacentEdges()
-        requires vert::HasOptionalAdjacentEdges<T>
-    {
-        Base::template disableOptionalComponent<typename T::AdjacentEdges>();
-    }
-
-    // Adjacent Faces
-
-    /**
-     * @brief Checks if the vertex Optional Adjacent Faces component is enabled.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalAdjacentFaces Component.
-     *
-     * @return true if the Optional Adjacent Faces is enabled, false otherwise.
-     */
-    bool isPerVertexAdjacentFacesEnabled() const
-        requires vert::HasOptionalAdjacentFaces<T>
-    {
-        return Base::template isOptionalComponentEnabled<
-            typename T::AdjacentFaces>();
-    }
-
-    /**
-     * @brief Enables the Optional Adjacent Faces of the vertex.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalAdjacentFaces Component.
-     */
-    void enablePerVertexAdjacentFaces()
-        requires vert::HasOptionalAdjacentFaces<T>
-    {
-        Base::template enableOptionalComponent<typename T::AdjacentFaces>();
-    }
-
-    /**
-     * @brief Disables the Optional Adjacent Faces of the vertex.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalAdjacentFaces Component.
-     */
-    void disablePerVertexAdjacentFaces()
-        requires vert::HasOptionalAdjacentFaces<T>
-    {
-        Base::template disableOptionalComponent<typename T::AdjacentFaces>();
-    }
-
-    // Adjacent Vertices
-
-    /**
-     * @brief Checks if the vertex Optional Adjacent Vertices component is
-     * enabled.
-     *
-     * @note This function is available **only if the Vertex Element has the
-     * OptionalAdjacentVertices Component.
-     *
-     * @return true if the Optional Adjacent Vertices is enabled, false
-     * otherwise.
-     */
-    bool isPerVertexAdjacentVerticesEnabled() const
-        requires vert::HasOptionalAdjacentVertices<T>
-    {
-        return Base::template isOptionalComponentEnabled<
-            typename T::AdjacentVertices>();
-    }
-
-    /**
-     * @brief Enables the Optional Adjacent Vertices of the vertex.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalAdjacentVertices Component.
-     */
-    void enablePerVertexAdjacentVertices()
-        requires vert::HasOptionalAdjacentVertices<T>
-    {
-        Base::template enableOptionalComponent<typename T::AdjacentVertices>();
-    }
-
-    /**
-     * @brief Disables the Optional Adjacent Vertices of the vertex.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalAdjacentVertices Component.
-     */
-    void disablePerVertexAdjacentVertices()
-        requires vert::HasOptionalAdjacentVertices<T>
-    {
-        Base::template disableOptionalComponent<typename T::AdjacentVertices>();
-    }
-
-    // Color
-
-    /**
-     * @brief Checks if the vertex Optional Color is enabled.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalColor Component.
-     *
-     * @return true if the Optional Color is enabled, false otherwise.
-     */
-    bool isPerVertexColorEnabled() const requires vert::HasOptionalColor<T>
-    {
-        return Base::template isOptionalComponentEnabled<typename T::Color>();
-    }
-
-    /**
-     * @brief Enables the Optional Color of the vertex.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalColor Component.
-     */
-    void enablePerVertexColor() requires vert::HasOptionalColor<T>
-    {
-        return Base::template enableOptionalComponent<typename T::Color>();
-    }
-
-    /**
-     * @brief Disables the Optional Color of the vertex.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalColor Component.
-     */
-    void disablePerVertexColor() requires vert::HasOptionalColor<T>
-    {
-        Base::template disableOptionalComponent<typename T::Color>();
-    }
-
-    // Mark
-
-    /**
-     * @brief Checks if the vertex Optional Mark is enabled.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalMark Component.
-     *
-     * @return true if the Optional Mark is enabled, false otherwise.
-     */
-    bool isPerVertexMarkEnabled() const requires vert::HasOptionalMark<T>
-    {
-        return Base::template isOptionalComponentEnabled<typename T::Mark>();
-    }
-
-    /**
-     * @brief Enables the Optional Mark of the vertex.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalMark Component.
-     */
-    void enablePerVertexMark() requires vert::HasOptionalMark<T>
-    {
-        Base::template enableOptionalComponent<typename T::Mark>();
-    }
-
-    /**
-     * @brief Container::disableVertexMark disables the Optional Mark of the
-     * vertex.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalMark Component.
-     */
-    void disablePerVertexMark() requires vert::HasOptionalMark<T>
-    {
-        Base::template disableOptionalComponent<typename T::Mark>();
-    }
-
-    // MaterialIndex
-
-    /**
-     * @brief Checks if the vertex Optional MaterialIndex is enabled.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalMaterialIndex Component.
-     *
-     * @return true if the Optional MaterialIndex is enabled, false otherwise.
-     */
-    bool isPerVertexMaterialIndexEnabled() const
-        requires vert::HasOptionalMaterialIndex<T>
-    {
-        return Base::template isOptionalComponentEnabled<
-            typename T::MaterialIndex>();
-    }
-
-    /**
-     * @brief Enables the Optional MaterialIndex of the vertex.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalMaterialIndex Component.
-     */
-    void enablePerVertexMaterialIndex()
-        requires vert::HasOptionalMaterialIndex<T>
-    {
-        Base::template enableOptionalComponent<typename T::MaterialIndex>();
-    }
-
-    /**
-     * @brief Container::disableVertexMaterialIndex disables the Optional
-     * MaterialIndex of the vertex.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalMaterialIndex Component.
-     */
-    void disablePerVertexMaterialIndex()
-        requires vert::HasOptionalMaterialIndex<T>
-    {
-        Base::template disableOptionalComponent<typename T::MaterialIndex>();
-    }
-
-    // Normal
-
-    /**
-     * @brief Checks if the vertex Optional Normal is enabled.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalNormal Component.
-     *
-     * @return true if the Optional Normal is enabled, false otherwise.
-     */
-    bool isPerVertexNormalEnabled() const requires vert::HasOptionalNormal<T>
-    {
-        return Base::template isOptionalComponentEnabled<typename T::Normal>();
-    }
-
-    /**
-     * @brief Enables the Optional Normal of the vertex.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalNormal Component.
-     */
-    void enablePerVertexNormal() requires vert::HasOptionalNormal<T>
-    {
-        Base::template enableOptionalComponent<typename T::Normal>();
-    }
-
-    /**
-     * @brief Checks if the vertex Optional PrincipalCurvature is enabled.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalPrincipalCurvature Component.
-     */
-    void disablePerVertexNormal() requires vert::HasOptionalNormal<T>
-    {
-        Base::template disableOptionalComponent<typename T::Normal>();
-    }
-
-    // PrincipalCurvature
-
-    /**
-     * @brief Checks if the vertex Optional PrincipalCurvature is enabled.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalPrincipalCurvature Component.
-     *
-     * @return true if the Optional PrincipalCurvature is enabled, false
-     * otherwise.
-     */
-    bool isPerVertexPrincipalCurvatureEnabled() const
-        requires vert::HasOptionalPrincipalCurvature<T>
-    {
-        return Base::template isOptionalComponentEnabled<
-            typename T::PrincipalCurvature>();
-    }
-
-    /**
-     * @brief Enables the Optional PrincipalCurvature of the vertex.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalPrincipalCurvature Component.
-     */
-    void enablePerVertexPrincipalCurvature()
-        requires vert::HasOptionalPrincipalCurvature<T>
-    {
-        Base::template enableOptionalComponent<
-            typename T::PrincipalCurvature>();
-    }
-
-    /**
-     * @brief Disables the Optional PrincipalCurvature of the vertex.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalPrincipalCurvature Component.
-     */
-    void disablePerVertexPrincipalCurvature()
-        requires vert::HasOptionalPrincipalCurvature<T>
-    {
-        Base::template disableOptionalComponent<
-            typename T::PrincipalCurvature>();
-    }
-
-    // Quality
-
-    /**
-     * @brief Checks if the vertex Optional Quality is enabled.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalQuality Component.
-     *
-     * @return true if the Optional Quality is enabled, false otherwise.
-     */
-    bool isPerVertexQualityEnabled() const requires vert::HasOptionalQuality<T>
-    {
-        return Base::template isOptionalComponentEnabled<typename T::Quality>();
-    }
-
-    /**
-     * @brief Enables the Optional Quality of the vertex.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalQuality Component.
-     */
-    void enablePerVertexQuality() requires vert::HasOptionalQuality<T>
-    {
-        Base::template enableOptionalComponent<typename T::Quality>();
-    }
-
-    /**
-     * @brief Disables the Optional Quality of the vertex.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalQuality Component.
-     */
-    void disablePerVertexQuality() requires vert::HasOptionalQuality<T>
-    {
-        Base::template disableOptionalComponente<typename T::Quality>();
-    }
-
-    // Tangent
-
-    /**
-     * @brief Checks if the vertex Optional Tangent is enabled.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalTangent Component.
-     *
-     * @return true if the Optional Tangent is enabled, false otherwise.
-     */
-    bool isPerVertexTangentEnabled() const requires vert::HasOptionalTangent<T>
-    {
-        return Base::template isOptionalComponentEnabled<typename T::Tangent>();
-    }
-
-    /**
-     * @brief Enables the Optional Tangent of the vertex.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalTangent Component.
-     */
-    void enablePerVertexTangent() requires vert::HasOptionalTangent<T>
-    {
-        Base::template enableOptionalComponent<typename T::Tangent>();
-    }
-
-    /**
-     * @brief Checks if the vertex Optional Tangent is enabled.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalTangent Component.
-     */
-    void disablePerVertexTangent() requires vert::HasOptionalTangent<T>
-    {
-        Base::template disableOptionalComponent<typename T::Tangent>();
-    }
-
-    // TexCoord
-
-    /**
-     * @brief Checks if the vertex Optional TexCoord is enabled.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalTexCoord Component.
-     *
-     * @return true if the Optional TexCoord is enabled, false otherwise.
-     */
-    bool isPerVertexTexCoordEnabled() const
-        requires vert::HasOptionalTexCoord<T>
-    {
-        return Base::template isOptionalComponentEnabled<
-            typename T::TexCoord>();
-    }
-
-    /**
-     * @brief Enables the Optional TexCoord of the vertex.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalTexCoord Component.
-     */
-    void enablePerVertexTexCoord() requires vert::HasOptionalTexCoord<T>
-    {
-        Base::template enableOptionalComponent<typename T::TexCoord>();
-    }
-
-    /**
-     * @brief Disables the Optional TexCoord of the vertex.
-     *
-     * @note This function is available only if the Vertex Element has the
-     * OptionalTexCoord Component.
-     */
-    void disablePerVertexTexCoord() requires vert::HasOptionalTexCoord<T>
-    {
-        Base::template disableOptionalComponent<typename T::TexCoord>();
-    }
-
-    // Custom Components
-
-    /**
-     * @brief Checks if vertices have a custom component with the given name.
+     * @brief Checks if Vertices have a custom component with the given name.
      *
      * This function does not take into account the type of the custom
      * component.
@@ -1001,11 +551,12 @@ public:
      * @note This function is available only if the Vertex Element has the
      * CustomComponents Component.
      *
+     * @param[in] name: The name of the custom component to check.
      * @return `true` if the Vertex Element has a custom component with the
      * given name.
      */
-    bool hasPerVertexCustomComponent(const std::string& name) const
-        requires vert::HasCustomComponents<T>
+    bool hasVertexCustomComponent(const std::string& name) const
+        requires vert::HasCustomComponents<VertexComponents>
     {
         return Base::hasElemCustomComponent(name);
     }
@@ -1020,8 +571,8 @@ public:
      * @return A vector of strings representing all the names of the custom
      * components.
      */
-    std::vector<std::string> perVertexCustomComponentNames() const
-        requires vert::HasCustomComponents<T>
+    std::vector<std::string> vertexCustomComponentNames() const
+        requires vert::HasCustomComponents<VertexComponents>
     {
         return Base::elemCustomComponentNames();
     }
@@ -1031,27 +582,19 @@ public:
      * given name has the same type of the given template argument type of this
      * function.
      *
-     * For example, the following code checks if the component called `cc` is of
-     * type `double`:
-     * @code{.cpp}
-     * if (m.isPerVertexCustomComponentOfType<double>("cc")) {
-     *   ...
-     * }
-     * @endcode
-     *
      * @note This function is available only if the Vertex Element has the
      * CustomComponents Component.
      *
-     * @tparam K: the type of the custom component to check.
-     * @param[in] name: the name of the custom component to check.
+     * @tparam K: The type of the custom component to check.
+     * @param[in] name: The name of the custom component to check.
      * @throws std::out_of_range if no custom component of the given name was
      * found.
      * @return `true` if the custom component is of the same type of the
      * template argument.
      */
     template<typename K>
-    bool isPerVertexCustomComponentOfType(const std::string& name) const
-        requires vert::HasCustomComponents<T>
+    bool isVertexCustomComponentOfType(const std::string& name) const
+        requires vert::HasCustomComponents<VertexComponents>
     {
         return Base::template isElemCustomComponentOfType<K>(name);
     }
@@ -1063,18 +606,17 @@ public:
      * @note This function is available only if the Vertex Element has the
      * CustomComponents Component.
      *
-     * @param[in] name: the name of the custom component to get the
+     * @param[in] name: The name of the custom component to get the
      * std::type_index from.
      * @throws std::out_of_range if no custom component of the given name was
      * found.
-     *
      * @return The std::type_index of the custom component having the given
      * input name.
      */
-    std::type_index perVertexCustomComponentType(const std::string& name) const
-        requires vert::HasCustomComponents<T>
+    std::type_index vertexCustomComponentType(const std::string& name) const
+        requires vert::HasCustomComponents<VertexComponents>
     {
-        return Base::elemComponentType(name);
+        return Base::elemCustomComponentType(name);
     }
 
     /**
@@ -1082,23 +624,16 @@ public:
      * associated to the Vertex Element having the same type of the given
      * template argument type of this function.
      *
-     * For example, the following code gets a vector containing all the custom
-     * components of type `double`:
-     * @code{.cpp}
-     * std::vector<std::string> cdouble =
-     * m.perVertexCustomComponentNamesOfType<double>();
-     * @endcode
-     *
      * @note This function is available only if the Vertex Element has the
      * CustomComponents Component.
      *
-     * @tparam K: the type of the custom component names.
+     * @tparam K: The type of the custom component names.
      * @return A vector of strings representing the names of the custom
      * components of a given type.
      */
     template<typename K>
-    std::vector<std::string> perVertexCustomComponentNamesOfType() const
-        requires vert::HasCustomComponents<T>
+    std::vector<std::string> vertexCustomComponentNamesOfType() const
+        requires vert::HasCustomComponents<VertexComponents>
     {
         return Base::template elemCustomComponentNamesOfType<K>();
     }
@@ -1110,12 +645,12 @@ public:
      * @note This function is available only if the Vertex Element has the
      * CustomComponents Component.
      *
-     * @tparam K: the type of the custom component added to the Vertex.
-     * @param[in] name: the name of the custom component added to the Vertex.
+     * @tparam K: The type of the custom component added to the Vertex.
+     * @param[in] name: The name of the custom component added to the Vertex.
      */
     template<typename K>
-    void addPerVertexCustomComponent(const std::string& name)
-        requires vert::HasCustomComponents<T>
+    void addVertexCustomComponent(const std::string& name)
+        requires vert::HasCustomComponents<VertexComponents>
     {
         Base::template addElemCustomComponent<K>(name);
     }
@@ -1124,16 +659,16 @@ public:
      * @brief Deletes the custom component of the given name from the Vertex
      * Element.
      *
-     * The function does nothing if the custom component does not exists.
+     * The function does nothing if the custom component does not exist.
      *
      * @note This function is available only if the Vertex Element has the
      * CustomComponents Component.
      *
-     * @param[in] name: the name of the custom component that will be removed
+     * @param[in] name: The name of the custom component that will be removed
      * from the Vertex.
      */
-    void deletePerVertexCustomComponent(const std::string& name)
-        requires vert::HasCustomComponents<T>
+    void deleteVertexCustomComponent(const std::string& name)
+        requires vert::HasCustomComponents<VertexComponents>
     {
         Base::deleteElemCustomComponent(name);
     }
@@ -1142,46 +677,19 @@ public:
      * @brief Returns a vector handle to the custom component having the type K
      * and the given name.
      *
-     * The handle can be used like a normal std::vector, but does not have
-     * access to the modifiers member functions (resize, push_back...). The
-     * handle contains **references** to the custom component, therefore you can
-     * modify the custom component by modifying the element of the handle vector
-     * normally. Since the handle stores references, there are no copies
-     * performed when calling this function.
-     *
-     * For example, assuming that the mesh has a vertex custom component named
-     * "cc" of type int:
-     *
-     * @code{.cpp}
-     * auto handle = m.perVertexCustomComponentVectorHandle<int>("cc");
-     * for (Vertex& v : m.vertices() {
-     *    handle[m.index(v)] = 5; // v.customComponent<int>("cc") == 5
-     *    assert(v.customComponent<int>("cc") == 5);
-     * }
-     * @endcode
-     *
-     * Using handles allows to access more efficiently to custom components
-     * rather accessing from an element object. However, note that references
-     * are binded to the container of the mesh.
-     *
      * @note This function is available only if the Vertex Element has the
      * CustomComponents Component.
      *
-     * @note Since the handle contains references, any operation that changes
-     * the size of the container could be destructive and invalidate the
-     * references contained in the handle.
-     *
-     * @tparam K: the type of the custom component on which return the handle.
-     *
-     * @param[in] name: name of the custom component on which return the handle.
-     * @throws std::out_of_range if no custom component of the given name was
-     * found.
-     *
-     * @return a vector handle that allows to access to the custom component.
+     * @tparam K: The type of the custom component for which to return the
+     * handle.
+     * @param[in] name: Name of the custom component for which to return the
+     * handle.
+     * @return A vector handle that allows access to the custom component.
      */
     template<typename K>
-    CustomComponentVectorHandle<K> perVertexCustomComponentVectorHandle(
-        const std::string& name) requires vert::HasCustomComponents<T>
+    CustomComponentVectorHandle<K> vertexCustomComponentVectorHandle(
+        const std::string& name)
+        requires vert::HasCustomComponents<VertexComponents>
     {
         return Base::template customComponentVectorHandle<K>(name);
     }
@@ -1190,146 +698,53 @@ public:
      * @brief Returns a const vector handle to the custom component having type
      * K and the given name.
      *
-     * The handle can be used like a normal std::vector, but does not have
-     * access to the modifiers member functions (resize, push_back...). The
-     * handle contains **const references** to the custom component, therefore
-     * you can access to the custom component by accessing the element of the
-     * handle vector normally. Since the handle stores references, there are no
-     * copies performed when calling this function.
-     *
-     * For example, assuming that the mesh has a vertex custom component named
-     * "cc" of type int:
-     *
-     * @code{.cpp}
-     * // access to the const handle by making const the template parameter:
-     * auto handle = m.perVertexCustomComponentVectorHandle<const int>("cc");
-     * int sum = 0;
-     * for (const Vertex& v : m.vertices() {
-     *    sum += handle[m.index(v)];
-     *    // handle[m.index(v)] = 5; // not allowed, because the handle is const
-     * }
-     * @endcode
-     *
-     * Using handles allows to access more efficiently to custom components
-     * rather accessing from an element object. However, note that references
-     * are binded to the container of the mesh.
-     *
      * @note This function is available only if the Vertex Element has the
      * CustomComponents Component.
      *
-     * @note Since the handle contains references, any operation that changes
-     * the size of the container could be destructive and invalidate the
-     * references contained in the handle.
-     *
-     * @tparam K: the type of the custom component on which return the handle.
-     *
-     * @param[in] name: name of the custom component on which return the handle.
-     * @throws std::out_of_range if no custom component of the given name was
-     * found.
-     *
-     * @return a const vector handle that allows to access to the custom
+     * @tparam K: The type of the custom component for which to return the
+     * handle.
+     * @param[in] name: Name of the custom component for which to return the
+     * handle.
+     * @return A const vector handle that allows access to the custom
      * component.
      */
     template<typename K>
-    ConstCustomComponentVectorHandle<K> perVertexCustomComponentVectorHandle(
-        const std::string& name) const requires vert::HasCustomComponents<T>
+    ConstCustomComponentVectorHandle<K> vertexCustomComponentVectorHandle(
+        const std::string& name) const
+        requires vert::HasCustomComponents<VertexComponents>
     {
         return Base::template customComponentVectorHandle<K>(name);
     }
 
     /**
-     * @brief Serializes in the given output stream all the custom components of
-     * the Vertex Element of type K.
+     * @brief Serializes all per-vertex custom components of type K stored in
+     * this container to the given output stream.
      *
-     * @note This function is available only if the Vertex Element has the
-     * CustomComponents Component.
-     *
-     * @param[in] os: the output stream where the custom components will be
-     * serialized.
+     * @tparam K: The type of the custom components to serialize.
+     * @param os: The output stream to write to.
      */
     template<typename K>
-    void serializePerVertexCustomComponentsOfType(std::ostream& os) const
-        requires vert::HasCustomComponents<T>
+    void serializeVertexCustomComponentsOfType(std::ostream& os) const
+        requires vert::HasCustomComponents<VertexComponents>
     {
-        Base::template serializePerElementCustomComponentsOfType<K>(os);
+        Base::template serializeElemCustomComponentsOfType<K>(os);
     }
 
     /**
-     * @brief Deserializes in the given input stream all the custom components
-     * of the Vertex Element of type K.
+     * @brief Deserializes all per-vertex custom components of type K from the
+     * given input stream and stores them into this container.
      *
-     * @note This function is available only if the Vertex Element has the
-     * CustomComponents Component.
-     *
-     * @param[in] is: the input stream where the custom components will be
-     * deserialized.
+     * @tparam K: The type of the custom components to deserialize.
+     * @param is: The input stream to read from.
      */
     template<typename K>
-    void deserializePerVertexCustomComponentsOfType(std::istream& is)
-        requires vert::HasCustomComponents<T>
+    void deserializeVertexCustomComponentsOfType(std::istream& is)
+        requires vert::HasCustomComponents<VertexComponents>
     {
-        Base::template deserializePerElementCustomComponentsOfType<K>(is);
+        Base::template deserializeElemCustomComponentsOfType<K>(is);
     }
 };
 
-/* Concepts */
-
-/**
- * @brief A concept that checks whether a class has (inherits from) a
- * VertexContainer class.
- *
- * The concept is satisfied when `T` is a class that instantiates or derives
- * from a VertexContainer class having any Vertex element type.
- *
- * @tparam T: The type to be tested for conformity to the HasVertexContainer.
- *
- * @ingroup containers
- * @ingroup containers_concepts
- */
-template<typename T>
-concept HasVertexContainer = std::derived_from< // same type or derived type
-    std::remove_cvref_t<T>,
-    VertexContainer<typename RemoveRef<T>::VertexType>>;
-
-} // namespace mesh
-
-/**
- * @brief HasVertices concepts is satisfied when at least one of its types is
- * (or inherits from) a @ref vcl::mesh::VertexContainer. It can be used both to
- * check if a Mesh has vertices, or if in a list of types there is a
- * VertexContainer.
- *
- * In the following example, a MyMesh type can be instantiated only if one of
- * its template Args is a VertexContainer:
- * @code{.cpp}
- * template <typename... Args> requires HasVertices<Args...>
- * class MyMesh {
- *     // ...
- * };
- *
- * // ...
- *
- * MyMesh<vcl::VertexContainer<MyVertex>> m1; // ok
- * MyMesh<vcl::FaceContainer<MyFace>> m2; // not ok
- * MyMesh<vcl::VertexContainer<MyVertex>, vcl::FaceContainer<MyFace>> m3; // ok
- * @endcode
- *
- * To check if a type has (inherits from) VertexContainer:
- * @code{.cpp}
- * if constexpr (vcl::HasVertices<MyMeshType>) {
- *     // ...
- * }
- * @endcode
- *
- * @note This concept does not check if a Mesh is a valid Mesh. To do that, use
- * the MeshConcept.
- *
- * @ingroup containers
- * @ingroup containers_concepts
- */
-template<typename... Args>
-concept HasVertices = (mesh::HasVertexContainer<Args> || ...);
-
-} // namespace vcl
+} // namespace vcl::mesh
 
 #endif // VCL_MESH_CONTAINERS_VERTEX_CONTAINER_H

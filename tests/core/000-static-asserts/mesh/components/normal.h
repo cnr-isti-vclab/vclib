@@ -14,8 +14,8 @@ void normalComponentStaticAsserts()
 {
     using namespace vcl;
 
-    using TriMeshVertex = trimesh::Vertex<float, true>;
-    using EdgeMeshEdge  = edgemesh::Edge<float, true>;
+    using TriMeshVertex = VertexType<TriMesh>;
+    using EdgeMeshEdge  = EdgeType<EdgeMesh>;
 
     // test only the normal component
     static_assert(

@@ -14,11 +14,9 @@ void adjacentVerticesComponentStaticAsserts()
 {
     using namespace vcl;
 
-    using TriMeshVertex  = trimesh::Vertex<float, false>;
-    using TriMeshVertexI = trimesh::Vertex<float, true>;
+    using TriMeshVertex = VertexType<TriMesh>;
 
-    using AVPComponent = vert::AdjacentVertices<false, TriMeshVertex>;
-    using AVIComponent = vert::AdjacentVertices<true, TriMeshVertexI>;
+    using AVPComponent = vert::AdjacentVertices<>;
 
     // test only the adjacent vertices indices/pointers component
     static_assert(
@@ -43,27 +41,6 @@ void adjacentVerticesComponentStaticAsserts()
         "concept");
 
     static_assert(
-        comp::HasAdjacentVertices<AVIComponent>,
-        "Indexed vert::AdjacentVertices does not satisfy the "
-        "HasAdjacentVertices concept");
-    static_assert(
-        comp::HasAdjacentVertices<const AVIComponent>,
-        "Indexed const vert::AdjacentVertices does not satisfy the "
-        "HasAdjacentVertices concept");
-    static_assert(
-        comp::HasAdjacentVertices<AVIComponent&>,
-        "Indexed vert::AdjacentVertices& does not satisfy the "
-        "HasAdjacentVertices concept");
-    static_assert(
-        comp::HasAdjacentVertices<const AVIComponent&>,
-        "Indexed const vert::AdjacentVertices& does not satisfy the "
-        "HasAdjacentVertices concept");
-    static_assert(
-        comp::HasAdjacentVertices<AVIComponent&&>,
-        "Indexed vert::AdjacentVertices&& does not satisfy the "
-        "HasAdjacentVertices concept");
-
-    static_assert(
         comp::HasAdjacentVertices<TriMeshVertex>,
         "TriMesh Vertex does not satisfy the HasAdjacentVertices concept");
     static_assert(
@@ -80,27 +57,6 @@ void adjacentVerticesComponentStaticAsserts()
     static_assert(
         comp::HasAdjacentVertices<TriMeshVertex&&>,
         "TriMesh Vertex&& does not satisfy the HasAdjacentVertices concept");
-
-    static_assert(
-        comp::HasAdjacentVertices<TriMeshVertexI>,
-        "Indexed TriMesh Vertex does not satisfy the HasAdjacentVertices "
-        "concept");
-    static_assert(
-        comp::HasAdjacentVertices<const TriMeshVertexI>,
-        "Indexed const TriMesh Vertex does not satisfy the HasAdjacentVertices "
-        "concept");
-    static_assert(
-        comp::HasAdjacentVertices<TriMeshVertexI&>,
-        "Indexed TriMesh Vertex& does not satisfy the HasAdjacentVertices "
-        "concept");
-    static_assert(
-        comp::HasAdjacentVertices<const TriMeshVertexI&>,
-        "Indexed const TriMesh Vertex& does not satisfy the "
-        "HasAdjacentVertices concept");
-    static_assert(
-        comp::HasAdjacentVertices<TriMeshVertexI&&>,
-        "Indexed TriMesh Vertex&& does not satisfy the HasAdjacentVertices "
-        "concept");
 
     static_assert(
         comp::HasOptionalAdjacentVertices<TriMeshVertex>,
@@ -122,27 +78,6 @@ void adjacentVerticesComponentStaticAsserts()
         comp::HasOptionalAdjacentVertices<TriMeshVertex&&>,
         "TriMesh Vertex&& does not satisfy the HasOptionalAdjacentVertices "
         "concept");
-
-    static_assert(
-        comp::HasOptionalAdjacentVertices<TriMeshVertexI>,
-        "Indexed TriMesh Vertex does not satisfy the "
-        "HasOptionalAdjacentVertices concept");
-    static_assert(
-        comp::HasOptionalAdjacentVertices<const TriMeshVertexI>,
-        "Indexed const TriMesh Vertex does not satisfy the "
-        "HasOptionalAdjacentVertices concept");
-    static_assert(
-        comp::HasOptionalAdjacentVertices<TriMeshVertexI&>,
-        "Indexed TriMesh Vertex& does not satisfy the "
-        "HasOptionalAdjacentVertices concept");
-    static_assert(
-        comp::HasOptionalAdjacentVertices<const TriMeshVertexI&>,
-        "Indexed const TriMesh Vertex& does not satisfy the "
-        "HasOptionalAdjacentVertices concept");
-    static_assert(
-        comp::HasOptionalAdjacentVertices<TriMeshVertexI&&>,
-        "Indexed TriMesh Vertex&& does not satisfy the "
-        "HasOptionalAdjacentVertices concept");
 }
 
 #endif // COMP_ADJACENT_VERTICES_H

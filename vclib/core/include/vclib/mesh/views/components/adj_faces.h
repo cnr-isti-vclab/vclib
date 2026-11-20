@@ -8,43 +8,73 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_ADJ_FACES_H
 #define VCL_MESH_VIEWS_COMPONENTS_ADJ_FACES_H
 
-#include <vclib/mesh/components/adjacent_faces.h>
-#include <vclib/mesh/views/component.h>
+#include "../component.h"
 
 #include <vclib/base.h>
 
-namespace vcl::views {
+#include <ranges>
+
+namespace vcl {
+
+template<typename T>
+concept HasAdjFacesMember = requires (T&& t) {
+    { t.adjFaces() } -> std::ranges::range;
+};
+
+template<typename R>
+concept AdjFacesRangeConcept =
+    std::ranges::range<R> &&
+    HasAdjFacesMember<std::ranges::range_reference_t<R>>;
+
+namespace views {
 
 namespace detail {
 
-struct AdjFacesView
-{
-    constexpr AdjFacesView() = default;
+inline constexpr auto getAdjFaces = [](auto&& p) -> decltype(auto) {
+    return p.adjFaces();
+};
 
-    template<comp::HasAdjacentFaces R>
+struct AdjFacesView : std::ranges::range_adaptor_closure<AdjFacesView>
+{
+    template<typename R>
+    requires (!std::ranges::range<R>) && HasAdjFacesMember<R>
+    constexpr auto operator()(R&& r) const
+    {
+        return std::forward<R>(r).adjFaces();
+    }
+
+    template<typename R>
+    requires (!std::ranges::range<R>) && HasAdjFacesMember<R>
     friend constexpr auto operator|(R&& r, AdjFacesView)
     {
-        if constexpr (IsPointer<R>)
-            return r->adjFaces();
-        else
-            return r.adjFaces();
+        return std::forward<R>(r).adjFaces();
+    }
+
+    template<AdjFacesRangeConcept R>
+    constexpr auto operator()(R&& r) const
+    {
+        return std::forward<R>(r) | std::views::transform(getAdjFaces);
     }
 };
 
 } // namespace detail
 
 /**
- * @brief The adjFaces view allows to obtain a view that access to the adjacent
- * faces of the object that has been piped. Every object having type that
- * satisfies the HasAdjacentFaces concept can be applied to this view.
+ * @brief View adaptor that gives access to the adjacent faces of the
+ * element that has been piped. Every element having the adjacency
+ * component (i.e., having the `adjFaces()` member function) can be applied to
+ * this view.
  *
- * Resulting adjacent faces will be pointers to Faces, that may be `nullptr`.
- * If you are interested only on the not-null pointers, you can use the
- * `notNull` view:
+ * The resulting range contains proxies to the adjacent faces. Proxies of
+ * missing adjacencies are invalid (they evaluate to `false`). If you are
+ * interested only on the valid ones, you can use the `notNull` view:
  *
  * @code{.cpp}
- * for (auto* af: f | views::adjFaces | views::notNull) { ... }
+ * for (auto af : e | views::adjFaces | views::notNull) { ... }
  * @endcode
+ *
+ * When applied to a range of elements (e.g. `mesh.faces() | views::adjFaces`),
+ * it transforms each element to the range of its adjacent faces.
  *
  * @ingroup views
  */
@@ -53,6 +83,7 @@ inline constexpr detail::AdjFacesView adjFaces;
 template<>
 inline constexpr auto component<CompId::ADJACENT_FACES> = adjFaces;
 
-} // namespace vcl::views
+} // namespace views
+} // namespace vcl
 
 #endif // VCL_MESH_VIEWS_COMPONENTS_ADJ_FACES_H

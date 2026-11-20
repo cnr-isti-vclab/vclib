@@ -19,7 +19,7 @@ if(WIN32)
     add_compile_definitions(NOMINMAX)
     if(MSVC)
         # remove possible loss of data warnings in msvc, leave the others
-        add_compile_options(/w44244 /w44267 /w44305)
+        add_compile_options(/w44244 /w44267 /w44305 /EHsc)
     endif()
 endif()
 

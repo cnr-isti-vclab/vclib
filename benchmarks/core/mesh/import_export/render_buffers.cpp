@@ -8,7 +8,7 @@
 #include "../benchmark.h"
 
 #include <vclib/algorithms/mesh.h>
-#include <vclib/space/complex/tri_poly_index_bimap.h>
+#include <vclib/space/complex.h>
 
 #include <list>
 #include <utility>
@@ -17,6 +17,7 @@
 BENCH(
     "import_export/render_buffers/build_render_buffers",
     []<typename Mesh>(bench::State<Mesh>& s) {
+        using IndexType  = Mesh::IndexType;
         const Mesh& mesh = s.mesh();
 
         if (mesh.vertexCount() == 0) {
@@ -25,23 +26,23 @@ BENCH(
 
         // Vertex attributes
         bool hasVertexNormals = false;
-        if constexpr (vcl::HasPerVertexNormal<Mesh>) {
-            hasVertexNormals = vcl::isPerVertexNormalAvailable(mesh);
+        if constexpr (vcl::HasVertexNormal<Mesh>) {
+            hasVertexNormals = mesh.isVertexNormalAvailable();
         }
 
         bool hasVertexColors = false;
-        if constexpr (vcl::HasPerVertexColor<Mesh>) {
-            hasVertexColors = vcl::isPerVertexColorAvailable(mesh);
+        if constexpr (vcl::HasVertexColor<Mesh>) {
+            hasVertexColors = mesh.isVertexColorAvailable();
         }
 
         bool hasVertexTexCoords = false;
-        if constexpr (vcl::HasPerVertexTexCoord<Mesh>) {
-            hasVertexTexCoords = vcl::isPerVertexTexCoordAvailable(mesh);
+        if constexpr (vcl::HasVertexTexCoord<Mesh>) {
+            hasVertexTexCoords = mesh.isVertexTexCoordAvailable();
         }
 
         bool hasWedgeTexCoords = false;
-        if constexpr (vcl::HasPerFaceWedgeTexCoords<Mesh>) {
-            hasWedgeTexCoords = mesh.isPerFaceWedgeTexCoordsEnabled();
+        if constexpr (vcl::HasFaceWedgeTexCoords<Mesh>) {
+            hasWedgeTexCoords = mesh.isFaceWedgeTexCoordsAvailable();
         }
 
         // Face attributes
@@ -53,11 +54,11 @@ BENCH(
             hasFaces = mesh.faceCount() > 0;
             if (hasFaces) {
                 hasWireframe = true;
-                if constexpr (vcl::HasPerFaceNormal<Mesh>) {
-                    hasFaceNormals = vcl::isPerFaceNormalAvailable(mesh);
+                if constexpr (vcl::HasFaceNormal<Mesh>) {
+                    hasFaceNormals = mesh.isFaceNormalAvailable();
                 }
-                if constexpr (vcl::HasPerFaceColor<Mesh>) {
-                    hasFaceColors = vcl::isPerFaceColorAvailable(mesh);
+                if constexpr (vcl::HasFaceColor<Mesh>) {
+                    hasFaceColors = mesh.isFaceColorAvailable();
                 }
             }
         }
@@ -69,22 +70,22 @@ BENCH(
         if constexpr (vcl::EdgeMeshConcept<Mesh>) {
             hasEdges = mesh.edgeCount() > 0;
             if (hasEdges) {
-                if constexpr (vcl::HasPerEdgeNormal<Mesh>) {
-                    hasEdgeNormals = vcl::isPerEdgeNormalAvailable(mesh);
+                if constexpr (vcl::HasEdgeNormal<Mesh>) {
+                    hasEdgeNormals = mesh.isEdgeNormalAvailable();
                 }
-                if constexpr (vcl::HasPerEdgeColor<Mesh>) {
-                    hasEdgeColors = vcl::isPerEdgeColorAvailable(mesh);
+                if constexpr (vcl::HasEdgeColor<Mesh>) {
+                    hasEdgeColors = mesh.isEdgeColorAvailable();
                 }
             }
         }
 
         // Precompute sizes
-        vcl::uint numVerts = mesh.vertexCount();
-        if constexpr (vcl::HasPerFaceWedgeTexCoords<Mesh>) {
+        IndexType numVerts = mesh.vertexCount();
+        if constexpr (vcl::HasFaceWedgeTexCoords<Mesh>) {
             if (hasWedgeTexCoords) {
-                std::vector<std::pair<vcl::uint, vcl::uint>> initVertWedgeMap;
-                std::list<vcl::uint> initVertsToDuplicate;
-                std::list<std::list<std::pair<vcl::uint, vcl::uint>>>
+                std::vector<std::pair<IndexType, vcl::uint>> initVertWedgeMap;
+                std::list<IndexType> initVertsToDuplicate;
+                std::list<std::list<std::pair<IndexType, vcl::uint>>>
                      initFacesToReassign;
                 auto nV = vcl::verticesToDuplicateByWedgeTexCoordsCount(
                     mesh,
@@ -95,8 +96,8 @@ BENCH(
             }
         }
 
-        vcl::uint numTris           = 0;
-        vcl::uint numWireframeLines = 0;
+        IndexType numTris           = 0;
+        IndexType numWireframeLines = 0;
         if constexpr (vcl::FaceMeshConcept<Mesh>) {
             if (hasFaces) {
                 numTris           = vcl::triangulatedFaceCount(mesh);
@@ -104,7 +105,7 @@ BENCH(
             }
         }
 
-        vcl::uint numEdges = 0;
+        IndexType numEdges = 0;
         if constexpr (vcl::EdgeMeshConcept<Mesh>) {
             if (hasEdges) {
                 numEdges = mesh.edgeCount();
@@ -132,9 +133,9 @@ BENCH(
         std::vector<vcl::uint> edgeColorBuffer(hasEdgeColors ? numEdges : 0);
 
         // Auxiliary structures reused per iteration
-        std::vector<std::pair<vcl::uint, vcl::uint>>          vertWedgeMap;
-        std::list<vcl::uint>                                  vertsToDuplicate;
-        std::list<std::list<std::pair<vcl::uint, vcl::uint>>> facesToReassign;
+        std::vector<std::pair<IndexType, vcl::uint>>          vertWedgeMap;
+        std::list<IndexType>                                  vertsToDuplicate;
+        std::list<std::list<std::pair<IndexType, vcl::uint>>> facesToReassign;
         vcl::TriPolyIndexBiMap                                indexMap;
 
         s.run([&]() {
@@ -143,7 +144,7 @@ BENCH(
             facesToReassign.clear();
             indexMap = vcl::TriPolyIndexBiMap();
 
-            if constexpr (vcl::HasPerFaceWedgeTexCoords<Mesh>) {
+            if constexpr (vcl::HasFaceWedgeTexCoords<Mesh>) {
                 if (hasWedgeTexCoords) {
                     vcl::verticesToDuplicateByWedgeTexCoordsCount(
                         mesh, vertWedgeMap, vertsToDuplicate, facesToReassign);
@@ -156,7 +157,7 @@ BENCH(
                     mesh, vertsToDuplicate, posBuffer.data());
             }
 
-            if constexpr (vcl::HasPerVertexNormal<Mesh>) {
+            if constexpr (vcl::HasVertexNormal<Mesh>) {
                 if (hasVertexNormals) {
                     vcl::vertexNormalsToBuffer(mesh, normBuffer.data());
                     if (!vertsToDuplicate.empty()) {
@@ -166,7 +167,7 @@ BENCH(
                 }
             }
 
-            if constexpr (vcl::HasPerVertexColor<Mesh>) {
+            if constexpr (vcl::HasVertexColor<Mesh>) {
                 if (hasVertexColors) {
                     vcl::vertexColorsToBuffer(
                         mesh, colBuffer.data(), vcl::Color::Format::ABGR);
@@ -180,7 +181,7 @@ BENCH(
                 }
             }
 
-            if constexpr (vcl::HasPerVertexTexCoord<Mesh>) {
+            if constexpr (vcl::HasVertexTexCoord<Mesh>) {
                 if (hasVertexTexCoords) {
                     vcl::vertexTexCoordsToBuffer(mesh, texCoordBuffer.data());
                     if (!vertsToDuplicate.empty()) {
@@ -190,7 +191,7 @@ BENCH(
                 }
             }
 
-            if constexpr (vcl::HasPerFaceWedgeTexCoords<Mesh>) {
+            if constexpr (vcl::HasFaceWedgeTexCoords<Mesh>) {
                 if (hasWedgeTexCoords) {
                     vcl::wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
                         mesh,
@@ -219,39 +220,38 @@ BENCH(
                                 triIndexBuffer.data());
                     }
 
-                    using FaceType = typename Mesh::FaceType;
-                    auto faceComp  = [&](const FaceType& f1,
-                                        const FaceType& f2) {
-                        if constexpr (vcl::HasPerVertexMaterialIndex<Mesh>) {
-                            if (vcl::isPerVertexMaterialIndexAvailable(mesh)) {
-                                vcl::uint id1 = f1.vertex(0)->materialIndex();
-                                vcl::uint id2 = f2.vertex(0)->materialIndex();
+                    using FaceType = vcl::ConstFaceType<Mesh>;
+                    auto faceComp  = [&](FaceType f1, FaceType f2) {
+                        if constexpr (vcl::HasVertexMaterialIndex<Mesh>) {
+                            if (mesh.isVertexMaterialIndexAvailable()) {
+                                IndexType id1 = f1.vertex(0).materialIndex();
+                                IndexType id2 = f2.vertex(0).materialIndex();
                                 if (id1 != id2)
                                     return id1 < id2;
                             }
                         }
-                        if constexpr (vcl::HasPerFaceMaterialIndex<Mesh>) {
-                            if (vcl::isPerFaceMaterialIndexAvailable(mesh)) {
-                                vcl::uint id1 = f1.materialIndex();
-                                vcl::uint id2 = f2.materialIndex();
+                        if constexpr (vcl::HasFaceMaterialIndex<Mesh>) {
+                            if (mesh.isFaceMaterialIndexAvailable()) {
+                                IndexType id1 = f1.materialIndex();
+                                IndexType id2 = f2.materialIndex();
                                 if (id1 != id2)
                                     return id1 < id2;
                             }
                         }
-                        return mesh.index(f1) < mesh.index(f2);
+                        return f1.index() < f2.index();
                     };
 
                     vcl::permuteFaceVertexIndicesByFunctionToBuffer(
                         mesh, triIndexBuffer.data(), faceComp, indexMap);
 
-                    if constexpr (vcl::HasPerFaceNormal<Mesh>) {
+                    if constexpr (vcl::HasFaceNormal<Mesh>) {
                         if (hasFaceNormals) {
                             vcl::triangulatedFaceNormalsToBuffer(
                                 mesh, triNormalBuffer.data(), indexMap);
                         }
                     }
 
-                    if constexpr (vcl::HasPerFaceColor<Mesh>) {
+                    if constexpr (vcl::HasFaceColor<Mesh>) {
                         if (hasFaceColors) {
                             vcl::triangulatedFaceColorsToBuffer(
                                 mesh,
@@ -273,14 +273,14 @@ BENCH(
                     vcl::edgeVertexIndicesToBuffer(
                         mesh, edgeIndexBuffer.data());
 
-                    if constexpr (vcl::HasPerEdgeNormal<Mesh>) {
+                    if constexpr (vcl::HasEdgeNormal<Mesh>) {
                         if (hasEdgeNormals) {
                             vcl::edgeNormalsToBuffer(
                                 mesh, edgeNormalBuffer.data());
                         }
                     }
 
-                    if constexpr (vcl::HasPerEdgeColor<Mesh>) {
+                    if constexpr (vcl::HasEdgeColor<Mesh>) {
                         if (hasEdgeColors) {
                             vcl::edgeColorsToBuffer(
                                 mesh,

@@ -75,10 +75,10 @@ ReadFromGPUBuffer::ReadFromGPUBuffer(
     // Determine blit texture size and format.
     // Note: bgfx requires depth texture blits to copy the whole mip on all
     // backends, so mBlitSize always matches the full framebuffer size.
-    mBlitSize = size.cast<uint16_t>();
-    const bgfx::TextureFormat::Enum blitFormat =
-        (target == Target::DEPTH) ? offscreenDepthFormat() :
-                                    offscreenColorFormat();
+    mBlitSize                                  = size.cast<uint16_t>();
+    const bgfx::TextureFormat::Enum blitFormat = (target == Target::DEPTH) ?
+                                                     offscreenDepthFormat() :
+                                                     offscreenColorFormat();
 
     // Pre-allocate readback data buffer
     const uint pixelCount = uint(mBlitSize.x()) * uint(mBlitSize.y());

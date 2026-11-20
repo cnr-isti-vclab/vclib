@@ -8,9 +8,9 @@
 #ifndef BOX_H
 #define BOX_H
 
-#include <vclib/space.h>
+#include <vclib/space/core.h>
 
-void boxStaticAsserts()
+inline void boxStaticAsserts()
 {
     using namespace vcl;
 

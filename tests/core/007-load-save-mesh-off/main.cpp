@@ -88,10 +88,10 @@ inline void checkComments(std::istringstream& iss)
     REQUIRE(line == "####");
 }
 
-using Meshes         = std::pair<vcl::TriMesh, vcl::PolyMesh>;
-using Meshesf        = std::pair<vcl::TriMeshf, vcl::PolyMeshf>;
-using MeshesIndexed  = std::pair<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
-using MeshesIndexedf = std::pair<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf>;
+using Meshes    = std::pair<vcl::TriMesh, vcl::PolyMesh>;
+using Meshesf   = std::pair<vcl::TriMeshf, vcl::PolyMeshf>;
+using Meshes64  = std::pair<vcl::TriMesh64, vcl::PolyMesh64>;
+using Meshes64f = std::pair<vcl::TriMesh64f, vcl::PolyMesh64f>;
 
 // Test to load off from a istringstream
 TEMPLATE_TEST_CASE(
@@ -99,8 +99,8 @@ TEMPLATE_TEST_CASE(
     "",
     Meshes,
     Meshesf,
-    MeshesIndexed,
-    MeshesIndexedf)
+    Meshes64,
+    Meshes64f)
 {
     using TriMesh  = typename TestType::first_type;
     using PolyMesh = typename TestType::second_type;
@@ -151,8 +151,8 @@ TEMPLATE_TEST_CASE(
     "",
     Meshes,
     Meshesf,
-    MeshesIndexed,
-    MeshesIndexedf)
+    Meshes64,
+    Meshes64f)
 {
     using TriMesh  = typename TestType::first_type;
     using PolyMesh = typename TestType::second_type;
@@ -211,7 +211,7 @@ TEMPLATE_TEST_CASE(
         PolyMesh pm = vcl::createCube<PolyMesh>();
         vcl::updateVertexNormals(pm);
 
-        pm.enablePerVertexColor();
+        pm.enableVertexColor();
         vcl::setVertexColor(pm, vcl::Color::Blue);
 
         std::ostringstream oss;

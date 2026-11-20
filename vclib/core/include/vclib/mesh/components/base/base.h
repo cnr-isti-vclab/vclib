@@ -29,75 +29,80 @@ namespace vcl {
  *
  * @ingroup base
  */
-struct CompId
-{
-    enum Enum {
-        BIT_FLAGS = 0,
-        POSITION,
-        NORMAL,
-        COLOR,
-        QUALITY,
-        MARK,
-        MATERIAL_INDEX,
-        PRINCIPAL_CURVATURE,
-        TANGENT,
-        TEX_COORD,
-        VERTEX_REFERENCES,
-        ADJACENT_EDGES,
-        ADJACENT_FACES,
-        ADJACENT_VERTICES,
-        WEDGE_COLORS,
-        WEDGE_TEX_COORDS,
-        BOUNDING_BOX,
-        NAME,
-        MATERIALS,
-        TRANSFORM_MATRIX,
-        CUSTOM_COMPONENTS,
-        // Additional components here
+enum class CompId : uint {
+    BIT_FLAGS = 0,
+    POSITION,
+    NORMAL,
+    COLOR,
+    QUALITY,
+    MATERIAL_INDEX,
+    PRINCIPAL_CURVATURE,
+    TANGENT,
+    TEX_COORD,
+    VERTEX_REFERENCES,
+    ADJACENT_EDGES,
+    ADJACENT_FACES,
+    ADJACENT_VERTICES,
+    WEDGE_COLORS,
+    WEDGE_NORMALS,
+    WEDGE_TEX_COORDS,
+    BOUNDING_BOX,
+    NAME,
+    MATERIALS,
+    TRANSFORM_MATRIX,
+    CUSTOM_COMPONENTS,
+    // Additional components here
 
-        COMPONENT_COUNT,
-    };
+    COMPONENT_COUNT,
 };
 
 /**
  * @brief The COMPONENT_ENUM_STRINGS array contains the string representation
- * of the CompId::Enum values.
+ * of the CompId values.
  *
  * @ingroup base
  */
-constexpr const char* COMPONENT_ENUM_STRINGS[CompId::COMPONENT_COUNT] = {
-    "BitFlags",         "Position",
-    "Normal",           "Color",
-    "Quality",          "Mark",
-    "MaterialIndex",    "PrincipalCurvature",
-    "Tangent",          "TexCoord",
-    "VertexPointers",   "AdjacentEdges",
-    "AdjacentFaces",    "AdjacentVertices",
-    "WedgeColors",      "WedgeTexCoords",
-    "BoundingBox",      "Name",
-    "Materials",        "TransformMatrix",
-    "CustomComponents",
+constexpr const char*
+    COMPONENT_ENUM_STRINGS[static_cast<uint>(CompId::COMPONENT_COUNT)] = {
+        "BitFlags",
+        "Position",
+        "Normal",
+        "Color",
+        "Quality",
+        "MaterialIndex",
+        "PrincipalCurvature",
+        "Tangent",
+        "TexCoord",
+        "VertexReferences",
+        "AdjacentEdges",
+        "AdjacentFaces",
+        "AdjacentVertices",
+        "WedgeColors",
+        "WedgeNormals",
+        "WedgeTexCoords",
+        "BoundingBox",
+        "Name",
+        "Materials",
+        "TransformMatrix",
+        "CustomComponents",
 };
 
 /**
  * @brief The ComponentString class is used to retrieve the string associated
  * to a COMP_ID value, trough its member 'str'.
  *
- * If you use a custom component class, you should specialize this struct with
- * your COMP_ID value (that is >= COMPONENT_COUNT).
- *
  * @tparam COMP_ID: The COMP_ID value associated to the string.
  *
  * @ingroup base
  */
-template<uint COMP_ID>
+template<CompId COMP_ID>
 struct ComponentString
 {
     /**
      * @brief The string associated to the COMPONENT_ID.
      */
     const char* str = COMP_ID < CompId::COMPONENT_COUNT ?
-                          COMPONENT_ENUM_STRINGS[COMP_ID] :
+                          COMPONENT_ENUM_STRINGS[static_cast<uint>(COMP_ID)] :
                           nullptr;
 };
 
@@ -109,7 +114,7 @@ struct ComponentString
  *
  * @ingroup base
  */
-template<uint COMP_ID>
+template<CompId COMP_ID>
 constexpr const char* componentEnumString()
 {
     static_assert(
@@ -119,63 +124,6 @@ constexpr const char* componentEnumString()
 
     return ComponentString<COMP_ID>().str;
 }
-
-namespace comp {
-
-namespace detail {
-
-/**
- * @brief Given the ID of a Component and a list of Component types,
- * this predicate sets its bool `value` to `true` if there exists a Component in
- * the list having the COMP_ID, and sets `type` to the TypeWrapper of the
- * found component.
- *
- * If no Component was found, value will be set to `false` and type will contain
- * an empty TypeWrapper.
- */
-template<uint COMP_ID, typename... Components>
-struct ComponentOfTypePred
-{
-private:
-    template<typename Comp>
-    struct SameCompPred
-    {
-        static constexpr bool value = Comp::COMPONENT_ID == COMP_ID;
-    };
-
-public:
-    // TypeWrapper of the found container, if any
-    using type =
-        typename FilterTypesByCondition<SameCompPred, Components...>::type;
-    static constexpr bool value = NumberOfTypes<type>::value == 1;
-};
-
-// TypeWrapper specialization
-template<uint COMP_ID, typename... Components>
-struct ComponentOfTypePred<COMP_ID, TypeWrapper<Components...>> :
-        public ComponentOfTypePred<COMP_ID, Components...>
-{
-};
-
-} // namespace detail
-
-/**
- * @brief Given the ID of a Component and a list of Component types (or a
- * TypeWrapper), this alias sets its type to the corresponding Component type
- * found in the list.
- *
- * @ingroup base
- */
-template<uint COMP_ID, typename... Components>
-using ComponentOfType = FirstTypeT<
-    typename detail::ComponentOfTypePred<COMP_ID, Components...>::type>;
-
-template<typename T>
-class ReferencesComponentTriggerer
-{
-};
-
-} // namespace comp
 
 } // namespace vcl
 

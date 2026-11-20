@@ -8,52 +8,76 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_TEX_COORDS_H
 #define VCL_MESH_VIEWS_COMPONENTS_TEX_COORDS_H
 
-#include <vclib/mesh/components/wedge_tex_coords.h>
-#include <vclib/mesh/views/component.h>
+#include "../component.h"
 
 #include <vclib/base.h>
 
 #include <ranges>
 
-namespace vcl::views {
+namespace vcl {
+
+template<typename T>
+concept HasTexCoordMember = requires (T&& t) {
+    { t.texCoord() };
+};
+
+template<typename R>
+concept TexCoordRangeConcept =
+    std::ranges::range<R> && (requires (R&& r) {
+        { std::forward<R>(r).texCoords() } -> std::ranges::range;
+    } || HasTexCoordMember<std::ranges::range_reference_t<R>>);
+
+namespace views {
 
 namespace detail {
 
-inline constexpr auto texCoord = [](auto&& p) -> decltype(auto) {
-    if constexpr (IsPointer<decltype(p)>)
-        return p->texCoord();
-    else
-        return p.texCoord();
+inline constexpr auto getTexCoord = [](auto&& p) -> decltype(auto) {
+    return p.texCoord();
 };
 
-struct TexCoordsView
+struct TexCoordsView : std::ranges::range_adaptor_closure<TexCoordsView>
 {
-    constexpr TexCoordsView() = default;
-
-    template<std::ranges::range R>
-    friend constexpr auto operator|(R&& r, TexCoordsView)
+    template<TexCoordRangeConcept R>
+    constexpr auto operator()(R&& r) const
     {
-        using ElemType = std::ranges::range_value_t<R>;
-        return std::forward<R>(r) | std::views::transform(texCoord);
-    }
-
-    template<comp::HasWedgeTexCoords R>
-    friend constexpr auto operator|(R&& r, TexCoordsView)
-    {
-        if constexpr (IsPointer<R>)
-            return r->wedgeTexCoords();
-        else
-            return r.wedgeTexCoords();
+        if constexpr (requires {
+                          {
+                              std::forward<R>(r).texCoords()
+                          } -> std::ranges::range;
+                      }) {
+            return std::forward<R>(r).texCoords();
+        }
+        else {
+            return std::forward<R>(r) | std::views::transform(getTexCoord);
+        }
     }
 };
 
 } // namespace detail
 
+/**
+ * @brief View adaptor that gives access to the texture coordinates.
+ *
+ * When applied directly to an ElementContainerProxy (e.g.
+ * `mesh.vertices() | views::texCoords`), it directly returns a contiguous
+ * ComponentView over the SoA buffer without proxy overhead.
+ *
+ * When applied to a filtered or transformed range (e.g.
+ * `mesh.vertices() | views::selected | views::texCoords`), it transforms each
+ * element to its texture coordinate reference.
+ *
+ * When applied to a range of wedge elements (e.g.
+ * `face.wedges() | views::texCoords` or `face | views::wedges |
+ * views::texCoords`), it returns the range of its wedge texture coordinates.
+ *
+ * @ingroup views
+ */
 inline constexpr detail::TexCoordsView texCoords;
 
 template<>
 inline constexpr auto component<CompId::TEX_COORD> = texCoords;
 
-} // namespace vcl::views
+} // namespace views
+} // namespace vcl
 
 #endif // VCL_MESH_VIEWS_COMPONENTS_TEX_COORDS_H

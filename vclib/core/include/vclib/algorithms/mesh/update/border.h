@@ -30,10 +30,7 @@ namespace vcl {
 template<FaceMeshConcept MeshType>
 void updateBorder(MeshType& m)
 {
-    using VertexType = MeshType::VertexType;
-    using FaceType   = MeshType::FaceType;
-
-    for (FaceType& f : m.faces())
+    for (auto f : m.faces())
         for (uint i = 0; i < f.vertexCount(); ++i)
             f.edgeOnBorder(i) = false;
 
@@ -46,9 +43,9 @@ void updateBorder(MeshType& m)
     ps = e.begin();
     pe = e.begin();
     do {
-        if (pe == e.end() || *pe != *ps) { // Trovo blocco di edge uguali
+        if (pe == e.end() || *pe != *ps) { // End of a block of identical edges
             if (pe - ps == 1) {
-                ps->f->edgeOnBorder(ps->e) = true;
+                m.face(ps->f).edgeOnBorder(ps->e) = true;
             }
             ps = pe;
         }

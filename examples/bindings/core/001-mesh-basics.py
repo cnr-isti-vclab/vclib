@@ -90,12 +90,12 @@ def mesh_basics():
     print("\n=== Optional Components ===")
 
     # Check if color component is available
-    print(f"Per-vertex color enabled: {mesh.is_per_vertex_color_enabled()}")
+    print(f"Vertex color available: {mesh.is_vertex_color_available()}")
 
-    # Enable per-vertex color component
-    mesh.enable_per_vertex_color()
-    print(f"Enabled per-vertex color")
-    print(f"Per-vertex color enabled: {mesh.is_per_vertex_color_enabled()}")
+    # Enable vertex color component
+    mesh.enable_vertex_color()
+    print(f"Enabled vertex color")
+    print(f"Vertex color available: {mesh.is_vertex_color_available()}")
 
     # Set vertex colors
     mesh.vertex(0).set_color(vcl.Color.RED)
@@ -106,7 +106,7 @@ def mesh_basics():
     print(f"Set colors for all vertices")
 
     # Enable and set face colors
-    mesh.enable_per_face_color()
+    mesh.enable_face_color()
     mesh.face(0).set_color(vcl.Color.CYAN)
     mesh.face(1).set_color(vcl.Color.MAGENTA)
 

@@ -14,86 +14,57 @@ void faceContainerStaticAsserts()
 {
     using namespace vcl;
 
-    using VertexContainer =
-        mesh::VertexContainer<trimesh::Vertex<float, false>>;
-    using FaceContainer = mesh::FaceContainer<trimesh::Face<float, false>>;
-    using EdgeContainer = mesh::EdgeContainer<edgemesh::Edge<float, false>>;
+    using VertexContainer = mesh::VertexContainer<trimesh::VertexComponents<>>;
+    using FaceContainer   = mesh::FaceContainer<trimesh::FaceComponents<>>;
+    using EdgeContainer   = mesh::EdgeContainer<edgemesh::EdgeComponents<>>;
 
     static_assert(
-        !mesh::HasFaceContainer<VertexContainer>,
-        "VertexContainer does satisfy the HasFaceContainer");
+        !mesh::FaceContainerConcept<VertexContainer>,
+        "VertexContainer does satisfy the FaceContainerConcept");
     static_assert(
-        !mesh::HasFaceContainer<const VertexContainer>,
-        "const VertexContainer does satisfy the HasFaceContainer");
+        !mesh::FaceContainerConcept<const VertexContainer>,
+        "const VertexContainer does satisfy the FaceContainerConcept");
     static_assert(
-        !mesh::HasFaceContainer<VertexContainer&>,
-        "VertexContainer& does satisfy the HasFaceContainer");
+        !mesh::FaceContainerConcept<VertexContainer&>,
+        "VertexContainer& does satisfy the FaceContainerConcept");
     static_assert(
-        !mesh::HasFaceContainer<const VertexContainer&>,
-        "const VertexContainer& does satisfy the HasFaceContainer");
+        !mesh::FaceContainerConcept<const VertexContainer&>,
+        "const VertexContainer& does satisfy the FaceContainerConcept");
     static_assert(
-        !mesh::HasFaceContainer<VertexContainer&&>,
-        "VertexContainer&& does satisfy the HasFaceContainer");
+        !mesh::FaceContainerConcept<VertexContainer&&>,
+        "VertexContainer&& does satisfy the FaceContainerConcept");
 
     static_assert(
-        mesh::HasFaceContainer<FaceContainer>,
-        "FaceContainer does not satisfy the HasFaceContainer");
+        mesh::FaceContainerConcept<FaceContainer>,
+        "FaceContainer does not satisfy the FaceContainerConcept");
     static_assert(
-        mesh::HasFaceContainer<const FaceContainer>,
-        "const FaceContainer does not satisfy the HasFaceContainer");
+        mesh::FaceContainerConcept<const FaceContainer>,
+        "const FaceContainer does not satisfy the FaceContainerConcept");
     static_assert(
-        mesh::HasFaceContainer<FaceContainer&>,
-        "FaceContainer& does not satisfy the HasFaceContainer");
+        mesh::FaceContainerConcept<FaceContainer&>,
+        "FaceContainer& does not satisfy the FaceContainerConcept");
     static_assert(
-        mesh::HasFaceContainer<const FaceContainer&>,
-        "const FaceContainer& does not satisfy the HasFaceContainer");
+        mesh::FaceContainerConcept<const FaceContainer&>,
+        "const FaceContainer& does not satisfy the FaceContainerConcept");
     static_assert(
-        mesh::HasFaceContainer<FaceContainer&&>,
-        "FaceContainer&& does not satisfy the HasFaceContainer");
+        mesh::FaceContainerConcept<FaceContainer&&>,
+        "FaceContainer&& does not satisfy the FaceContainerConcept");
 
     static_assert(
-        !mesh::HasFaceContainer<EdgeContainer>,
-        "EdgeContainer does satisfy the HasFaceContainer");
+        !mesh::FaceContainerConcept<EdgeContainer>,
+        "EdgeContainer does satisfy the FaceContainerConcept");
     static_assert(
-        !mesh::HasFaceContainer<const EdgeContainer>,
-        "const EdgeContainer does satisfy the HasFaceContainer");
+        !mesh::FaceContainerConcept<const EdgeContainer>,
+        "const EdgeContainer does satisfy the FaceContainerConcept");
     static_assert(
-        !mesh::HasFaceContainer<EdgeContainer&>,
-        "EdgeContainer& does satisfy the HasFaceContainer");
+        !mesh::FaceContainerConcept<EdgeContainer&>,
+        "EdgeContainer& does satisfy the FaceContainerConcept");
     static_assert(
-        !mesh::HasFaceContainer<const EdgeContainer&>,
-        "const EdgeContainer& does satisfy the HasFaceContainer");
+        !mesh::FaceContainerConcept<const EdgeContainer&>,
+        "const EdgeContainer& does satisfy the FaceContainerConcept");
     static_assert(
-        !mesh::HasFaceContainer<EdgeContainer&&>,
-        "EdgeContainer&& does satisfy the HasFaceContainer");
-
-    static_assert(
-        HasFaces<FaceContainer>,
-        "FaceContainer does not satisfy the HasFaces concept");
-    static_assert(
-        HasFaces<const FaceContainer>,
-        "const FaceContainer does not satisfy the HasFaces concept");
-    static_assert(
-        HasFaces<FaceContainer&>,
-        "FaceContainer& does not satisfy the HasFaces concept");
-    static_assert(
-        HasFaces<const FaceContainer&>,
-        "const FaceContainer& does not satisfy the HasFaces concept");
-    static_assert(
-        HasFaces<FaceContainer&&>,
-        "FaceContainer&& does not satisfy the HasFaces concept");
-
-    static_assert(
-        !HasFaces<VertexContainer>,
-        "VertexContainer does satisfy the HasFaces concept");
-
-    static_assert(
-        !HasFaces<EdgeContainer>,
-        "EdgeContainer does satisfy the HasFaces concept");
-
-    static_assert(
-        HasFaces<VertexContainer, FaceContainer, EdgeContainer>,
-        "Multiple types do not satisfy the HasFaces concept");
+        !mesh::FaceContainerConcept<EdgeContainer&&>,
+        "EdgeContainer&& does satisfy the FaceContainerConcept");
 }
 
 #endif // CONT_FACE_CONTAINER_H

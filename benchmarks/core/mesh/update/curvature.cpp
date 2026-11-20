@@ -50,7 +50,7 @@ BENCH(
             return s.skip("the mesh has no faces");
 
         Mesh m              = meshWithCurvature(s);
-        using Scalar        = typename Mesh::ScalarType;
+        using Scalar        = vcl::ScalarType<Mesh>;
         const Scalar radius = vcl::boundingBox(m).diagonal() * Scalar(0.05);
         if (radius <= 0)
             return s.skip("bounding box diagonal is zero");
@@ -67,7 +67,7 @@ BENCH_SLOW(
             return s.skip("the mesh has no faces");
 
         Mesh m              = meshWithCurvature(s);
-        using Scalar        = typename Mesh::ScalarType;
+        using Scalar        = vcl::ScalarType<Mesh>;
         const Scalar radius = vcl::boundingBox(m).diagonal() * Scalar(0.05);
         if (radius <= 0)
             return s.skip("bounding box diagonal is zero");

@@ -828,9 +828,9 @@ private:
             pn = ply::texture_v;
         if (name == "material_index" || name == "texnumber")
             pn = ply::material_index;
-        if (name == "vertex_indices")
+        if (name == "vertex_indices" || name == "vertex_index")
             pn = ply::vertex_indices;
-        if (name == "texcoord")
+        if (name == "texcoord" || name == "texcoords")
             pn = ply::texcoord;
         if (name == "vertex1")
             pn = ply::vertex1;

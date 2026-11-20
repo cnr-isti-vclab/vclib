@@ -17,206 +17,167 @@ void meshConceptStaticAsserts()
     using TMVertex = TriMesh::Vertex;
 
     static_assert(
-        mesh::HasElementContainer<TriMesh, ElemId::VERTEX>,
-        "TriMesh does not satisfy the HasElementContainer VERTEX");
+        HasContainerOf<TriMesh, ElemId::VERTEX>,
+        "TriMesh does not satisfy the HasContainerOf VERTEX");
     static_assert(
-        mesh::HasElementContainer<const TriMesh, ElemId::VERTEX>,
-        "const TriMesh does not satisfy the HasElementContainer VERTEX");
+        HasContainerOf<const TriMesh, ElemId::VERTEX>,
+        "const TriMesh does not satisfy the HasContainerOf VERTEX");
     static_assert(
-        mesh::HasElementContainer<TriMesh&, ElemId::VERTEX>,
-        "TriMesh& does not satisfy the HasElementContainer VERTEX");
+        HasContainerOf<TriMesh&, ElemId::VERTEX>,
+        "TriMesh& does not satisfy the HasContainerOf VERTEX");
     static_assert(
-        mesh::HasElementContainer<const TriMesh&, ElemId::VERTEX>,
-        "const TriMesh& does not satisfy the HasElementContainer VERTEX");
+        HasContainerOf<const TriMesh&, ElemId::VERTEX>,
+        "const TriMesh& does not satisfy the HasContainerOf VERTEX");
     static_assert(
-        mesh::HasElementContainer<TriMesh&&, ElemId::VERTEX>,
-        "TriMesh&& does not satisfy the HasElementContainer VERTEX");
+        HasContainerOf<TriMesh&&, ElemId::VERTEX>,
+        "TriMesh&& does not satisfy the HasContainerOf VERTEX");
 
     static_assert(
-        !mesh::HasElementContainer<TriMesh, ElemId::EDGE>,
-        "TriMesh does satisfy the HasElementContainer EDGE");
+        !HasContainerOf<TriMesh, ElemId::EDGE>,
+        "TriMesh does satisfy the HasContainerOf EDGE");
     static_assert(
-        !mesh::HasElementContainer<const TriMesh, ElemId::EDGE>,
-        "const TriMesh does satisfy the HasElementContainer EDGE");
+        !HasContainerOf<const TriMesh, ElemId::EDGE>,
+        "const TriMesh does satisfy the HasContainerOf EDGE");
     static_assert(
-        !mesh::HasElementContainer<TriMesh&, ElemId::EDGE>,
-        "TriMesh& does satisfy the HasElementContainer EDGE");
+        !HasContainerOf<TriMesh&, ElemId::EDGE>,
+        "TriMesh& does satisfy the HasContainerOf EDGE");
     static_assert(
-        !mesh::HasElementContainer<const TriMesh&, ElemId::EDGE>,
-        "const TriMesh& does satisfy the HasElementContainer EDGE");
+        !HasContainerOf<const TriMesh&, ElemId::EDGE>,
+        "const TriMesh& does satisfy the HasContainerOf EDGE");
     static_assert(
-        !mesh::HasElementContainer<TriMesh&&, ElemId::EDGE>,
-        "TriMesh&& does satisfy the HasElementContainer EDGE");
+        !HasContainerOf<TriMesh&&, ElemId::EDGE>,
+        "TriMesh&& does satisfy the HasContainerOf EDGE");
 
     static_assert(
-        mesh::HasPerElementComponent<TriMesh, ElemId::VERTEX, CompId::POSITION>,
-        "TriMesh does not satisfy the HasPerElementComponent "
+        HasElementComponent<TriMesh, ElemId::VERTEX, CompId::POSITION>,
+        "TriMesh does not satisfy the HasElementComponent "
         "VERTEX-POSITION");
     static_assert(
-        mesh::HasPerElementComponent<
-            const TriMesh,
-            ElemId::VERTEX,
-            CompId::POSITION>,
-        "const TriMesh does not satisfy the HasPerElementComponent "
+        HasElementComponent<const TriMesh, ElemId::VERTEX, CompId::POSITION>,
+        "const TriMesh does not satisfy the HasElementComponent "
         "VERTEX-POSITION");
     static_assert(
-        mesh::
-            HasPerElementComponent<TriMesh&, ElemId::VERTEX, CompId::POSITION>,
-        "TriMesh& does not satisfy the HasPerElementComponent "
+        HasElementComponent<TriMesh&, ElemId::VERTEX, CompId::POSITION>,
+        "TriMesh& does not satisfy the HasElementComponent "
         "VERTEX-POSITION");
     static_assert(
-        mesh::HasPerElementComponent<
-            const TriMesh&,
-            ElemId::VERTEX,
-            CompId::POSITION>,
-        "const TriMesh& does not satisfy the HasPerElementComponent "
+        HasElementComponent<const TriMesh&, ElemId::VERTEX, CompId::POSITION>,
+        "const TriMesh& does not satisfy the HasElementComponent "
         "VERTEX-POSITION");
     static_assert(
-        mesh::
-            HasPerElementComponent<TriMesh&&, ElemId::VERTEX, CompId::POSITION>,
-        "TriMesh&& does not satisfy the HasPerElementComponent "
+        HasElementComponent<TriMesh&&, ElemId::VERTEX, CompId::POSITION>,
+        "TriMesh&& does not satisfy the HasElementComponent "
         "VERTEX-POSITION");
 
     static_assert(
-        !mesh::HasPerElementComponent<
-            TriMesh,
-            ElemId::VERTEX,
-            CompId::WEDGE_COLORS>,
-        "TriMesh does satisfy the HasPerElementComponent "
+        !HasElementComponent<TriMesh, ElemId::VERTEX, CompId::WEDGE_COLORS>,
+        "TriMesh does satisfy the HasElementComponent "
         "VERTEX-WEDGE_COLORS");
     static_assert(
-        !mesh::HasPerElementComponent<
+        !HasElementComponent<
             const TriMesh,
             ElemId::VERTEX,
             CompId::WEDGE_COLORS>,
-        "const TriMesh does satisfy the HasPerElementComponent "
+        "const TriMesh does satisfy the HasElementComponent "
         "VERTEX-WEDGE_COLORS");
     static_assert(
-        !mesh::HasPerElementComponent<
-            TriMesh&,
-            ElemId::VERTEX,
-            CompId::WEDGE_COLORS>,
-        "TriMesh& does satisfy the HasPerElementComponent "
+        !HasElementComponent<TriMesh&, ElemId::VERTEX, CompId::WEDGE_COLORS>,
+        "TriMesh& does satisfy the HasElementComponent "
         "VERTEX-WEDGE_COLORS");
     static_assert(
-        !mesh::HasPerElementComponent<
+        !HasElementComponent<
             const TriMesh&,
             ElemId::VERTEX,
             CompId::WEDGE_COLORS>,
-        "const TriMesh& does satisfy the HasPerElementComponent "
+        "const TriMesh& does satisfy the HasElementComponent "
         "VERTEX-WEDGE_COLORS");
     static_assert(
-        !mesh::HasPerElementComponent<
-            TriMesh&&,
-            ElemId::VERTEX,
-            CompId::WEDGE_COLORS>,
-        "TriMesh&& does satisfy the HasPerElementComponent "
+        !HasElementComponent<TriMesh&&, ElemId::VERTEX, CompId::WEDGE_COLORS>,
+        "TriMesh&& does satisfy the HasElementComponent "
         "VERTEX-WEDGE_COLORS");
 
     static_assert(
-        !mesh::
-            HasPerElementComponent<TriMesh, ElemId::EDGE, CompId::WEDGE_COLORS>,
-        "TriMesh does satisfy the HasPerElementComponent "
+        !HasElementComponent<TriMesh, ElemId::EDGE, CompId::WEDGE_COLORS>,
+        "TriMesh does satisfy the HasElementComponent "
         "EDGE-WEDGE_COLORS");
     static_assert(
-        !mesh::HasPerElementComponent<
-            const TriMesh,
-            ElemId::EDGE,
-            CompId::WEDGE_COLORS>,
-        "const TriMesh does satisfy the HasPerElementComponent "
+        !HasElementComponent<const TriMesh, ElemId::EDGE, CompId::WEDGE_COLORS>,
+        "const TriMesh does satisfy the HasElementComponent "
         "EDGE-WEDGE_COLORS");
     static_assert(
-        !mesh::HasPerElementComponent<
-            TriMesh&,
-            ElemId::EDGE,
-            CompId::WEDGE_COLORS>,
-        "TriMesh& does satisfy the HasPerElementComponent "
+        !HasElementComponent<TriMesh&, ElemId::EDGE, CompId::WEDGE_COLORS>,
+        "TriMesh& does satisfy the HasElementComponent "
         "EDGE-WEDGE_COLORS");
     static_assert(
-        !mesh::HasPerElementComponent<
+        !HasElementComponent<
             const TriMesh&,
             ElemId::EDGE,
             CompId::WEDGE_COLORS>,
-        "const TriMesh& does satisfy the HasPerElementComponent "
+        "const TriMesh& does satisfy the HasElementComponent "
         "EDGE-WEDGE_COLORS");
     static_assert(
-        !mesh::HasPerElementComponent<
-            TriMesh&&,
-            ElemId::EDGE,
-            CompId::WEDGE_COLORS>,
-        "TriMesh&& does satisfy the HasPerElementComponent "
+        !HasElementComponent<TriMesh&&, ElemId::EDGE, CompId::WEDGE_COLORS>,
+        "TriMesh&& does satisfy the HasElementComponent "
         "EDGE-WEDGE_COLORS");
 
     static_assert(
-        !mesh::HasPerElementOptionalComponent<
-            TriMesh,
-            ElemId::VERTEX,
-            CompId::POSITION>,
-        "TriMesh does satisfy the HasPerElementOptionalComponent "
+        !HasElementOptionalComponent<TriMesh, ElemId::VERTEX, CompId::POSITION>,
+        "TriMesh does satisfy the HasElementOptionalComponent "
         "VERTEX-POSITION");
     static_assert(
-        !mesh::HasPerElementOptionalComponent<
+        !HasElementOptionalComponent<
             const TriMesh,
             ElemId::VERTEX,
             CompId::POSITION>,
-        "const TriMesh does satisfy the HasPerElementOptionalComponent "
+        "const TriMesh does satisfy the HasElementOptionalComponent "
         "VERTEX-POSITION");
     static_assert(
-        !mesh::HasPerElementOptionalComponent<
+        !HasElementOptionalComponent<
             TriMesh&,
             ElemId::VERTEX,
             CompId::POSITION>,
-        "TriMesh& does satisfy the HasPerElementOptionalComponent "
+        "TriMesh& does satisfy the HasElementOptionalComponent "
         "VERTEX-POSITION");
     static_assert(
-        !mesh::HasPerElementOptionalComponent<
+        !HasElementOptionalComponent<
             const TriMesh&,
             ElemId::VERTEX,
             CompId::POSITION>,
-        "const TriMesh& does satisfy the HasPerElementOptionalComponent "
+        "const TriMesh& does satisfy the HasElementOptionalComponent "
         "VERTEX-POSITION");
     static_assert(
-        !mesh::HasPerElementOptionalComponent<
+        !HasElementOptionalComponent<
             TriMesh&&,
             ElemId::VERTEX,
             CompId::POSITION>,
-        "TriMesh&& does satisfy the HasPerElementOptionalComponent "
+        "TriMesh&& does satisfy the HasElementOptionalComponent "
         "VERTEX-POSITION");
 
     static_assert(
-        mesh::HasPerElementOptionalComponent<
-            TriMesh,
-            ElemId::VERTEX,
-            CompId::COLOR>,
-        "TriMesh does not satisfy the HasPerElementOptionalComponent "
+        HasElementOptionalComponent<TriMesh, ElemId::VERTEX, CompId::COLOR>,
+        "TriMesh does not satisfy the HasElementOptionalComponent "
         "VERTEX-COLOR");
     static_assert(
-        mesh::HasPerElementOptionalComponent<
+        HasElementOptionalComponent<
             const TriMesh,
             ElemId::VERTEX,
             CompId::COLOR>,
-        "const TriMesh does not satisfy the HasPerElementOptionalComponent "
+        "const TriMesh does not satisfy the HasElementOptionalComponent "
         "VERTEX-COLOR");
     static_assert(
-        mesh::HasPerElementOptionalComponent<
-            TriMesh&,
-            ElemId::VERTEX,
-            CompId::COLOR>,
-        "TriMesh& does not satisfy the HasPerElementOptionalComponent "
+        HasElementOptionalComponent<TriMesh&, ElemId::VERTEX, CompId::COLOR>,
+        "TriMesh& does not satisfy the HasElementOptionalComponent "
         "VERTEX-COLOR");
     static_assert(
-        mesh::HasPerElementOptionalComponent<
+        HasElementOptionalComponent<
             const TriMesh&,
             ElemId::VERTEX,
             CompId::COLOR>,
-        "const TriMesh& does not satisfy the HasPerElementOptionalComponent "
+        "const TriMesh& does not satisfy the HasElementOptionalComponent "
         "VERTEX-COLOR");
     static_assert(
-        mesh::HasPerElementOptionalComponent<
-            TriMesh&&,
-            ElemId::VERTEX,
-            CompId::COLOR>,
-        "TriMesh&& does not satisfy the HasPerElementOptionalComponent "
+        HasElementOptionalComponent<TriMesh&&, ElemId::VERTEX, CompId::COLOR>,
+        "TriMesh&& does not satisfy the HasElementOptionalComponent "
         "VERTEX-COLOR");
 
     static_assert(
@@ -231,38 +192,6 @@ void meshConceptStaticAsserts()
         "const TriMesh& does not satisfy the MeshConcept");
     static_assert(
         MeshConcept<TriMesh&&>, "TriMesh&& does not satisfy the MeshConcept");
-
-    static_assert(
-        ElementOrMeshConcept<TriMesh>,
-        "TriMesh does not satisfy the ElementOrMeshConcept");
-    static_assert(
-        ElementOrMeshConcept<const TriMesh>,
-        "const TriMesh does not satisfy the ElementOrMeshConcept");
-    static_assert(
-        ElementOrMeshConcept<TriMesh&>,
-        "TriMesh& does not satisfy the ElementOrMeshConcept");
-    static_assert(
-        ElementOrMeshConcept<const TriMesh&>,
-        "const TriMesh& does not satisfy the ElementOrMeshConcept");
-    static_assert(
-        ElementOrMeshConcept<TriMesh&&>,
-        "TriMesh&& does not satisfy the ElementOrMeshConcept");
-
-    static_assert(
-        ElementOrMeshConcept<TMVertex>,
-        "TriMesh Vertex does not satisfy the ElementOrMeshConcept");
-    static_assert(
-        ElementOrMeshConcept<const TMVertex>,
-        "const TriMesh Vertex does not satisfy the ElementOrMeshConcept");
-    static_assert(
-        ElementOrMeshConcept<TMVertex&>,
-        "TriMesh Vertex& does not satisfy the ElementOrMeshConcept");
-    static_assert(
-        ElementOrMeshConcept<const TMVertex&>,
-        "const TriMesh Vertex& does not satisfy the ElementOrMeshConcept");
-    static_assert(
-        ElementOrMeshConcept<TMVertex&&>,
-        "TriMesh Vertex&& does not satisfy the ElementOrMeshConcept");
 }
 
 #endif // MESH_CONCEPT_H

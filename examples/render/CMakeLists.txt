@@ -24,9 +24,10 @@ if(CAN_BUILD_VCLIB_RENDER_EXAMPLES)
     add_subdirectory(common)
 
     # Automatically find and add all render examples.
-    # For each directory, we check if it's a valid example by looking for a main.cpp file.
-    # If a requirements.cmake is present, we include it to read EXAMPLE_REQUIRED_TARGETS
-    # and ensure all required targets are available before adding the subdirectory.
+    # For each directory, we check if it's a valid example by looking for a
+    # main.cpp file. If a requirements.cmake is present, we include it to read
+    # EXAMPLE_REQUIRED_TARGETS and ensure all required targets are available
+    # before adding the subdirectory.
     file(
         GLOB RENDER_EXAMPLE_DIRS
         RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -46,7 +47,7 @@ if(CAN_BUILD_VCLIB_RENDER_EXAMPLES)
                     )
                 endif()
 
-                # Verify if all the required targets (e.g., 3rd party libraries) exist
+                # Verify if required targets (e.g., 3rd party libraries) exist
                 set(REQUIREMENTS_MET TRUE)
                 set(UNMET_REQ_PRINT "")
                 foreach(req IN LISTS EXAMPLE_REQUIRED_TARGETS)

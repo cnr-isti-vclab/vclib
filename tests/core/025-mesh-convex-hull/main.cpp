@@ -19,11 +19,11 @@ TEMPLATE_TEST_CASE(
     "",
     vcl::TriMesh,
     vcl::TriMeshf,
-    vcl::TriMeshIndexed,
-    vcl::TriMeshIndexedf)
+    vcl::TriMesh64,
+    vcl::TriMesh64f)
 {
     using TriMesh = TestType;
-    using Scalar  = TriMesh::VertexType::PositionType::ScalarType;
+    using Scalar  = vcl::ScalarType<TriMesh>;
     using Point   = vcl::Point3<Scalar>;
 
     SECTION("Cube with internal point")

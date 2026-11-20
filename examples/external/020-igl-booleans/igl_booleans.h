@@ -13,7 +13,7 @@
 #include <vclib/io.h>
 #include <vclib/meshes.h>
 
-auto meshBooleans()
+inline auto meshBooleans()
 {
     using namespace vcl;
     using namespace vcl::igl;
@@ -21,16 +21,16 @@ auto meshBooleans()
     TriMesh m1;
     loadMesh(m1, VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
     vcl::updateVertexAndFaceNormals(m1);
-    m1.enablePerFaceColor();
-    m1.enablePerVertexColor();
+    m1.enableFaceColor();
+    m1.enableVertexColor();
     setFaceColor(m1, vcl::Color::LightRed);
     setVertexColor(m1, vcl::Color::LightMagenta);
 
     TriMesh m2;
     loadMesh(m2, VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
     vcl::updateVertexAndFaceNormals(m2);
-    m2.enablePerFaceColor();
-    m2.enablePerVertexColor();
+    m2.enableFaceColor();
+    m2.enableVertexColor();
     setFaceColor(m2, vcl::Color::LightBlue);
     setVertexColor(m2, vcl::Color::LightYellow);
 
@@ -43,7 +43,7 @@ auto meshBooleans()
     return std::make_tuple(m1, m2, mUnion, mIntersection);
 }
 
-auto polyMeshBooleans()
+inline auto polyMeshBooleans()
 {
     using namespace vcl;
     using namespace vcl::igl;

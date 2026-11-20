@@ -8,9 +8,9 @@
 #ifndef PRINCIPAL_CURVATURE_H
 #define PRINCIPAL_CURVATURE_H
 
-#include <vclib/space.h>
+#include <vclib/space/core.h>
 
-void principalCurvatureStaticAsserts()
+inline void principalCurvatureStaticAsserts()
 {
     using namespace vcl;
 

@@ -19,7 +19,7 @@ BENCH(
             return s.skip("the mesh has no faces");
         }
         else {
-            using Scalar = typename Mesh::ScalarType;
+            using Scalar = vcl::ScalarType<Mesh>;
             const auto V =
                 vcl::vertexPositionsMatrix<Eigen::MatrixX3<Scalar>>(s.mesh());
             const auto F =
@@ -36,7 +36,7 @@ BENCH(
             return s.skip("the mesh has no faces");
         }
         else {
-            using Scalar = typename Mesh::ScalarType;
+            using Scalar = vcl::ScalarType<Mesh>;
             const auto V =
                 vcl::vertexPositionsMatrix<Eigen::MatrixX3<Scalar>>(s.mesh());
             const auto F =
@@ -50,7 +50,7 @@ BENCH(
 BENCH(
     "import_export/import_matrix/vertex_positions_from_matrix",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        using Scalar = typename Mesh::ScalarType;
+        using Scalar = vcl::ScalarType<Mesh>;
         const auto V =
             vcl::vertexPositionsMatrix<Eigen::MatrixX3<Scalar>>(s.mesh());
         Mesh m = s.copyMesh();
@@ -128,15 +128,15 @@ BENCH(
 BENCH(
     "import_export/import_matrix/vertex_normals_from_matrix",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (!vcl::HasPerVertexNormal<Mesh>) {
+        if constexpr (!vcl::HasVertexNormal<Mesh>) {
             return s.skip("the mesh type has no vertex normals");
         }
         else {
             const Mesh& mSrc = s.mesh();
-            if (!vcl::isPerVertexNormalAvailable(mSrc)) {
+            if (!mSrc.isVertexNormalAvailable()) {
                 return s.skip("the mesh has no vertex normals");
             }
-            using Scalar = typename Mesh::ScalarType;
+            using Scalar = vcl::ScalarType<Mesh>;
             const auto VN =
                 vcl::vertexNormalsMatrix<Eigen::MatrixX3<Scalar>>(mSrc);
             Mesh m = s.copyMesh();
@@ -148,15 +148,15 @@ BENCH(
     "import_export/import_matrix/face_normals_from_matrix",
     []<typename Mesh>(bench::State<Mesh>& s) {
         if constexpr (
-            !vcl::FaceMeshConcept<Mesh> || !vcl::HasPerFaceNormal<Mesh>) {
+            !vcl::FaceMeshConcept<Mesh> || !vcl::HasFaceNormal<Mesh>) {
             return s.skip("the mesh has no face normals");
         }
         else {
             const Mesh& mSrc = s.mesh();
-            if (!vcl::isPerFaceNormalAvailable(mSrc)) {
+            if (!mSrc.isFaceNormalAvailable()) {
                 return s.skip("the mesh has no face normals");
             }
-            using Scalar = typename Mesh::ScalarType;
+            using Scalar = vcl::ScalarType<Mesh>;
             const auto FN =
                 vcl::faceNormalsMatrix<Eigen::MatrixX3<Scalar>>(mSrc);
             Mesh m = s.copyMesh();
@@ -168,15 +168,15 @@ BENCH(
     "import_export/import_matrix/edge_normals_from_matrix",
     []<typename Mesh>(bench::State<Mesh>& s) {
         if constexpr (
-            !vcl::EdgeMeshConcept<Mesh> || !vcl::HasPerEdgeNormal<Mesh>) {
+            !vcl::EdgeMeshConcept<Mesh> || !vcl::HasEdgeNormal<Mesh>) {
             return s.skip("the mesh has no edge normals");
         }
         else {
             const Mesh& mSrc = s.mesh();
-            if (!vcl::isPerEdgeNormalAvailable(mSrc)) {
+            if (!mSrc.isEdgeNormalAvailable()) {
                 return s.skip("the mesh has no edge normals");
             }
-            using Scalar  = typename Mesh::ScalarType;
+            using Scalar  = vcl::ScalarType<Mesh>;
             const auto EN = vcl::elementNormalsMatrix<
                 vcl::ElemId::EDGE,
                 Eigen::MatrixX3<Scalar>>(mSrc);
@@ -189,12 +189,12 @@ BENCH(
 BENCH(
     "import_export/import_matrix/vertex_colors_from_matrix",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (!vcl::HasPerVertexColor<Mesh>) {
+        if constexpr (!vcl::HasVertexColor<Mesh>) {
             return s.skip("the mesh type has no vertex colors");
         }
         else {
             const Mesh& mSrc = s.mesh();
-            if (!vcl::isPerVertexColorAvailable(mSrc)) {
+            if (!mSrc.isVertexColorAvailable()) {
                 return s.skip("the mesh has no vertex colors");
             }
             const auto VC = vcl::vertexColorsMatrix<Eigen::MatrixX4i>(mSrc);
@@ -206,12 +206,12 @@ BENCH(
 BENCH(
     "import_export/import_matrix/vertex_colors_from_range",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (!vcl::HasPerVertexColor<Mesh>) {
+        if constexpr (!vcl::HasVertexColor<Mesh>) {
             return s.skip("the mesh type has no vertex colors");
         }
         else {
             const Mesh& mSrc = s.mesh();
-            if (!vcl::isPerVertexColorAvailable(mSrc)) {
+            if (!mSrc.isVertexColorAvailable()) {
                 return s.skip("the mesh has no vertex colors");
             }
             const auto VC = vcl::vertexColorsVector<Eigen::VectorXi>(
@@ -226,13 +226,12 @@ BENCH(
 BENCH(
     "import_export/import_matrix/face_colors_from_matrix",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (
-            !vcl::FaceMeshConcept<Mesh> || !vcl::HasPerFaceColor<Mesh>) {
+        if constexpr (!vcl::FaceMeshConcept<Mesh> || !vcl::HasFaceColor<Mesh>) {
             return s.skip("the mesh has no face colors");
         }
         else {
             const Mesh& mSrc = s.mesh();
-            if (!vcl::isPerFaceColorAvailable(mSrc)) {
+            if (!mSrc.isFaceColorAvailable()) {
                 return s.skip("the mesh has no face colors");
             }
             const auto FC = vcl::faceColorsMatrix<Eigen::MatrixX4i>(mSrc);
@@ -244,13 +243,12 @@ BENCH(
 BENCH(
     "import_export/import_matrix/face_colors_from_range",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (
-            !vcl::FaceMeshConcept<Mesh> || !vcl::HasPerFaceColor<Mesh>) {
+        if constexpr (!vcl::FaceMeshConcept<Mesh> || !vcl::HasFaceColor<Mesh>) {
             return s.skip("the mesh has no face colors");
         }
         else {
             const Mesh& mSrc = s.mesh();
-            if (!vcl::isPerFaceColorAvailable(mSrc)) {
+            if (!mSrc.isFaceColorAvailable()) {
                 return s.skip("the mesh has no face colors");
             }
             const auto FC = vcl::faceColorsVector<Eigen::VectorXi>(
@@ -265,13 +263,12 @@ BENCH(
 BENCH(
     "import_export/import_matrix/edge_colors_from_matrix",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (
-            !vcl::EdgeMeshConcept<Mesh> || !vcl::HasPerEdgeColor<Mesh>) {
+        if constexpr (!vcl::EdgeMeshConcept<Mesh> || !vcl::HasEdgeColor<Mesh>) {
             return s.skip("the mesh has no edge colors");
         }
         else {
             const Mesh& mSrc = s.mesh();
-            if (!vcl::isPerEdgeColorAvailable(mSrc)) {
+            if (!mSrc.isEdgeColorAvailable()) {
                 return s.skip("the mesh has no edge colors");
             }
             const auto EC = vcl::edgeColorsMatrix<Eigen::MatrixX4i>(mSrc);
@@ -283,13 +280,12 @@ BENCH(
 BENCH(
     "import_export/import_matrix/edge_colors_from_range",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (
-            !vcl::EdgeMeshConcept<Mesh> || !vcl::HasPerEdgeColor<Mesh>) {
+        if constexpr (!vcl::EdgeMeshConcept<Mesh> || !vcl::HasEdgeColor<Mesh>) {
             return s.skip("the mesh has no edge colors");
         }
         else {
             const Mesh& mSrc = s.mesh();
-            if (!vcl::isPerEdgeColorAvailable(mSrc)) {
+            if (!mSrc.isEdgeColorAvailable()) {
                 return s.skip("the mesh has no edge colors");
             }
             const auto EC = vcl::edgeColorsVector<Eigen::VectorXi>(
@@ -305,11 +301,11 @@ BENCH(
 BENCH(
     "import_export/import_matrix/vertex_quality_from_range",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (!vcl::HasPerVertexQuality<Mesh>) {
+        if constexpr (!vcl::HasVertexQuality<Mesh>) {
             return s.skip("the mesh type has no vertex quality component");
         }
         else {
-            using Scalar  = typename Mesh::ScalarType;
+            using Scalar  = vcl::ScalarType<Mesh>;
             const auto VQ = vcl::vertexQualityVector<Eigen::VectorX<Scalar>>(
                 s.meshWithQuality());
             Mesh m = s.copyMesh();
@@ -321,11 +317,11 @@ BENCH(
     "import_export/import_matrix/face_quality_from_range",
     []<typename Mesh>(bench::State<Mesh>& s) {
         if constexpr (
-            !vcl::FaceMeshConcept<Mesh> || !vcl::HasPerFaceQuality<Mesh>) {
+            !vcl::FaceMeshConcept<Mesh> || !vcl::HasFaceQuality<Mesh>) {
             return s.skip("the mesh has no face quality component");
         }
         else {
-            using Scalar  = typename Mesh::ScalarType;
+            using Scalar  = vcl::ScalarType<Mesh>;
             const auto FQ = vcl::faceQualityVector<Eigen::VectorX<Scalar>>(
                 s.meshWithQuality());
             Mesh m = s.copyMesh();
@@ -337,11 +333,11 @@ BENCH(
     "import_export/import_matrix/edge_quality_from_range",
     []<typename Mesh>(bench::State<Mesh>& s) {
         if constexpr (
-            !vcl::EdgeMeshConcept<Mesh> || !vcl::HasPerEdgeQuality<Mesh>) {
+            !vcl::EdgeMeshConcept<Mesh> || !vcl::HasEdgeQuality<Mesh>) {
             return s.skip("the mesh has no edge quality component");
         }
         else {
-            using Scalar  = typename Mesh::ScalarType;
+            using Scalar  = vcl::ScalarType<Mesh>;
             const auto EQ = vcl::edgeQualityVector<Eigen::VectorX<Scalar>>(
                 s.meshWithQuality());
             Mesh m = s.copyMesh();
@@ -353,15 +349,15 @@ BENCH(
 BENCH(
     "import_export/import_matrix/vertex_tex_coords_from_matrix",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (!vcl::HasPerVertexTexCoord<Mesh>) {
+        if constexpr (!vcl::HasVertexTexCoord<Mesh>) {
             return s.skip("the mesh type has no vertex texcoords");
         }
         else {
             const Mesh& mSrc = s.mesh();
-            if (!vcl::isPerVertexTexCoordAvailable(mSrc)) {
+            if (!mSrc.isVertexTexCoordAvailable()) {
                 return s.skip("the mesh has no vertex texcoords");
             }
-            using Scalar = typename Mesh::ScalarType;
+            using Scalar = vcl::ScalarType<Mesh>;
             const auto VT =
                 vcl::vertexTexCoordsMatrix<Eigen::MatrixX2<Scalar>>(mSrc);
             Mesh m = s.copyMesh();
@@ -373,16 +369,15 @@ BENCH(
     "import_export/import_matrix/face_wedge_tex_coords_from_matrix",
     []<typename Mesh>(bench::State<Mesh>& s) {
         if constexpr (
-            !vcl::FaceMeshConcept<Mesh> ||
-            !vcl::HasPerFaceWedgeTexCoords<Mesh>) {
+            !vcl::FaceMeshConcept<Mesh> || !vcl::HasFaceWedgeTexCoords<Mesh>) {
             return s.skip("the mesh has no face wedge texcoords");
         }
         else {
             const Mesh& mSrc = s.mesh();
-            if (!vcl::isPerFaceWedgeTexCoordsAvailable(mSrc)) {
+            if (!mSrc.isFaceWedgeTexCoordsAvailable()) {
                 return s.skip("the mesh has no face wedge texcoords");
             }
-            using Scalar = typename Mesh::ScalarType;
+            using Scalar = vcl::ScalarType<Mesh>;
             const auto FWT =
                 vcl::faceWedgeTexCoordsMatrix<Eigen::MatrixX<Scalar>>(mSrc);
             Mesh m = s.copyMesh();
@@ -393,12 +388,12 @@ BENCH(
 BENCH(
     "import_export/import_matrix/vertex_material_indices_from_range",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (!vcl::HasPerVertexMaterialIndex<Mesh>) {
+        if constexpr (!vcl::HasVertexMaterialIndex<Mesh>) {
             return s.skip("the mesh type has no vertex material indices");
         }
         else {
             const Mesh& mSrc = s.mesh();
-            if (!vcl::isPerVertexMaterialIndexAvailable(mSrc)) {
+            if (!mSrc.isVertexMaterialIndexAvailable()) {
                 return s.skip("the mesh has no vertex material indices");
             }
             const auto VMI =
@@ -412,13 +407,12 @@ BENCH(
     "import_export/import_matrix/face_material_indices_from_range",
     []<typename Mesh>(bench::State<Mesh>& s) {
         if constexpr (
-            !vcl::FaceMeshConcept<Mesh> ||
-            !vcl::HasPerFaceMaterialIndex<Mesh>) {
+            !vcl::FaceMeshConcept<Mesh> || !vcl::HasFaceMaterialIndex<Mesh>) {
             return s.skip("the mesh has no face material indices");
         }
         else {
             const Mesh& mSrc = s.mesh();
-            if (!vcl::isPerFaceMaterialIndexAvailable(mSrc)) {
+            if (!mSrc.isFaceMaterialIndexAvailable()) {
                 return s.skip("the mesh has no face material indices");
             }
             const auto FMI =

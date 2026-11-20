@@ -8,694 +8,445 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_VERTICES_H
 #define VCL_MESH_COMPONENTS_ADJACENT_VERTICES_H
 
-#include "base/predicates.h"
-#include "base/reference_container_component.h"
+#include "base/component_predicates.h"
+#include "base/container_references_component.h"
 
-#include <vclib/base.h>
+#include <vclib/mesh/elements/base/base.h>
+
+#include <cassert>
+#include <concepts>
+#include <ranges>
 
 namespace vcl::comp {
 
 /**
- * @brief The AdjacentVertices class is a container of Vertex indices or
- * pointers. It is a component that makes sense to use mostly on Vertex
- * Elements. For Faces and Edges, see the VertexPointers component (which is
- * similar, but has different member function names).
+ * @brief The AdjacentVertices class is a container of Vertex indices. It is
+ * typically used by Vertex elements to store the 1-ring neighborhood of
+ * adjacent vertices.
  *
- * It is a random access container having dynamic size.
+ * It is a random access container having static or dynamic size (typically
+ * dynamic, N = -1).
  *
- * The member functions of this class will be available in the instance of any
- * Element that will contain this component.
+ * ### Dual Index Spaces: Global Vertex Indices vs. Local Adjacency Positions
  *
- * For example, if you have a Vertex Element `v` that has the AdjacentVertices
- * component, you'll be able to access to this component member functions from
- * `v`:
+ * It is essential to distinguish between the two indexing spaces in this
+ * component:
  *
- * @code{.cpp}
- * v.adjVertexCount();
- * auto* v = v.adjVertex(0);
- * uint vi = v.adjVertexIndex(0);
- * @endcode
+ * 1. **Global Vertex Index (`IndexType`)**:
+ *    - The global index or ID of a vertex inside the mesh's `VertexContainer`
+ *      (`m.vertex(vi)`).
+ *    - Typed as `IndexType` (32 or 64 bit).
+ *    - Sentinel value: `NULL_INDEX` (`vcl::NULL_INDEX<IndexType>`). Indicates
+ *      that there is no adjacent vertex at this slot.
+ *    - Returned by `adjVertexIndex(uint i)` and `adjVertexIndexMod(int i)`.
+ *    - Passed to search functions like `containsAdjVertex(IndexType vi)` and
+ *      `indexOfAdjVertex(IndexType vi)`.
  *
- * @note With respect to the other components that store adjacencies, this
- * component does not have two template arguments:
- * - `N`, because the container of adjacent vertices is always dynamic (there
- *   are no contexts in which it would make sense to have a fixed size container
- *   of adjacent vertices);
- * - `TTVC`, because this argument is used on components that could be part of
- *   face elements, and this component does not apply to faces.
+ * 2. **Local Adjacency Position (`uint`)**:
+ *    - The 0-based position or slot `i` within this element's 1-ring adjacency
+ *      list (`0 <= i < adjVertexCount()`).
+ *    - Always typed as `uint` (`uint32_t`).
+ *    - Sentinel value: `vcl::UINT_NULL` (`0xFFFFFFFF`), indicating that the
+ *      queried vertex was not found in this element's adjacency list.
+ *    - Passed as the position `uint i` to `adjVertex(uint i)`,
+ * `adjVertexIndex(uint i)`, and `setAdjVertex(uint i, IndexType vi)`.
+ *    - Returned by `indexOfAdjVertex(IndexType vi)`.
  *
- * @tparam STORE_INDICES: If true, the component will store indices, otherwise
- * pointers to Face.
- * @tparam Vertex: The type of the adjacent Vertex element.
- * @tparam ParentElemType: This type is used to get access to the Element that
- * has the component (and, in case, to the Mesh that has the Element). If the
- * component doesn't need to access the Element, this type can be void. Note:
- * if the component is vertical (or optional), this type cannot be void.
- * @tparam VERT: If true, the component will be stored vertically. This argument
- * is considered only if the ElementType is not void.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
+ * @tparam N: The size of the container, representing the number of storable
+ * adjacent vertices. If negative (default), the container is dynamic.
+ * @tparam Index: The unsigned integral type used to store indices (default
+ * uint).
+ * @tparam TTVC: If true, the container size will be tied to the vertex count of
+ * the element.
+ * @tparam OPT: If true, the component is optional.
  *
  * @ingroup components
  */
 template<
-    bool STORE_INDICES,
-    typename Vertex,
-    typename ParentElemType = void,
-    bool VERT               = false,
-    bool OPT                = false>
+    int                    N     = -1,
+    std::unsigned_integral Index = uint,
+    bool                   TTVC  = false,
+    bool                   OPT   = false>
 class AdjacentVertices :
-        public ReferenceContainerComponent<
-            STORE_INDICES,
-            AdjacentVertices<STORE_INDICES, Vertex, ParentElemType, VERT, OPT>,
+        public ContainerReferencesComponent<
             CompId::ADJACENT_VERTICES,
-            Vertex,
-            -1,
-            ParentElemType,
-            VERT,
-            OPT,
-            false>
+            Index,
+            ElemId::VERTEX,
+            N,
+            TTVC,
+            OPT>
 {
-    using Base = ReferenceContainerComponent<
-        STORE_INDICES,
-        AdjacentVertices<STORE_INDICES, Vertex, ParentElemType, VERT, OPT>,
+    using Base = ContainerReferencesComponent<
         CompId::ADJACENT_VERTICES,
-        Vertex,
-        -1,
-        ParentElemType,
-        VERT,
-        OPT,
-        false>;
+        Index,
+        ElemId::VERTEX,
+        N,
+        TTVC,
+        OPT>;
 
 public:
+    using IndexType = Index;
+
     /**
-     * @brief Expose the type of the Adjacent Vertex.
+     * @brief Static size of the container. If negative, the container is
+     * dynamic.
      */
-    using AdjacentVertexType = Vertex;
+    static constexpr int ADJ_VERTEX_COUNT = N;
 
-    /* Iterator Types declaration */
-
-    using AdjacentVertexIterator           = Base::Iterator;
-    using ConstAdjacentVertexIterator      = Base::ConstIterator;
-    using ConstAdjacentVertexIndexIterator = Base::ConstIndexIterator;
+    using Base::NULL_INDEX;
 
     /* Constructors */
 
-    /**
-     * @brief Empty constructor.
-     *
-     * Initializes an empty container of Adjacent Vertices.
-     */
     AdjacentVertices() = default;
 
     /* Member functions */
 
     /**
-     * @brief Returns the number of adjacent vertices of the element.
-     * @return The number of adjacent vertices of the element.
+     * @brief Returns the number of adjacent vertices of this element.
+     * @return The number of adjacent vertices.
      */
-    uint adjVertexCount() const { return Base::size(); }
+    uint adjVertexCount(this const auto& self) { return Base::refCount(self); }
 
     /**
-     * @brief Returns the pointer to the i-th adjacent vertex of an element.
-     *
-     * @param[in] i: the position of the required adjacent vertex in this
-     * container.
-     * @return The pointer i-th adjacent vertex of the element.
+     * @brief Returns a proxy to the i-th adjacent vertex of this element.
+     * @param[in] i: The position in this container.
+     * @return A proxy to the adjacent vertex.
      */
-    Vertex* adjVertex(uint i) { return Base::element(i); }
-
-    /**
-     * @brief Returns a const pointer to the i-th adjacent vertex of the
-     * element.
-     * @param[in] i: the position of the required adjacent vertex in this
-     * container; the value must be between 0 and the number of adj vertices.
-     * @return The pointer to the i-th adjacent vertex of the element.
-     */
-    const Vertex* adjVertex(uint i) const { return Base::element(i); }
-
-    /**
-     * @brief Returns the index in the vertex container of the i-th adjacent
-     * vertex of the element.
-     * @param[in] i: the position of the required vertex in this container.
-     * @return The index of the i-th adjacent vertex of the element.
-     */
-    uint adjVertexIndex(uint i) const { return Base::elementIndex(i); }
-
-    /**
-     * @brief Returns the pointer to the i-th adjacent vertex of the element,
-     * but using as index the module between i and the number of adjacent
-     * vertices. You can use this function if you need to get the "next adjacent
-     * vertex after position k", without check if it is less than the number of
-     * adj vertices. Works also for negative numbers:
-     *
-     * @code{.cpp}
-     * k = pos; // some position of an adjacent vertex
-     * auto* next = e.adjVertexMod(k+1); // the adj vertex next to k, that may
-     *                                   // also be at pos 0
-     * auto* last = e.adjVertexMod(-1); // the adj vertex in position
-     *                                  // adjVertexCount()-1
-     * @endcode
-     *
-     * @param[in] i: the position of the required adjacent vertex in this
-     * container, w.r.t. the position 0; value is modularized on
-     * adjVertexCount().
-     * @return The pointer to the required adjacent vertex of the element.
-     */
-    Vertex* adjVertexMod(int i) { return Base::elementMod(i); }
-
-    /**
-     * @brief Same of adjVertexMod, but returns a const Pointer to the adjacent
-     * vertex.
-     * @param[in] i: the position of the required adjacent vertex in this
-     * container, w.r.t. the position 0; value is modularized on
-     * adjVertexCount().
-     * @return The pointer to the required adjacent vertex of the element.
-     */
-    const Vertex* adjVertexMod(int i) const { return Base::elementMod(i); }
-
-    /**
-     * @brief Returns the index in the vertex container of the i-th adjacent
-     * vertex of the element, but using as index the module between i and the
-     * number of adjacent vertices. You can use this function if you need to get
-     * the "index of the adjacent vertex next to position k", without check if
-     * it is less than the number of adjacent vertices. Works also for negative
-     * numbers:
-     *
-     * @code{.cpp}
-     * k = pos; // some position of an adjacent edge
-     * auto idx = e.adjVertexIndexMod(k+1); // the index of the adjacent vertex
-     *                                      // next to k, that may also be at
-     *                                      // pos 0
-     * auto lastIdx = e.adjVertexIndexMod(-1); // the index of the adjacent
-     *                                         // vertex in position
-     *                                         // adjVertexCount()-1
-     * @endcode
-     *
-     * @param[in] i: the position of the required adjacent vertex in this
-     * container, w.r.t. the position 0; value is modularized on
-     * adjVertexCount().
-     * @return The index of the required adjacent vertex of the element.
-     */
-    uint adjVertexIndexMod(int i) const { return Base::elementIndexMod(i); }
-
-    /**
-     * @brief Sets the i-th adjacent vertex of the element.
-     * @param[in] i: the position in this container on which set the adj vertex;
-     * the value must be between 0 and the number of adj vertices.
-     * @param[in] v: The pointer to the adjacent vertex to set to this element.
-     */
-    void setAdjVertex(uint i, Vertex* v) { Base::setElement(i, v); }
-
-    /**
-     * @brief Sets the i-th adjacent vertex of the element.
-     * @param[in] i: the position in this container on which set the adj vertex;
-     * the value must be between 0 and the number of adj vertices.
-     * @param[in] vi: The index in the vertex container of the adjacent vertex
-     * to set.
-     */
-    void setAdjVertex(uint i, uint vi) { Base::setElement(i, vi); }
-
-    /**
-     * @brief Sets the adjacent vertex pointed by the iterator.
-     * @param[in] it: the iterator in this container on which set the adjacent
-     * vertex; the value must be between begin() and end().
-     * @param[in] v: The pointer to the adjacent vertex to set to the element.
-     */
-    void setAdjVertex(ConstAdjacentVertexIterator it, Vertex* v)
+    decltype(auto) adjVertex(this auto&& self, uint i)
     {
-        Base::setElement(it, v);
+        return Base::refElement(self, i);
     }
 
     /**
-     * @brief Sets the adjacent vertex pointed by the iterator.
-     * @param[in] it: the iterator in this container on which set the adjacent
-     * vertex; the value must be between begin() and end().
-     * @param[in] vi: The index in the vertex container of the adjacent vertex
-     * to set.
+     * @brief Returns the global index in the VertexContainer of the i-th
+     * adjacent vertex.
+     * @param[in] i: The 0-based local position in this adjacency container (0
+     * <= i < adjVertexCount()).
+     * @return The global index (IndexType) of the adjacent vertex, or
+     * NULL_INDEX if no adjacent vertex exists.
      */
-    void setAdjVertex(ConstAdjacentVertexIterator it, uint vi)
+    IndexType adjVertexIndex(this const auto& self, uint i)
     {
-        Base::setElement(it, vi);
+        return Base::refIndex(self, i);
     }
 
     /**
-     * @brief Sets the adjacent vertex pointed by the iterator.
-     * @param[in] it: the iterator in this container on which set the adjacent
-     * vertex; the value must be between begin() and end().
-     * @param[in] v: The pointer to the adjacent vertex to set to the element.
+     * @brief Returns a proxy to the i-th adjacent vertex using modular
+     * arithmetic. Supports negative indices.
+     * @param[in] i: The position modulo adjVertexCount().
+     * @return A proxy to the adjacent vertex.
      */
-    void setAdjVertex(ConstAdjacentVertexIndexIterator it, Vertex* v)
+    decltype(auto) adjVertexMod(this auto&& self, int i)
     {
-        Base::setElement(it, v);
+        return Base::refElementMod(self, i);
     }
 
     /**
-     * @brief Sets the adjacent vertex pointed by the iterator.
-     * @param[in] it: the iterator in this container on which set the adjacent
-     * vertex; the value must be between begin() and end().
-     * @param[in] vi: The index in the vertex container of the adjacent vertex
-     * to set.
+     * @brief Returns the index of the i-th adjacent vertex using modular
+     * arithmetic. Supports negative indices.
+     * @param[in] i: The position modulo adjVertexCount().
+     * @return The index of the adjacent vertex.
      */
-    void setAdjVertex(ConstAdjacentVertexIndexIterator it, uint vi)
+    IndexType adjVertexIndexMod(this const auto& self, int i)
     {
-        Base::setElement(it, vi);
+        return Base::refIndexMod(self, i);
     }
 
     /**
-     * @brief Sets the i-th adjacent vertex of the element, but using as index
-     * the module between i and the number of adjacent vertices. You can use
-     * this function if you need to set the "next adjacent vertex after position
-     * k", without check if it is less than the number of adjacent vertices.
-     * Works also for negative numbers:
-     *
-     * @code{.cpp}
-     * k = pos; // some position of an adj vertex
-     * e.setAdjVertexMod(k+1, aVertex); // set the adj vertex next to k, that
-     *                                  // may also be at pos 0
-     * e.setAdjVertexMod(-1, aVertex); // set the adj vertex in position
-     *                                 // adjVertexCount()-1
-     * @endcode
-     *
-     * @param[in] i: the position in this container w.r.t. the position 0 on
-     * which set the adj vertex; value is modularized on adjVertexCount().
-     * @param[in] v: The pointer to the adj vertex to set to the element.
+     * @brief Sets the i-th adjacent vertex by index.
+     * @param[in] i: The position in this container.
+     * @param[in] vi: The vertex index to set.
      */
-    void setAdjVertexMod(int i, Vertex* v) { Base::setElementMod(i, v); }
-
-    /**
-     * @brief Sets the i-th adjacent vertex of the element, but using as index
-     * the module between i and the number of adjacent vertices. You can use
-     * this function if you need to set the "next adjacent vertex after position
-     * k", without check if it is less than the number of adjacent vertices.
-     * Works also for negative numbers:
-     *
-     * @code{.cpp}
-     * k = pos; // some position of an adj vertex
-     * e.setAdjVertexMod(k+1, aVertInd); // set the adj vertex next to k, that
-     *                                   // may also be at pos 0
-     * e.setAdjVertexMod(-1, aVertInd); // set the adj vertex in position
-     *                                  // adjVertexCount()-1
-     * @endcode
-     *
-     * @param[in] i: the position in this container w.r.t. the position 0 on
-     * which set the adj vertex; value is modularized on adjVertexCount().
-     * @param[in] vi: The index in the vertex container of the adj vertex to
-     * set.
-     */
-    void setAdjVertexMod(int i, uint vi) { Base::setElementMod(i, vi); }
-
-    /**
-     * @brief Sets all the adjacent vertices of this element.
-     *
-     * If the size of the container is static, the size of the input range must
-     * be the same one of the container.
-     *
-     * @tparam Rng: The type of the range of adjacent vertices to set. The value
-     * type of the range must be convertible to a pointer to an AdjacentVertex.
-     *
-     * @param[in] r: range of adjacent vertices to set.
-     */
-    template<Range Rng>
-    void setAdjVertices(Rng&& r) requires InputRange<Rng, Vertex*>
+    void setAdjVertex(this auto&& self, uint i, IndexType vi)
     {
-        Base::setElements(r);
+        Base::setRef(self, i, vi);
     }
 
     /**
-     * @brief Sets all the adjacent vertices of this element.
-     *
-     * If the size of the container is static, the size of the input range must
-     * be the same one of the container.
-     *
-     * @tparam Rng: The type of the range of adjacent vertex indices to set. The
-     * value type of the range must be convertible to unsigned integer.
-     *
-     * @param[in] r: range of indices of adjacent vertices to set.
+     * @brief Sets the i-th adjacent vertex from an ElementProxy.
+     * @param[in] i: The position in this container.
+     * @param[in] v: The adjacent vertex proxy.
      */
-    template<Range Rng>
-    void setAdjVertices(Rng&& r) requires InputRange<Rng, uint>
+    template<typename Elem>
+    void setAdjVertex(this auto&& self, uint i, const Elem& v)
+        requires (!std::unsigned_integral<std::remove_cvref_t<Elem>>)
     {
-        Base::setElements(r);
+        Base::setRef(self, i, v);
     }
 
     /**
-     * @brief Returns `true` if the container of adjacent vertices contains the
-     * given vertex, `false` otherwise.
-     *
-     * @param[in] v: the pointer to the vertex to search.
-     * @return `true` if the container of adjacent vertices contains the given
-     * vertex, `false` otherwise.
+     * @brief Sets the i-th adjacent vertex by index using modular arithmetic.
+     * @param[in] i: The position modulo adjVertexCount().
+     * @param[in] vi: The vertex index to set.
      */
-    bool containsAdjVertex(const Vertex* v) const
+    void setAdjVertexMod(this auto&& self, int i, IndexType vi)
     {
-        return Base::containsElement(v);
+        Base::setRefMod(self, i, vi);
     }
 
     /**
-     * @brief Returns `true` if the container of adjacent vertices contains the
-     * given vertex, `false` otherwise.
-     *
-     * @param[in] vi: the index of the vertex to search.
-     * @return `true` if the container of adjacent vertices contains the given
-     * vertex, `false` otherwise.
+     * @brief Sets the i-th adjacent vertex from an ElementProxy
+     * using modular arithmetic.
+     * @param[in] i: The position modulo adjVertexCount().
+     * @param[in] v: The adjacent vertex proxy.
      */
-    bool containsAdjVertex(uint vi) const { return Base::containsElement(vi); }
-
-    /**
-     * @brief Returns the index of the given adjacent vertex in the container of
-     * the element. If the given adjacent vertex is not in the container,
-     * returns UINT_NULL.
-     *
-     * @param[in] v: the pointer to the adjacent vertex to search.
-     * @return the index of the given adjacent vertex, or UINT_NULL if it is not
-     * found.
-     */
-    uint indexOfAdjVertex(const Vertex* v) const
+    template<typename Elem>
+    void setAdjVertexMod(this auto&& self, int i, const Elem& v)
+        requires (!std::unsigned_integral<std::remove_cvref_t<Elem>>)
     {
-        return Base::indexOfElement(v);
+        Base::setRefMod(self, i, v);
     }
 
     /**
-     * @brief Returns the index of the adjacent vertex with the given index in
-     * the container of the element. If the given adjacent vertex is not in the
-     * container, returns UINT_NULL.
-     *
-     * @param[in] vi: the index of the adjacent vertex to search.
-     * @return the index of the given adjacent vertex, or UINT_NULL if it is not
-     * found.
+     * @brief Sets all adjacent vertices from an input range.
+     * @param[in] rng: The input range of vertex indices or proxies.
      */
-    uint indexOfAdjVertex(uint vi) const { return Base::indexOfElement(vi); }
-
-    /**
-     * @brief Resize the container of the adjacent vertices to the given size.
-     * @note This function is available only if the container of the Adjacent
-     * Vertices has dynamic size.
-     * @param[in] n: The new size of the adjacent vertices container.
-     */
-    void resizeAdjVertices(uint n) { Base::resize(n); }
-
-    /**
-     * @brief Pushes in the back of the container the given adjacent vertex.
-     * @note This function is available only if the container of the Adjacent
-     * Vertices component has dynamic size.
-     * @param[in] v: The pointer to the adjacent vertex to push in the back of
-     * the container.
-     */
-    void pushAdjVertex(Vertex* v) { Base::pushBack(v); }
-
-    /**
-     * @brief Pushes in the back of the container the given adjacent vertex..
-     * @note This function is available only if the container of the Adjacent
-     * Vertices component has dynamic size.
-     * @param[in] vi: The index to the vertex to push in the back of the
-     * container.
-     */
-    void pushAdjVertex(uint vi) { Base::pushBack(vi); }
-
-    /**
-     * @brief Inserts the given adjacent vertex in the container at the given
-     * position.
-     * @note This function is available only if the container of the Adjacent
-     * Vertices component has dynamic size.
-     * @param[in] i: The position in this container where to insert the adjacent
-     * vertex.
-     * @param[in] v: The pointer to the adjacent vertex to insert in the
-     * container.
-     */
-    void insertAdjVertex(uint i, Vertex* v) { Base::insert(i, v); }
-
-    /**
-     * @brief Inserts the given adjacent vertex in the container at the given
-     * position.
-     * @note This function is available only if the container of the Adjacent
-     * Vertices component has dynamic size.
-     * @param[in] i: The position in this container where to insert the adjacent
-     * vertex.
-     * @param[in] vi: The index of the vertex to insert in the container.
-     */
-    void insertAdjVertex(uint i, uint vi) { Base::insert(i, vi); }
-
-    /**
-     * @brief Removes the adjacent vertex at the given position from the
-     * container.
-     * @note This function is available only if the container of the Adjacent
-     * Vertices component has dynamic size.
-     * @param[in] i: The position of the adjacent vertex to remove from this
-     * container.
-     */
-    void eraseAdjVertex(uint i) { Base::erase(i); }
-
-    /**
-     * @brief Clears the container of adjacent vertices, making it empty.
-     * @note This function is available only if the container of the Adjacent
-     * Vertices component has dynamic size.
-     */
-    void clearAdjVertices() { Base::clear(); }
-
-    /* Iterator Member functions */
-
-    /**
-     * @brief Returns an iterator to the first adjacent vertex in the
-     * container of this component.
-     *
-     * @return an iterator pointing to the begin of this container.
-     */
-    AdjacentVertexIterator adjVertexBegin() { return Base::elementBegin(); }
-
-    /**
-     * @brief Returns an iterator to the end of the container of this component.
-     *
-     * @return an iterator pointing to the end of this container.
-     */
-    AdjacentVertexIterator adjVertexEnd() { return Base::elementEnd(); }
-
-    /**
-     * @brief Returns a const iterator to the first adjacent vertex in the
-     * container of this component.
-     *
-     * @return an iterator pointing to the begin of this container.
-     */
-    ConstAdjacentVertexIterator adjVertexBegin() const
+    template<std::ranges::input_range Rng>
+    void setAdjVertices(this auto&& self, Rng&& rng)
     {
-        return Base::elementBegin();
+        Base::setRefs(self, std::forward<Rng>(rng));
     }
 
     /**
-     * @brief Returns a const iterator to the end of the container of this
-     * component.
-     *
-     * @return an iterator pointing to the end of this container.
+     * @brief Sets all adjacent vertices from a parameter pack.
+     * @param[in] args: The vertex indices or proxies to set.
      */
-    ConstAdjacentVertexIterator adjVertexEnd() const
+    template<typename... Args>
+    void setAdjVertices(this auto&& self, const Args&... args)
+        requires (sizeof...(Args) > 1 && (sizeof...(Args) == N || N < 0))
     {
-        return Base::elementEnd();
+        Base::setRefs(self, args...);
     }
 
     /**
-     * @brief Returns an iterator to the first adjacent vertex index in the
-     * container of this component.
-     *
-     * @return an iterator pointing to the begin of the adjacent vertex indices.
+     * @brief Checks if this container contains the given vertex index.
+     * @param[in] vi: The vertex index to search for.
+     * @return true if found, false otherwise.
      */
-    ConstAdjacentVertexIndexIterator adjVertexIndexBegin() const
+    bool containsAdjVertex(this const auto& self, IndexType vi)
     {
-        return Base::elementIndexBegin();
+        return Base::containsRef(self, vi);
     }
 
     /**
-     * @brief Returns an iterator to the end of the container of this component.
-     *
-     * @return an iterator pointing to the end of the adjacent vertex indices.
+     * @brief Checks if this container contains the given vertex proxy.
+     * @param[in] v: The vertex proxy to search for.
+     * @return true if found, false otherwise.
      */
-    ConstAdjacentVertexIndexIterator adjVertexIndexEnd() const
+    template<typename Elem>
+    bool containsAdjVertex(this const auto& self, const Elem& v)
+        requires (!std::unsigned_integral<std::remove_cvref_t<Elem>>)
     {
-        return Base::elementIndexEnd();
+        return Base::containsRef(self, v);
     }
 
     /**
-     * @brief Returns a lightweight view object that stores the begin and
-     * end iterators of the container of adjacent vertices of the element. The
-     * view object exposes the iterators trough the `begin()` and `end()` member
-     * functions, and therefore the returned object can be used in range-based
-     * for loops:
-     *
-     * @code{.cpp}
-     * for (auto* adjEdge : el.adjVertices()) {
-     *     // Do something with adjVertex
-     * }
-     * @endcode
-     *
-     * @return a lightweight view object that can be used in range-based for
-     * loops to iterate over adjacent edges.
+     * @brief Finds the 0-based local position in this adjacency container of
+     * the given global vertex index.
+     * @param[in] vi: The global vertex index (IndexType) to search for in
+     * VertexContainer.
+     * @return The 0-based local position (uint) in this container, or UINT_NULL
+     * if not found.
      */
-    View<AdjacentVertexIterator> adjVertices() { return Base::elements(); }
-
-    /**
-     * @brief Returns a lightweight const view object that stores the begin and
-     * end iterators of the container of adjacent vertices of the element. The
-     * view object exposes the iterators trough the `begin()` and `end()` member
-     * functions, and therefore the returned object can be used in range-based
-     * for loops:
-     *
-     * @code{.cpp}
-     * for (const auto* adjEdge : el.adjVertices()) {
-     *     // Do something read-only with adjVertex
-     * }
-     * @endcode
-     *
-     * @return a lightweight view object that can be used in range-based for
-     * loops to iterate over adjacent edges.
-     */
-    View<ConstAdjacentVertexIterator> adjVertices() const
+    uint indexOfAdjVertex(this const auto& self, IndexType vi)
     {
-        return Base::elements();
+        return Base::indexOfRef(self, vi);
     }
 
     /**
-     * @brief Returns a lightweight view object that stores the begin and end
-     * iterators of the container of adjacent vertex indices of the element. The
-     * view object exposes the iterators trough the `begin()` and `end()` member
-     * functions, and therefore the returned object can be used in range-based
-     * for loops:
-     *
-     * @code{.cpp}
-     * for (uint eid : el.adjVertexIndices()) {
-     *     // Do something with adj vertex index...
-     * }
-     * @endcode
-     *
-     * @return a lightweight view object that can be used in range-based for
-     * loops to iterate over adjacent vertex indices.
+     * @brief Finds the position in this container of the given vertex proxy.
+     * @param[in] v: The vertex proxy to search for.
+     * @return The 0-based position, or UINT_NULL if not found.
      */
-    View<ConstAdjacentVertexIndexIterator> adjVertexIndices() const
+    template<typename Elem>
+    uint indexOfAdjVertex(this const auto& self, const Elem& v)
+        requires (!std::unsigned_integral<std::remove_cvref_t<Elem>>)
     {
-        return Base::elementIndices();
+        return Base::indexOfRef(self, v);
     }
 
-    // dummy member to discriminate between AdjacentVertices and
-    // VertexHalfEdgePointers
-    void __adjacentVertices() const {}
+    /* Dynamic size operations */
+
+    /**
+     * @brief Resizes the adjacent vertices container.
+     * @note Available only for dynamic, non-TTVC containers.
+     * @param[in] n: The new size.
+     */
+    void resizeAdjVertices(this auto&& self, uint n) requires (N < 0 && !TTVC)
+    {
+        Base::resizeRefs(self, n);
+    }
+
+    /**
+     * @brief Appends a vertex index to the container.
+     * @note Available only for dynamic, non-TTVC containers.
+     * @param[in] vi: The vertex index to append.
+     */
+    void pushAdjVertex(this auto&& self, IndexType vi) requires (N < 0 && !TTVC)
+    {
+        Base::pushRef(self, vi);
+    }
+
+    /**
+     * @brief Appends a vertex proxy to the container.
+     * @note Available only for dynamic, non-TTVC containers.
+     * @param[in] v: The vertex proxy to append.
+     */
+    template<typename Elem>
+    void pushAdjVertex(this auto&& self, const Elem& v) requires (
+        N < 0 && !TTVC && !std::unsigned_integral<std::remove_cvref_t<Elem>>)
+    {
+        Base::pushRef(self, v);
+    }
+
+    /**
+     * @brief Inserts a vertex index at position i.
+     * @note Available only for dynamic, non-TTVC containers.
+     * @param[in] i: The position to insert at.
+     * @param[in] vi: The vertex index to insert.
+     */
+    void insertAdjVertex(this auto&& self, uint i, IndexType vi)
+        requires (N < 0 && !TTVC)
+    {
+        Base::insertRef(self, i, vi);
+    }
+
+    /**
+     * @brief Inserts a vertex proxy at position i.
+     * @note Available only for dynamic, non-TTVC containers.
+     * @param[in] i: The position to insert at.
+     * @param[in] v: The vertex proxy to insert.
+     */
+    template<typename Elem>
+    void insertAdjVertex(this auto&& self, uint i, const Elem& v) requires (
+        N < 0 && !TTVC && !std::unsigned_integral<std::remove_cvref_t<Elem>>)
+    {
+        Base::insertRef(self, i, v);
+    }
+
+    /**
+     * @brief Erases the adjacent vertex at position i.
+     * @note Available only for dynamic, non-TTVC containers.
+     * @param[in] i: The position to erase.
+     */
+    void eraseAdjVertex(this auto&& self, uint i) requires (N < 0 && !TTVC)
+    {
+        Base::eraseRef(self, i);
+    }
+
+    /**
+     * @brief Clears all adjacent vertices in the container.
+     * @note Available only for dynamic, non-TTVC containers.
+     */
+    void clearAdjVertices(this auto&& self) requires (N < 0 && !TTVC)
+    {
+        Base::clearRefs(self);
+    }
+
+    /* Views / Ranges */
+
+    /**
+     * @brief Returns a lazy range yielding proxies to all adjacent vertices.
+     * @return A range of ElementProxy / ConstElementProxy objects.
+     */
+    decltype(auto) adjVertices(this auto&& self)
+    {
+        return Base::refElements(self);
+    }
+
+    /**
+     * @brief Returns a lightweight view over the adjacent vertex indices.
+     * @return A View object exposing begin() and end() over the indices.
+     */
+    auto adjVertexIndices(this auto&& self) { return Base::refIndices(self); }
 
 protected:
-    // Component interface functions
-    template<typename Element>
-    void importFrom(const Element& e, bool importRefs = true);
-
-    void serialize(std::ostream& os) const
-    {
-        // regardless of the type of the container (indices or pointers), the
-        // serialization is always done using the indices
-
-        vcl::serialize(os, adjVertexCount());
-        for (uint i = 0; i < adjVertexCount(); ++i) {
-            vcl::serialize(os, adjVertexIndex(i));
-        }
-    }
-
-    void deserialize(std::istream& is)
-    {
-        uint n;
-        vcl::deserialize(is, n);
-        resizeAdjVertices(n);
-
-        for (uint i = 0; i < adjVertexCount(); ++i) {
-            uint aei;
-            vcl::deserialize(is, aei);
-            setAdjVertex(i, aei);
-        }
-    }
-
-private:
-    template<typename Element>
-    void importIndicesFrom(const Element& e)
-    {
-        for (uint i = 0; i < e.adjVertexCount(); ++i) {
-            setAdjVertex(i, e.adjVertexIndex(i));
-        }
-    }
+    template<typename OtherElement>
+    void importFrom(
+        this auto&&         self,
+        const OtherElement& other,
+        bool                importRefs = true);
 };
 
-/* concepts */
+/* Concepts */
 
 /**
- * @brief A concept that checks whether a type T (that should be a Element) has
- * the AdjacentVertices component (inherits from it).
- *
- * The concept is satisfied if T is a class that inherits from
- * vcl::comp::AdjacentVertices, with any template arguments.
- *
- * Note that this concept does not discriminate between the Horizontal
- * AdjacentVertices component and the vertical OptionalAdjacentVertices
- * component, therefore it does not guarantee that a template Element type that
- * satisfies this concept provides AdjacentVertices component at runtime (it is
- * guaranteed only that the proper member functions are available at compile
- * time).
- *
- * @tparam T: The type to be tested for conformity to the HasAdjacentVertices.
- *
- * @ingroup components_concepts
+ * @brief Concept that checks whether a type T has the AdjacentVertices
+ * component.
  */
 template<typename T>
-concept HasAdjacentVertices =
-    BTTBB::IsDerivedFromSpecializationOfV<T, AdjacentVertices>;
+concept HasAdjacentVertices = HasComponent<CompId::ADJACENT_VERTICES, T>;
 
 /**
- * @brief A concept that checks whether a type T (that should be a Element) has
- * the AdjacentVertices component (inherits from it), and that the component is
- * optional.
- *
- * @tparam T: The type to be tested for conformity to the
- * HasOptionalAdjacentVertices.
- *
- * @ingroup components_concepts
+ * @brief Concept that checks whether a type T has an optional AdjacentVertices
+ * component.
  */
 template<typename T>
 concept HasOptionalAdjacentVertices =
     HasAdjacentVertices<T> &&
-    IsOptionalComponent<typename RemoveRef<T>::AdjacentVertices>;
+    HasOptionalComponent<CompId::ADJACENT_VERTICES, T>;
 
-/* importFrom function */
+/**
+ * @brief Concept that checks whether a type T has a static-size
+ * AdjacentVertices component.
+ */
+template<typename T>
+concept HasStaticAdjacentVertices =
+    HasAdjacentVertices<T> &&
+    (ComponentTypeT<CompId::ADJACENT_VERTICES, T>::ADJ_VERTEX_COUNT > 0);
 
-template<
-    bool STORE_INDICES,
-    typename Vertex,
-    typename ParentElemType,
-    bool VERT,
-    bool OPT>
-template<typename Element>
-void AdjacentVertices<STORE_INDICES, Vertex, ParentElemType, VERT, OPT>::
-    importFrom(const Element& e, bool importRefs)
+/* Implementation of member functions */
+
+template<int N, std::unsigned_integral Index, bool TTVC, bool OPT>
+template<typename OtherElement>
+void AdjacentVertices<N, Index, TTVC, OPT>::importFrom(
+    this auto&&         self,
+    const OtherElement& other,
+    bool                importRefs)
 {
     if (importRefs) {
-        if constexpr (HasAdjacentVertices<Element>) {
-            if (isAdjacentVerticesAvailableOn(e)) {
-                // from static/dynamic to dynamic size: need to resize
-                // first, then import
-                resizeAdjVertices(e.adjVertexCount());
-                importIndicesFrom(e);
+        if constexpr (HasAdjacentVertices<OtherElement>) {
+            if (other.template isComponentAvailable<
+                    CompId::ADJACENT_VERTICES>()) {
+                using OtherComp =
+                    ComponentTypeT<CompId::ADJACENT_VERTICES, OtherElement>;
+                constexpr int OTHER_N = OtherComp::ADJ_VERTEX_COUNT;
+
+                if constexpr (N > 0) {
+                    if constexpr (N == OTHER_N) {
+                        for (uint i = 0; i < N; ++i) {
+                            self.setAdjVertex(
+                                i, Base::castIndex(other.adjVertexIndex(i)));
+                        }
+                    }
+                    else if constexpr (OTHER_N < 0) {
+                        if (other.adjVertexCount() == N) {
+                            for (uint i = 0; i < N; ++i) {
+                                self.setAdjVertex(
+                                    i,
+                                    Base::castIndex(other.adjVertexIndex(i)));
+                            }
+                        }
+                    }
+                }
+                else if constexpr (!TTVC) {
+                    self.resizeAdjVertices(other.adjVertexCount());
+                    for (uint i = 0; i < other.adjVertexCount(); ++i) {
+                        self.setAdjVertex(
+                            i, Base::castIndex(other.adjVertexIndex(i)));
+                    }
+                }
+                else {
+                    if (self.adjVertexCount() == other.adjVertexCount()) {
+                        for (uint i = 0; i < self.adjVertexCount(); ++i) {
+                            self.setAdjVertex(
+                                i, Base::castIndex(other.adjVertexIndex(i)));
+                        }
+                    }
+                }
             }
         }
     }
-}
-
-/* Detector function to check if a class has AdjacentVertices available */
-
-/**
- * @brief Checks if the given Element has AdjacentVertices component
- * available.
- *
- * This function returns `true` also if the component is horizontal and always
- * available in the element. The runtime check is performed only when the
- * component is optional.
- *
- * @param[in] element: The element to check.
- * @return `true` if the element has AdjacentVertices component available,
- * `false` otherwise.
- */
-bool isAdjacentVerticesAvailableOn(const auto& element)
-{
-    return isComponentAvailableOn<CompId::ADJACENT_VERTICES>(element);
 }
 
 } // namespace vcl::comp

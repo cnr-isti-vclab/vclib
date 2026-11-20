@@ -58,24 +58,24 @@ namespace bench {
 template<typename Mesh>
 void selectElements(Mesh& m, vcl::uint step = 2)
 {
-    for (auto& v : m.vertices()) {
-        v.selected() = (m.index(v) % step == 0);
+    for (auto&& v : m.vertices()) {
+        v.selected() = (v.index() % step == 0);
     }
 
     if constexpr (vcl::FaceMeshConcept<Mesh>) {
-        for (auto& f : m.faces()) {
-            f.selected() = (m.index(f) % step == 0);
+        for (auto&& f : m.faces()) {
+            f.selected() = (f.index() % step == 0);
             if constexpr (requires { f.edgeSelected(0); }) {
                 for (vcl::uint i = 0; i < f.vertexCount(); ++i) {
-                    f.edgeSelected(i) = ((m.index(f) + i) % step == 0);
+                    f.edgeSelected(i) = ((f.index() + i) % step == 0);
                 }
             }
         }
     }
 
     if constexpr (vcl::EdgeMeshConcept<Mesh>) {
-        for (auto& e : m.edges()) {
-            e.selected() = (m.index(e) % step == 0);
+        for (auto e : m.edges()) {
+            e.selected() = (e.index() % step == 0);
         }
     }
 }
@@ -148,6 +148,12 @@ public:
     }
 
     /**
+     * @brief A copy of the input mesh with topology (adjacencies) enabled and
+     * updated, that the benchmark is free to modify.
+     */
+    Mesh copyMeshWithTopology() { return meshWithTopology(); }
+
+    /**
      * @brief The input mesh with vertices, faces, and edges selected. It is
      * created at the first call and shared among the benchmarks, therefore it
      * must not be modified.
@@ -213,6 +219,8 @@ public:
     Mesh copyMesh() const { return mContext.copyMesh(); }
 
     const Mesh& meshWithTopology() { return mContext.meshWithTopology(); }
+
+    Mesh copyMeshWithTopology() { return mContext.copyMeshWithTopology(); }
 
     const Mesh& meshWithSelection() { return mContext.meshWithSelection(); }
 
