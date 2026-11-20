@@ -225,6 +225,16 @@ public:
         if (mWindow) {
             // the render resources must be released while the window is valid
             DerivedRenderApp::WM::close(derived());
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+            // the bgfx context is bound to the native window of the first
+            // canvas (its main swapchain): destroying it would make every
+            // following bgfx::frame() crash. The window is just hidden, and
+            // destroyed with this object.
+            if (vcl::Context::instance().isDefaultWindow(winId())) {
+                glfwHideWindow(mWindow);
+                return;
+            }
+#endif
             cleanup();
         }
     }

@@ -62,6 +62,10 @@ namespace vcl {
  * that cannot be done in the constructor (e.g. because the WindowManager
  * could not guarantee the initialization of the backend context in the
  * constructor).
+ * - `onClose() -> void`: Called when the window is closed, while the native
+ * window is still valid (e.g. by the glfw WindowManager, before destroying the
+ * window). The function must release all the resources bound to the window,
+ * leaving the canvas empty; it must be safe to call it more than once.
  * - `onResize(uint width, uint height) -> void`: Called when the canvas is
  * resized. This function is called by the RenderApp class when the
  * WindowManager of the vcl::RenderApp is resized. The function should resize
@@ -106,6 +110,7 @@ concept CanvasConcept = requires (
 
         { obj.onInit() } -> std::same_as<void>; // qt+opengl requires init
         { obj.onResize(u, u) } -> std::same_as<void>;
+        { obj.onClose() } -> std::same_as<void>;
         { obj.onPaint() } -> std::same_as<void>;
 
         { obj.onReadDepth(p, cbrb) } -> std::same_as<bool>;
