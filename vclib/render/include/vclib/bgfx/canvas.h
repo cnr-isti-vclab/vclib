@@ -159,13 +159,26 @@ public:
     {
         mSize = {width, height};
 
-        // create window backbuffer
-        if (bgfx::isValid(mFbh))
-            bgfx::destroy(mFbh);
-
         auto& ctx = Context::instance();
-        mFbh      = ctx.createFramebufferAndInitView(
-            mWinId, mViewId, width, height, true, mDefaultClearColor.rgba());
+        if (mWinId && bgfx::isValid(mFbh)) {
+            // Recreating a swapchain in the same frame can cause bgfx to
+            // destroy the old native surface before its queued destruction.
+            bgfx::SwapChain swapChain;
+            swapChain.nwh                = mWinId;
+            swapChain.width              = width;
+            swapChain.height             = height;
+            swapChain.formatColor        = Context::DEFAULT_COLOR_FORMAT;
+            swapChain.formatDepthStencil = Context::defaultDepthFormat();
+            bgfx::updateSwapChain(mFbh, swapChain);
+            bgfx::setViewRect(mViewId, 0, 0, width, height);
+            bgfx::touch(mViewId);
+        }
+        else {
+            if (bgfx::isValid(mFbh))
+                bgfx::destroy(mFbh);
+            mFbh = ctx.createFramebufferAndInitView(
+                mWinId, mViewId, width, height, true, mDefaultClearColor.rgba());
+        }
         // the canvas framebuffer is non valid for the default window
         assert(ctx.isDefaultWindow(mWinId) == !bgfx::isValid(mFbh));
     }
