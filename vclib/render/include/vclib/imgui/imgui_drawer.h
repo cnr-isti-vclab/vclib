@@ -107,6 +107,10 @@ public:
 
     virtual void onDraw(uint viewId)
     {
+        if (!mInitialized) {
+            return;
+        }
+
         // imgui frame
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
         ImGui_ImplOpenGL2_NewFrame();
@@ -137,6 +141,10 @@ public:
 
     virtual void onPostDraw()
     {
+        if (!mInitialized) {
+            return;
+        }
+
         // imgui rendering
         ImGui::Render();
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
@@ -244,6 +252,10 @@ private:
 
     bool wantCapture(bool mouse = true)
     {
+        if (!mInitialized) {
+            return false;
+        }
+
         const auto& io = ImGui::GetIO();
         return mouse ? io.WantCaptureMouse : io.WantCaptureKeyboard;
     }

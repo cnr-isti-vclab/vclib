@@ -534,8 +534,7 @@ struct OcornutImguiContext
 		bgfx::destroy(s_tex);
 
 		bgfx::destroy(u_imageLodEnabled);
-		bgfx::destroy(m_imageProgram);
-		bgfx::destroy(m_program);
+		// The programs are cached and owned by Context::ProgramManager.
 
 		// m_allocator = NULL;
 	}
