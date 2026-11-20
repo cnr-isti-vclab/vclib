@@ -254,63 +254,22 @@ public:
         std::is_same_v<typename Iterator::value_type, PointT> &&
         PointT::DIM == 3)
     {
-        if (begin == end) {
-            return PointT::Zero();
-        }
-
-        const auto first = *begin;
-        auto       prev  = first;
-        auto       it    = begin;
-        ++it;
-
-        if (it == end) {
-            return PointT::Zero();
-        }
-
-        const auto second = *it;
-        ++it;
-        if (it == end) {
-            return PointT::Zero();
-        }
-
-        const auto third = *it;
-        ++it;
-        if (it == end) {
-            PointT normal = (second - first).cross(third - first);
-            normal.normalize();
-            return normal;
-        }
-
-        const auto fourth = *it;
-        ++it;
-        if (it == end) {
-            PointT normal = (third - first).cross(fourth - second);
-            normal.normalize();
-            return normal;
-        }
-
+        // compute the sum of normals for each triplet of consecutive points
         PointT sum;
         sum.setZero();
+        for (auto i = begin; i != end; ++i) {
+            auto i1 = i;
+            ++i1;
+            if (i1 == end)
+                i1 = begin;
 
-        const auto addNewellEdge = [&sum](const PointT& a, const PointT& b) {
-            sum[0] += (a[1] - b[1]) * (a[2] + b[2]);
-            sum[1] += (a[2] - b[2]) * (a[0] + b[0]);
-            sum[2] += (a[0] - b[0]) * (a[1] + b[1]);
-        };
+            auto i2 = i1;
+            ++i2;
+            if (i2 == end)
+                i2 = begin;
 
-        addNewellEdge(first, second);
-        addNewellEdge(second, third);
-        addNewellEdge(third, fourth);
-
-        prev = fourth;
-        for (; it != end; ++it) {
-            const auto curr = *it;
-            addNewellEdge(prev, curr);
-            prev = curr;
+            sum += (*i1 - *i).cross(*i2 - *i);
         }
-
-        addNewellEdge(prev, first);
-
         sum.normalize();
         return sum;
     }
@@ -323,7 +282,7 @@ public:
      * @return The normal of the polygon.
      */
     template<Range R>
-    static PointT normal(R&& range)
+    static PointT normal(R&& range) requires (PointT::DIM == 3)
     {
         return normal(std::ranges::begin(range), std::ranges::end(range));
     }
