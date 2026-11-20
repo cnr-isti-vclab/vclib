@@ -146,10 +146,9 @@ std::istringstream plyTriCube()
     return ss;
 }
 
-using Meshes  = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
-using Meshesf = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
-using Meshes64 =
-    std::tuple<vcl::TriMesh64, vcl::PolyMesh64, vcl::EdgeMesh64>;
+using Meshes   = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
+using Meshesf  = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
+using Meshes64 = std::tuple<vcl::TriMesh64, vcl::PolyMesh64, vcl::EdgeMesh64>;
 using Meshes64f =
     std::tuple<vcl::TriMesh64f, vcl::PolyMesh64f, vcl::EdgeMesh64f>;
 
@@ -264,9 +263,9 @@ TEMPLATE_TEST_CASE(
         // Verify texcoords for both generated triangles match polygon vertices
         for (vcl::uint ff = 0; ff < tm.faceCount(); ++ff) {
             for (vcl::uint i = 0; i < 3; ++i) {
-                vcl::uint vid = tm.face(ff).vertexIndex(i);
-                float expectedU = (vid == 1 || vid == 2) ? 1.0f : 0.0f;
-                float expectedV = (vid >= 2) ? 1.0f : 0.0f;
+                vcl::uint vid       = tm.face(ff).vertexIndex(i);
+                float     expectedU = (vid == 1 || vid == 2) ? 1.0f : 0.0f;
+                float     expectedV = (vid >= 2) ? 1.0f : 0.0f;
                 REQUIRE(tm.face(ff).wedge(i).texCoord().u() == expectedU);
                 REQUIRE(tm.face(ff).wedge(i).texCoord().v() == expectedV);
             }

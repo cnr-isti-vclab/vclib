@@ -17,7 +17,7 @@
 namespace vcl {
 
 template<typename T>
-concept HasAdjVerticesMember = requires(T&& t) {
+concept HasAdjVerticesMember = requires (T&& t) {
     { t.adjVertices() } -> std::ranges::range;
 };
 
@@ -62,8 +62,8 @@ struct AdjVerticesView : std::ranges::range_adaptor_closure<AdjVerticesView>
 /**
  * @brief View adaptor that gives access to the adjacent vertices of the
  * element that has been piped. Every element having the adjacency
- * component (i.e., having the `adjVertices()` member function) can be applied to
- * this view.
+ * component (i.e., having the `adjVertices()` member function) can be applied
+ * to this view.
  *
  * The resulting range contains proxies to the adjacent vertices. Proxies of
  * missing adjacencies are invalid (they evaluate to `false`). If you are
@@ -73,8 +73,9 @@ struct AdjVerticesView : std::ranges::range_adaptor_closure<AdjVerticesView>
  * for (auto av : e | views::adjVertices | views::notNull) { ... }
  * @endcode
  *
- * When applied to a range of elements (e.g. `mesh.vertices() | views::adjVertices`), it
- * transforms each element to the range of its adjacent vertices.
+ * When applied to a range of elements (e.g. `mesh.vertices() |
+ * views::adjVertices`), it transforms each element to the range of its adjacent
+ * vertices.
  *
  * @ingroup views
  */

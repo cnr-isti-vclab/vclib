@@ -506,7 +506,7 @@ void setFaceColorFromConnectedComponents(
  * @ingroup update
  */
 template<FaceMeshConcept MeshType>
-    requires HasFaceAdjacentFaces<MeshType>
+requires HasFaceAdjacentFaces<MeshType>
 void setFaceColorFromConnectedComponents(MeshType& m)
 {
     requireFaceColor(m);

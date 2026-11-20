@@ -79,12 +79,11 @@ void populateEdgeMesh(MeshType& m)
     m.addEdge(3, 1);
 }
 
-using Meshes  = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
-using Meshesf = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
-using Meshes64 =
-    std::tuple<vcl::TriMesh64, vcl::PolyMesh64, vcl::EdgeMesh64>;
-using Meshes64f = std::
-    tuple<vcl::TriMesh64f, vcl::PolyMesh64f, vcl::EdgeMesh64f>;
+using Meshes   = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
+using Meshesf  = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
+using Meshes64 = std::tuple<vcl::TriMesh64, vcl::PolyMesh64, vcl::EdgeMesh64>;
+using Meshes64f =
+    std::tuple<vcl::TriMesh64f, vcl::PolyMesh64f, vcl::EdgeMesh64f>;
 
 TEMPLATE_TEST_CASE(
     "Clean Duplicated Faces",

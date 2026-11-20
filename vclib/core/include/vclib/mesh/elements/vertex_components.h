@@ -116,8 +116,8 @@ using Normal = comp::Normal<Point<ScalarType, N>, OPT>;
 template<typename ScalarType, bool OPT = false>
 using Normal3 = comp::Normal3<ScalarType, OPT>;
 
-using Normal3f         = comp::Normal3f;
-using Normal3d         = comp::Normal3d;
+using Normal3f = comp::Normal3f;
+using Normal3d = comp::Normal3d;
 template<typename ScalarType>
 using OptionalNormal3  = comp::OptionalNormal3<ScalarType>;
 using OptionalNormal3f = comp::OptionalNormal3f;
@@ -130,8 +130,8 @@ using Position = comp::Position<Point<ScalarType, N>, OPT>;
 template<typename ScalarType, bool OPT = false>
 using Position3 = comp::Position3<ScalarType, OPT>;
 
-using Position3f         = comp::Position3f;
-using Position3d         = comp::Position3d;
+using Position3f = comp::Position3f;
+using Position3d = comp::Position3d;
 
 /* Port PrincipalCurvature classes into vert namespace */
 template<typename ScalarType, bool OPT = false>
@@ -166,8 +166,8 @@ using Tangent = comp::Tangent<Point<ScalarType, N>, OPT>;
 template<typename ScalarType, bool OPT = false>
 using Tangent3 = comp::Tangent3<ScalarType, OPT>;
 
-using Tangent3f         = comp::Tangent3f;
-using Tangent3d         = comp::Tangent3d;
+using Tangent3f = comp::Tangent3f;
+using Tangent3d = comp::Tangent3d;
 template<typename ScalarType>
 using OptionalTangent3  = comp::OptionalTangent3<ScalarType>;
 using OptionalTangent3f = comp::OptionalTangent3f;
@@ -177,11 +177,11 @@ using OptionalTangent3d = comp::OptionalTangent3d;
 template<typename ScalarType, bool OPT = false>
 using TexCoord = comp::TexCoord<ScalarType, OPT>;
 
-template <typename ScalarType>
+template<typename ScalarType>
 using OptionalTexCoord = comp::TexCoord<ScalarType, true>;
 
-using TexCoordf = comp::TexCoordf<false>;
-using TexCoordd = comp::TexCoordd<false>;
+using TexCoordf         = comp::TexCoordf<false>;
+using TexCoordd         = comp::TexCoordd<false>;
 using OptionalTexCoordf = comp::TexCoordf<true>;
 using OptionalTexCoordd = comp::TexCoordd<true>;
 

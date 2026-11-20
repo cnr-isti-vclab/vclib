@@ -36,10 +36,10 @@ class Edge : public ElementProxy<ElemId::EDGE, ContainerType>
     using Base = ElementProxy<ElemId::EDGE, ContainerType>;
 
 public:
+    using Base::NULL_INDEX;
     using typename Base::Components;
     using typename Base::IndexType;
     using typename Base::ParentMeshType;
-    using Base::NULL_INDEX;
 
     static constexpr int VERTEX_COUNT = comp::
         ComponentTypeT<CompId::VERTEX_REFERENCES, Components>::VERTEX_COUNT;
@@ -48,9 +48,7 @@ public:
         comp::HasVertexReferences<Components>,
         "An Edge must have the VertexReferences component (e.g. "
         "EdgeVertexReferences).");
-    static_assert(
-        VERTEX_COUNT == 2,
-        "An Edge must have exactly 2 vertices.");
+    static_assert(VERTEX_COUNT == 2, "An Edge must have exactly 2 vertices.");
     static_assert(
         comp::HasBitFlags<Components>,
         "An Edge must have the BitFlags component "

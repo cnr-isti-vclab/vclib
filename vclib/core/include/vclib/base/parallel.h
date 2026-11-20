@@ -49,7 +49,7 @@ void parallelForImpl(Policy&& p, Iterator begin, Iterator end, Lambda&& F)
                 return;
             }
 
-            const std::size_t n = last - first;
+            const std::size_t n       = last - first;
             const std::size_t nChunks = std::min<std::size_t>(
                 n, 8 * std::max(1u, std::thread::hardware_concurrency()));
             const std::size_t chunkSize = (n + nChunks - 1) / nChunks;
@@ -61,10 +61,7 @@ void parallelForImpl(Policy&& p, Iterator begin, Iterator end, Lambda&& F)
             }
 
             std::for_each(
-                p,
-                chunkStarts.begin(),
-                chunkStarts.end(),
-                [&](std::size_t s) {
+                p, chunkStarts.begin(), chunkStarts.end(), [&](std::size_t s) {
                     const std::size_t e = std::min(s + chunkSize, last);
                     for (std::size_t i = s; i < e; ++i) {
                         if (!container->isElementDeleted(i)) {

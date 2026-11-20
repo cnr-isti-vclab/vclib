@@ -62,7 +62,7 @@ inline void testTriangleReferences(MyMesh& mesh)
     // Test setVertices single-pass input_range (std::istream_iterator)
     {
         std::istringstream iss("2 0 1");
-        auto streamRange = std::ranges::subrange(
+        auto               streamRange = std::ranges::subrange(
             std::istream_iterator<vcl::uint>(iss),
             std::istream_iterator<vcl::uint>());
         testF.setVertices(streamRange);
@@ -118,7 +118,7 @@ TEST_CASE("Vertex References - Polygon References")
     // Test setVertices single-pass input_range on dynamic Polygon
     {
         std::istringstream iss("1 3 4");
-        auto streamRange = std::ranges::subrange(
+        auto               streamRange = std::ranges::subrange(
             std::istream_iterator<vcl::uint>(iss),
             std::istream_iterator<vcl::uint>());
         f.setVertices(streamRange);

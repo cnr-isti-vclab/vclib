@@ -66,8 +66,8 @@ class Mesh : public mesh::detail::RebindContainer<Args, Mesh<Args...>>...
         mesh::detail::FindContainer<ElemId::VERTEX, Rebound<Args>...>::found,
         "A Mesh must have a VertexContainer.");
 
-    using VertexContainerType =
-        typename mesh::detail::FindContainer<ElemId::VERTEX, Rebound<Args>...>::type;
+    using VertexContainerType = typename mesh::detail::
+        FindContainer<ElemId::VERTEX, Rebound<Args>...>::type;
 
     template<typename T, typename ExpectedIndex>
     static constexpr bool ContainerIndexMatches = []() {
@@ -885,8 +885,8 @@ public:
 
     /**
      * @brief Returns a view object that allows to iterate over the elements of
-     * the container of type ELEM_ID in the range [begin, end), providing begin()
-     * and end() member functions.
+     * the container of type ELEM_ID in the range [begin, end), providing
+     * begin() and end() member functions.
      *
      * @note Unlike the elements() function, this member function does not
      * automatically jump deleted elements, but it iterates over the
@@ -895,19 +895,19 @@ public:
      *
      * @tparam ELEM_ID: the ID of the element.
      * @param[in] begin: the index of the first element to be included in the
-     * range. It must be less than or equal to elementContainerSize() and less than
-     * or equal to the end index.
+     * range. It must be less than or equal to elementContainerSize() and less
+     * than or equal to the end index.
      * @param[in] end: the index of the last element to be included in the
      * range (exclusive). If NULL_INDEX (default) or greater than
      * elementContainerSize(), it will be set to elementContainerSize().
-     * @return A View object allowing to iterate over the given range of the container.
+     * @return A View object allowing to iterate over the given range of the
+     * container.
      */
     template<ElemId ELEM_ID>
     decltype(auto) elements(
         this auto&& self,
         IndexType   begin,
-        IndexType   end = NULL_INDEX)
-        requires (hasContainerOf<ELEM_ID>())
+        IndexType   end = NULL_INDEX) requires (hasContainerOf<ELEM_ID>())
     {
         return self.ContainerType<ELEM_ID>::elements(begin, end);
     }
@@ -929,8 +929,7 @@ public:
     bool isElementComponentAvailable() const
         requires (hasContainerOf<ELEM_ID>())
     {
-        return ContainerType<ELEM_ID>::template isComponentAvailable<
-            COMP_ID>();
+        return ContainerType<ELEM_ID>::template isComponentAvailable<COMP_ID>();
     }
 
     /**
@@ -1211,8 +1210,8 @@ public:
     }
 
     /**
-     * @brief Deserializes the custom components of type `CompType` of the element
-     * with ID ELEM_ID.
+     * @brief Deserializes the custom components of type `CompType` of the
+     * element with ID ELEM_ID.
      *
      * The function requires that the Mesh has a Container of Elements having ID
      * ELEM_ID. Otherwise, a compiler error will be triggered.
@@ -1284,8 +1283,8 @@ private:
     void enableSameOptionalComponentsOfContainer(const OtherMeshType& m)
     {
         if constexpr (mesh::ElementContainerConcept<Cont>) {
-            if constexpr (
-                OtherMeshType::template hasContainerOf<Cont::ELEMENT_ID>()) {
+            if constexpr (OtherMeshType::template hasContainerOf<
+                              Cont::ELEMENT_ID>()) {
                 this->Cont::enableSameOptionalComponentsOf(
                     m.template container<Cont::ELEMENT_ID>());
             }
@@ -1303,7 +1302,8 @@ private:
         std::array<IndexType, ELEM_COUNT>& sizes) const
     {
         if constexpr (mesh::ElementContainerConcept<Cont>) {
-            sizes[toUnderlying(Cont::ELEMENT_ID)] = this->Cont::elementContainerSize();
+            sizes[toUnderlying(Cont::ELEMENT_ID)] =
+                this->Cont::elementContainerSize();
         }
     }
 
@@ -1329,7 +1329,8 @@ private:
         const std::array<IndexType, ELEM_COUNT>& initialSizes)
     {
         if constexpr (mesh::ElementContainerConcept<Cont>) {
-            const IndexType startFrom = initialSizes[toUnderlying(Cont::ELEMENT_ID)];
+            const IndexType startFrom =
+                initialSizes[toUnderlying(Cont::ELEMENT_ID)];
             [&]<uint... TargetIDs>(std::integer_sequence<uint, TargetIDs...>) {
                 (shiftContainerReferences<Cont, static_cast<ElemId>(TargetIDs)>(
                      startFrom, initialSizes[TargetIDs]),
@@ -1341,17 +1342,18 @@ private:
     template<typename Cont, typename MatrixType>
     void updatePosAndNormalsOfContainerAfterAppend(
         const std::array<IndexType, ELEM_COUNT>& initialSizes,
-        const MatrixType& matrix)
+        const MatrixType&                        matrix)
     {
         if constexpr (mesh::ElementContainerConcept<Cont>) {
-            constexpr ElemId ELEM_ID = Cont::ELEMENT_ID;
-            const IndexType startFrom = initialSizes[toUnderlying(ELEM_ID)];
+            constexpr ElemId ELEM_ID   = Cont::ELEMENT_ID;
+            const IndexType  startFrom = initialSizes[toUnderlying(ELEM_ID)];
             if (startFrom >= this->Cont::elementContainerSize()) {
                 return;
             }
 
             if constexpr (comp::HasComponent<CompId::POSITION, Cont>) {
-                if (this->Cont::template isComponentAvailable<CompId::POSITION>()) {
+                if (this->Cont::template isComponentAvailable<
+                        CompId::POSITION>()) {
                     auto posview = this->template elements<ELEM_ID>(startFrom) |
                                    views::positions;
                     multiplyPointsByMatrix(posview, matrix);
@@ -1359,7 +1361,8 @@ private:
             }
 
             if constexpr (comp::HasComponent<CompId::NORMAL, Cont>) {
-                if (this->Cont::template isComponentAvailable<CompId::NORMAL>()) {
+                if (this->Cont::template isComponentAvailable<
+                        CompId::NORMAL>()) {
                     auto norview = this->template elements<ELEM_ID>(startFrom) |
                                    views::normals;
                     multiplyNormalsByMatrix(norview, matrix);
@@ -1367,17 +1370,20 @@ private:
             }
 
             if constexpr (comp::HasComponent<CompId::WEDGE_NORMALS, Cont>) {
-                if (this->Cont::template isComponentAvailable<CompId::WEDGE_NORMALS>()) {
+                if (this->Cont::template isComponentAvailable<
+                        CompId::WEDGE_NORMALS>()) {
                     for (auto f : this->template elements<ELEM_ID>(startFrom)) {
                         for (auto w : f.wedges()) {
-                            w.normal() = multiplyNormalByMatrix(w.normal(), matrix);
+                            w.normal() =
+                                multiplyNormalByMatrix(w.normal(), matrix);
                         }
                     }
                 }
             }
 
             if constexpr (comp::HasComponent<CompId::TANGENT, Cont>) {
-                if (this->Cont::template isComponentAvailable<CompId::TANGENT>()) {
+                if (this->Cont::template isComponentAvailable<
+                        CompId::TANGENT>()) {
                     auto tanview = this->template elements<ELEM_ID>(startFrom) |
                                    views::tangents;
                     multiplyNormalsByMatrix(tanview, matrix);
@@ -1385,20 +1391,25 @@ private:
                     Matrix33<double> m33 =
                         matrix.template cast<double>().block(0, 0, 3, 3);
                     if (m33.determinant() < 0) {
-                        for (auto e : this->template elements<ELEM_ID>(startFrom)) {
+                        for (auto e :
+                             this->template elements<ELEM_ID>(startFrom)) {
                             e.tangentRightHanded() = !e.tangentRightHanded();
                         }
                     }
                 }
             }
 
-            if constexpr (comp::HasComponent<CompId::PRINCIPAL_CURVATURE, Cont>) {
-                if (this->Cont::template isComponentAvailable<CompId::PRINCIPAL_CURVATURE>()) {
+            if constexpr (comp::
+                              HasComponent<CompId::PRINCIPAL_CURVATURE, Cont>) {
+                if (this->Cont::template isComponentAvailable<
+                        CompId::PRINCIPAL_CURVATURE>()) {
                     for (auto e : this->template elements<ELEM_ID>(startFrom)) {
                         e.principalCurvature().maxDir() =
-                            multiplyNormalByMatrix(e.principalCurvature().maxDir(), matrix);
+                            multiplyNormalByMatrix(
+                                e.principalCurvature().maxDir(), matrix);
                         e.principalCurvature().minDir() =
-                            multiplyNormalByMatrix(e.principalCurvature().minDir(), matrix);
+                            multiplyNormalByMatrix(
+                                e.principalCurvature().minDir(), matrix);
                     }
                 }
             }
@@ -1408,17 +1419,18 @@ private:
     template<typename Cont, typename MappingType>
     void updateMaterialIndicesOfContainerAfterAppend(
         const std::array<IndexType, ELEM_COUNT>& initialSizes,
-        const MappingType& mapping)
+        const MappingType&                       mapping)
     {
         if constexpr (mesh::ElementContainerConcept<Cont>) {
-            constexpr ElemId ELEM_ID = Cont::ELEMENT_ID;
-            const IndexType startFrom = initialSizes[toUnderlying(ELEM_ID)];
+            constexpr ElemId ELEM_ID   = Cont::ELEMENT_ID;
+            const IndexType  startFrom = initialSizes[toUnderlying(ELEM_ID)];
             if (startFrom >= this->Cont::elementContainerSize()) {
                 return;
             }
 
             if constexpr (comp::HasComponent<CompId::MATERIAL_INDEX, Cont>) {
-                if (this->Cont::template isComponentAvailable<CompId::MATERIAL_INDEX>()) {
+                if (this->Cont::template isComponentAvailable<
+                        CompId::MATERIAL_INDEX>()) {
                     for (auto e : this->template elements<ELEM_ID>(startFrom)) {
                         if (e.materialIndex() != USHORT_NULL &&
                             e.materialIndex() < mapping.size()) {
@@ -1517,8 +1529,7 @@ private:
  * @ingroup mesh_concepts
  */
 template<typename T>
-concept MeshConcept =
-    IsDerivedFromSpecializationOfV<T, Mesh>;
+concept MeshConcept = IsDerivedFromSpecializationOfV<T, Mesh>;
 
 } // namespace vcl
 

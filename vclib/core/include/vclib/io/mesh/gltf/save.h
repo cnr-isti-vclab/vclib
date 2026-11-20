@@ -697,7 +697,7 @@ void addMeshToTinygltfModel(
                     oldFaceIndices.push_back(f.index());
                 }
 
-                ushort                             lastMaterialIndex = USHORT_NULL;
+                ushort lastMaterialIndex = USHORT_NULL;
                 std::unordered_map<ushort, ushort> modelMaterialIndices {};
                 uint   chunkByteOffset    = indAlloc.second;
                 uint   chunkLength        = 0;

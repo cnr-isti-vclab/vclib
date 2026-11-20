@@ -66,20 +66,17 @@ void colorComponentStaticAsserts()
         "TriMesh Vertex&& does not satisfy the HasOptionalColor concept");
 
     static_assert(
-        HasColor<TriMesh>,
-        "TriMesh does not satisfy the HasColor concept");
+        HasColor<TriMesh>, "TriMesh does not satisfy the HasColor concept");
     static_assert(
         HasColor<const TriMesh>,
         "const TriMesh does not satisfy the HasColor concept");
     static_assert(
-        HasColor<TriMesh&>,
-        "TriMesh& does not satisfy the HasColor concept");
+        HasColor<TriMesh&>, "TriMesh& does not satisfy the HasColor concept");
     static_assert(
         HasColor<const TriMesh&>,
         "const TriMesh& does not satisfy the HasColor concept");
     static_assert(
-        HasColor<TriMesh&&>,
-        "TriMesh&& does not satisfy the HasColor concept");
+        HasColor<TriMesh&&>, "TriMesh&& does not satisfy the HasColor concept");
 }
 
 #endif // COMP_COLOR_H

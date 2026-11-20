@@ -252,7 +252,7 @@ public:
         else {
             short n = mFace.vertexCount();
             mEdge   = ((mEdge - 1) % n + n) %
-                      n; // be sure to get the right index of the previous edge
+                    n; // be sure to get the right index of the previous edge
         }
     }
 
@@ -355,16 +355,13 @@ private:
 /* Deduction guides */
 
 template<FaceConcept FaceType, std::integral EdgeType>
-MeshPos(FaceType, EdgeType)
-    -> MeshPos<ParentMeshType<FaceType>>;
+MeshPos(FaceType, EdgeType) -> MeshPos<ParentMeshType<FaceType>>;
 
 template<FaceConcept FaceType, VertexConcept VertexType>
-MeshPos(FaceType, VertexType)
-    -> MeshPos<ParentMeshType<FaceType>>;
+MeshPos(FaceType, VertexType) -> MeshPos<ParentMeshType<FaceType>>;
 
 template<FaceConcept FaceType, VertexConcept VertexType, std::integral EdgeType>
-MeshPos(FaceType, VertexType, EdgeType)
-    -> MeshPos<ParentMeshType<FaceType>>;
+MeshPos(FaceType, VertexType, EdgeType) -> MeshPos<ParentMeshType<FaceType>>;
 
 } // namespace vcl
 

@@ -38,15 +38,15 @@ class Face : public ElementProxy<ElemId::FACE, ContainerType>
     template<typename Self>
     using ResolvedFace = std::conditional_t<
         std::is_const_v<std::remove_reference_t<Self>> ||
-        std::is_const_v<ContainerType>,
+            std::is_const_v<ContainerType>,
         Face<const std::remove_const_t<ContainerType>>,
         Face<ContainerType>>;
 
 public:
+    using Base::NULL_INDEX;
     using typename Base::Components;
     using typename Base::IndexType;
     using typename Base::ParentMeshType;
-    using Base::NULL_INDEX;
 
 public:
     static constexpr int VERTEX_COUNT = comp::
@@ -109,7 +109,8 @@ public:
     /**
      * @brief Returns a proxy to the modularized i-th wedge (corner) of the
      * face.
-     * @param[in] i: The modularized corner index (modularized on vertexCount()).
+     * @param[in] i: The modularized corner index (modularized on
+     * vertexCount()).
      * @return A WedgeProxy for the modularized corner.
      */
     decltype(auto) wedgeMod(this auto&& self, int i)
@@ -135,7 +136,6 @@ protected:
     Face(ContainerType& container, IndexType index) : Base(container, index) {}
 
 private:
-
     /// friend classes declarations
 
     template<
@@ -190,7 +190,6 @@ concept FaceConcept =
     ElementConcept<T> && (std::remove_cvref_t<T>::ELEMENT_ID == ElemId::FACE) &&
     comp::HasBitFlags<typename std::remove_cvref_t<T>::Components> &&
     comp::HasVertexReferences<typename std::remove_cvref_t<T>::Components>;
-
 
 /**
  * @brief Concept that checks whether a type T is a valid component list for a

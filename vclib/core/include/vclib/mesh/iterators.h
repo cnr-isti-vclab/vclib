@@ -22,4 +22,3 @@
  */
 
 #endif // VCL_MESH_ITERATORS_H
-

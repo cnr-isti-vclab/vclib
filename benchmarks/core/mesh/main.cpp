@@ -105,18 +105,18 @@ int runBenchmarks(
         return 1;
     }
 
-    const uint32_t seed = opts.seed.value_or(std::random_device{}());
-    using Scalar = typename Mesh::PositionType::ScalarType;
+    const uint32_t seed     = opts.seed.value_or(std::random_device {}());
+    using Scalar            = typename Mesh::PositionType::ScalarType;
     nlohmann::json metadata = {
-        {"mesh_type",       meshType},
+        {"mesh_type", meshType},
         {"mesh_generation", "v2"},
-        {"scalar_type",     std::is_same_v<Scalar, float> ? "float" : "double"},
-        {"scalar_bits",     sizeof(Scalar) * CHAR_BIT},
-        {"reference_kind",  "index"},
-        {"reference_bits",  sizeof(typename Mesh::IndexType) * CHAR_BIT},
-        {"vertices",        mesh.vertexCount()},
-        {"faces",           mesh.faceCount()},
-        {"seed",      seed              }
+        {"scalar_type", std::is_same_v<Scalar, float> ? "float" : "double"},
+        {"scalar_bits", sizeof(Scalar) * CHAR_BIT},
+        {"reference_kind", "index"},
+        {"reference_bits", sizeof(typename Mesh::IndexType) * CHAR_BIT},
+        {"vertices", mesh.vertexCount()},
+        {"faces", mesh.faceCount()},
+        {"seed", seed}
     };
 
     std::println("==================================================");

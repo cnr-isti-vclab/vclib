@@ -73,8 +73,7 @@ concept PolygonMeshConcept = FaceMeshConcept<M> && HasPolygons<M>;
 
 /* Normals */
 template<typename M>
-concept HasFaceNormal =
-    HasElementComponent<M, ElemId::FACE, CompId::NORMAL>;
+concept HasFaceNormal = HasElementComponent<M, ElemId::FACE, CompId::NORMAL>;
 
 template<typename M>
 concept HasFaceOptionalNormal =
@@ -82,8 +81,7 @@ concept HasFaceOptionalNormal =
 
 /* Colors */
 template<typename M>
-concept HasFaceColor =
-    HasElementComponent<M, ElemId::FACE, CompId::COLOR>;
+concept HasFaceColor = HasElementComponent<M, ElemId::FACE, CompId::COLOR>;
 
 template<typename M>
 concept HasFaceOptionalColor =
@@ -120,16 +118,14 @@ concept HasFaceWedges =
 
 /* Adjacencies */
 template<typename M>
-concept HasFaceAdjacentFaces =
-    HasElementAdjacentFaces<M, ElemId::FACE>;
+concept HasFaceAdjacentFaces = HasElementAdjacentFaces<M, ElemId::FACE>;
 
 template<typename M>
 concept HasFaceOptionalAdjacentFaces =
     HasElementOptionalAdjacentFaces<M, ElemId::FACE>;
 
 template<typename M>
-concept HasFaceAdjacentEdges =
-    HasElementAdjacentEdges<M, ElemId::FACE>;
+concept HasFaceAdjacentEdges = HasElementAdjacentEdges<M, ElemId::FACE>;
 
 template<typename M>
 concept HasFaceOptionalAdjacentEdges =
@@ -137,8 +133,7 @@ concept HasFaceOptionalAdjacentEdges =
 
 /* Quality */
 template<typename M>
-concept HasFaceQuality =
-    HasElementComponent<M, ElemId::FACE, CompId::QUALITY>;
+concept HasFaceQuality = HasElementComponent<M, ElemId::FACE, CompId::QUALITY>;
 
 template<typename M>
 concept HasFaceOptionalQuality =
@@ -155,8 +150,7 @@ concept HasFaceOptionalMaterialIndex =
 
 /* Custom Components */
 template<typename M>
-concept HasFaceCustomComponents =
-    HasElementCustomComponents<M, ElemId::FACE>;
+concept HasFaceCustomComponents = HasElementCustomComponents<M, ElemId::FACE>;
 
 } // namespace vcl
 

@@ -345,6 +345,6 @@ OutMesh poissonReconstruction(
     return outMesh;
 }
 
-} // namespace vcl::poisson_recon
+} // namespace vcl::poiss
 
 #endif // VCL_POISSON_RECON_POISSON_RECONSTRUCTION_H

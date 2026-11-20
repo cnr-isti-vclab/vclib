@@ -37,6 +37,7 @@ template<PointConcept P, bool OPT = false>
 class Normal : public Component<CompId::NORMAL, P, OPT>
 {
     using Base = Component<CompId::NORMAL, P, OPT>;
+
 public:
     /**
      * @brief Expose the type of the Normal.
@@ -79,7 +80,8 @@ template<typename T>
 concept HasNormal = HasComponent<CompId::NORMAL, T>;
 
 /**
- * @brief A concept that checks whether a type T has the Normal component and it is optional.
+ * @brief A concept that checks whether a type T has the Normal component and it
+ * is optional.
  *
  * @tparam T: The type to be tested for conformity to HasOptionalNormal.
  *
@@ -93,7 +95,10 @@ concept HasOptionalNormal =
 
 template<PointConcept P, bool OPT>
 template<typename OtherElement>
-void Normal<P, OPT>::importFrom(this auto&& self, const OtherElement& other, bool)
+void Normal<P, OPT>::importFrom(
+    this auto&&         self,
+    const OtherElement& other,
+    bool)
 {
     if constexpr (HasNormal<OtherElement>) {
         if (other.template isComponentAvailable<CompId::NORMAL>()) {
@@ -136,16 +141,16 @@ template<typename ScalarType>
 using OptionalNormal3 = Normal3<ScalarType, true>;
 
 /**
- * @brief The OptionalNormal3f alias of the Normal component that uses 3-dimensional
- * Points with float precision and is optional.
+ * @brief The OptionalNormal3f alias of the Normal component that uses
+ * 3-dimensional Points with float precision and is optional.
  *
  * @ingroup components
  */
 using OptionalNormal3f = Normal3<float, true>;
 
 /**
- * @brief The OptionalNormal3d alias of the Normal component that uses 3-dimensional
- * Points with double precision and is optional.
+ * @brief The OptionalNormal3d alias of the Normal component that uses
+ * 3-dimensional Points with double precision and is optional.
  *
  * @ingroup components
  */

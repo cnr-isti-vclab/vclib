@@ -57,9 +57,9 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log = nullLogger)
         std::vector<ScalarType> weights;
         std::vector<AdjVertex>  vertices;
 
-        auto  pos         = MeshPos(v.adjFace(0), v);
-        auto  firstVertex = pos.adjVertex();
-        auto  tmpVertex = ConstVertexType();
+        auto  pos                 = MeshPos(v.adjFace(0), v);
+        auto  firstVertex         = pos.adjVertex();
+        auto  tmpVertex           = ConstVertexType();
         float totalDoubleAreaSize = 0;
 
         // compute the area of each triangle around the central vertex as well
@@ -136,7 +136,8 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log = nullLogger)
         Eigen::Matrix<ScalarType, 1, 3> T1 = Q.col(1);
         Eigen::Matrix<ScalarType, 1, 3> T2 = Q.col(2);
 
-        // diagonalize the 2x2 restriction of M in the tangent plane basis (T1, T2)
+        // diagonalize the 2x2 restriction of M in the tangent plane basis (T1,
+        // T2)
         Eigen::Matrix<ScalarType, 2, 2> minor2x2;
         minor2x2(0, 0) = QtMQ(1, 1);
         minor2x2(0, 1) = QtMQ(1, 2);
@@ -152,7 +153,8 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log = nullLogger)
         // Taubin95 formula:
         // k0 = 3*l0 - l1
         // k1 = 3*l1 - l0
-        // Since l0 <= l1, k0 <= k1 holds: (3*l1 - l0) - (3*l0 - l1) = 4*(l1 - l0) >= 0
+        // Since l0 <= l1, k0 <= k1 holds: (3*l1 - l0) - (3*l0 - l1) = 4*(l1 -
+        // l0) >= 0
         ScalarType k0 = 3.0f * l0 - l1;
         ScalarType k1 = 3.0f * l1 - l0;
 

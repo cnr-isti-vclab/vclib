@@ -8,8 +8,8 @@
 #ifndef VCL_MESH_COMPONENTS_BASE_COMPONENT_PREDICATES_H
 #define VCL_MESH_COMPONENTS_BASE_COMPONENT_PREDICATES_H
 
-#include "component.h"
 #include "../../elements/base/base.h"
+#include "component.h"
 
 #include <vclib/base.h>
 
@@ -84,29 +84,47 @@ public:
 };
 
 template<ElemId TARGET_ELEM_ID, typename T>
-struct HasReferencesToImpl : std::false_type {};
+struct HasReferencesToImpl : std::false_type
+{
+};
 
 template<ElemId TARGET_ELEM_ID, typename Comp>
 requires requires {
-    requires std::remove_cvref_t<Comp>::template referencesElement<TARGET_ELEM_ID>();
+    requires std::remove_cvref_t<Comp>::template referencesElement<
+        TARGET_ELEM_ID>();
 }
 struct HasReferencesToImpl<TARGET_ELEM_ID, Comp> :
-    std::bool_constant<std::remove_cvref_t<Comp>::template referencesElement<TARGET_ELEM_ID>()> {};
+        std::bool_constant<std::remove_cvref_t<
+            Comp>::template referencesElement<TARGET_ELEM_ID>()>
+{
+};
 
 template<ElemId TARGET_ELEM_ID, typename... Comps>
 struct HasReferencesToImpl<TARGET_ELEM_ID, vcl::TypeWrapper<Comps...>> :
-    std::bool_constant<(HasReferencesToImpl<TARGET_ELEM_ID, Comps>::value || ...)> {};
+        std::bool_constant<(
+            HasReferencesToImpl<TARGET_ELEM_ID, Comps>::value || ...)>
+{
+};
 
 template<ElemId TARGET_ELEM_ID, typename T>
-struct HasOptionalReferencesToImpl : std::false_type {};
+struct HasOptionalReferencesToImpl : std::false_type
+{
+};
 
 template<ElemId TARGET_ELEM_ID, typename Comp>
-requires (HasReferencesToImpl<TARGET_ELEM_ID, Comp>::value && IsOptionalComponent<Comp>)
-struct HasOptionalReferencesToImpl<TARGET_ELEM_ID, Comp> : std::true_type {};
+requires (
+    HasReferencesToImpl<TARGET_ELEM_ID, Comp>::value &&
+    IsOptionalComponent<Comp>)
+struct HasOptionalReferencesToImpl<TARGET_ELEM_ID, Comp> : std::true_type
+{
+};
 
 template<ElemId TARGET_ELEM_ID, typename... Comps>
 struct HasOptionalReferencesToImpl<TARGET_ELEM_ID, vcl::TypeWrapper<Comps...>> :
-    std::bool_constant<(HasOptionalReferencesToImpl<TARGET_ELEM_ID, Comps>::value || ...)> {};
+        std::bool_constant<(
+            HasOptionalReferencesToImpl<TARGET_ELEM_ID, Comps>::value || ...)>
+{
+};
 
 } // namespace detail
 
@@ -274,14 +292,10 @@ constexpr auto defaultValue()
  */
 template<CompId COMP_ID>
 concept IsAttributeComponent =
-    COMP_ID == CompId::POSITION ||
-    COMP_ID == CompId::NORMAL ||
-    COMP_ID == CompId::COLOR ||
-    COMP_ID == CompId::QUALITY ||
-    COMP_ID == CompId::TEX_COORD ||
-    COMP_ID == CompId::TANGENT ||
-    COMP_ID == CompId::PRINCIPAL_CURVATURE ||
-    COMP_ID == CompId::MATERIAL_INDEX;
+    COMP_ID == CompId::POSITION || COMP_ID == CompId::NORMAL ||
+    COMP_ID == CompId::COLOR || COMP_ID == CompId::QUALITY ||
+    COMP_ID == CompId::TEX_COORD || COMP_ID == CompId::TANGENT ||
+    COMP_ID == CompId::PRINCIPAL_CURVATURE || COMP_ID == CompId::MATERIAL_INDEX;
 
 } // namespace vcl::comp
 

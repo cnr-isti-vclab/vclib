@@ -69,10 +69,12 @@ inline void testConstElementProxies(MyMesh& mesh, const MyMesh& constMesh)
     }
 }
 
-inline void testProxyAndComponentViewConversions(MyMesh& mesh, const MyMesh& constMesh)
+inline void testProxyAndComponentViewConversions(
+    MyMesh&       mesh,
+    const MyMesh& constMesh)
 {
     // ElementContainerProxy mutable to const conversion
-    auto vProxy = mesh.vertices();
+    auto                           vProxy      = mesh.vertices();
     decltype(constMesh.vertices()) constVProxy = vProxy;
     REQUIRE(constVProxy.size() == 4);
 
@@ -85,7 +87,7 @@ inline void testProxyAndComponentViewConversions(MyMesh& mesh, const MyMesh& con
 
 inline void testIteratorArithmetic(MyMesh& mesh)
 {
-    auto it = mesh.vertices().begin();
+    auto it  = mesh.vertices().begin();
     auto it2 = it + 2;
     // Test operator-(integral) when literal 1 is passed
     auto it1 = it2 - 1;

@@ -27,8 +27,7 @@ concept HasVertexOptionalNormal =
 
 /* Colors */
 template<typename M>
-concept HasVertexColor =
-    HasElementComponent<M, ElemId::VERTEX, CompId::COLOR>;
+concept HasVertexColor = HasElementComponent<M, ElemId::VERTEX, CompId::COLOR>;
 
 template<typename M>
 concept HasVertexOptionalColor =
@@ -45,16 +44,14 @@ concept HasVertexOptionalTexCoord =
 
 /* Adjacencies */
 template<typename M>
-concept HasVertexAdjacentFaces =
-    HasElementAdjacentFaces<M, ElemId::VERTEX>;
+concept HasVertexAdjacentFaces = HasElementAdjacentFaces<M, ElemId::VERTEX>;
 
 template<typename M>
 concept HasVertexOptionalAdjacentFaces =
     HasElementOptionalAdjacentFaces<M, ElemId::VERTEX>;
 
 template<typename M>
-concept HasVertexAdjacentEdges =
-    HasElementAdjacentEdges<M, ElemId::VERTEX>;
+concept HasVertexAdjacentEdges = HasElementAdjacentEdges<M, ElemId::VERTEX>;
 
 template<typename M>
 concept HasVertexOptionalAdjacentEdges =

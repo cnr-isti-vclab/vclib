@@ -80,7 +80,7 @@ concept HasFaceBitFlags = HasPolygonBitFlags<T> || HasTriangleBitFlags<T>;
  * @ingroup components_concepts
  */
 template<typename T>
-concept CanAdjustContainerElemCount = requires(T& elem, bool b1, bool b2) {
+concept CanAdjustContainerElemCount = requires (T& elem, bool b1, bool b2) {
     elem.parentContainer().adjustElemCountOnDeletedChange(b1, b2);
 };
 

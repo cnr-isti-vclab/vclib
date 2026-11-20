@@ -29,8 +29,7 @@ namespace vcl {
  *
  * @ingroup base
  */
-enum class CompId : uint
-{
+enum class CompId : uint {
     BIT_FLAGS = 0,
     POSITION,
     NORMAL,
@@ -63,28 +62,29 @@ enum class CompId : uint
  *
  * @ingroup base
  */
-constexpr const char* COMPONENT_ENUM_STRINGS[static_cast<uint>(CompId::COMPONENT_COUNT)] = {
-    "BitFlags",
-    "Position",
-    "Normal",
-    "Color",
-    "Quality",
-    "MaterialIndex",
-    "PrincipalCurvature",
-    "Tangent",
-    "TexCoord",
-    "VertexReferences",
-    "AdjacentEdges",
-    "AdjacentFaces",
-    "AdjacentVertices",
-    "WedgeColors",
-    "WedgeNormals",
-    "WedgeTexCoords",
-    "BoundingBox",
-    "Name",
-    "Materials",
-    "TransformMatrix",
-    "CustomComponents",
+constexpr const char*
+    COMPONENT_ENUM_STRINGS[static_cast<uint>(CompId::COMPONENT_COUNT)] = {
+        "BitFlags",
+        "Position",
+        "Normal",
+        "Color",
+        "Quality",
+        "MaterialIndex",
+        "PrincipalCurvature",
+        "Tangent",
+        "TexCoord",
+        "VertexReferences",
+        "AdjacentEdges",
+        "AdjacentFaces",
+        "AdjacentVertices",
+        "WedgeColors",
+        "WedgeNormals",
+        "WedgeTexCoords",
+        "BoundingBox",
+        "Name",
+        "Materials",
+        "TransformMatrix",
+        "CustomComponents",
 };
 
 /**

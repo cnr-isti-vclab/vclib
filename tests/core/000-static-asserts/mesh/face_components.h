@@ -84,20 +84,17 @@ inline void faceComponentsStaticAsserts()
         "TriMesh does not satisfy the HasFaceOptionalAdjacentFaces");
 
     static_assert(
-        HasFaceColor<TriMesh>,
-        "TriMesh does not satisfy the HasFaceColor");
+        HasFaceColor<TriMesh>, "TriMesh does not satisfy the HasFaceColor");
     static_assert(
         HasFaceColor<const TriMesh>,
         "const TriMesh does not satisfy the HasFaceColor");
     static_assert(
-        HasFaceColor<TriMesh&>,
-        "TriMesh& does not satisfy the HasFaceColor");
+        HasFaceColor<TriMesh&>, "TriMesh& does not satisfy the HasFaceColor");
     static_assert(
         HasFaceColor<const TriMesh&>,
         "const TriMesh& does not satisfy the HasFaceColor");
     static_assert(
-        HasFaceColor<TriMesh&&>,
-        "TriMesh&& does not satisfy the HasFaceColor");
+        HasFaceColor<TriMesh&&>, "TriMesh&& does not satisfy the HasFaceColor");
 
     static_assert(
         HasFaceCustomComponents<TriMesh>,
@@ -116,8 +113,7 @@ inline void faceComponentsStaticAsserts()
         "TriMesh&& does not satisfy the HasFaceCustomComponents");
 
     static_assert(
-        HasFaceNormal<PolyMesh>,
-        "PolyMesh does not satisfy the HasFaceNormal");
+        HasFaceNormal<PolyMesh>, "PolyMesh does not satisfy the HasFaceNormal");
     static_assert(
         HasFaceNormal<const PolyMesh>,
         "const PolyMesh does not satisfy the HasFaceNormal");
@@ -132,8 +128,7 @@ inline void faceComponentsStaticAsserts()
         "PolyMesh&& does not satisfy the HasFaceNormal");
 
     static_assert(
-        HasFaceQuality<TriMesh>,
-        "TriMesh does not satisfy the HasFaceQuality");
+        HasFaceQuality<TriMesh>, "TriMesh does not satisfy the HasFaceQuality");
     static_assert(
         HasFaceQuality<const TriMesh>,
         "const TriMesh does not satisfy the HasFaceQuality");

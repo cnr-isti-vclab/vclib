@@ -34,10 +34,10 @@ class Vertex : public ElementProxy<ElemId::VERTEX, ContainerType>
     using Base = ElementProxy<ElemId::VERTEX, ContainerType>;
 
 public:
+    using Base::NULL_INDEX;
     using typename Base::Components;
     using typename Base::IndexType;
     using typename Base::ParentMeshType;
-    using Base::NULL_INDEX;
 
     static_assert(
         comp::HasPosition<Components>,

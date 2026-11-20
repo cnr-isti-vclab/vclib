@@ -35,15 +35,18 @@ struct FacesView : std::ranges::range_adaptor_closure<FacesView>
     constexpr FacesView() = default;
 
     template<typename R>
-    requires requires (R&& r) { { r.faces() } -> std::ranges::range; }
+    requires requires (R&& r) {
+        { r.faces() } -> std::ranges::range;
+    }
     constexpr auto operator()(R&& r) const
     {
         return r.faces();
     }
 
     template<typename R>
-    requires (!std::ranges::range<R>) &&
-             requires (R&& r) { { r.faces() } -> std::ranges::range; }
+    requires (!std::ranges::range<R>) && requires (R&& r) {
+        { r.faces() } -> std::ranges::range;
+    }
     friend constexpr auto operator|(R&& r, FacesView)
     {
         return r.faces();
@@ -53,7 +56,8 @@ struct FacesView : std::ranges::range_adaptor_closure<FacesView>
 } // namespace detail
 
 /**
- * @brief A view adaptor that allows to iterate over the Face elements of an object.
+ * @brief A view adaptor that allows to iterate over the Face elements of an
+ * object.
  *
  * Can be applied to Meshes: `mesh | views::faces`
  *

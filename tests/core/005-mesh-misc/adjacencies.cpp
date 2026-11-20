@@ -87,7 +87,7 @@ TEST_CASE("Adjacencies")
     // Test setAdjFaces single-pass input_range (static)
     {
         std::istringstream iss("0 1 0");
-        auto streamRange = std::ranges::subrange(
+        auto               streamRange = std::ranges::subrange(
             std::istream_iterator<vcl::uint>(iss),
             std::istream_iterator<vcl::uint>());
         f0.setAdjFaces(streamRange);
@@ -166,7 +166,7 @@ TEST_CASE("Adjacencies")
     // Test setAdjVertices single-pass input_range (dynamic)
     {
         std::istringstream iss("0 1 2");
-        auto streamRange = std::ranges::subrange(
+        auto               streamRange = std::ranges::subrange(
             std::istream_iterator<vcl::uint>(iss),
             std::istream_iterator<vcl::uint>());
         v3.setAdjVertices(streamRange);
@@ -247,7 +247,9 @@ TEST_CASE("Adjacencies")
     REQUIRE(m.face(0).adjEdgeIndex(0) == 100);
 }
 
-TEST_CASE("PolyMesh - TTVC Adjacencies pushVertex and insertVertex default to NULL_INDEX")
+TEST_CASE(
+    "PolyMesh - TTVC Adjacencies pushVertex and insertVertex default to "
+    "NULL_INDEX")
 {
     vcl::PolyMesh pm;
     pm.enableFaceAdjacentFaces();
@@ -283,7 +285,8 @@ TEST_CASE("PolyMesh - TTVC Adjacencies pushVertex and insertVertex default to NU
     REQUIRE(f.adjFaceIndex(2) == 30);
     REQUIRE(f.adjFaceIndex(3) == vcl::PolyMesh::NULL_INDEX);
 
-    // insertVertex at position 1 must insert an entry initialized to NULL_INDEX (NOT 0)
+    // insertVertex at position 1 must insert an entry initialized to NULL_INDEX
+    // (NOT 0)
     f.insertVertex(1, 4);
     REQUIRE(f.vertexCount() == 5);
     REQUIRE(f.adjFaceCount() == 5);

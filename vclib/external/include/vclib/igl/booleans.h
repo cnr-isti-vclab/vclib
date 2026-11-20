@@ -27,13 +27,15 @@ namespace vcl::igl {
 namespace detail {
 
 template<typename T, typename Fallback = Point3d>
-struct NormalTypeHelper {
+struct NormalTypeHelper
+{
     using type = Fallback;
 };
 
 template<typename T, typename Fallback>
 requires requires { typename T::NormalType; }
-struct NormalTypeHelper<T, Fallback> {
+struct NormalTypeHelper<T, Fallback>
+{
     using type = typename T::NormalType;
 };
 
@@ -304,8 +306,7 @@ void transferFaceComponents(
     }
     bool transferColors = false;
     if constexpr (HasFaceColor<MeshType>) {
-        transferColors =
-            m0.isFaceColorAvailable() || m1.isFaceColorAvailable();
+        transferColors = m0.isFaceColorAvailable() || m1.isFaceColorAvailable();
     }
     bool transferQuality = false;
     if constexpr (HasFaceQuality<MeshType>) {
@@ -351,7 +352,7 @@ void transferVertexComponents(
     auto                   qualityPlaceHolder)
 {
     constexpr ElemId V = vcl::ElemId::VERTEX;
-    using ScalarType = ScalarType<MeshType>;
+    using ScalarType   = ScalarType<MeshType>;
 
     // Determine which vertex components need to be transferred to the output
     // mesh based on their availability in the input meshes.
@@ -407,7 +408,8 @@ void transferVertexComponents(
             auto c1 = placeHolder;
             auto c2 = placeHolder;
 
-            if (fromM0 && m0.template isElementComponentAvailable<V, COMP_ID>()) {
+            if (fromM0 &&
+                m0.template isElementComponentAvailable<V, COMP_ID>()) {
                 c0 = m0.vertex(birthTri[0]).template componentValue<COMP_ID>();
                 c1 = m0.vertex(birthTri[1]).template componentValue<COMP_ID>();
                 c2 = m0.vertex(birthTri[2]).template componentValue<COMP_ID>();

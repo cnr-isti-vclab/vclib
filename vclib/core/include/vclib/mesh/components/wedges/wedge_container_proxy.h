@@ -45,7 +45,8 @@ class WedgeContainerProxy :
     using ResolvedFace = std::conditional_t<
         std::is_const_v<std::remove_reference_t<Self>>,
         typename std::remove_cvref_t<
-            decltype(std::declval<FaceType&>().parentContainer())>::ConstElementType,
+            decltype(std::declval<FaceType&>()
+                         .parentContainer())>::ConstElementType,
         FaceType>;
 
 public:
@@ -58,9 +59,9 @@ public:
 
     // Converting constructor from mutable to const (or convertible) FaceType
     template<typename OtherFace>
-        requires std::convertible_to<OtherFace, FaceType>
-    WedgeContainerProxy(const WedgeContainerProxy<OtherFace>& other)
-        : mFace(other.parentFace())
+    requires std::convertible_to<OtherFace, FaceType>
+    WedgeContainerProxy(const WedgeContainerProxy<OtherFace>& other) :
+            mFace(other.parentFace())
     {
     }
 
@@ -109,7 +110,8 @@ public:
 
     auto end(this auto&& self)
     {
-        return WedgeIterator<ResolvedFace<decltype(self)>>(self.mFace, self.size());
+        return WedgeIterator<ResolvedFace<decltype(self)>>(
+            self.mFace, self.size());
     }
 
     /* Component Views */

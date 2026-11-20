@@ -19,8 +19,8 @@ namespace detail {
 template<ElemId ELEM_ID, LoggerConcept LogType = NullLogger>
 void normalizeNoThrow(auto elem, LogType& log = nullLogger)
 {
-    using PointType = std::remove_cvref_t<decltype(elem.normal())>;
-    using Scalar    = typename PointType::Scalar;
+    using PointType      = std::remove_cvref_t<decltype(elem.normal())>;
+    using Scalar         = typename PointType::Scalar;
     const Scalar sqrNorm = elem.normal().squaredNorm();
     if (sqrNorm > Scalar(0)) [[likely]] {
         elem.normal() /= std::sqrt(sqrNorm);
@@ -271,7 +271,8 @@ void normalizeReferencedVertexNormals(MeshType& mesh, LogType& log = nullLogger)
         if constexpr (comp::HasVertexReferences<Elem>) { // if Elem has vertices
             for (auto e : mesh.template elements<Elem::ELEMENT_ID>()) {
                 for (auto vi : e.vertexIndices()) {
-                    detail::normalizeNoThrow<ElemId::VERTEX>(mesh.vertex(vi), log);
+                    detail::normalizeNoThrow<ElemId::VERTEX>(
+                        mesh.vertex(vi), log);
                 }
             }
         }

@@ -186,14 +186,14 @@ TEST_CASE("Shuffle - Shuffle64 Bit")
 TEST_CASE("Shuffle - Sort Proxy Vector and StaticGrid Do Not Corrupt Mesh")
 {
     vcl::Sphere<double> s(vcl::Point3d(0, 0, 0), 1.0);
-    vcl::TriMesh mesh = vcl::createSphereIcosahedron<vcl::TriMesh>(s, 1);
-    //mesh.compactVertices();
+    vcl::TriMesh        mesh = vcl::createSphereIcosahedron<vcl::TriMesh>(s, 1);
+    // mesh.compactVertices();
     mesh.enableVertexColor();
     mesh.enableVertexPrincipalCurvature();
 
-    std::vector<uint> origIndices;
+    std::vector<uint>         origIndices;
     std::vector<vcl::Point3d> origPositions;
-    std::vector<vcl::Color> origColors;
+    std::vector<vcl::Color>   origColors;
     origIndices.reserve(mesh.vertexCount());
     origPositions.reserve(mesh.vertexCount());
     origColors.reserve(mesh.vertexCount());
@@ -253,20 +253,22 @@ TEST_CASE("Permute - permuteInPlace 32 and 64 bit")
         std::vector<std::string> vec        = {"zero", "one", "two", "three"};
         std::vector<uint>        newIndices = {2, 0, 3, 1};
         vcl::permuteInPlace(vec, newIndices);
-        REQUIRE((vec == std::vector<std::string> {"one", "three", "zero", "two"}));
+        REQUIRE(
+            (vec == std::vector<std::string> {"one", "three", "zero", "two"}));
     }
     {
         std::vector<std::string> vec        = {"zero", "one", "two", "three"};
         std::vector<uint64_t>    newIndices = {2, 0, 3, 1};
         vcl::permuteInPlace(vec, newIndices);
-        REQUIRE((vec == std::vector<std::string> {"one", "three", "zero", "two"}));
+        REQUIRE(
+            (vec == std::vector<std::string> {"one", "three", "zero", "two"}));
     }
 }
 
 TEST_CASE("Curvature - Taubin95 on Sphere")
 {
     vcl::Sphere<double> s(vcl::Point3d(0, 0, 0), 1.0);
-    vcl::TriMesh mesh = vcl::createSphereIcosahedron<vcl::TriMesh>(s, 2);
+    vcl::TriMesh        mesh = vcl::createSphereIcosahedron<vcl::TriMesh>(s, 2);
     mesh.enableVertexPrincipalCurvature();
     mesh.enableVertexAdjacentFaces();
     mesh.enableFaceAdjacentFaces();
@@ -276,7 +278,8 @@ TEST_CASE("Curvature - Taubin95 on Sphere")
     vcl::updatePrincipalCurvatureTaubin95(mesh);
 
     for (auto v : mesh.vertices()) {
-        // For a unit sphere, both principal curvatures should be approximately 1.0
+        // For a unit sphere, both principal curvatures should be
+        // approximately 1.0
         REQUIRE(std::abs(v.principalCurvature().maxValue() - 1.0) < 0.2);
         REQUIRE(std::abs(v.principalCurvature().minValue() - 1.0) < 0.2);
     }

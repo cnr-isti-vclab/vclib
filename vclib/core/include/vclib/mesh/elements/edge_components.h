@@ -79,8 +79,8 @@ using Normal = comp::Normal<Point<ScalarType, N>, OPT>;
 template<typename ScalarType, bool OPT = false>
 using Normal3 = comp::Normal3<ScalarType, OPT>;
 
-using Normal3f         = comp::Normal3f;
-using Normal3d         = comp::Normal3d;
+using Normal3f = comp::Normal3f;
+using Normal3d = comp::Normal3d;
 template<typename ScalarType>
 using OptionalNormal3  = comp::OptionalNormal3<ScalarType>;
 using OptionalNormal3f = comp::OptionalNormal3f;

@@ -203,20 +203,16 @@ using StaticGrid3 = StaticGrid<RegularGrid3<ScalarType>, ValueType>;
 
 template<PointIteratorConcept It>
 StaticGrid(It, It) -> StaticGrid<
-    RegularGrid<
-        typename It::value_type::ScalarType,
-        It::value_type::DIM>,
+    RegularGrid<typename It::value_type::ScalarType, It::value_type::DIM>,
     typename It::value_type>;
 
 template<PointIteratorConcept It, typename F>
 StaticGrid(It, It, F) -> StaticGrid<
-    RegularGrid<
-        typename It::value_type::ScalarType,
-        It::value_type::DIM>,
+    RegularGrid<typename It::value_type::ScalarType, It::value_type::DIM>,
     typename It::value_type>;
 
 template<Range Rng>
-    requires PointConcept<std::ranges::range_value_t<Rng>>
+requires PointConcept<std::ranges::range_value_t<Rng>>
 StaticGrid(Rng) -> StaticGrid<
     RegularGrid<
         typename std::ranges::range_value_t<Rng>::ScalarType,
@@ -224,7 +220,7 @@ StaticGrid(Rng) -> StaticGrid<
     std::ranges::range_value_t<Rng>>;
 
 template<Range Rng, typename F>
-    requires PointConcept<std::ranges::range_value_t<Rng>>
+requires PointConcept<std::ranges::range_value_t<Rng>>
 StaticGrid(Rng, F) -> StaticGrid<
     RegularGrid<
         typename std::ranges::range_value_t<Rng>::ScalarType,

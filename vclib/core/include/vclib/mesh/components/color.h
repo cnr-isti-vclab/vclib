@@ -80,7 +80,8 @@ template<typename T>
 concept HasColor = HasComponent<CompId::COLOR, T>;
 
 /**
- * @brief A concept that checks whether a type T has the Color component and it is optional.
+ * @brief A concept that checks whether a type T has the Color component and it
+ * is optional.
  *
  * @tparam T: The type to be tested for conformity to HasOptionalColor.
  *

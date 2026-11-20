@@ -38,7 +38,7 @@ namespace vcl {
  */
 template<typename T, typename Index = uint, typename... Args>
 void compactVector(
-    std::vector<T, Args...>& vec,
+    std::vector<T, Args...>&  vec,
     const std::vector<Index>& newIndices)
 {
     assert(vec.size() == newIndices.size());

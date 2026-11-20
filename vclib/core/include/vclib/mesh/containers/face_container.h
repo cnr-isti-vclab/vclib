@@ -40,11 +40,11 @@ template<
     std::unsigned_integral    Index = uint,
     typename ParentMesh             = void>
 class FaceContainer :
-    public ElementContainer<
-        typename comp::detail::ComponentListHelper<CompList>::type,
-        ParentMesh,
-        Index,
-        Face>
+        public ElementContainer<
+            typename comp::detail::ComponentListHelper<CompList>::type,
+            ParentMesh,
+            Index,
+            Face>
 {
     using Base = ElementContainer<
         typename comp::detail::ComponentListHelper<CompList>::type,
@@ -69,10 +69,7 @@ public:
      */
     FaceContainer() = default;
 
-    friend void swap(FaceContainer& a, FaceContainer& b) noexcept
-    {
-        a.swap(b);
-    }
+    friend void swap(FaceContainer& a, FaceContainer& b) noexcept { a.swap(b); }
 
     /**
      * @brief Returns the Face at the i-th position in the Face Container of
@@ -347,8 +344,8 @@ public:
     }
 
     /**
-     * @brief Returns an ElementContainerProxy object that allows to iterate over
-     * the faces of the container, providing begin() and end() member
+     * @brief Returns an ElementContainerProxy object that allows to iterate
+     * over the faces of the container, providing begin() and end() member
      * functions.
      *
      * This member function is very useful when you want to iterate over the
@@ -369,14 +366,11 @@ public:
      * @return An object having begin() and end() functions, allowing to
      * iterate over the container.
      */
-    auto faces(bool jumpDeleted = true)
-    {
-        return Base::elements(jumpDeleted);
-    }
+    auto faces(bool jumpDeleted = true) { return Base::elements(jumpDeleted); }
 
     /**
-     * @brief Returns an ElementContainerProxy object that allows to iterate over
-     * the faces of the container, providing begin() and end() member
+     * @brief Returns an ElementContainerProxy object that allows to iterate
+     * over the faces of the container, providing begin() and end() member
      * functions.
      *
      * This member function is very useful when you want to iterate over the
@@ -418,7 +412,8 @@ public:
      * @param[in] end: the index of the last face to be included in the
      * range (exclusive). If NULL_INDEX (default) or greater than
      * faceContainerSize(), it will be set to faceContainerSize().
-     * @return A View object allowing to iterate over the given range of the container.
+     * @return A View object allowing to iterate over the given range of the
+     * container.
      */
     auto faces(Index begin, Index end = NULL_INDEX)
     {
@@ -441,7 +436,8 @@ public:
      * @param[in] end: the index of the last face to be included in the
      * range (exclusive). If NULL_INDEX (default) or greater than
      * faceContainerSize(), it will be set to faceContainerSize().
-     * @return A View object allowing to iterate over the given range of the container.
+     * @return A View object allowing to iterate over the given range of the
+     * container.
      */
     auto faces(Index begin, Index end = NULL_INDEX) const
     {
@@ -511,19 +507,13 @@ public:
      * @brief Enables all optional face components in the container.
      * Alias for enableAllFaceOptionalComponents().
      */
-    void enableAllFaceComponents()
-    {
-        Base::enableAllOptionalComponents();
-    }
+    void enableAllFaceComponents() { Base::enableAllOptionalComponents(); }
 
     /**
      * @brief Disables all optional face components in the container.
      * Alias for disableAllFaceOptionalComponents().
      */
-    void disableAllFaceComponents()
-    {
-        Base::disableAllOptionalComponents();
-    }
+    void disableAllFaceComponents() { Base::disableAllOptionalComponents(); }
 
     VCL_COMMON_CONTAINER_COMPONENT_METHODS(Face)
     VCL_CONTAINER_COMPONENT_METHODS(Face, AdjacentEdges, ADJACENT_EDGES)
@@ -673,8 +663,10 @@ public:
      * @note This function is available only if the Face Element has the
      * CustomComponents Component.
      *
-     * @tparam K: The type of the custom component for which to return the handle.
-     * @param[in] name: Name of the custom component for which to return the handle.
+     * @tparam K: The type of the custom component for which to return the
+     * handle.
+     * @param[in] name: Name of the custom component for which to return the
+     * handle.
      * @return A vector handle that allows access to the custom component.
      */
     template<typename K>
@@ -692,8 +684,10 @@ public:
      * @note This function is available only if the Face Element has the
      * CustomComponents Component.
      *
-     * @tparam K: The type of the custom component for which to return the handle.
-     * @param[in] name: Name of the custom component for which to return the handle.
+     * @tparam K: The type of the custom component for which to return the
+     * handle.
+     * @param[in] name: Name of the custom component for which to return the
+     * handle.
      * @return A const vector handle that allows access to the custom
      * component.
      */
@@ -765,11 +759,12 @@ protected:
             using OtherFace = OtherMesh::ConstFace;
 
             // if this is not a triangle mesh nor a polygon mesh (meaning that
-            // we can't control the number of vertex references in this mesh), and
-            // this mesh does not have the same number of vertex references of the
-            // other, it means that we don't know how to convert these type of
-            // meshes (e.g. we don't know how to convert a polygon mesh into a
-            // quad mesh, or convert a quad mesh into a pentagonal mesh...)
+            // we can't control the number of vertex references in this mesh),
+            // and this mesh does not have the same number of vertex references
+            // of the other, it means that we don't know how to convert these
+            // type of meshes (e.g. we don't know how to convert a polygon mesh
+            // into a quad mesh, or convert a quad mesh into a pentagonal
+            // mesh...)
             static_assert(
                 !(Face::VERTEX_COUNT != 3 && Face::VERTEX_COUNT > 0 &&
                   Face::VERTEX_COUNT != OtherFace::VERTEX_COUNT),
@@ -830,9 +825,8 @@ private:
             return idx;
         }
         else {
-            return idx == vcl::NULL_INDEX<OtherIndex> ?
-                       NULL_INDEX :
-                       static_cast<Index>(idx);
+            return idx == vcl::NULL_INDEX<OtherIndex> ? NULL_INDEX :
+                                                        static_cast<Index>(idx);
         }
     }
 
@@ -867,8 +861,9 @@ private:
                 using S = typename std::remove_cvref_t<
                     decltype(f.wedge(0).texCoord())>::ScalarType;
                 for (uint j = 0; j < 3; ++j) {
-                    f.wedge(j).texCoord() =
-                        mf.wedge(tris[basetri + j]).texCoord().template cast<S>();
+                    f.wedge(j).texCoord() = mf.wedge(tris[basetri + j])
+                                                .texCoord()
+                                                .template cast<S>();
                 }
             }
         }

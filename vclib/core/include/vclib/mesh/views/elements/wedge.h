@@ -35,15 +35,18 @@ struct WedgesView : std::ranges::range_adaptor_closure<WedgesView>
     constexpr WedgesView() = default;
 
     template<typename R>
-    requires requires (R&& r) { { r.wedges() } -> std::ranges::range; }
+    requires requires (R&& r) {
+        { r.wedges() } -> std::ranges::range;
+    }
     constexpr auto operator()(R&& r) const
     {
         return r.wedges();
     }
 
     template<typename R>
-    requires (!std::ranges::range<R>) &&
-             requires (R&& r) { { r.wedges() } -> std::ranges::range; }
+    requires (!std::ranges::range<R>) && requires (R&& r) {
+        { r.wedges() } -> std::ranges::range;
+    }
     friend constexpr auto operator|(R&& r, WedgesView)
     {
         return r.wedges();
@@ -53,7 +56,8 @@ struct WedgesView : std::ranges::range_adaptor_closure<WedgesView>
 } // namespace detail
 
 /**
- * @brief A view adaptor that allows to iterate over the Wedge elements of an object.
+ * @brief A view adaptor that allows to iterate over the Wedge elements of an
+ * object.
  *
  * Can be applied to:
  * - Face / Element with Wedges: `face | views::wedges`
@@ -69,4 +73,3 @@ inline constexpr detail::WedgesView wedges;
 } // namespace vcl
 
 #endif // VCL_MESH_VIEWS_ELEMENTS_WEDGE_H
-

@@ -31,18 +31,18 @@ namespace vcl {
  *
  * @tparam FaceType: The face element type. Must satisfy FaceConcept and have
  * AdjacentFaces component.
- * @tparam CNST: Explicit override for constness (defaults to constness of FaceType).
+ * @tparam CNST: Explicit override for constness (defaults to constness of
+ * FaceType).
  *
  * @ingroup iterators
  */
 template<FaceConcept FaceType, bool CNST = std::is_const_v<FaceType>>
-    requires comp::HasAdjacentFaces<FaceType>
+requires comp::HasAdjacentFaces<FaceType>
 class EdgeAdjFaceIterator
 {
 public:
     static constexpr bool IS_CONST =
-        CNST ||
-        std::is_const_v<FaceType> ||
+        CNST || std::is_const_v<FaceType> ||
         std::is_const_v<std::remove_reference_t<
             decltype(std::declval<FaceType>().parentContainer())>>;
 
@@ -93,7 +93,7 @@ public:
      * @brief Conversion constructor from mutable iterator to const iterator.
      */
     template<FaceConcept OtherFaceType, bool OtherConst>
-        requires (IS_CONST && !OtherConst)
+    requires (IS_CONST && !OtherConst)
     EdgeAdjFaceIterator(
         const EdgeAdjFaceIterator<OtherFaceType, OtherConst>& oi) :
             mCurrent(oi.current()), mEnd(oi.end()), mV0(oi.v0()), mV1(oi.v1())
@@ -101,7 +101,8 @@ public:
     }
 
     /**
-     * @brief Equality comparison between two edge-adjacent face iterators of the same type.
+     * @brief Equality comparison between two edge-adjacent face iterators of
+     * the same type.
      */
     bool operator==(const EdgeAdjFaceIterator& oi) const
     {
@@ -109,7 +110,8 @@ public:
     }
 
     /**
-     * @brief Equality comparison between two edge-adjacent face iterators of different constness.
+     * @brief Equality comparison between two edge-adjacent face iterators of
+     * different constness.
      */
     template<FaceConcept OtherFaceType, bool OtherConst>
     bool operator==(
@@ -147,8 +149,11 @@ public:
     pointer operator->() const { return pointer(mCurrent); }
 
     const FT& current() const { return mCurrent; }
+
     const FT& end() const { return mEnd; }
+
     const VT& v0() const { return mV0; }
+
     const VT& v1() const { return mV1; }
 };
 
@@ -158,8 +163,7 @@ EdgeAdjFaceIterator(const FaceType&, uint)
     -> EdgeAdjFaceIterator<FaceType, true>;
 
 template<FaceConcept FaceType>
-EdgeAdjFaceIterator(FaceType&, uint)
-    -> EdgeAdjFaceIterator<FaceType, false>;
+EdgeAdjFaceIterator(FaceType&, uint) -> EdgeAdjFaceIterator<FaceType, false>;
 
 } // namespace vcl
 

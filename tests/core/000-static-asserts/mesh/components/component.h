@@ -51,17 +51,21 @@ void componentStaticAsserts()
     {
         int a;
     };
+
     static_assert(
         !comp::ComponentData<NonSerializableData>,
         "NonSerializableData does satisfy the ComponentData concept");
 
     struct NonCopyableData
     {
-        NonCopyableData() = default;
+        NonCopyableData()                       = default;
         NonCopyableData(const NonCopyableData&) = delete;
+
         void serialize(std::ostream&) const {}
+
         void deserialize(std::istream&) {}
     };
+
     static_assert(
         !comp::ComponentData<NonCopyableData>,
         "NonCopyableData does satisfy the ComponentData concept");
@@ -69,9 +73,12 @@ void componentStaticAsserts()
     struct NonDefaultConstructibleData
     {
         NonDefaultConstructibleData(int) {}
+
         void serialize(std::ostream&) const {}
+
         void deserialize(std::istream&) {}
     };
+
     static_assert(
         !comp::ComponentData<NonDefaultConstructibleData>,
         "NonDefaultConstructibleData does satisfy the ComponentData concept");

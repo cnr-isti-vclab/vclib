@@ -142,11 +142,13 @@ TEST_CASE("Views - Element Views")
     m64.addFace(0, 1, 2);
 
     static_assert(std::same_as<
-        std::ranges::range_value_t<decltype(m64.vertices() | views::indices)>,
-        uint64_t>);
-    static_assert(std::same_as<
-        std::ranges::range_value_t<decltype(m64.faces() | views::indices)>,
-        uint64_t>);
+                  std::ranges::range_value_t<
+                      decltype(m64.vertices() | views::indices)>,
+                  uint64_t>);
+    static_assert(
+        std::same_as<
+            std::ranges::range_value_t<decltype(m64.faces() | views::indices)>,
+            uint64_t>);
 
     std::vector<uint64_t> v64Indices;
     for (auto idx : m64.vertices() | views::indices) {

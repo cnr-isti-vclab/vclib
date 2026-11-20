@@ -72,7 +72,8 @@ template<typename T>
 concept HasPosition = HasComponent<CompId::POSITION, T>;
 
 /**
- * @brief A concept that checks whether a type T has the Position component and it is optional.
+ * @brief A concept that checks whether a type T has the Position component and
+ * it is optional.
  *
  * @ingroup components_concepts
  */
@@ -86,12 +87,15 @@ concept HasOptionalPosition =
 
 template<PointConcept P, bool OPT>
 template<typename OtherElement>
-void Position<P, OPT>::importFrom(this auto&& self, const OtherElement& other, bool)
+void Position<P, OPT>::importFrom(
+    this auto&&         self,
+    const OtherElement& other,
+    bool)
 {
     if constexpr (HasPosition<OtherElement>) {
         if (other.template isComponentAvailable<CompId::POSITION>()) {
             using ScalarType = PositionType::ScalarType;
-            self.position() = other.position().template cast<ScalarType>();
+            self.position()  = other.position().template cast<ScalarType>();
         }
     }
 }
@@ -126,16 +130,16 @@ using Position3f = Position3<float, false>;
 using Position3d = Position3<double, false>;
 
 /**
- * @brief The OptionalPosition3f alias of the Position component that uses 3-dimensional
- * Points with float precision and is optional.
+ * @brief The OptionalPosition3f alias of the Position component that uses
+ * 3-dimensional Points with float precision and is optional.
  *
  * @ingroup components
  */
 using OptionalPosition3f = Position3<float, true>;
 
 /**
- * @brief The OptionalPosition3d alias of the Position component that uses 3-dimensional
- * Points with double precision and is optional.
+ * @brief The OptionalPosition3d alias of the Position component that uses
+ * 3-dimensional Points with double precision and is optional.
  *
  * @ingroup components
  */

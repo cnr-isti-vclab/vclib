@@ -27,8 +27,8 @@ namespace vcl::mesh {
  * The member functions of this class will be available in the instance of any
  * Mesh that will contain this component.
  *
- * For example, if you have a Mesh `m` with the TransformMatrix component, you can
- * access and modify its transform matrix:
+ * For example, if you have a Mesh `m` with the TransformMatrix component, you
+ * can access and modify its transform matrix:
  *
  * @code{.cpp}
  * m.transformMatrix().setIdentity();

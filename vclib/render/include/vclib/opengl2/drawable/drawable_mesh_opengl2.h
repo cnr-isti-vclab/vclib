@@ -417,14 +417,14 @@ private:
                 glShadeModel(GL_SMOOTH);
                 int n_tris = nt;
                 for (int tid = 0; tid < n_tris; ++tid) {
-                    int   tid_ptr  = 3 * tid;
-                    int   vid0     = triangles[tid_ptr + 0];
-                    int   vid1     = triangles[tid_ptr + 1];
-                    int   vid2     = triangles[tid_ptr + 2];
-                    int   vid0_ptr = 3 * vid0;
-                    int   vid1_ptr = 3 * vid1;
-                    int   vid2_ptr = 3 * vid2;
-                    auto texIdx = mMRD.vertexTextureIDsBufferData()[tid];
+                    int  tid_ptr  = 3 * tid;
+                    int  vid0     = triangles[tid_ptr + 0];
+                    int  vid1     = triangles[tid_ptr + 1];
+                    int  vid2     = triangles[tid_ptr + 2];
+                    int  vid0_ptr = 3 * vid0;
+                    int  vid1_ptr = 3 * vid1;
+                    int  vid2_ptr = 3 * vid2;
+                    auto texIdx   = mMRD.vertexTextureIDsBufferData()[tid];
                     uint texture =
                         (texIdx != USHORT_NULL && texIdx < mTextID.size()) ?
                             mTextID[texIdx] :
@@ -454,14 +454,14 @@ private:
             else if (mMRS.isSurface(MRI::Surface::COLOR_WEDGE_TEX)) {
                 int n_tris = nt;
                 for (int tid = 0; tid < n_tris; ++tid) {
-                    int   tid_ptr  = 3 * tid;
-                    int   vid0     = triangles[tid_ptr + 0];
-                    int   vid1     = triangles[tid_ptr + 1];
-                    int   vid2     = triangles[tid_ptr + 2];
-                    int   vid0_ptr = 3 * vid0;
-                    int   vid1_ptr = 3 * vid1;
-                    int   vid2_ptr = 3 * vid2;
-                    auto texIdx = mMRD.wedgeTextureIDsBufferData()[tid];
+                    int  tid_ptr  = 3 * tid;
+                    int  vid0     = triangles[tid_ptr + 0];
+                    int  vid1     = triangles[tid_ptr + 1];
+                    int  vid2     = triangles[tid_ptr + 2];
+                    int  vid0_ptr = 3 * vid0;
+                    int  vid1_ptr = 3 * vid1;
+                    int  vid2_ptr = 3 * vid2;
+                    auto texIdx   = mMRD.wedgeTextureIDsBufferData()[tid];
                     uint texture =
                         (texIdx != USHORT_NULL && texIdx < mTextID.size()) ?
                             mTextID[texIdx] :

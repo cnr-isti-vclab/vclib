@@ -304,9 +304,9 @@ TEST_CASE("DrawableMesh and MeshRenderData - Copy, Provider and Swap")
     {
         struct TestRenderData : public vcl::MeshRenderData
         {
-            using vcl::MeshRenderData::update;
-            using vcl::MeshRenderData::swap;
             using vcl::MeshRenderData::numWireframeLines;
+            using vcl::MeshRenderData::swap;
+            using vcl::MeshRenderData::update;
         };
 
         vcl::TriEdgeMesh tem1;
@@ -338,16 +338,20 @@ TEST_CASE("DrawableMesh and MeshRenderData - Copy, Provider and Swap")
 
     SECTION("DrawableMesh Copy and Provider")
     {
-        // Must run in an environment with initialized headless viewer/bgfx context
+        // Must run in an environment with initialized headless viewer/bgfx
+        // context
         runRenderTest(
             TEST_NAME,
             "shading_none", // reuse existing gt
             [](vcl::HeadlessMeshViewer& mv) {
                 auto mesh = getDrawableMesh<vcl::TriMesh>("bimba.obj");
-                auto copy = mesh; // Test copy constructor and provider independence
+                auto copy =
+                    mesh; // Test copy constructor and provider independence
 
                 REQUIRE(&copy.meshProvider() != &mesh.meshProvider());
-                REQUIRE(copy.meshProvider().vertexCount() == mesh.meshProvider().vertexCount());
+                REQUIRE(
+                    copy.meshProvider().vertexCount() ==
+                    mesh.meshProvider().vertexCount());
 
                 auto settings = copy.renderSettings();
                 settings.setSurface(vcl::MeshRenderInfo::Surface::SHADING_NONE);

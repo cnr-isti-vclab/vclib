@@ -33,8 +33,8 @@ namespace vcl::comp {
  * auto btn = v.bitangent(); // requires Normal component
  * @endcode
  *
- * @tparam P: The type of the tangent vector. This template argument must satisfy
- * the PointConcept.
+ * @tparam P: The type of the tangent vector. This template argument must
+ * satisfy the PointConcept.
  * @tparam OPT: If true, the component will be optional.
  *
  * @ingroup components
@@ -63,10 +63,7 @@ public:
      * @brief Returns the default value for the Tangent component:
      * zero vector and right-handed (true).
      */
-    static std::pair<P, bool> defaultValue()
-    {
-        return {P{}, true};
-    }
+    static std::pair<P, bool> defaultValue() { return {P {}, true}; }
 
     /* Member functions */
 
@@ -84,7 +81,8 @@ public:
      * @brief Returns a reference to the boolean indicating if the tangent
      * is right-handed.
      * Propagates constness automatically from the caller (proxy).
-     * @return a reference to the boolean indicating if the tangent is right-handed.
+     * @return a reference to the boolean indicating if the tangent is
+     * right-handed.
      */
     decltype(auto) tangentRightHanded(this auto&& self)
     {
@@ -164,10 +162,7 @@ concept HasOptionalTangent =
 
 template<PointConcept P, bool OPT>
 template<typename OtherElement>
-void Tangent<P, OPT>::importFrom(
-    this auto&&         self,
-    const OtherElement& e,
-    bool)
+void Tangent<P, OPT>::importFrom(this auto&& self, const OtherElement& e, bool)
 {
     using ScalarType = typename TangentType::ScalarType;
     if constexpr (HasTangent<OtherElement>) {
@@ -212,16 +207,16 @@ template<typename Scalar>
 using OptionalTangent3 = Tangent3<Scalar, true>;
 
 /**
- * @brief The OptionalTangent3f class is an alias of the Tangent component that uses
- * 3 dimensional Points with float precision and is optional.
+ * @brief The OptionalTangent3f class is an alias of the Tangent component that
+ * uses 3 dimensional Points with float precision and is optional.
  *
  * @ingroup components
  */
 using OptionalTangent3f = Tangent3<float, true>;
 
 /**
- * @brief The OptionalTangent3d class is an alias of the Tangent component that uses
- * 3 dimensional Points with double precision and is optional.
+ * @brief The OptionalTangent3d class is an alias of the Tangent component that
+ * uses 3 dimensional Points with double precision and is optional.
  *
  * @ingroup components
  */

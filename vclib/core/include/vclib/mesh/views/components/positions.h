@@ -17,14 +17,13 @@
 namespace vcl {
 
 template<typename T>
-concept HasPositionMember = requires(T&& t) {
+concept HasPositionMember = requires (T&& t) {
     { t.position() };
 };
 
 template<typename R>
 concept PositionRangeConcept =
-    std::ranges::range<R> &&
-    (requires(R&& r) {
+    std::ranges::range<R> && (requires (R&& r) {
         { std::forward<R>(r).positions() } -> std::ranges::range;
     } || HasPositionMember<std::ranges::range_reference_t<R>>);
 
@@ -57,13 +56,16 @@ struct PositionsView : std::ranges::range_adaptor_closure<PositionsView>
 } // namespace detail
 
 /**
- * @brief View adaptor that transforms a range of elements into a range of their positions.
+ * @brief View adaptor that transforms a range of elements into a range of their
+ * positions.
  *
- * When applied directly to an ElementContainerProxy (e.g. `mesh.vertices() | views::positions`),
- * it directly returns a contiguous ComponentView over the SoA buffer without proxy overhead.
+ * When applied directly to an ElementContainerProxy (e.g. `mesh.vertices() |
+ * views::positions`), it directly returns a contiguous ComponentView over the
+ * SoA buffer without proxy overhead.
  *
- * When applied to a filtered or transformed range (e.g. `mesh.vertices() | views::selected | views::positions`),
- * it transforms each element to its position reference.
+ * When applied to a filtered or transformed range (e.g. `mesh.vertices() |
+ * views::selected | views::positions`), it transforms each element to its
+ * position reference.
  *
  * @ingroup views
  */

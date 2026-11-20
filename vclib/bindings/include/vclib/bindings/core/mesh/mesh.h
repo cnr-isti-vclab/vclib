@@ -64,9 +64,7 @@ void initMesh(pybind11::module& m, const std::string& name)
     });
 
     if constexpr (HasBoundingBox<MeshType>) {
-        c.def(
-            "transformed_bounding_box",
-            &MeshType::transformedBoundingBox);
+        c.def("transformed_bounding_box", &MeshType::transformedBoundingBox);
     }
 
     c.def(

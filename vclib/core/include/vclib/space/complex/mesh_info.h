@@ -929,15 +929,13 @@ void addElementCustomComponent(MeshType& m, const MeshInfo::CustomComponent& cc)
         m.template addElementCustomComponent<ELEM_ID, char>(cc.name);
         break;
     case PrimitiveType::UCHAR:
-        m.template addElementCustomComponent<ELEM_ID, unsigned char>(
-            cc.name);
+        m.template addElementCustomComponent<ELEM_ID, unsigned char>(cc.name);
         break;
     case PrimitiveType::SHORT:
         m.template addElementCustomComponent<ELEM_ID, short>(cc.name);
         break;
     case PrimitiveType::USHORT:
-        m.template addElementCustomComponent<ELEM_ID, unsigned short>(
-            cc.name);
+        m.template addElementCustomComponent<ELEM_ID, unsigned short>(cc.name);
         break;
     case PrimitiveType::INT:
         m.template addElementCustomComponent<ELEM_ID, int>(cc.name);

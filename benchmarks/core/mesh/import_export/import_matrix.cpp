@@ -226,8 +226,7 @@ BENCH(
 BENCH(
     "import_export/import_matrix/face_colors_from_matrix",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (
-            !vcl::FaceMeshConcept<Mesh> || !vcl::HasFaceColor<Mesh>) {
+        if constexpr (!vcl::FaceMeshConcept<Mesh> || !vcl::HasFaceColor<Mesh>) {
             return s.skip("the mesh has no face colors");
         }
         else {
@@ -244,8 +243,7 @@ BENCH(
 BENCH(
     "import_export/import_matrix/face_colors_from_range",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (
-            !vcl::FaceMeshConcept<Mesh> || !vcl::HasFaceColor<Mesh>) {
+        if constexpr (!vcl::FaceMeshConcept<Mesh> || !vcl::HasFaceColor<Mesh>) {
             return s.skip("the mesh has no face colors");
         }
         else {
@@ -265,8 +263,7 @@ BENCH(
 BENCH(
     "import_export/import_matrix/edge_colors_from_matrix",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (
-            !vcl::EdgeMeshConcept<Mesh> || !vcl::HasEdgeColor<Mesh>) {
+        if constexpr (!vcl::EdgeMeshConcept<Mesh> || !vcl::HasEdgeColor<Mesh>) {
             return s.skip("the mesh has no edge colors");
         }
         else {
@@ -283,8 +280,7 @@ BENCH(
 BENCH(
     "import_export/import_matrix/edge_colors_from_range",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (
-            !vcl::EdgeMeshConcept<Mesh> || !vcl::HasEdgeColor<Mesh>) {
+        if constexpr (!vcl::EdgeMeshConcept<Mesh> || !vcl::HasEdgeColor<Mesh>) {
             return s.skip("the mesh has no edge colors");
         }
         else {
@@ -373,8 +369,7 @@ BENCH(
     "import_export/import_matrix/face_wedge_tex_coords_from_matrix",
     []<typename Mesh>(bench::State<Mesh>& s) {
         if constexpr (
-            !vcl::FaceMeshConcept<Mesh> ||
-            !vcl::HasFaceWedgeTexCoords<Mesh>) {
+            !vcl::FaceMeshConcept<Mesh> || !vcl::HasFaceWedgeTexCoords<Mesh>) {
             return s.skip("the mesh has no face wedge texcoords");
         }
         else {
@@ -412,8 +407,7 @@ BENCH(
     "import_export/import_matrix/face_material_indices_from_range",
     []<typename Mesh>(bench::State<Mesh>& s) {
         if constexpr (
-            !vcl::FaceMeshConcept<Mesh> ||
-            !vcl::HasFaceMaterialIndex<Mesh>) {
+            !vcl::FaceMeshConcept<Mesh> || !vcl::HasFaceMaterialIndex<Mesh>) {
             return s.skip("the mesh has no face material indices");
         }
         else {

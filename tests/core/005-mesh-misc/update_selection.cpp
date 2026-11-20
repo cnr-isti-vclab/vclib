@@ -280,8 +280,7 @@ TEST_CASE("Update Selection - 64-bit selection count return type")
 
     static_assert(
         std::same_as<decltype(vcl::vertexSelectionCount(m)), uint64_t>);
-    static_assert(
-        std::same_as<decltype(vcl::faceSelectionCount(m)), uint64_t>);
+    static_assert(std::same_as<decltype(vcl::faceSelectionCount(m)), uint64_t>);
     static_assert(
         std::same_as<decltype(vcl::faceEdgesSelectionCount(m)), uint64_t>);
 

@@ -45,9 +45,9 @@ public:
     using CompType      = comp::ComponentTypeT<COMP_ID, Container>;
     using RawDataType   = CompType::DataType;
     using DataType      = std::conditional_t<
-        std::is_const_v<Container>,
-        const RawDataType,
-        RawDataType>;
+             std::is_const_v<Container>,
+             const RawDataType,
+             RawDataType>;
 
     using value_type      = RawDataType;
     using reference       = DataType&;
@@ -82,9 +82,9 @@ public:
      */
     bool isAvailable() const
     {
-        return mContainer && mContainer->template isComponentAvailable<COMP_ID>();
+        return mContainer &&
+               mContainer->template isComponentAvailable<COMP_ID>();
     }
-
 
     Iterator begin() const
     {
@@ -130,10 +130,7 @@ public:
 
     bool empty() const { return size() == 0; }
 
-    bool isCompact() const
-    {
-        return mContainer && mContainer->isCompact();
-    }
+    bool isCompact() const { return mContainer && mContainer->isCompact(); }
 
 private:
     // begin() and end() must agree on this flag

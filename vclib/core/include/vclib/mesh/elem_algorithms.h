@@ -15,4 +15,3 @@
 #include "elem_algorithms/visibility.h"
 
 #endif // VCL_MESH_ELEM_ALGORITHMS_H
-

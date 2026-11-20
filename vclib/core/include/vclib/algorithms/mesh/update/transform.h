@@ -27,15 +27,13 @@ void updateNormalsAndDirections(MeshType& mesh, const MatrixType& matrix)
 
     if constexpr (HasFaceNormal<MeshType>) {
         if (mesh.isFaceNormalAvailable()) {
-            multiplyNormalsByMatrix(
-                mesh.faces() | vcl::views::normals, matrix);
+            multiplyNormalsByMatrix(mesh.faces() | vcl::views::normals, matrix);
         }
     }
 
     if constexpr (HasEdgeNormal<MeshType>) {
         if (mesh.isEdgeNormalAvailable()) {
-            multiplyNormalsByMatrix(
-                mesh.edges() | vcl::views::normals, matrix);
+            multiplyNormalsByMatrix(mesh.edges() | vcl::views::normals, matrix);
         }
     }
 
@@ -73,10 +71,10 @@ void updateNormalsAndDirections(MeshType& mesh, const MatrixType& matrix)
     if constexpr (HasVertexPrincipalCurvature<MeshType>) {
         if (mesh.isVertexPrincipalCurvatureAvailable()) {
             for (auto v : mesh.vertices()) {
-                v.principalCurvature().maxDir() =
-                    multiplyNormalByMatrix(v.principalCurvature().maxDir(), matrix);
-                v.principalCurvature().minDir() =
-                    multiplyNormalByMatrix(v.principalCurvature().minDir(), matrix);
+                v.principalCurvature().maxDir() = multiplyNormalByMatrix(
+                    v.principalCurvature().maxDir(), matrix);
+                v.principalCurvature().minDir() = multiplyNormalByMatrix(
+                    v.principalCurvature().minDir(), matrix);
             }
         }
     }
@@ -100,9 +98,11 @@ void updateNormalsAndDirections(MeshType& mesh, const MatrixType& matrix)
  * - Face wedge normals (@ref vcl::HasFaceWedgeNormals)
  * - Vertex tangents (@ref vcl::HasVertexTangent), including handedness flip if
  *   the transformation has negative determinant
- * - Vertex principal curvature directions (@ref vcl::HasVertexPrincipalCurvature)
+ * - Vertex principal curvature directions (@ref
+ * vcl::HasVertexPrincipalCurvature)
  *
- * @tparam MeshType: The type of the mesh, which must satisfy @ref vcl::MeshConcept.
+ * @tparam MeshType: The type of the mesh, which must satisfy @ref
+ * vcl::MeshConcept.
  * @tparam ScalarM: The scalar type of the transformation matrix.
  *
  * @param[in,out] mesh: The mesh to be transformed.
@@ -128,8 +128,10 @@ void applyTransformMatrix(
 /**
  * @brief Translates the vertex positions of the mesh by a displacement vector.
  *
- * @tparam MeshType: The type of the mesh, which must satisfy @ref vcl::MeshConcept.
- * @tparam PointType: The type of the displacement vector, which must satisfy @ref vcl::PointConcept.
+ * @tparam MeshType: The type of the mesh, which must satisfy @ref
+ * vcl::MeshConcept.
+ * @tparam PointType: The type of the displacement vector, which must satisfy
+ * @ref vcl::PointConcept.
  *
  * @param[in,out] mesh: The mesh to be translated.
  * @param[in] t: The translation vector.
@@ -146,10 +148,13 @@ void translate(MeshType& mesh, const PointType& t)
 }
 
 /**
- * @brief Scales the vertex positions of the mesh non-uniformly along each coordinate axis.
+ * @brief Scales the vertex positions of the mesh non-uniformly along each
+ * coordinate axis.
  *
- * @tparam MeshType: The type of the mesh, which must satisfy @ref vcl::MeshConcept.
- * @tparam PointType: The type of the scaling vector, which must satisfy @ref vcl::PointConcept.
+ * @tparam MeshType: The type of the mesh, which must satisfy @ref
+ * vcl::MeshConcept.
+ * @tparam PointType: The type of the scaling vector, which must satisfy @ref
+ * vcl::PointConcept.
  *
  * @param[in,out] mesh: The mesh to be scaled.
  * @param[in] s: The scaling factors for x, y, and z coordinates.
@@ -169,7 +174,8 @@ void scale(MeshType& mesh, const PointType& s)
 /**
  * @brief Scales the vertex positions of the mesh uniformly by a scalar factor.
  *
- * @tparam MeshType: The type of the mesh, which must satisfy @ref vcl::MeshConcept.
+ * @tparam MeshType: The type of the mesh, which must satisfy @ref
+ * vcl::MeshConcept.
  * @tparam Scalar: The scalar type of the scale factor.
  *
  * @param[in,out] mesh: The mesh to be scaled.
@@ -190,8 +196,8 @@ void scale(MeshType& mesh, const Scalar& s)
  *
  * This function rotates the vertex positions of the mesh by multiplying them
  * with the given 3x3 rotation matrix. The matrix scalar type is automatically
- * cast to the scalar type of the mesh, allowing e.g. rotating a single-precision
- * mesh with a double-precision rotation matrix.
+ * cast to the scalar type of the mesh, allowing e.g. rotating a
+ * single-precision mesh with a double-precision rotation matrix.
  *
  * If @p updateNormals is @c true, all directional and differential geometric
  * attributes present and available in the mesh are also rotated:
@@ -201,9 +207,11 @@ void scale(MeshType& mesh, const Scalar& s)
  * - Face wedge normals (@ref vcl::HasFaceWedgeNormals)
  * - Vertex tangents (@ref vcl::HasVertexTangent), including handedness flip if
  *   the rotation matrix has negative determinant
- * - Vertex principal curvature directions (@ref vcl::HasVertexPrincipalCurvature)
+ * - Vertex principal curvature directions (@ref
+ * vcl::HasVertexPrincipalCurvature)
  *
- * @tparam MeshType: The type of the mesh, which must satisfy @ref vcl::MeshConcept.
+ * @tparam MeshType: The type of the mesh, which must satisfy @ref
+ * vcl::MeshConcept.
  * @tparam Scalar: The scalar type of the rotation matrix.
  *
  * @param[in,out] mesh: The mesh to be rotated.
@@ -238,8 +246,10 @@ void rotate(
  * attributes present and available in the mesh are also rotated (normals,
  * wedge normals, tangents, and principal curvature directions).
  *
- * @tparam MeshType: The type of the mesh, which must satisfy @ref vcl::MeshConcept.
- * @tparam PointType: The type of the axis vector, which must satisfy @ref vcl::PointConcept.
+ * @tparam MeshType: The type of the mesh, which must satisfy @ref
+ * vcl::MeshConcept.
+ * @tparam PointType: The type of the axis vector, which must satisfy @ref
+ * vcl::PointConcept.
  * @tparam Scalar: The scalar type of the angle.
  *
  * @param[in,out] mesh: The mesh to be rotated.
@@ -272,8 +282,10 @@ void rotate(
  * attributes present and available in the mesh are also rotated (normals,
  * wedge normals, tangents, and principal curvature directions).
  *
- * @tparam MeshType: The type of the mesh, which must satisfy @ref vcl::MeshConcept.
- * @tparam PointType: The type of the axis vector, which must satisfy @ref vcl::PointConcept.
+ * @tparam MeshType: The type of the mesh, which must satisfy @ref
+ * vcl::MeshConcept.
+ * @tparam PointType: The type of the axis vector, which must satisfy @ref
+ * vcl::PointConcept.
  * @tparam Scalar: The scalar type of the angle.
  *
  * @param[in,out] mesh: The mesh to be rotated.

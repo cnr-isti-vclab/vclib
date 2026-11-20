@@ -10,47 +10,51 @@
 #include <vclib/mesh.h>
 #include <vclib/space/core.h>
 
-BENCH("polygon/geometry/face_normals", []<typename Mesh>(bench::State<Mesh>& s) {
-    if constexpr (!vcl::FaceMeshConcept<Mesh>) {
-        return s.skip("not a face mesh");
-    }
-    else {
-        const Mesh& m = s.mesh();
-        if (m.faceCount() == 0) {
-            return s.skip("mesh has no faces");
+BENCH(
+    "polygon/geometry/face_normals",
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        if constexpr (!vcl::FaceMeshConcept<Mesh>) {
+            return s.skip("not a face mesh");
         }
-
-        using Point = vcl::PositionType<Mesh>;
-
-        s.run([&]() {
-            Point sum;
-            sum.setZero();
-            for (const auto& f : m.faces()) {
-                sum += vcl::Polygon<Point>::normal(
-                    f.vertices() | vcl::views::positions);
+        else {
+            const Mesh& m = s.mesh();
+            if (m.faceCount() == 0) {
+                return s.skip("mesh has no faces");
             }
-            return sum;
-        });
-    }
-});
 
-BENCH("polygon/triangulation/ear_cut", []<typename Mesh>(bench::State<Mesh>& s) {
-    if constexpr (!vcl::FaceMeshConcept<Mesh>) {
-        return s.skip("not a face mesh");
-    }
-    else {
-        const Mesh& m = s.mesh();
-        if (m.faceCount() == 0) {
-            return s.skip("mesh has no faces");
+            using Point = vcl::PositionType<Mesh>;
+
+            s.run([&]() {
+                Point sum;
+                sum.setZero();
+                for (const auto& f : m.faces()) {
+                    sum += vcl::Polygon<Point>::normal(
+                        f.vertices() | vcl::views::positions);
+                }
+                return sum;
+            });
         }
+    });
 
-        s.run([&]() {
-            std::size_t totalIndices = 0;
-            for (const auto& f : m.faces()) {
-                auto tris = vcl::earCut(f);
-                totalIndices += tris.size();
+BENCH(
+    "polygon/triangulation/ear_cut",
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        if constexpr (!vcl::FaceMeshConcept<Mesh>) {
+            return s.skip("not a face mesh");
+        }
+        else {
+            const Mesh& m = s.mesh();
+            if (m.faceCount() == 0) {
+                return s.skip("mesh has no faces");
             }
-            return totalIndices;
-        });
-    }
-});
+
+            s.run([&]() {
+                std::size_t totalIndices = 0;
+                for (const auto& f : m.faces()) {
+                    auto tris = vcl::earCut(f);
+                    totalIndices += tris.size();
+                }
+                return totalIndices;
+            });
+        }
+    });

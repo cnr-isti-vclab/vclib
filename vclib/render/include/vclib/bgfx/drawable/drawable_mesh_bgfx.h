@@ -138,8 +138,7 @@ public:
             model = MeshType::transformMatrix().template cast<float>();
         }
 
-        mMRB.computeSelection(
-            params, model);
+        mMRB.computeSelection(params, model);
     }
 
     vcl::BitVector<true> vertexSelectionBitVector() const override
