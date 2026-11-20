@@ -8,49 +8,45 @@
 #ifndef VCL_MESH_VIEWS_ELEMENTS_EDGE_H
 #define VCL_MESH_VIEWS_ELEMENTS_EDGE_H
 
-#include <vclib/mesh/requirements/edge_requirements.h>
-#include <vclib/mesh/views/element.h>
+#include "../element.h"
+
+#include <vclib/mesh/elements/edge.h>
+
+#include <ranges>
 
 namespace vcl {
 
 /**
- * @brief The EdgeRangeConcept evaluates to true if Rng is a valid Range
- * on Edges.
+ * @brief Concept that checks whether Rng is a valid range of edges.
  *
- * This means that Rng must be a Range of EdgeConcept: the iterated type
- * must satisfy the EdgeConcept.
- *
- * @ingroup edge_concepts
+ * @ingroup element_concepts
  */
 template<typename Rng>
 concept EdgeRangeConcept =
-    Range<Rng> &&
+    std::ranges::range<Rng> &&
     EdgeConcept<typename std::ranges::iterator_t<Rng>::value_type>;
 
-/**
- * @brief The EdgePointerRangeConcept evaluates to true if Rng is a valid
- * Range on Edge Pointers.
- *
- * This means that Rng must be a Range of pointers to a type that satisfy the
- * EdgeConcept.
- *
- * @ingroup edge_concepts
- */
-template<typename Rng>
-concept EdgePointerRangeConcept =
-    Range<Rng> &&
-    IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
-    EdgeConcept<typename std::decay_t<
-        RemovePtr<typename std::ranges::iterator_t<Rng>::value_type>>>;
-
 namespace views {
+
 namespace detail {
 
-struct EdgesView
+struct EdgesView : std::ranges::range_adaptor_closure<EdgesView>
 {
     constexpr EdgesView() = default;
 
-    template<EdgeMeshConcept R>
+    template<typename R>
+    requires requires (R&& r) {
+        { r.edges() } -> std::ranges::range;
+    }
+    constexpr auto operator()(R&& r) const
+    {
+        return r.edges();
+    }
+
+    template<typename R>
+    requires (!std::ranges::range<R>) && requires (R&& r) {
+        { r.edges() } -> std::ranges::range;
+    }
     friend constexpr auto operator|(R&& r, EdgesView)
     {
         return r.edges();
@@ -60,17 +56,20 @@ struct EdgesView
 } // namespace detail
 
 /**
- * @brief A view that allows to iterate overt the Edge elements of an object.
+ * @brief A view adaptor that allows to iterate over the Edge elements of an
+ * object.
  *
- * This view can be applied to objects having type that satisfies the
- * EdgeMeshConcept.
+ * Can be applied to Meshes: `mesh | views::edges`
+ *
+ * Supports both pipe syntax (`mesh | views::edges`) and function call syntax
+ * (`views::edges(mesh)`).
  *
  * @ingroup views
  */
 inline constexpr detail::EdgesView edges;
 
 template<>
-inline constexpr auto elements<vcl::ElemId::EDGE> = edges;
+inline constexpr auto elements<ElemId::EDGE> = edges;
 
 } // namespace views
 } // namespace vcl

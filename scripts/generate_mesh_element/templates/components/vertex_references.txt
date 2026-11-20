@@ -1,0 +1,7 @@
+//@concepts
+template<typename T>
+concept HasVertexReferences = comp::HasVertexReferences<T>;
+//@aliases
+/* Port VertexReferences class and aliases into %EL_NS% namespace */
+template<std::unsigned_integral Index = uint>
+using VertexReferences = comp::VertexReferences<%VERTEX_COUNT%, Index>;

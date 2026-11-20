@@ -12,226 +12,125 @@
 
 namespace vcl {
 
-template<typename ScalarType, bool INDEXED>
-class TriEdgeMeshT;
-
-} // namespace vcl
-
-namespace vcl::triedgemesh {
-
-template<typename Scalar, bool INDEXED>
-class Vertex;
-
-template<typename Scalar, bool INDEXED>
-class Face;
-
-template<typename Scalar, bool INDEXED>
-class Edge;
+namespace triedgemesh {
 
 /**
- * @brief The Vertex type used by the TriEdgeMeshT class.
- *
- * @extends vert::BitFlags
- * @extends vert::Position3
- * @extends vert::Normal3
- * @extends vert::OptionalColor
- * @extends vert::OptionalQuality
- * @extends vert::OptionalAdjacentEdges
- * @extends vert::OptionalAdjacentFaces
- * @extends vert::OptionalAdjacentVertices
- * @extends vert::OptionalPrincipalCurvature
- * @extends vert::OptionalTexCoord
- * @extends vert::OptionalMaterialIndex
- * @extends vert::OptionalTangent3
- * @extends vert::OptionalMark
- * @extends vert::CustomComponents
+ * @brief The VertexComponents type used by the TriEdgeMeshT class.
  *
  * @tparam Scalar: The scalar type used for the mesh.
- * @tparam I: A boolean flag that indicates whether the mesh uses indices or
- * pointers to store vertices of faces and adjacency information.
+ * @tparam Index: The unsigned integral type used for indexing elements.
  *
  * @ingroup meshes
  */
-template<typename Scalar, bool I>
-class Vertex :
-        public vcl::Vertex<
-            TriEdgeMeshT<Scalar, I>,
-            vert::BitFlags,
-            vert::Position3<Scalar>,
-            vert::Normal3<Scalar>,
-            vert::OptionalColor<Vertex<Scalar, I>>,
-            vert::OptionalQuality<Scalar, Vertex<Scalar, I>>,
-            vert::OptionalAdjacentEdges<I, Edge<Scalar, I>, Vertex<Scalar, I>>,
-            vert::OptionalAdjacentFaces<I, Face<Scalar, I>, Vertex<Scalar, I>>,
-            vert::OptionalAdjacentVertices<I, Vertex<Scalar, I>>,
-            vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar, I>>,
-            vert::OptionalTexCoord<Scalar, Vertex<Scalar, I>>,
-            vert::OptionalMaterialIndex<Vertex<Scalar, I>>,
-            vert::OptionalTangent3<Scalar, Vertex<Scalar, I>>,
-            vert::OptionalMark<Vertex<Scalar, I>>,
-            vert::CustomComponents<Vertex<Scalar, I>>>
-{
-public:
-    friend void swap(Vertex& a, Vertex& b) { a.swap(b); }
-};
+template<typename Scalar = double, std::unsigned_integral Index = uint>
+using VertexComponents = vcl::VertexComponents<
+    vert::BitFlags,
+    vert::Position3<Scalar>,
+    vert::Normal3<Scalar>,
+    vert::OptionalColor,
+    vert::OptionalQuality<Scalar>,
+    vert::OptionalAdjacentEdges<Index>,
+    vert::OptionalAdjacentFaces<Index>,
+    vert::OptionalAdjacentVertices<Index>,
+    vert::OptionalPrincipalCurvature<Scalar>,
+    vert::OptionalTexCoord<Scalar>,
+    vert::OptionalMaterialIndex,
+    vert::OptionalTangent3<Scalar>,
+    vert::CustomComponents>;
 
 /**
- * @brief The Face type used by the TriEdgeMeshT class.
- *
- * @extends face::TriangleBitFlags
- * @extends face::TriangleVertexRefs
- * @extends face::Normal3
- * @extends face::OptionalColor
- * @extends face::OptionalQuality
- * @extends face::OptionalAdjacentTriangles
- * @extends face::OptionalAdjacentEdges
- * @extends face::OptionalTriangleWedgeTexCoords
- * @extends face::OptionalMaterialIndex
- * @extends face::OptionalMark
- * @extends face::CustomComponents
+ * @brief The FaceComponents type used by the TriEdgeMeshT class.
  *
  * @tparam Scalar: The scalar type used for the mesh.
- * @tparam I: A boolean flag that indicates whether the mesh uses indices or
- * pointers to store vertices of faces and adjacency information.
+ * @tparam Index: The unsigned integral type used for indexing elements.
  *
  * @ingroup meshes
  */
-template<typename Scalar, bool I>
-class Face :
-        public vcl::Face<
-            TriEdgeMeshT<Scalar, I>,
-            face::TriangleBitFlags,
-            face::TriangleVertexRefs<I, Vertex<Scalar, I>, Face<Scalar, I>>,
-            face::Normal3<Scalar>,
-            face::OptionalColor<Face<Scalar, I>>,
-            face::OptionalQuality<Scalar, Face<Scalar, I>>,
-            face::OptionalAdjacentTriangles<I, Face<Scalar, I>>,
-            face::OptionalAdjacentEdges<I, Edge<Scalar, I>, Face<Scalar, I>>,
-            face::OptionalTriangleWedgeTexCoords<Scalar, Face<Scalar, I>>,
-            face::OptionalMaterialIndex<Face<Scalar, I>>,
-            face::OptionalMark<Face<Scalar, I>>,
-            face::CustomComponents<Face<Scalar, I>>>
-{
-public:
-    friend void swap(Face& a, Face& b) { a.swap(b); }
-};
+template<typename Scalar = double, std::unsigned_integral Index = uint>
+using FaceComponents = vcl::FaceComponents<
+    face::TriangleBitFlags,
+    face::TriangleVertexReferences<Index>,
+    face::Normal3<Scalar>,
+    face::OptionalColor,
+    face::OptionalQuality<Scalar>,
+    face::OptionalTriangleAdjacentFaces<Index>,
+    face::OptionalAdjacentEdges<Index>,
+    face::OptionalTriangleWedgeTexCoords<Scalar>,
+    face::OptionalMaterialIndex,
+    face::CustomComponents>;
 
 /**
- * @brief The Edge type used by the TriEdgeMeshT class.
- *
- * @extends edge::BitFlags
- * @extends edge::VertexReferences
- * @extends edge::OptionalNormal3
- * @extends edge::OptionalColor
- * @extends edge::OptionalQuality
- * @extends edge::OptionalAdjacentEdges
- * @extends edge::OptionalAdjacentFaces
- * @extends edge::OptionalMark
- * @extends edge::CustomComponents
+ * @brief The EdgeComponents type used by the TriEdgeMeshT class.
  *
  * @tparam Scalar: The scalar type used for the mesh.
- * @tparam I: A boolean flag that indicates whether the mesh uses indices or
- * pointers to store vertices of faces and adjacency information.
+ * @tparam Index: The unsigned integral type used for indexing elements.
  *
  * @ingroup meshes
  */
-template<typename Scalar, bool I>
-class Edge :
-        public vcl::Edge<
-            TriEdgeMeshT<Scalar, I>,
-            edge::BitFlags,
-            edge::VertexReferences<I, Vertex<Scalar, I>, Edge<Scalar, I>>,
-            edge::OptionalNormal3<Scalar, Edge<Scalar, I>>,
-            edge::OptionalColor<Edge<Scalar, I>>,
-            edge::OptionalQuality<Scalar, Edge<Scalar, I>>,
-            edge::OptionalAdjacentEdges<I, Edge<Scalar, I>>,
-            edge::OptionalAdjacentFaces<I, Face<Scalar, I>, Edge<Scalar, I>>,
-            edge::OptionalMark<Edge<Scalar, I>>,
-            edge::CustomComponents<Edge<Scalar, I>>>
-{
-public:
-    friend void swap(Edge& a, Edge& b) { a.swap(b); }
-};
+template<typename Scalar = double, std::unsigned_integral Index = uint>
+using EdgeComponents = vcl::EdgeComponents<
+    edge::BitFlags,
+    edge::VertexReferences<Index>,
+    edge::OptionalNormal3<Scalar>,
+    edge::OptionalColor,
+    edge::OptionalQuality<Scalar>,
+    edge::OptionalAdjacentEdges<Index>,
+    edge::OptionalAdjacentFaces<Index>,
+    edge::CustomComponents>;
 
-} // namespace vcl::triedgemesh
-
-namespace vcl {
+} // namespace triedgemesh
 
 /**
- * @brief The TriEdgeMeshT class is a mesh class that represents a triangle mesh
- * with edges.
+ * @brief The TriEdgeMeshT class is a mesh class that represents a triangle
+ * mesh with edges.
  *
- * It allows to store triedgemesh::Vertex, triedgemesh::Face and
- * triedgemesh::Edge elements. Edges are separated from faces, and they are
- * stored in a dedicated container.
+ * It allows to store triedgemesh vertices, triedgemesh faces, and
+ * triedgemesh edges.
  *
  * @tparam Scalar: The scalar type used for the mesh.
- * @tparam INDEXED: A boolean flag that indicates whether the mesh uses indices
- * or pointers to store references.
- *
- * @extends mesh::VertexContainer
- * @extends mesh::FaceContainer
- * @extends mesh::EdgeContainer
- * @extends mesh::BoundingBox3
- * @extends mesh::Color
- * @extends mesh::Mark
- * @extends mesh::Materials
- * @extends mesh::Name
- * @extends mesh::TransformMatrix
- * @extends mesh::CustomComponents
+ * @tparam Index: The unsigned integral type used for indexing elements.
  *
  * @ingroup meshes
  */
-template<typename Scalar, bool INDEXED>
-class TriEdgeMeshT :
-        public Mesh<
-            mesh::VertexContainer<triedgemesh::Vertex<Scalar, INDEXED>>,
-            mesh::FaceContainer<triedgemesh::Face<Scalar, INDEXED>>,
-            mesh::EdgeContainer<triedgemesh::Edge<Scalar, INDEXED>>,
-            mesh::BoundingBox3<Scalar>,
-            mesh::Color,
-            mesh::Mark,
-            mesh::Materials,
-            mesh::Name,
-            mesh::TransformMatrix<Scalar>,
-            mesh::CustomComponents>
-{
-public:
-    /** @brief The scalar used to store all the data of the Mesh. */
-    using ScalarType = Scalar;
-};
+template<typename Scalar = double, std::unsigned_integral Index = uint>
+using TriEdgeMeshT = Mesh<
+    mesh::VertexContainer<triedgemesh::VertexComponents<Scalar, Index>, Index>,
+    mesh::FaceContainer<triedgemesh::FaceComponents<Scalar, Index>, Index>,
+    mesh::EdgeContainer<triedgemesh::EdgeComponents<Scalar, Index>, Index>,
+    mesh::BoundingBox3<Scalar>,
+    mesh::Color,
+    mesh::Materials,
+    mesh::Name,
+    mesh::TransformMatrix<Scalar>,
+    mesh::CustomComponents>;
 
 /**
- * @brief The TriEdgeMeshf class is a specialization of TriEdgeMeshT that uses
- * `float` as scalar and pointers to store vertices of faces/edges and adjacency
- * information.
+ * @brief The TriEdgeMesh class is a specialization of the TriEdgeMeshT class
+ * that uses `double` as scalar and `uint` for indexing.
  * @ingroup meshes
  */
-using TriEdgeMeshf = TriEdgeMeshT<float, false>;
+using TriEdgeMesh = TriEdgeMeshT<double, uint>;
 
 /**
- * @brief The TriEdgeMesh class is a specialization of TriEdgeMeshT that uses
- * `double` as scalar and pointers to store vertices of faces/edges and
- * adjacency information.
+ * @brief The TriEdgeMeshf class is a specialization of the TriEdgeMeshT class
+ * that uses `float` as scalar and `uint` for indexing.
  * @ingroup meshes
  */
-using TriEdgeMesh = TriEdgeMeshT<double, false>;
+using TriEdgeMeshf = TriEdgeMeshT<float, uint>;
 
 /**
- * @brief The TriEdgeMeshIndexedf class is a specialization of TriEdgeMeshT that
- * uses `float` as scalar and indices (`unsigned int`) to store vertices of
- * faces/edges and adjacency information.
+ * @brief The TriEdgeMesh64 class is a specialization of the TriEdgeMeshT class
+ * that uses `double` as scalar and `uint64_t` for indexing.
  * @ingroup meshes
  */
-using TriEdgeMeshIndexedf = TriEdgeMeshT<float, true>;
+using TriEdgeMesh64 = TriEdgeMeshT<double, uint64_t>;
 
 /**
- * @brief The TriEdgeMeshIndexed class is a specialization of TriEdgeMeshT that
- * uses `double` as scalar and indices (`unsigned int`) to store vertices of
- * faces/edges and adjacency information.
+ * @brief The TriEdgeMesh64f class is a specialization of the TriEdgeMeshT class
+ * that uses `float` as scalar and `uint64_t` for indexing.
  * @ingroup meshes
  */
-using TriEdgeMeshIndexed = TriEdgeMeshT<double, true>;
+using TriEdgeMesh64f = TriEdgeMeshT<float, uint64_t>;
 
 } // namespace vcl
 

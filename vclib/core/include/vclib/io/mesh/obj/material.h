@@ -32,7 +32,7 @@ class ObjMaterial
 
 public:
     // id of the material in the mesh, used when loading materials
-    uint        matId = UINT_NULL;
+    ushort      matId = USHORT_NULL;
     std::string matName;
 
     Point3f Ka = Ka_DEFAULT; // ambient
@@ -51,7 +51,7 @@ public:
 
     ObjMaterial() = default;
 
-    ObjMaterial(const Material& mat, uint id)
+    ObjMaterial(const Material& mat, ushort id)
     {
         using enum Material::TextureType;
 
@@ -119,7 +119,7 @@ public:
         return m;
     }
 
-    bool isValid() const { return matId != UINT_NULL; }
+    bool isValid() const { return matId != USHORT_NULL; }
 
     Color color() const
     {
@@ -128,7 +128,7 @@ public:
 
     const std::string& texture() const { return map_Kd; }
 
-    uint textureId() const { return matId; }
+    ushort textureId() const { return matId; }
 
     bool operator==(const ObjMaterial& m) const = default;
 
@@ -168,7 +168,7 @@ inline std::ostream& operator<<(std::ostream& out, const ObjMaterial& m)
         out << "map_Kd " << m.map_Kd << std::endl;
     }
 
-    if (m.map_Ke.empty()) {
+    if (!m.map_Ke.empty()) {
         out << "map_Ke " << m.map_Ke << std::endl;
     }
 

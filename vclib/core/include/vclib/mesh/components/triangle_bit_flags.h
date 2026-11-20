@@ -8,10 +8,11 @@
 #ifndef VCL_MESH_COMPONENTS_TRIANGLE_BIT_FLAGS_H
 #define VCL_MESH_COMPONENTS_TRIANGLE_BIT_FLAGS_H
 
-#include "base/component.h"
-#include "concepts/bit_flags.h"
+#include "base/bit_flags_concepts.h"
 
 #include <vclib/space/core.h>
+
+#include <cassert>
 
 namespace vcl::comp {
 
@@ -20,7 +21,7 @@ namespace vcl::comp {
  * will be part of a Triangle of a Mesh.
  *
  * This is a specialization class of the BitFlags component, meaning that it can
- * be used in sostitution to that component. The difference is that this class
+ * be used in substitution to that component. The difference is that this class
  * is meant to be used on Triangle Faces, and adds bits with particular meanings
  * for triangles.
  *
@@ -50,37 +51,14 @@ namespace vcl::comp {
  * `f`:
  *
  * @code{.cpp}
- * v.edgeSelected(1) = true;
+ * f.edgeSelected(1) = true;
  * @endcode
- *
- * @tparam ParentElemType: This template argument must be `void` if the
- * component needs to be stored horizontally, or the type of the parent element
- * that will contain this component if the component needs to be stored
- * vertically.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
  *
  * @ingroup components
  */
-template<typename ParentElemType = void, bool OPT = false>
-class TriangleBitFlags :
-        public Component<
-            TriangleBitFlags<ParentElemType, OPT>,
-            CompId::BIT_FLAGS,
-            BitSet<uint>,
-            ParentElemType,
-            !std::is_same_v<ParentElemType, void>,
-            OPT>
+class TriangleBitFlags : public Component<CompId::BIT_FLAGS, BitSet<uint>>
 {
-    using Base = Component<
-        TriangleBitFlags<ParentElemType, OPT>,
-        CompId::BIT_FLAGS,
-        BitSet<uint>,
-        ParentElemType,
-        !std::is_same_v<ParentElemType, void>,
-        OPT>;
-
-    static const uint FIRST_USER_BIT = 15;
+    using Base = Component<CompId::BIT_FLAGS, BitSet<uint>>;
 
     // indices of the bits
     enum {
@@ -98,6 +76,8 @@ class TriangleBitFlags :
         EDGEVIS0 = 12, // bits [12, 14]
     };
 
+    static constexpr uint FIRST_USER_BIT = 15;
+
 public:
     /**
      * @brief Expose the underlying type of the BitFlags.
@@ -107,32 +87,8 @@ public:
     /**
      * @brief Static number of bits that can have custom meanings to the user
      */
-    inline static const uint USER_BIT_COUNT =
+    static constexpr uint USER_BIT_COUNT =
         sizeof(FlagsType) * 8 - FIRST_USER_BIT;
-
-    /* Constructors */
-
-    /**
-     * @brief Initializes the bits to `false`.
-     */
-    TriangleBitFlags()
-    {
-        if constexpr (!Base::IS_VERTICAL) {
-            init();
-        }
-    }
-
-    /**
-     * @private
-     * @brief Initializes the bits to false.
-     *
-     * It is made in the init function since the component could be not
-     * available during construction (e.g. if the component is optional and not
-     * enabled).
-     *
-     * This member function is hidden by the element that inherits this class.
-     */
-    void init() { flags().reset(); }
 
     /* Member functions */
 
@@ -140,33 +96,24 @@ public:
      * @brief Returns whether the current Triangle is deleted or not.
      * @return true if the Triangle is deleted, false otherwise.
      */
-    bool deleted() const { return flags()[DELETED]; }
-
-    /**
-     * @brief Accesses the 'selected' bit of this Triangle, returning a
-     * reference to it.
-     * @return a reference to the 'selected' bit of this Triangle.
-     */
-    BitProxy<FlagsType> selected() { return flags()[SELECTED]; }
+    bool deleted(this auto&& self)
+    {
+        if (!self.isValid())
+            return false;
+        return self.flags()[DELETED];
+    }
 
     /**
      * @brief Returns whether the current Triangle is selected or not.
      * @return true if the Triangle is selected, false otherwise.
      */
-    bool selected() const { return flags()[SELECTED]; }
-
-    /**
-     * @brief Accesses the 'visited' bit of this Triangle, returning a reference
-     * to it.
-     * @return a reference to the 'visited' bit of this Triangle.
-     */
-    BitProxy<FlagsType> visited() { return flags()[VISITED]; }
+    decltype(auto) selected(this auto&& self) { return self.flags()[SELECTED]; }
 
     /**
      * @brief Returns whether the current Triangle has been visited or not.
      * @return true if the Triangle has been visited, false otherwise.
      */
-    bool visited() const { return flags()[VISITED]; }
+    decltype(auto) visited(this auto&& self) { return self.flags()[VISITED]; }
 
     /**
      * @brief Returns whether the current Triangle is on border or not, by
@@ -174,22 +121,10 @@ public:
      * @return true if at least one edge of the Triangle is on border, false
      * otherwise.
      */
-    bool onBorder() const
+    bool onBorder(this auto&& self)
     {
-        return edgeOnBorder(0) || edgeOnBorder(1) || edgeOnBorder(2);
-    }
-
-    /**
-     * @brief Accesses the 'onBorder' bit of the i-th edge of the triangle,
-     * returning a reference to it.
-     * @param[in] i: the index of the edge, it must be less than 3.
-     * @return a reference to the 'onBorder' bit of the i-th edge of the
-     * triangle.
-     */
-    BitProxy<FlagsType> edgeOnBorder(uint i)
-    {
-        assert(i < 3);
-        return flags()[BORDER0 + i];
+        return self.edgeOnBorder(0) || self.edgeOnBorder(1) ||
+               self.edgeOnBorder(2);
     }
 
     /**
@@ -199,23 +134,10 @@ public:
      * @return true if the i-th edge of the triangle is on border, false
      * otherwise.
      */
-    bool edgeOnBorder(uint i) const
+    decltype(auto) edgeOnBorder(this auto&& self, uint i)
     {
         assert(i < 3);
-        return flags()[BORDER0 + i];
-    }
-
-    /**
-     * @brief Accesses the 'selected' bit of the i-th edge of the triangle,
-     * returning a reference to it.
-     * @param[in] i: the index of the edge, it must be less than 3.
-     * @return a reference to the 'selected' bit of the i-th edge of the
-     * triangle.
-     */
-    BitProxy<FlagsType> edgeSelected(uint i)
-    {
-        assert(i < 3);
-        return flags()[EDGESEL0 + i];
+        return self.flags()[BORDER0 + i];
     }
 
     /**
@@ -225,23 +147,10 @@ public:
      * @return true if the i-th edge of the triangle is selected, false
      * otherwise.
      */
-    bool edgeSelected(uint i) const
+    decltype(auto) edgeSelected(this auto&& self, uint i)
     {
         assert(i < 3);
-        return flags()[EDGESEL0 + i];
-    }
-
-    /**
-     * @brief Accesses the 'visited' bit of the i-th edge of the triangle,
-     * returning a reference to it.
-     * @param[in] i: the index of the edge, it must be less than 3.
-     * @return a reference to the 'visited' bit of the i-th edge of the
-     * triangle.
-     */
-    BitProxy<FlagsType> edgeVisited(uint i)
-    {
-        assert(i < 3);
-        return flags()[EDGEVIS0 + i];
+        return self.flags()[EDGESEL0 + i];
     }
 
     /**
@@ -251,22 +160,10 @@ public:
      * @return true if the i-th edge of the triangle is visited, false
      * otherwise.
      */
-    bool edgeVisited(uint i) const
+    decltype(auto) edgeVisited(this auto&& self, uint i)
     {
         assert(i < 3);
-        return flags()[EDGEVIS0 + i];
-    }
-
-    /**
-     * @brief Accesses the 'faux' bit of the i-th edge of the triangle,
-     * returning a reference to it.
-     * @param[in] i: the index of the edge, it must be less than 3.
-     * @return a reference to the 'faux' bit of the i-th edge of the triangle.
-     */
-    BitProxy<FlagsType> edgeFaux(uint i)
-    {
-        assert(i < 3);
-        return flags()[FAUX0 + i];
+        return self.flags()[EDGEVIS0 + i];
     }
 
     /**
@@ -275,10 +172,10 @@ public:
      * @param[in] i: the index of the edge, it must be less than 3.
      * @return true if the i-th edge of the triangle is faux, false otherwise.
      */
-    bool edgeFaux(uint i) const
+    decltype(auto) edgeFaux(this auto&& self, uint i)
     {
         assert(i < 3);
-        return flags()[FAUX0 + i];
+        return self.flags()[FAUX0 + i];
     }
 
     /**
@@ -289,43 +186,31 @@ public:
      * @param[in] bit: the position of the bit, in the interval [0 - 16].
      * @return a reference to the desired user bit.
      */
-    bool userBit(uint bit) const
+    decltype(auto) userBit(this auto&& self, uint bit)
     {
         assert(bit < USER_BIT_COUNT);
-        return flags()[bit + FIRST_USER_BIT];
-    }
-
-    /**
-     * @brief Returns the boolean value of the user bit of this Triangle given
-     * in input. The bit is checked to be less than the total number of assigned
-     * user bits, which in this class is 17.
-     *
-     * @param[in] bit: the position of the bit, in the interval [0 - 16], that
-     * will be returned by reference.
-     * @return `true` if the required bit is enabled, `false` otherwise.
-     */
-    BitProxy<FlagsType> userBit(uint bit)
-    {
-        assert(bit < USER_BIT_COUNT);
-        return flags()[bit + FIRST_USER_BIT];
+        return self.flags()[bit + FIRST_USER_BIT];
     }
 
     /**
      * @brief Unsets all the flags of this Triangle and sets them to `false`,
      * **except the deleted flag**, which needs to be manually reset.
      */
-    void resetBitFlags()
+    void resetBitFlags(this auto&& self)
     {
-        bool isD = deleted();
-        flags().reset();
-        deletedBit() = isD;
+        bool isD = self.deleted();
+        self.flags().reset();
+        self.flags()[DELETED] = isD;
     }
 
     /**
      * @brief Returns the underlying integral value of the BitFlags.
      * @return the underlying integral value of the BitFlags.
      */
-    FlagsType underlyingBitFlags() const { return flags().underlying(); }
+    FlagsType underlyingBitFlags(this auto&& self)
+    {
+        return self.flags().underlying();
+    }
 
     /**
      * @brief Sets the underlying integral value of the BitFlags.
@@ -336,11 +221,11 @@ public:
      * @param[in] bits: the integral value to set as the underlying value of the
      * BitFlags
      */
-    void setUnderlyingBitFlags(FlagsType bits)
+    void setUnderlyingBitFlags(this auto&& self, FlagsType bits)
     {
-        bool isD = deleted();
-        flags().setUnderlying(bits);
-        deletedBit() = isD;
+        bool isD = self.deleted();
+        self.flags().setUnderlying(bits);
+        self.flags()[DELETED] = isD;
     }
 
     /**
@@ -349,30 +234,31 @@ public:
      * library.
      * @param[in] f: bit flags in the format of the VCG library.
      */
-    void importFlagsFromVCGFormat(int f)
+    void importFlagsFromVCGFormat(this auto&& self, int f)
     {
+        self.resetBitFlags();
         if (f & 0x00000010)
-            visited() = true;
+            self.visited() = true;
         if (f & 0x00000020)
-            selected() = true;
+            self.selected() = true;
         if (f & 0x00000040)
-            edgeOnBorder(0) = true;
+            self.edgeOnBorder(0) = true;
         if (f & 0x00000080)
-            edgeOnBorder(1) = true;
+            self.edgeOnBorder(1) = true;
         if (f & 0x00000100)
-            edgeOnBorder(2) = true;
+            self.edgeOnBorder(2) = true;
         if (f & 0x00008000)
-            edgeSelected(0) = true;
+            self.edgeSelected(0) = true;
         if (f & 0x00010000)
-            edgeSelected(1) = true;
+            self.edgeSelected(1) = true;
         if (f & 0x00020000)
-            edgeSelected(2) = true;
+            self.edgeSelected(2) = true;
         if (f & 0x00040000)
-            edgeFaux(0) = true;
+            self.edgeFaux(0) = true;
         if (f & 0x00080000)
-            edgeFaux(1) = true;
+            self.edgeFaux(1) = true;
         if (f & 0x00100000)
-            edgeFaux(2) = true;
+            self.edgeFaux(2) = true;
     }
 
     /**
@@ -382,77 +268,91 @@ public:
      * @return an integer representing the bit flags of this element in the
      * format of the VCG library.
      */
-    int exportFlagsToVCGFormat() const
+    int exportFlagsToVCGFormat(this auto&& self)
     {
         int f = 0;
-        if (visited())
+        if (self.visited())
             f |= 0x00000010;
-        if (selected())
+        if (self.selected())
             f |= 0x00000020;
-        if (edgeOnBorder(0))
+        if (self.edgeOnBorder(0))
             f |= 0x00000040;
-        if (edgeOnBorder(1))
+        if (self.edgeOnBorder(1))
             f |= 0x00000080;
-        if (edgeOnBorder(2))
+        if (self.edgeOnBorder(2))
             f |= 0x00000100;
-        if (edgeSelected(0))
+        if (self.edgeSelected(0))
             f |= 0x00008000;
-        if (edgeSelected(1))
+        if (self.edgeSelected(1))
             f |= 0x00010000;
-        if (edgeSelected(2))
+        if (self.edgeSelected(2))
             f |= 0x00020000;
-        if (edgeFaux(0))
+        if (self.edgeFaux(0))
             f |= 0x00040000;
-        if (edgeFaux(1))
+        if (self.edgeFaux(1))
             f |= 0x00080000;
-        if (edgeFaux(2))
+        if (self.edgeFaux(2))
             f |= 0x00100000;
         return f;
     }
 
 protected:
-    BitProxy<FlagsType> deletedBit() { return flags()[DELETED]; }
+    template<typename OtherElement>
+    void importFrom(this auto&& self, const OtherElement& other, bool = true);
 
-    // Component interface functions
-    template<typename Element>
-    void importFrom(const Element& e, bool = true)
+    void setDeleted(this auto&& self, bool b = true)
     {
-        if constexpr (HasBitFlags<Element>) {
-            resetBitFlags();
-            if constexpr (HasTriangleBitFlags<Element>) {
-                flags() = e.flags();
+        self.flags()[DELETED] = b;
+    }
+
+private:
+    decltype(auto) flags(this auto&& self) { return Base::compData(self); }
+};
+
+/* Implementation of member functions */
+
+template<typename OtherElement>
+void TriangleBitFlags::importFrom(
+    this auto&&         self,
+    const OtherElement& other,
+    bool)
+{
+    if constexpr (HasBitFlags<OtherElement>) {
+        const bool wasDeleted = self.deleted();
+        const bool isDeleted  = other.deleted();
+        self.resetBitFlags();
+        if constexpr (HasTriangleBitFlags<OtherElement>) {
+            self.setUnderlyingBitFlags(other.underlyingBitFlags());
+            self.setDeleted(isDeleted);
+        }
+        else {
+            self.setDeleted(isDeleted);
+            self.selected() = other.selected();
+            self.visited()  = other.visited();
+
+            const uint um =
+                std::min(USER_BIT_COUNT, (uint) OtherElement::USER_BIT_COUNT);
+            for (uint i = 0; i < um; ++i) {
+                self.userBit(i) = other.userBit(i);
             }
-            else {
-                // BitFlags
-                deletedBit()  = e.deleted();
-                selected()    = e.selected();
-                visited()     = e.visited();
-                const uint UM = std::min(USER_BIT_COUNT, e.USER_BIT_COUNT);
-                for (uint i = 0; i < UM; ++i)
-                    userBit(i) = e.userBit(i);
-                if constexpr (HasPolygonBitFlags<Element>) {
-                    // PolygonBitFlags
-                    for (uint i = 0; i < 3; ++i) {
-                        edgeOnBorder(i) = e.edgeOnBorder(i);
-                        edgeSelected(i) = e.edgeSelected(i);
-                        edgeFaux(i)     = e.edgeFaux(i);
-                    }
+            if constexpr (HasPolygonBitFlags<OtherElement>) {
+                const uint numEdges = std::min(3u, (uint) other.edgeCount());
+                for (uint i = 0; i < numEdges; ++i) {
+                    self.edgeOnBorder(i) = other.edgeOnBorder(i);
+                    self.edgeSelected(i) = other.edgeSelected(i);
+                    self.edgeVisited(i)  = other.edgeVisited(i);
+                    self.edgeFaux(i)     = other.edgeFaux(i);
                 }
             }
         }
+        if constexpr (CanAdjustContainerElemCount<decltype(self)>) {
+            if (self.isValid()) {
+                self.parentContainer().adjustElemCountOnDeletedChange(
+                    wasDeleted, isDeleted);
+            }
+        }
     }
-
-    void serialize(std::ostream& os) const { flags().serialize(os); }
-
-    void deserialize(std::istream& is) { flags().deserialize(is); }
-
-private:
-    // members that allow to access the flags, trough data (horizontal) or
-    // trough parent (vertical)
-    BitSet<FlagsType>& flags() { return Base::data(); }
-
-    BitSet<FlagsType> flags() const { return Base::data(); }
-};
+}
 
 } // namespace vcl::comp
 

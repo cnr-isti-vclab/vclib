@@ -69,7 +69,7 @@ void loadGltf(
     const LoadSettings&    settings = LoadSettings(),
     LogType&               log      = nullLogger)
 {
-    using ScalarType = MeshType::ScalarType;
+    using ScalarType = ScalarType<MeshType>;
 
     using Matrix44m = std::conditional_t<
         HasTransformMatrix<MeshType>,

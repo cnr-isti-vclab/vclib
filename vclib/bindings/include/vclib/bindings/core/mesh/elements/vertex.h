@@ -8,6 +8,8 @@
 #ifndef VCL_BINDINGS_CORE_MESH_ELEMENTS_VERTEX_H
 #define VCL_BINDINGS_CORE_MESH_ELEMENTS_VERTEX_H
 
+#include "element.h"
+
 #include <vclib/mesh.h>
 
 #include <vclib/bindings/core/mesh/components.h>
@@ -19,11 +21,12 @@ namespace vcl::bind {
 template<MeshConcept MeshType, typename... Options>
 void initVertex(pybind11::class_<MeshType, Options...>& ct)
 {
-    using VertexType = MeshType::VertexType;
+    using VertexType = vcl::VertexType<MeshType>;
 
     // Create the class
     pybind11::class_<VertexType> c(ct, "Vertex");
 
+    initElement(c);
     initComponents(c);
 }
 

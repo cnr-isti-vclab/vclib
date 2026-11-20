@@ -17,7 +17,7 @@
 // 2. Use different weighting algorithms for vertex normals
 // 3. Manipulate normals with transformations
 
-auto meshNormals()
+inline auto meshNormals()
 {
     std::cout << "=== VCLib Example 005: Mesh Normals ===\n\n";
 
@@ -36,7 +36,7 @@ auto meshNormals()
     std::cout << "--------------------\n";
 
     // Calculate face normals
-    vcl::updatePerFaceNormals(mesh);
+    vcl::updateFaceNormals(mesh);
 
     std::cout << "Face normals calculated for all " << mesh.faceCount()
               << " faces\n";
@@ -57,7 +57,7 @@ auto meshNormals()
 
     // 2.1 Basic vertex normals (area weighted)
     std::cout << "\n2.1 Basic Vertex Normals (area weighted):\n";
-    vcl::updatePerVertexNormals(mesh);
+    vcl::updateVertexNormals(mesh);
 
     std::cout << "Basic vertex normals calculated\n";
     std::cout << "First vertex normal: " << mesh.vertex(0).normal() << "\n";
@@ -67,21 +67,21 @@ auto meshNormals()
 
     // 2.2 Vertex normals from face normals (uniform weight)
     std::cout << "\n2.2 Vertex Normals from Face Normals (uniform weight):\n";
-    vcl::updatePerVertexNormalsFromFaceNormals(mesh);
+    vcl::updateVertexNormalsFromFaceNormals(mesh);
 
     auto uniformNormal = mesh.vertex(0).normal();
     std::cout << "Uniform weighted normal: " << uniformNormal << "\n";
 
     // 2.3 Angle weighted vertex normals
     std::cout << "\n2.3 Angle Weighted Vertex Normals:\n";
-    vcl::updatePerVertexNormalsAngleWeighted(mesh);
+    vcl::updateVertexNormalsAngleWeighted(mesh);
 
     auto angleNormal = mesh.vertex(0).normal();
     std::cout << "Angle weighted normal: " << angleNormal << "\n";
 
     // 2.4 Nelson-Max weighted vertex normals
     std::cout << "\n2.4 Nelson-Max Weighted Vertex Normals:\n";
-    vcl::updatePerVertexNormalsNelsonMaxWeighted(mesh);
+    vcl::updateVertexNormalsNelsonMaxWeighted(mesh);
 
     auto nelsonMaxNormal = mesh.vertex(0).normal();
     std::cout << "Nelson-Max weighted normal: " << nelsonMaxNormal << "\n";
@@ -114,7 +114,7 @@ auto meshNormals()
     std::cout << "Original face 0 normal: " << originalFaceNormal << "\n";
 
     // Apply transformation to face normals
-    vcl::multiplyPerFaceNormalsByMatrix(mesh, flipMatrix);
+    vcl::multiplyFaceNormalsByMatrix(mesh, flipMatrix);
 
     auto flippedFaceNormal = mesh.face(0).normal();
     std::cout << "Flipped face 0 normal:  " << flippedFaceNormal << "\n";
@@ -123,7 +123,7 @@ auto meshNormals()
     auto originalVertexNormal = mesh.vertex(0).normal();
     std::cout << "\nOriginal vertex 0 normal: " << originalVertexNormal << "\n";
 
-    vcl::multiplyPerVertexNormalsByMatrix(mesh, flipMatrix);
+    vcl::multiplyVertexNormalsByMatrix(mesh, flipMatrix);
 
     auto flippedVertexNormal = mesh.vertex(0).normal();
     std::cout << "Flipped vertex 0 normal:  " << flippedVertexNormal << "\n";
@@ -143,8 +143,8 @@ auto meshNormals()
               << " vertices, " << polyMesh.faceCount() << " faces\n";
 
     // Calculate normals for polygon mesh
-    vcl::updatePerFaceNormals(polyMesh);
-    vcl::updatePerVertexNormals(polyMesh);
+    vcl::updateFaceNormals(polyMesh);
+    vcl::updateVertexNormals(polyMesh);
 
     std::cout << "Calculated normals for polygon mesh\n";
     std::cout << "First polygon face normal: " << polyMesh.face(0).normal()
@@ -160,22 +160,19 @@ auto meshNormals()
     std::cout << "\nIn this example we learned:\n\n";
 
     std::cout << "1. FACE NORMALS:\n";
-    std::cout
-        << "   - updatePerFaceNormals(): calculates normals for all faces\n";
+    std::cout << "   - updateFaceNormals(): calculates normals for all faces\n";
     std::cout << "   - Face normals are perpendicular to the face surface\n\n";
 
     std::cout << "2. VERTEX NORMALS - DIFFERENT WEIGHTING:\n";
-    std::cout << "   - updatePerVertexNormals(): area-weighted average\n";
-    std::cout
-        << "   - updatePerVertexNormalsFromFaceNormals(): uniform weight\n";
-    std::cout << "   - updatePerVertexNormalsAngleWeighted(): angle-weighted\n";
-    std::cout << "   - updatePerVertexNormalsNelsonMaxWeighted(): Nelson-Max "
+    std::cout << "   - updateVertexNormals(): area-weighted average\n";
+    std::cout << "   - updateVertexNormalsFromFaceNormals(): uniform weight\n";
+    std::cout << "   - updateVertexNormalsAngleWeighted(): angle-weighted\n";
+    std::cout << "   - updateVertexNormalsNelsonMaxWeighted(): Nelson-Max "
                  "method\n\n";
 
     std::cout << "3. NORMAL MANIPULATION:\n";
-    std::cout
-        << "   - multiplyPerFaceNormalsByMatrix(): transform face normals\n";
-    std::cout << "   - multiplyPerVertexNormalsByMatrix(): transform vertex "
+    std::cout << "   - multiplyFaceNormalsByMatrix(): transform face normals\n";
+    std::cout << "   - multiplyVertexNormalsByMatrix(): transform vertex "
                  "normals\n";
     std::cout << "   - Useful for flipping, rotating, or scaling normals\n\n";
 
@@ -193,8 +190,8 @@ auto meshNormals()
     std::cout << "Example completed successfully!\n";
 
     // Restore proper normals before returning
-    vcl::updatePerFaceNormals(mesh);
-    vcl::updatePerVertexNormals(mesh);
+    vcl::updateFaceNormals(mesh);
+    vcl::updateVertexNormals(mesh);
 
     return std::make_tuple(mesh, polyMesh);
 }

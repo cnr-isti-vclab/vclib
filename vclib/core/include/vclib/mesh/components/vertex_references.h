@@ -8,16 +8,22 @@
 #ifndef VCL_MESH_COMPONENTS_VERTEX_REFERENCES_H
 #define VCL_MESH_COMPONENTS_VERTEX_REFERENCES_H
 
-#include "base/predicates.h"
-#include "base/reference_container_component.h"
+#include "base/component_predicates.h"
+#include "base/container_references_component.h"
+
+#include <vclib/mesh/elements/base/base.h>
 
 #include <vclib/base.h>
+
+#include <cassert>
+#include <concepts>
+#include <ranges>
 
 namespace vcl::comp {
 
 /**
  * @brief The VertexReferences class represents a component that stores a
- * container of indices or pointers to vertices that will be part of an Element
+ * container of indices to vertices that will be part of an Element
  * (e.g. Face, Edge, Tetrahedron, etc.).
  *
  * The container of Vertex references is a random access container that could
@@ -38,75 +44,72 @@ namespace vcl::comp {
  *
  * @code{.cpp}
  * uint n = f.vertexCount();
- * auto* v = f.vertex(0);
- * uint vi = f.vertexIndex(0);
+ * auto v = f.vertex(0);
+ * auto vi = f.vertexIndex(0); // Returns IndexType
  * @endcode
  *
+ * ### Dual Index Spaces: Global Vertex Indices vs. Local Corner Positions
+ *
+ * It is essential to distinguish between the two indexing spaces in this
+ * component:
+ *
+ * 1. **Global Vertex Index (`IndexType`)**:
+ *    - The global index or ID of a vertex inside the mesh's `VertexContainer`
+ *      (`m.vertex(vi)`).
+ *    - Typed as `IndexType` (32 or 64 bit).
+ *    - Sentinel value: `NULL_INDEX` (`vcl::NULL_INDEX<IndexType>`).
+ *    - Returned by `vertexIndex(uint i)` and `vertexIndexMod(int i)`.
+ *    - Passed to search functions like `containsVertex(IndexType vi)`,
+ *      `indexOfVertex(IndexType vi)`, and `indexOfEdge(IndexType vi1, IndexType
+ *      vi2)`.
+ *
+ * 2. **Local Corner / Vertex Position (`uint`)**:
+ *    - The 0-based position or slot `i` within this element's vertex list
+ *      (`0 <= i < vertexCount()`, e.g. 0, 1, 2 for a triangle face; 0 to $k-1$
+ * for a polygon).
+ *    - Always typed as `uint` (`uint32_t`).
+ *    - Sentinel value: `vcl::UINT_NULL` (`0xFFFFFFFF`), indicating "not found".
+ *    - Passed as the position `uint i` to `vertex(uint i)`, `vertexIndex(uint
+ * i)`, and `setVertex(uint i, IndexType vi)`.
+ *    - Returned by `indexOfVertex(IndexType vi)` and `indexOfEdge(IndexType
+ * vi1, IndexType vi2)`.
+ *
  * @note This component is usually the main component of an Element, and
- * therefore it cannot be optional.
+ * therefore is automatically enabled in the Element's container and cannot be
+ * disabled.
  *
  * @note Several components are *Tied To Vertex Count*: in other words, they
  * are composed by a container that has the same size of the VertexReferences
  * and, when the VertexReferences container is resized, also the container of
  * these components is resized automatically.
  *
- * @tparam STORE_INDICES: If true, the component will store indices, otherwise
- * pointers to Vertex.
- * @tparam Vertex The type of the vertices.
  * @tparam N: The size of the container, that will represent the number of
  * storable vertices. If negative, the container is dynamic.
- * @tparam ParentElemType: This type is used to get access to the Element that
- * has the component (and, in case, to the Mesh that has the Element). If the
- * component doesn't need to access the Element, this type can be void. Note:
- * if the component is vertical (or optional), this type cannot be void.
- * @tparam VERT: If true, the component will be stored vertically. This argument
- * is considered only if the ElementType is not void.
+ * @tparam Index: The unsigned integral type used to store indices (default
+ * uint).
  *
  * @ingroup components
  */
-template<
-    bool STORE_INDICES,
-    typename Vertex,
-    int N,
-    typename ParentElemType = void,
-    bool VERT               = false>
+template<int N, std::unsigned_integral Index = uint>
 class VertexReferences :
-        public ReferenceContainerComponent<
-            STORE_INDICES,
-            VertexReferences<STORE_INDICES, Vertex, N, ParentElemType, VERT>,
+        public ContainerReferencesComponent<
             CompId::VERTEX_REFERENCES,
-            Vertex,
+            Index,
+            ElemId::VERTEX,
             N,
-            ParentElemType,
-            VERT,
-            false,
             false>
 {
-    using Base = ReferenceContainerComponent<
-        STORE_INDICES,
-        VertexReferences<STORE_INDICES, Vertex, N, ParentElemType, VERT>,
+    using Base = ContainerReferencesComponent<
         CompId::VERTEX_REFERENCES,
-        Vertex,
+        Index,
+        ElemId::VERTEX,
         N,
-        ParentElemType,
-        VERT,
-        false,
         false>;
 
 public:
-    /**
-     * @brief Expose the type of the Vertex.
-     */
-    using VertexType = Vertex;
-
-    /* Iterator Types declaration */
-
-    using VertexIterator           = Base::Iterator;
-    using ConstVertexIterator      = Base::ConstIterator;
-    using ConstVertexIndexIterator = Base::ConstIndexIterator;
-
-    static const bool INDEXED      = STORE_INDICES;
-    static const int  VERTEX_COUNT = Base::SIZE;
+    using IndexType                   = Index;
+    static constexpr int VERTEX_COUNT = N;
+    using Base::NULL_INDEX;
 
     /* Constructors */
 
@@ -114,8 +117,7 @@ public:
      * @brief Empty constructor.
      *
      * If the VertexReferences container size is static, initializes all the
-     * pointers/indices to `nullptr`/`UINT_NULL`, otherwise the container will
-     * be empty.
+     * indices to `NULL_INDEX`, otherwise the container will be empty.
      */
     VertexReferences() = default;
 
@@ -125,226 +127,197 @@ public:
      * @brief Returns the number of vertices of the element.
      * @return The number of vertices of the element.
      */
-    uint vertexCount() const { return Base::size(); }
+    uint vertexCount(this auto&& self) { return Base::container(self).size(); }
 
     /**
-     * @brief Returns the pointer to the i-th vertex of the element.
+     * @brief Returns the i-th vertex of the element.
      *
      * @param[in] i: the position of the required vertex in this container.
-     * @return The pointer i-th vertex of the element.
+     * @return The i-th vertex of the element.
      */
-    Vertex* vertex(uint i) { return Base::element(i); }
+    decltype(auto) vertex(this auto&& self, uint i)
+    {
+        assert(i < self.vertexCount());
+        return Base::refElement(self, i);
+    }
 
     /**
-     * @brief Returns a const pointer to the i-th vertex of the element.
-     * @param[in] i: the position of the required vertex in this container;
-     * the value must be between 0 and the number of vertices.
-     * @return The pointer to the i-th vertex of the element.
+     * @brief Returns the global index in the VertexContainer of the i-th vertex
+     * of the element.
+     * @param[in] i: the 0-based local corner/position of the required vertex in
+     * this container (0 <= i < vertexCount()).
+     * @return The global index (IndexType) of the i-th vertex of the element.
      */
-    const Vertex* vertex(uint i) const { return Base::element(i); }
+    IndexType vertexIndex(this auto&& self, uint i)
+    {
+        assert(i < self.vertexCount());
+        return self.vertexIndices()[i];
+    }
+
+    /**
+     * @brief Returns  the i-th vertex of the element, using as index the modulo
+     * between i and the number of vertices. Works also for negative numbers.
+     *
+     * @param[in] i: the position of the required vertex in this container,
+     * w.r.t. position 0; value is modularized on vertexCount().
+     * @return The required vertex of the element.
+     */
+    decltype(auto) vertexMod(this auto&& self, int i)
+    {
+        int n = self.vertexCount();
+        assert(n > 0);
+        return self.vertex(((i % n) + n) % n);
+    }
 
     /**
      * @brief Returns the index in the vertex container of the i-th vertex of
-     * the element.
-     * @param[in] i: the position of the required vertex in this container.
-     * @return The index of the i-th vertex of the element.
-     */
-    uint vertexIndex(uint i) const { return Base::elementIndex(i); }
-
-    /**
-     * @brief Returns a reference of the pointer to the i-th vertex of the
-     * element, but using as index the module between i and the number of
-     * vertices. You can use this function if you need to get the "next vertex
-     * after position k", without check if it is less than the number of
-     * vertices. Works also for negative numbers:
-     *
-     * @code{.cpp}
-     * k = pos; // some position of a vertex
-     * auto* next = e.vertexMod(k+1); // the vertex next to k, that may also
-     *                                // be at pos 0
-     * auto* last = e.vertexMod(-1); // the vertex in position vertexCount()-1
-     * @endcode
+     * the element, using as index the modulo between i and the number of
+     * vertices. Works also for negative numbers.
      *
      * @param[in] i: the position of the required vertex in this container,
-     * w.r.t. the position 0; value is modularized on vertexCount().
-     * @return The pointer to the required vertex of the element.
-     */
-    Vertex* vertexMod(int i) { return Base::elementMod(i); }
-
-    /**
-     * @brief Same of vertexMod, but returns a const pointer to the vertex.
-     * @param[in] i: the position of the required vertex in this container,
-     * w.r.t. the position 0; value is modularized on vertexCount().
-     * @return The pointer to the required vertex of the element.
-     */
-    const Vertex* vertexMod(int i) const { return Base::elementMod(i); }
-
-    /**
-     * @brief Returns the index in the vertex container of the i-th vertex of
-     * the element, but using as index the module between i and the number of
-     * vertices. You can use this function if you need to get the "index of the
-     * vertex next to position k", without check if it is less than the number
-     * of vertices. Works also for negative numbers:
-     *
-     * @code{.cpp}
-     * k = pos; // some position of a vertex
-     * auto idx = e.vertexIndexMod(k+1); // the index of the vertex next to k,
-     *                                   // that may also be at pos 0
-     * auto lastIdx = e.vertexIndexMod(-1); // the index of the vertex in
-     *                                      // position vertexCount()-1
-     * @endcode
-     *
-     * @param[in] i: the position of the required vertex in this container,
-     * w.r.t. the position 0; value is modularized on vertexCount().
+     * w.r.t. position 0; value is modularized on vertexCount().
      * @return The index of the required vertex of the element.
      */
-    uint vertexIndexMod(int i) const { return Base::elementIndexMod(i); }
+    IndexType vertexIndexMod(this auto&& self, int i)
+    {
+        int n = self.vertexCount();
+        assert(n > 0);
+        return self.vertexIndex(((i % n) + n) % n);
+    }
 
     /**
      * @brief Sets the i-th vertex of the element.
      * @param[in] i: the position in this container on which set the vertex; the
      * value must be between 0 and the number of vertices.
-     * @param[in] v: The pointer to the vertex to set to the element.
+     * @param[in] vi: The index in the vertex container of the vertex to set.
      */
-    void setVertex(uint i, Vertex* v) { Base::setElement(i, v); }
+    void setVertex(this auto&& self, uint i, IndexType vi)
+    {
+        assert(i < self.vertexCount());
+        Base::container(self)[i] = vi;
+    }
 
     /**
      * @brief Sets the i-th vertex of the element.
      * @param[in] i: the position in this container on which set the vertex; the
      * value must be between 0 and the number of vertices.
-     * @param[in] vi: The index in the vertex container of the vertex to set.
+     * @param[in] v: The vertex to set to the element.
      */
-    void setVertex(uint i, uint vi) { Base::setElement(i, vi); }
-
-    /**
-     * @brief Sets the vertex pointed by the iterator.
-     * @param[in] it: the iterator in this container on which set the vertex;
-     * the value must be between begin() and end().
-     * @param[in] v: The pointer to the vertex to set to the element.
-     */
-    void setVertex(ConstVertexIterator it, Vertex* v)
+    template<typename V>
+    void setVertex(this auto&& self, uint i, const V& v)
+        requires (!std::unsigned_integral<V>)
     {
-        Base::setElement(it, v);
+        assert(i < self.vertexCount());
+        if constexpr (requires { v.index(); }) {
+            Base::container(self)[i] = v.index();
+        }
+        else {
+            Base::container(self)[i] = v;
+        }
     }
 
     /**
-     * @brief Sets the vertex pointed by the iterator.
-     * @param[in] it: the iterator in this container on which set the vertex;
-     * the value must be between begin() and end().
+     * @brief Sets the index of the i-th vertex of the element. Alias for
+     * setVertex.
+     * @param[in] i: the position in this container on which set the vertex
+     * index.
      * @param[in] vi: The index in the vertex container of the vertex to set.
      */
-    void setVertex(ConstVertexIterator it, uint vi)
+    void setVertexIndex(this auto&& self, uint i, IndexType vi)
     {
-        Base::setElement(it, vi);
+        self.setVertex(i, vi);
     }
 
     /**
-     * @brief Sets the vertex pointed by the iterator.
-     * @param[in] it: iterator in this container on which set the vertex; the
-     * value must be between begin() and end().
-     * @param[in] v: The pointer to the vertex to set to the element.
+     * @brief Sets the i-th vertex of the element, using as index the modulo
+     * between i and the number of vertices. Works also for negative numbers.
+     *
+     * @param[in] i: the position in this container w.r.t. position 0 on
+     * which to set the vertex; value is modularized on vertexCount().
+     * @param[in] vi: The index in the vertex container of the vertex to set.
      */
-    void setVertex(ConstVertexIndexIterator it, Vertex* v)
+    void setVertexMod(this auto&& self, int i, IndexType vi)
     {
-        Base::setElement(it, v);
+        int n = self.vertexCount();
+        assert(n > 0);
+        self.setVertex(((i % n) + n) % n, vi);
     }
 
     /**
-     * @brief Sets the vertex pointed by the iterator.
-     * @param[in] it: the iterator in this container on which set the vertex;
-     * the value must be between begin() and end().
-     * @param[in] vi: The index in the vertex container of the vertex to set.
+     * @brief Sets the i-th vertex of the element, using as index the modulo
+     * between i and the number of vertices. Works also for negative numbers.
+     *
+     * @param[in] i: the position in this container w.r.t. position 0 on
+     * which to set the vertex; value is modularized on vertexCount().
+     * @param[in] v: The vertex to set to the element.
      */
-    void setVertex(ConstVertexIndexIterator it, uint vi)
+    template<typename V>
+    void setVertexMod(this auto&& self, int i, const V& v)
+        requires (!std::unsigned_integral<V>)
     {
-        Base::setElement(it, vi);
+        int n = self.vertexCount();
+        assert(n > 0);
+        self.setVertex(((i % n) + n) % n, v);
     }
 
     /**
-     * @brief Sets the i-th vertex of the element, but using as index the module
-     * between i and the number of vertices. You can use this function if you
-     * need to set the "next vertex after position k", without check if it is
-     * less than the number of vertices. Works also for negative numbers:
-     *
-     * @code{.cpp}
-     * k = pos; // some position of a vertex
-     * e.setVertexMod(k+1, aVertex); // set the vertex next to k, that may also
-     *                               // be at pos 0
-     * e.setVertexMod(-1, aVertex); // set the vertex in position
-     *                              // vertexCount()-1
-     * @endcode
-     *
-     * @param[in] i: the position in this container w.r.t. the position 0 on
-     * which set the vertex; value is modularized on vertexCount().
-     * @param[in] v: The pointer to the vertex to set to the element.
-     */
-    void setVertexMod(int i, Vertex* v) { Base::setElementMod(i, v); }
-
-    /**
-     * @brief Sets the i-th vertex of the element, but using as index the module
-     * between i and the number of vertices. You can use this function if you
-     * need to set the "next vertex after position k", without check if it is
-     * less than the number of vertices. Works also for negative numbers:
-     *
-     * @code{.cpp}
-     * k = pos; // some position of a vertex
-     * e.setVertexMod(k+1, aVertInd); // set the vertex next to k, that may also
-     *                               // be at pos 0
-     * e.setVertexMod(-1, aVertInd); // set the vertex in position
-     *                              // vertexCount()-1
-     * @endcode
-     *
-     * @param[in] i: the position in this container w.r.t. the position 0 on
-     * which set the vertex; value is modularized on vertexCount().
-     * @param[in] vi: The index in the vertex container of the vertex to set.
-     */
-    void setVertexMod(int i, uint vi) { Base::setElementMod(i, vi); }
-
-    /**
-     * @brief Sets all the vertex pointers of the element.
+     * @brief Sets all the vertices of the element from a range of vertices or
+     * indices.
      *
      * If the size of the container is static, the size of the input range must
-     * be the same one of the container.
+     * match N. If dynamic, the container is resized accordingly.
      *
-     * @tparam Rng: The type of the range of vertex pointers to set. The value
-     * type of the range must be convertible to a pointer to a Vertex.
-     *
-     * @param[in] r: range of vertex pointers to set.
+     * @tparam Rng: The type of the range of vertices or vertex indices.
+     * @param[in] rng: range of vertices or vertex indices to set.
      */
-    template<Range Rng>
-    void setVertices(Rng&& r) requires InputRange<Rng, Vertex*>
+    template<std::ranges::input_range Rng>
+    void setVertices(this auto&& self, Rng&& rng)
     {
-        Base::setElements(r);
+        if constexpr (N >= 0) {
+            Base::setRefs(self, std::forward<Rng>(rng));
+        }
+        else {
+            if constexpr (std::ranges::sized_range<Rng>) {
+                self.resizeVertices(std::ranges::size(rng));
+                uint i = 0;
+                for (auto&& v : rng) {
+                    self.setVertex(i++, v);
+                }
+            }
+            else if constexpr (std::ranges::forward_range<Rng>) {
+                self.resizeVertices(std::ranges::distance(rng));
+                uint i = 0;
+                for (auto&& v : rng) {
+                    self.setVertex(i++, v);
+                }
+            }
+            else {
+                self.resizeVertices(0);
+                for (auto&& v : rng) {
+                    self.pushVertex(v);
+                }
+            }
+        }
     }
 
     /**
-     * @brief Sets all the vertex pointers of the element.
+     * @brief Sets all the vertices of the element from a variadic list of
+     * vertices or indices.
      *
-     * If the size of the container is static, the size of the input range must
-     * be the same one of the container.
-     *
-     * @tparam Rng: The type of the range of vertex indices to set. The value
-     * type of the range must be convertible to unsigned integer.
-     *
-     * @param[in] r: range of vertex indices to set.
+     * @param[in] args: The vertices or vertex indices to set.
      */
-    template<Range Rng>
-    void setVertices(Rng&& r) requires InputRange<Rng, uint>
+    template<typename... Args>
+    void setVertices(this auto&& self, const Args&... args)
+        requires (sizeof...(Args) > 1 && (sizeof...(Args) == N || N < 0))
     {
-        Base::setElements(r);
-    }
-
-    /**
-     * @brief Returns `true` if the container of vertices contains the given
-     * vertex, `false` otherwise.
-     *
-     * @param[in] v: the pointer to the vertex to search.
-     * @return `true` if the container of vertices contains the given vertex,
-     * `false` otherwise.
-     */
-    bool containsVertex(const Vertex* v) const
-    {
-        return Base::containsElement(v);
+        if constexpr (N >= 0) {
+            Base::setRefs(self, args...);
+        }
+        else {
+            self.resizeVertices(sizeof...(Args));
+            uint i = 0;
+            (self.setVertex(i++, args), ...);
+        }
     }
 
     /**
@@ -355,384 +328,298 @@ public:
      * @return `true` if the container of vertices contains the vertex with the
      * given index, `false` otherwise.
      */
-    bool containsVertex(uint vi) const { return Base::containsElement(vi); }
+    bool containsVertex(this auto&& self, IndexType vi)
+    {
+        return Base::container(self).contains(vi);
+    }
 
     /**
-     * @brief Returns the index of the given vertex in the container of
-     * the element. If the given vertex is not in the container, returns
-     * UINT_NULL.
+     * @brief Returns `true` if the container of vertices contains the given
+     * vertex, `false` otherwise.
      *
-     * @param[in] v: the pointer to the vertex to search.
-     * @return the index of the given vertex, or UINT_NULL if it is not
+     * @param[in] v: the vertex to search.
+     * @return `true` if the container of vertices contains the given vertex,
+     * `false` otherwise.
+     */
+    template<typename V>
+    bool containsVertex(this auto&& self, const V& v)
+        requires (!std::unsigned_integral<V>)
+    {
+        if constexpr (requires { v.index(); }) {
+            return self.containsVertex(v.index());
+        }
+        else {
+            return self.containsVertex(static_cast<IndexType>(v));
+        }
+    }
+
+    /**
+     * @brief Returns the 0-based local corner/position in this container of the
+     * vertex with the given global index. If not found, returns UINT_NULL.
+     *
+     * @param[in] vi: the global index (IndexType) of the vertex to search.
+     * @return The 0-based local position (uint) in this container, or UINT_NULL
+     * if not found.
+     */
+    uint indexOfVertex(this auto&& self, IndexType vi)
+    {
+        return Base::container(self).indexOf(vi);
+    }
+
+    /**
+     * @brief Returns the position in this container of the given vertex. If
+     * not found, returns UINT_NULL.
+     *
+     * @param[in] v: the vertex to search.
+     * @return the position in this container of the vertex, or UINT_NULL if not
      * found.
      */
-    uint indexOfVertex(const Vertex* v) const
+    template<typename V>
+    uint indexOfVertex(this auto&& self, const V& v)
+        requires (!std::unsigned_integral<V>)
     {
-        return Base::indexOfElement(v);
-    }
-
-    /**
-     * @brief Returns the index of the vertex with the given index in the
-     * container of the element. If the vertex with the given index is not in
-     * the container, returns UINT_NULL.
-     *
-     * @param[in] vi: the index of the vertex to search.
-     * @return the index of the vertex with the given index, or UINT_NULL if it
-     * is not found.
-     */
-    uint indexOfVertex(uint vi) const { return Base::indexOfElement(vi); }
-
-    /**
-     * @brief Returns the index of the given edge composed of the two vertices
-     * v1 and v2 in the container of the element.
-     *
-     * The order of the two vertices is not important. The index of the edge
-     * corresponds to the index of the first vertex found in the container. If
-     * the edge formed by the two vertices is not in the container, returns
-     * UINT_NULL.
-     *
-     * @param[in] v1: the pointer to the first vertex that compose the edge to
-     * search.
-     * @param[in] v2: the pointer to the second vertex that compose the edge to
-     * search.
-     * @return the index of the edge composed of v1 and v2, or UINT_NULL if it
-     * is not found.
-     */
-    uint indexOfEdge(const Vertex* v1, const Vertex* v2) const
-    {
-        if constexpr (STORE_INDICES) {
-            return indexOfEdge(
-                Base::indexFromPointer(v1), Base::indexFromPointer(v2));
+        if constexpr (requires { v.index(); }) {
+            return self.indexOfVertex(v.index());
         }
         else {
-            uint vid = indexOfVertex(v1);
-            if (vid == UINT_NULL) {
-                return UINT_NULL;
-            }
-            else if (vertexMod(vid + 1) == v2) {
-                return vid;
-            }
-            else if (vertexMod((int) vid - 1) == v2) {
-                int n = vertexCount(); // n must be int to avoid unwanted casts
-                return (((int) vid - 1) % n + n) % n;
-            }
-            else {
-                return UINT_NULL;
-            }
+            return self.indexOfVertex(static_cast<IndexType>(v));
         }
     }
 
     /**
-     * @brief Returns the index of the edge composed of the two vertices with
-     * the given indices in the container of the element.
+     * @brief Returns the 0-based local index of the edge composed of the two
+     * vertices with the given global indices in this element.
      *
-     * The order of the two vertices is not important. The index of the edge
-     * corresponds to the index of the first vertex found in the container. If
-     * the edge formed by the two vertices is not in the container, returns
-     * UINT_NULL.
+     * The order of the two vertices is not important. The local index of the
+     * edge corresponds to the local position of the first vertex found in the
+     * container (i.e. edge i connects vertex i and vertex (i+1)%n). If the edge
+     * is not found, returns UINT_NULL.
      *
-     * @param[in] vi1: the index of the first vertex that compose the edge to
-     * search.
-     * @param[in] vi2: the index of the second vertex that compose the edge to
-     * search.
-     * @return the index of the edge composed of the vertices with the given
-     * indices, or UINT_NULL if it is not found.
+     * @param[in] vi1: the global index (IndexType) of the first vertex of the
+     * edge.
+     * @param[in] vi2: the global index (IndexType) of the second vertex of the
+     * edge.
+     * @return The 0-based local edge position (uint), or UINT_NULL if not
+     * found.
      */
-    uint indexOfEdge(uint vi1, uint vi2) const
+    uint indexOfEdge(this auto&& self, IndexType vi1, IndexType vi2)
     {
-        if constexpr (STORE_INDICES) {
-            uint vid = indexOfVertex(vi1);
-            if (vid == UINT_NULL) {
-                return UINT_NULL;
-            }
-            else if (vertexIndexMod(vid + 1) == vi2) {
-                return vid;
-            }
-            else if (vertexIndexMod((int) vid - 1) == vi2) {
-                int n = vertexCount(); // n must be int to avoid unwanted casts
-                return (((int) vid - 1) % n + n) % n;
-            }
-            else {
-                return UINT_NULL;
-            }
+        uint vid = self.indexOfVertex(vi1);
+        if (vid == UINT_NULL) {
+            return UINT_NULL;
+        }
+        else if (self.vertexIndexMod(vid + 1) == vi2) {
+            return vid;
+        }
+        else if (self.vertexIndexMod(static_cast<int>(vid) - 1) == vi2) {
+            int n = self.vertexCount();
+            return ((static_cast<int>(vid) - 1) % n + n) % n;
         }
         else {
-            return indexOfEdge(
-                Base::elemFromParent(vi1), Base::elemFromParent(vi2));
+            return UINT_NULL;
         }
+    }
+
+    /**
+     * @brief Returns the index of the edge composed of the two given vertices
+     * in this element.
+     *
+     * @param[in] v1: the first vertex of the edge.
+     * @param[in] v2: the second vertex of the edge.
+     * @return the index of the edge, or UINT_NULL if not found.
+     */
+    template<typename V1, typename V2>
+    uint indexOfEdge(this auto&& self, const V1& v1, const V2& v2)
+        requires (!std::unsigned_integral<V1> || !std::unsigned_integral<V2>)
+    {
+        auto toIdx = [](const auto& v) -> IndexType {
+            if constexpr (requires { v.index(); }) {
+                return v.index();
+            }
+            else {
+                return static_cast<IndexType>(v);
+            }
+        };
+        return self.indexOfEdge(toIdx(v1), toIdx(v2));
     }
 
     /* Member functions specific for dynamic vector of refs */
 
     /**
-     * @brief Resize the container of the vertices to the given size.
-     * @note This function is available only if the container of the Vertices
-     * has dynamic size.
+     * @brief Resizes the container of vertices to the given size.
+     * @note Available only if the container has dynamic size (N < 0).
      * @param[in] n: The new size of the vertices container.
      */
-    void resizeVertices(uint n) requires (N < 0) { Base::resize(n); }
-
-    /**
-     * @brief Pushes in the back of the container the given vertex.
-     * @note This function is available only if the container of the Vertices
-     * has dynamic size.
-     * @param[in] v: The pointer to the vertex to push in the back of the
-     * container.
-     */
-    void pushVertex(Vertex* v) requires (N < 0) { Base::pushBack(v); }
-
-    /**
-     * @brief Pushes in the back of the container the given vertex.
-     * @note This function is available only if the container of the Vertices
-     * has dynamic size.
-     * @param[in] vi: The index to the vertex to push in the back of the
-     * container.
-     */
-    void pushVertex(uint vi) requires (N < 0) { Base::pushBack(vi); }
-
-    /**
-     * @brief Inserts the given vertex in the container at the given position.
-     * @note This function is available only if the container of the Vertices
-     * has dynamic size.
-     * @param[in] i: The position in this container where to insert the vertex.
-     * @param[in] v: The pointer to the vertex to insert in the container.
-     */
-    void insertVertex(uint i, Vertex* v) requires (N < 0)
+    void resizeVertices(this auto&& self, uint n) requires (N < 0)
     {
-        Base::insert(i, v);
+        Base::container(self).resize(n);
+        self.parentContainer().resizeTTVCComponents(self.index(), n);
     }
 
     /**
-     * @brief Inserts the vertex with the given index in the container at the
-     * given position.
-     * @note This function is available only if the container of the Vertices
-     * has dynamic size.
-     * @param[in] i: The position in this container where to insert the vertex.
-     * @param[in] vi: The index of the vertex to insert in the container.
+     * @brief Pushes in the back of the container the given vertex index.
+     * @note Available only if the container has dynamic size (N < 0).
+     * @param[in] vi: The index of the vertex to push back.
      */
-    void insertVertex(uint i, uint vi) requires (N < 0) { Base::insert(i, vi); }
+    void pushVertex(this auto&& self, IndexType vi) requires (N < 0)
+    {
+        Base::container(self).pushBack(vi);
+        self.parentContainer().pushBackTTVCComponents(self.index());
+    }
 
     /**
-     * @brief Removes the vertex at the given position from the container.
-     * @note This function is available only if the container of the Vertices
-     * has dynamic size.
-     * @param[in] i: The position of the vertex to remove from this container.
+     * @brief Pushes in the back of the container the given vertex.
+     * @note Available only if the container has dynamic size (N < 0).
+     * @param[in] v: The vertex to push back.
      */
-    void eraseVertex(uint i) requires (N < 0) { Base::erase(i); }
+    template<typename V>
+    void pushVertex(this auto&& self, const V& v)
+        requires (N < 0 && !std::unsigned_integral<V>)
+    {
+        if constexpr (requires { v.index(); }) {
+            self.pushVertex(v.index());
+        }
+        else {
+            self.pushVertex(static_cast<IndexType>(v));
+        }
+    }
+
+    /**
+     * @brief Inserts the given vertex index at position i.
+     * @note Available only if the container has dynamic size (N < 0).
+     * @param[in] i: The position in this container where to insert the vertex.
+     * @param[in] vi: The index of the vertex to insert.
+     */
+    void insertVertex(this auto&& self, uint i, IndexType vi) requires (N < 0)
+    {
+        Base::container(self).insert(i, vi);
+        self.parentContainer().insertTTVCComponents(self.index(), i);
+    }
+
+    /**
+     * @brief Inserts the given vertex at position i.
+     * @note Available only if the container has dynamic size (N < 0).
+     * @param[in] i: The position in this container where to insert the vertex.
+     * @param[in] v: The vertex to insert.
+     */
+    template<typename V>
+    void insertVertex(this auto&& self, uint i, const V& v)
+        requires (N < 0 && !std::unsigned_integral<V>)
+    {
+        if constexpr (requires { v.index(); }) {
+            self.insertVertex(i, v.index());
+        }
+        else {
+            self.insertVertex(i, static_cast<IndexType>(v));
+        }
+    }
+
+    /**
+     * @brief Removes the vertex at position i from the container.
+     * @note Available only if the container has dynamic size (N < 0).
+     * @param[in] i: The position of the vertex to remove.
+     */
+    void eraseVertex(this auto&& self, uint i) requires (N < 0)
+    {
+        Base::container(self).erase(i);
+        self.parentContainer().eraseTTVCComponents(self.index(), i);
+    }
 
     /**
      * @brief Clears the container of vertices, making it empty.
-     * @note This function is available only if the container of the Vertices
-     * has dynamic size.
+     * @note Available only if the container has dynamic size (N < 0).
      */
-    void clearVertices() requires (N < 0) { Base::clear(); }
-
-    /* Iterator Member functions */
-
-    /**
-     * @brief Returns an iterator to the first vertex in the container of
-     * this component.
-     *
-     * @return an iterator pointing to the begin of this container.
-     */
-    VertexIterator vertexBegin() { return Base::elementBegin(); }
-
-    /**
-     * @brief Returns an iterator to the end of the container of this
-     * component.
-     *
-     * @return an iterator pointing to the end of this container.
-     */
-    VertexIterator vertexEnd() { return Base::elementEnd(); }
-
-    /**
-     * @brief Returns a const iterator to the first vertex in the container of
-     * this component.
-     *
-     * @return an iterator pointing to the begin of this container.
-     */
-    ConstVertexIterator vertexBegin() const { return Base::elementBegin(); }
-
-    /**
-     * @brief Returns a const iterator to the end of the container of this
-     * component.
-     *
-     * @return an iterator pointing to the end of this container.
-     */
-    ConstVertexIterator vertexEnd() const { return Base::elementEnd(); }
-
-    /**
-     * @brief Returns an iterator to the first vertex index in the container of
-     * this component.
-     *
-     * @return an iterator pointing to the begin of the vertex indices.
-     */
-    ConstVertexIndexIterator vertexIndexBegin() const
+    void clearVertices(this auto&& self) requires (N < 0)
     {
-        return Base::elementIndexBegin();
+        Base::container(self).clear();
+        self.parentContainer().clearTTVCComponents(self.index());
     }
 
-    /**
-     * @brief Returns an iterator to the end of the container of this component.
-     *
-     * @return an iterator pointing to the end of the vertex indices.
-     */
-    ConstVertexIndexIterator vertexIndexEnd() const
+    decltype(auto) vertices(this auto&& self)
     {
-        return Base::elementIndexEnd();
+        return Base::refElements(self);
     }
 
-    /**
-     * @brief Returns a lightweight view object that stores the begin and
-     * end iterators of the container of vertices of the element. The view
-     * object exposes the iterators trough the `begin()` and `end()` member
-     * functions, and therefore the returned object can be used in range-based
-     * for loops:
-     *
-     * @code{.cpp}
-     * for (auto* vertex : el.vertices()) {
-     *     // Do something with vertex...
-     * }
-     * @endcode
-     *
-     * @return a lightweight view object that can be used in range-based for
-     * loops to iterate over vertices.
-     */
-    View<VertexIterator> vertices() { return Base::elements(); }
-
-    /**
-     * @brief Returns a lightweight const view object that stores the begin and
-     * end iterators of the container of vertices of the element. The view
-     * object exposes the iterators trough the `begin()` and `end()` member
-     * functions, and therefore the returned object can be used in range-based
-     * for loops:
-     *
-     * @code{.cpp}
-     * for (const auto* vertex : el.vertices()) {
-     *     // Do something read-only with vertex...
-     * }
-     * @endcode
-     *
-     * @return a lightweight view object that can be used in range-based for
-     * loops to iterate over vertices.
-     */
-    View<ConstVertexIterator> vertices() const { return Base::elements(); }
-
-    /**
-     * @brief Returns a lightweight view object that stores the begin and end
-     * iterators of the container of vertex indices of the element. The view
-     * object exposes the iterators trough the `begin()` and `end()` member
-     * functions, and therefore the returned object can be used in range-based
-     * for loops:
-     *
-     * @code{.cpp}
-     * for (uint vid : el.vertexIndices()) {
-     *     // Do something with vertex index...
-     * }
-     * @endcode
-     *
-     * @return a lightweight view object that can be used in range-based for
-     * loops to iterate over vertex indices.
-     */
-    View<ConstVertexIndexIterator> vertexIndices() const
+    auto vertexIndices(this auto&& self)
     {
-        return Base::elementIndices();
+        return vcl::View(
+            Base::container(self).begin(), Base::container(self).end());
     }
 
 protected:
-    // Component interface functions
-    template<typename Element>
-    void importFrom(const Element& e, bool importRefs = true);
-
-    void serialize(std::ostream& os) const
-    {
-        // regardless of the type of the container (indices or pointers), the
-        // serialization is always done using the indices
-        if constexpr (N < 0) {
-            vcl::serialize(os, vertexCount());
-        }
-        for (uint i = 0; i < vertexCount(); ++i) {
-            vcl::serialize(os, vertexIndex(i));
-        }
-    }
-
-    void deserialize(std::istream& is)
-    {
-        if constexpr (N < 0) {
-            uint n;
-            vcl::deserialize(is, n);
-            resizeVertices(n);
-        }
-        for (uint i = 0; i < vertexCount(); ++i) {
-            uint vi;
-            vcl::deserialize(is, vi);
-            setVertex(i, vi);
-        }
-    }
-
-private:
-    template<typename Element>
-    void importIndicesFrom(const Element& e)
-    {
-        for (uint i = 0; i < e.vertexCount(); ++i) {
-            setVertex(i, e.vertexIndex(i));
-        }
-    }
+    template<typename OtherElement>
+    void importFrom(
+        this auto&&         self,
+        const OtherElement& other,
+        bool                importRefs = true);
 };
 
-/* concept */
+/* concepts */
 
 /**
- * @brief A concept that checks whether a type T (that should be a Element) has
- * the VertexReferences component (inherits from it).
- *
- * The concept is satisfied if T is a class that inherits from
- * vcl::comp::VertexReferences, with any template arguments.
- *
- * @tparam T: The type to be tested for conformity to the HasVertexReferences.
- *
- * @ingroup components_concepts
+ * @brief Concept that checks whether a type T (which can be a TypeWrapper of
+ * components, an ElementProxy, an ElementContainer, or a Mesh) has the
+ * VertexReferences component (COMP_ID = CompId::VERTEX_REFERENCES).
  */
 template<typename T>
-concept HasVertexReferences =
-    BTITB::IsDerivedFromSpecializationOfV<T, VertexReferences>;
+concept HasVertexReferences = HasComponent<CompId::VERTEX_REFERENCES, T>;
 
-/* importFrom function */
+template<typename T>
+concept HasStaticVertexReferences =
+    HasComponent<CompId::VERTEX_REFERENCES, T> &&
+    (ComponentTypeT<CompId::VERTEX_REFERENCES, T>::VERTEX_COUNT > 0);
 
-template<
-    bool STORE_INDICES,
-    typename Vertex,
-    int N,
-    typename ParentElemType,
-    bool VERT>
-template<typename Element>
-void VertexReferences<STORE_INDICES, Vertex, N, ParentElemType, VERT>::
-    importFrom(const Element& e, bool importRefs)
+template<typename T>
+concept HasEdgeVertexReferences =
+    HasComponent<CompId::VERTEX_REFERENCES, T> &&
+    (ComponentTypeT<CompId::VERTEX_REFERENCES, T>::VERTEX_COUNT == 2);
+
+template<typename T>
+concept HasTriangleVertexReferences =
+    HasComponent<CompId::VERTEX_REFERENCES, T> &&
+    (ComponentTypeT<CompId::VERTEX_REFERENCES, T>::VERTEX_COUNT == 3);
+
+template<typename T>
+concept HasPolygonVertexReferences =
+    HasComponent<CompId::VERTEX_REFERENCES, T> &&
+    (ComponentTypeT<CompId::VERTEX_REFERENCES, T>::VERTEX_COUNT == -1);
+
+/* Implementation of member functions */
+
+template<int N, std::unsigned_integral Index>
+template<typename OtherElement>
+void VertexReferences<N, Index>::importFrom(
+    this auto&&         self,
+    const OtherElement& other,
+    bool                importRefs)
 {
     if (importRefs) {
-        if constexpr (HasVertexReferences<Element>) {
+        if constexpr (HasVertexReferences<OtherElement>) {
+            using OtherComp =
+                ComponentTypeT<CompId::VERTEX_REFERENCES, OtherElement>;
+            constexpr int OTHER_N = OtherComp::VERTEX_COUNT;
+
             if constexpr (N > 0) {
-                // same size non-polygonal faces
-                if constexpr (N == Element::VERTEX_COUNT) {
-                    importIndicesFrom(e);
-                }
-                // from polygonal to fixed size, but the polygon size == the
-                // fixed face size
-                else if constexpr (Element::VERTEX_COUNT < 0) {
-                    if (e.vertexCount() == N) {
-                        importIndicesFrom(e);
+                if constexpr (N == OTHER_N) {
+                    for (uint i = 0; i < N; ++i) {
+                        self.setVertex(
+                            i, Base::castIndex(other.vertexIndex(i)));
                     }
                 }
-                else {
-                    // do not import in this case: cannot import from a face
-                    // of different size
+                else if constexpr (OTHER_N < 0) {
+                    if (other.vertexCount() == N) {
+                        for (uint i = 0; i < N; ++i) {
+                            self.setVertex(
+                                i, Base::castIndex(other.vertexIndex(i)));
+                        }
+                    }
                 }
             }
             else {
-                // from fixed to polygonal size: need to resize first, then
-                // import
-                resizeVertices(e.vertexCount());
-                importIndicesFrom(e);
+                self.resizeVertices(other.vertexCount());
+                for (uint i = 0; i < other.vertexCount(); ++i) {
+                    self.setVertex(i, Base::castIndex(other.vertexIndex(i)));
+                }
             }
         }
     }

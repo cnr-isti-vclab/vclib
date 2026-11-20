@@ -14,7 +14,7 @@ int main(int argc, char** argv)
     auto meshes = polymeshSpecifics();
 
     std::apply(
-        [](auto&&... args) { (vcl::updatePerVertexAndFaceNormals(args), ...); },
+        [](auto&&... args) { (vcl::updateVertexAndFaceNormals(args), ...); },
         meshes);
 
     return std::apply(

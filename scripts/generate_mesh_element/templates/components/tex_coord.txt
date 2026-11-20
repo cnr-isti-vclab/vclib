@@ -1,0 +1,17 @@
+//@concepts
+template<typename T>
+concept HasTexCoord = comp::HasTexCoord<T>;
+template<typename T>
+concept HasOptionalTexCoord = comp::HasOptionalTexCoord<T>;
+//@aliases
+/* Port TexCoord class into %EL_NS% namespace */
+template<typename ScalarType, bool OPT = false>
+using TexCoord = comp::TexCoord<ScalarType, OPT>;
+
+template<typename ScalarType>
+using OptionalTexCoord = comp::TexCoord<ScalarType, true>;
+
+using TexCoordf         = comp::TexCoordf<false>;
+using TexCoordd         = comp::TexCoordd<false>;
+using OptionalTexCoordf = comp::TexCoordf<true>;
+using OptionalTexCoordd = comp::TexCoordd<true>;

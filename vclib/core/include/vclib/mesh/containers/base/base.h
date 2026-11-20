@@ -8,152 +8,83 @@
 #ifndef VCL_MESH_CONTAINERS_BASE_BASE_H
 #define VCL_MESH_CONTAINERS_BASE_BASE_H
 
-#include <vclib/mesh/components/concepts/component.h>
+#include "../../elements/base/base.h"
 
 #include <vclib/base.h>
+#include <vclib/space/core.h>
 
-namespace vcl {
-
-namespace mesh {
+namespace vcl::mesh {
 
 namespace detail {
 
-/**
- * @brief Given the ID of an Element and a list of ElementContainers, this
- * predicate sets its bool `value` to `true` if there exists an ElementContainer
- * in the list that contains Elements having the ELEM_ID, and sets `type` to
- * the TypeWrapper of the found container.
- *
- * If no Container was found, value will be set to `false` and type will contain
- * an empty TypeWrapper.
- */
-template<uint ELEM_ID, typename... Containers>
-struct ContainerOfElementPred
-{
-private:
-    template<typename Cont>
-    struct SameElPred
-    {
-        static constexpr bool value = Cont::ELEMENT_ID == ELEM_ID;
-    };
+/// Rebind
 
-public:
-    // TypeWrapper of the found container, if any
-    using type =
-        typename FilterTypesByCondition<SameElPred, Containers...>::type;
-    static constexpr bool value = NumberOfTypes<type>::value == 1;
+// Helper to rebind a container's ParentMesh to the actual Mesh class
+template<typename T, typename NewParent>
+struct RebindContainerHelper
+{
+    using type = T;
 };
 
-// TypeWrapper specialization
-template<uint ELEM_ID, typename... Containers>
-struct ContainerOfElementPred<ELEM_ID, TypeWrapper<Containers...>> :
-        public ContainerOfElementPred<ELEM_ID, Containers...>
+template<typename T, typename NewParent>
+requires requires { typename T::template Rebind<NewParent>; }
+struct RebindContainerHelper<T, NewParent>
 {
+    using type = typename T::template Rebind<NewParent>;
+};
+
+template<typename T, typename NewParent>
+using RebindContainer = typename RebindContainerHelper<T, NewParent>::type;
+
+/// Find Container
+
+// Compile-time search for a container with the given ELEMENT_ID
+template<ElemId ELEM_ID, typename... Types>
+struct FindContainer;
+
+template<ElemId ELEM_ID>
+struct FindContainer<ELEM_ID>
+{
+    using type                  = void;
+    static constexpr bool found = false;
+};
+
+template<ElemId ELEM_ID, typename Head, typename... Tail>
+struct FindContainer<ELEM_ID, Head, Tail...>
+{
+private:
+    static constexpr bool matches =
+        requires { requires Head::ELEMENT_ID == ELEM_ID; };
+
+public:
+    using type = std::conditional_t<
+        matches,
+        Head,
+        typename FindContainer<ELEM_ID, Tail...>::type>;
+    static constexpr bool found =
+        matches || FindContainer<ELEM_ID, Tail...>::found;
+};
+
+// Trait to check if a component has a static vector column (DataType is not
+// void)
+template<typename Comp>
+struct HasVectorColumnPred
+{
+    static constexpr bool value = !std::is_void_v<typename Comp::DataType>;
+};
+
+// Trait to convert TypeWrapper<Components...> in a ParallelVectorsTuple
+template<typename ComponentListWrapper>
+struct ParallelVectorsTupleFromComponents;
+
+template<typename... Components>
+struct ParallelVectorsTupleFromComponents<vcl::TypeWrapper<Components...>>
+{
+    using type = ParallelVectorsTuple<typename Components::DataType...>;
 };
 
 } // namespace detail
 
-class ElementContainerTriggerer
-{
-};
-
-/**
- * @brief The predicate IsElementContainerPred sets its bool `value` to `true`
- * when the type T satisfies the ElementContainerConcept concept
- */
-template<typename T>
-struct IsElementContainerPred
-{
-    static const bool value =
-        std::is_base_of<ElementContainerTriggerer, RemoveRef<T>>::value;
-};
-
-/**
- * @brief The ContainerOfElement structure exposes the type of the container of
- * the given MeshType having element with the given ELEM_ID.
- *
- * If no container was found, the usage of this structure will cause a build
- * error.
- *
- * @tparam ELEM_ID: The ID of the Element
- * @tparam MeshType: The MeshType of the Mesh from which we need the type of the
- * Container of Element having the given ElementEnumType
- *
- * Usage:
- * @code{.cpp}
- *
- * using VertexContainer = typename mesh::ContainerOfElement<ElemId::VERTEX,
- *                                                           MyMesh>::type;
- *
- * @endcode
- */
-template<uint ELEM_ID, typename MeshType>
-struct ContainerOfElement
-{
-public:
-    using type = FirstTypeT<typename detail::ContainerOfElementPred<
-        ELEM_ID,
-        typename RemoveRef<MeshType>::Containers>::type>;
-};
-
-/**
- * @brief The ContainerOfElementType structure exposes the type of the container
- * of the given MeshType having Element with ID ELEM_ID.
- *
- * If no container was found, the usage of this structure will cause a build
- * error.
- *
- * @tparam ELEM_ID: The ElementEnumType of the Element
- * @tparam MeshType: The MeshType of the Mesh from which we need the type of the
- * Container of Element having the given ELEM_ID
- *
- * Usage:
- * @code{.cpp}
- *
- * using VertexContainer = mesh::ContainerOfElementType<ElemId::VERTEX, MyMesh>;
- *
- * @endcode
- */
-template<uint ELEM_ID, typename MeshType>
-using ContainerOfElementType =
-    typename ContainerOfElement<ELEM_ID, MeshType>::type;
-
-template<typename El, typename MeshType>
-struct HasContainerOfPred
-{
-    static constexpr bool value = detail::ContainerOfElementPred<
-        RemoveRef<El>::ELEMENT_ID,
-        typename RemoveRef<MeshType>::Containers>::value;
-};
-
-template<uint ELEM_ID, typename MeshType>
-struct HasContainerOfElementPred
-{
-    static constexpr bool value = detail::ContainerOfElementPred<
-        ELEM_ID,
-        typename RemoveRef<MeshType>::Containers>::value;
-};
-
-template<typename MeshType, uint ELEM_ID>
-concept HasElementContainer =
-    HasContainerOfElementPred<ELEM_ID, MeshType>::value;
-
-template<typename MeshType, uint ELEM_ID, uint COMP_ID>
-concept HasPerElementComponent =
-    HasElementContainer<MeshType, ELEM_ID> &&
-    comp::HasComponentOfType<
-        typename ContainerOfElementType<ELEM_ID, MeshType>::ElementType,
-        COMP_ID>;
-
-template<typename MeshType, uint ELEM_ID, uint COMP_ID>
-concept HasPerElementOptionalComponent =
-    HasElementContainer<MeshType, ELEM_ID> &&
-    comp::HasOptionalComponentOfType<
-        typename ContainerOfElementType<ELEM_ID, MeshType>::ElementType,
-        COMP_ID>;
-
-} // namespace mesh
-
-} // namespace vcl
+} // namespace vcl::mesh
 
 #endif // VCL_MESH_CONTAINERS_BASE_BASE_H

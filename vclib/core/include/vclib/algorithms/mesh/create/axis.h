@@ -11,6 +11,9 @@
 #include "cone.h"
 #include "sphere.h"
 
+#include <vclib/algorithms/mesh/update/normal.h>
+#include <vclib/algorithms/mesh/update/transform.h>
+
 namespace vcl {
 
 namespace detail {
@@ -18,22 +21,29 @@ namespace detail {
 template<FaceMeshConcept MeshType>
 MeshType createAxisCylinder(double unitLength, bool fromOrigin = false)
 {
-    const double cylLength = fromOrigin ? unitLength : unitLength * 2;
-    const double cylRadius = cylLength * 0.0025;
+    using ScalarType = ScalarType<MeshType>;
+    using Point3s    = vcl::Point3<ScalarType>;
 
-    const double coneRadius = cylRadius * 10;
-    const double coneLength = cylLength * 0.1;
+    const ScalarType cylLength = fromOrigin ? unitLength : unitLength * 2;
+    const ScalarType cylRadius = cylLength * 0.0025;
 
-    const double firstSphereRadius  = unitLength * 0.02;
-    const double commonSphereRadius = unitLength * 0.008;
+    const ScalarType coneRadius = cylRadius * 10;
+    const ScalarType coneLength = cylLength * 0.1;
+
+    const ScalarType firstSphereRadius  = unitLength * 0.02;
+    const ScalarType commonSphereRadius = unitLength * 0.008;
 
     MeshType cylinder = vcl::createCylinder<MeshType>(cylRadius, cylLength);
 
     if (fromOrigin) {
-        vcl::translate(cylinder, vcl::Point3d(0, unitLength * 0.5, 0));
+        vcl::translate(cylinder, Point3s(0, unitLength * 0.5, 0));
     }
 
-    vcl::updatePerVertexNormals(cylinder);
+    if constexpr (HasVertexNormal<MeshType>) {
+        if (cylinder.isVertexNormalAvailable()) {
+            vcl::updateVertexNormals(cylinder);
+        }
+    }
 
     return cylinder;
 }
@@ -41,30 +51,34 @@ MeshType createAxisCylinder(double unitLength, bool fromOrigin = false)
 template<FaceMeshConcept MeshType>
 MeshType createAxisConeSpheres(double unitLength, bool fromOrigin = false)
 {
-    const double cylLength = fromOrigin ? unitLength : unitLength * 2;
-    const double cylRadius = cylLength * 0.0025;
+    using ScalarType = ScalarType<MeshType>;
+    using Point3s    = vcl::Point3<ScalarType>;
+    using SSphere    = vcl::Sphere<ScalarType>;
 
-    const double coneRadius = cylRadius * 10;
-    const double coneLength = cylLength * 0.1;
+    const ScalarType cylLength = fromOrigin ? unitLength : unitLength * 2;
+    const ScalarType cylRadius = cylLength * 0.0025;
 
-    const double firstSphereRadius  = unitLength * 0.02;
-    const double commonSphereRadius = unitLength * 0.008;
+    const ScalarType coneRadius = cylRadius * 10;
+    const ScalarType coneLength = cylLength * 0.1;
+
+    const ScalarType firstSphereRadius  = unitLength * 0.02;
+    const ScalarType commonSphereRadius = unitLength * 0.008;
 
     MeshType coneSpheres = vcl::createCone<MeshType>(coneRadius, 0, coneLength);
-    double   transl      = unitLength + (coneLength * 0.5);
-    vcl::translate(coneSpheres, vcl::Point3d(0, transl, 0));
+    ScalarType transl    = unitLength + (coneLength * 0.5);
+    vcl::translate(coneSpheres, Point3s(0, transl, 0));
 
     if (!fromOrigin) {
-        vcl::Sphered s(vcl::Point3d(0, -1, 0), firstSphereRadius);
-        MeshType     sp = vcl::createSphere<MeshType>(s);
+        SSphere  s(Point3s(0, -1, 0), firstSphereRadius);
+        MeshType sp = vcl::createSphere<MeshType>(s);
         coneSpheres.append(sp);
     }
 
     for (uint i = 0; i < 9; ++i) {
-        const double step = unitLength * 0.1;
-        const double x    = step + i * step;
-        vcl::Sphered s(vcl::Point3d(0, x, 0), commonSphereRadius);
-        MeshType     sp = vcl::createSphere<MeshType>(s);
+        const ScalarType step = unitLength * 0.1;
+        const ScalarType x    = step + i * step;
+        SSphere          s(Point3s(0, x, 0), commonSphereRadius);
+        MeshType         sp = vcl::createSphere<MeshType>(s);
         coneSpheres.append(sp);
         if (!fromOrigin) {
             s.center().y() = -x;
@@ -73,12 +87,16 @@ MeshType createAxisConeSpheres(double unitLength, bool fromOrigin = false)
         }
     }
 
-    const double rad = fromOrigin ? firstSphereRadius : commonSphereRadius;
-    vcl::Sphered s   = vcl::Sphered(vcl::Point3d(0, 0, 0), rad);
-    MeshType     sp  = vcl::createSphere<MeshType>(s);
+    const ScalarType rad = fromOrigin ? firstSphereRadius : commonSphereRadius;
+    SSphere          s(Point3s(0, 0, 0), rad);
+    MeshType         sp = vcl::createSphere<MeshType>(s);
     coneSpheres.append(sp);
 
-    vcl::updatePerVertexNormals(coneSpheres);
+    if constexpr (HasVertexNormal<MeshType>) {
+        if (coneSpheres.isVertexNormalAvailable()) {
+            vcl::updateVertexNormals(coneSpheres);
+        }
+    }
 
     return coneSpheres;
 }

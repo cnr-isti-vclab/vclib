@@ -32,7 +32,7 @@ namespace vcl {
 template<FaceMeshConcept MeshType>
 MeshType createTetrahedron()
 {
-    using PositionType = MeshType::Vertex::PositionType;
+    using PositionType = PositionType<MeshType>;
     return createTetrahedron<MeshType>(
         PositionType(1, 1, 1),
         PositionType(-1, 1, -1),
@@ -60,16 +60,22 @@ MeshType createTetrahedron()
  *
  * @ingroup create
  */
-template<FaceMeshConcept MeshType, Point3Concept PositionType>
+template<FaceMeshConcept MeshType, Point3Concept PointType>
 MeshType createTetrahedron(
-    const PositionType& p0,
-    const PositionType& p1,
-    const PositionType& p2,
-    const PositionType& p3)
+    const PointType& p0,
+    const PointType& p1,
+    const PointType& p2,
+    const PointType& p3)
 {
+    using ScalarType = ScalarType<MeshType>;
+
     MeshType m;
 
-    m.addVertices(p0, p1, p2, p3);
+    m.addVertices(
+        p0.template cast<ScalarType>(),
+        p1.template cast<ScalarType>(),
+        p2.template cast<ScalarType>(),
+        p3.template cast<ScalarType>());
 
     m.reserveFaces(4);
     m.addFace(0, 1, 2);

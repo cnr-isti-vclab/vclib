@@ -18,21 +18,21 @@ TEMPLATE_TEST_CASE(
     vcl::TriMeshf,
     vcl::PolyMesh,
     vcl::PolyMeshf,
-    vcl::TriMeshIndexed,
-    vcl::TriMeshIndexedf,
-    vcl::PolyMeshIndexed,
-    vcl::PolyMeshIndexedf)
+    vcl::TriMesh64,
+    vcl::TriMesh64f,
+    vcl::PolyMesh64,
+    vcl::PolyMesh64f)
 {
     using Mesh = TestType;
 
     Mesh m1 = vcl::createCube<Mesh>();
 
-    vcl::updatePerVertexAndFaceNormals(m1);
+    vcl::updateVertexAndFaceNormals(m1);
 
-    m1.template addPerVertexCustomComponent<float>("v_comp");
+    m1.template addVertexCustomComponent<float>("v_comp");
 
     // putting some value into v_comp
-    for (auto& v : m1.vertices()) {
+    for (auto v : m1.vertices()) {
         v.template customComponent<float>("v_comp") = v.normal().x() * 3;
     }
 
@@ -44,11 +44,6 @@ TEMPLATE_TEST_CASE(
         {
             REQUIRE(m2.vertexCount() == m1.vertexCount());
             REQUIRE(m2.faceCount() == m1.faceCount());
-        }
-
-        THEN("The mesh is consistent")
-        {
-            REQUIRE(vcl::checkMeshPointers(m2));
         }
 
         THEN("Vertices are copied correctly")
@@ -78,12 +73,12 @@ TEMPLATE_TEST_CASE(
     WHEN("Appending a mesh")
     {
         Mesh m2 = vcl::createTetrahedron<Mesh>();
-        vcl::updatePerVertexAndFaceNormals(m2);
+        vcl::updateVertexAndFaceNormals(m2);
 
-        m2.template addPerVertexCustomComponent<float>("v_comp");
+        m2.template addVertexCustomComponent<float>("v_comp");
 
         // putting some value into v_comp
-        for (auto& v : m2.vertices()) {
+        for (auto v : m2.vertices()) {
             v.template customComponent<float>("v_comp") = v.normal().z() * 3;
         }
 
@@ -99,11 +94,6 @@ TEMPLATE_TEST_CASE(
         {
             REQUIRE(m3.vertexCount() == m1vn + m2vn);
             REQUIRE(m3.faceCount() == m1fn + m2fn);
-        }
-
-        THEN("The mesh is consistent")
-        {
-            REQUIRE(vcl::checkMeshPointers(m3));
         }
 
         THEN("Vertices are copied correctly")

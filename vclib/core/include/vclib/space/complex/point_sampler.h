@@ -207,7 +207,7 @@ public:
 
         PointT p;
         for (uint i = 0; i < f.vertexCount(); i++)
-            p += f.vertex(i)->position() * barCoords[i];
+            p += f.vertex(i).position() * barCoords[i];
 
         mSamples.push_back(p);
     }
@@ -236,7 +236,7 @@ public:
 
         PointT p;
         for (uint i = 0; i < f.vertexCount(); i++)
-            p += f.vertex(i)->position() * barCoords[i];
+            p += f.vertex(i).position() * barCoords[i];
 
         mSamples[i] = p;
     }
@@ -258,8 +258,9 @@ public:
     template<FaceConcept FaceType>
     void add(const FaceType& f, const PointT& barCoords)
     {
-        static_assert(FaceType::NV == 3 || FaceType::NV == -1);
-        if constexpr (FaceType::NV == -1) {
+        static_assert(
+            FaceType::VERTEX_COUNT == 3 || FaceType::VERTEX_COUNT == -1);
+        if constexpr (FaceType::VERTEX_COUNT == -1) {
             assert(f.vertexCount() == 3);
         }
 
@@ -286,8 +287,9 @@ public:
     template<FaceConcept FaceType>
     void set(uint i, const FaceType& f, const PointT& barCoords)
     {
-        static_assert(FaceType::NV == 3 || FaceType::NV == -1);
-        if constexpr (FaceType::NV == -1) {
+        static_assert(
+            FaceType::VERTEX_COUNT == 3 || FaceType::VERTEX_COUNT == -1);
+        if constexpr (FaceType::VERTEX_COUNT == -1) {
             assert(f.vertexCount() == 3);
         }
 

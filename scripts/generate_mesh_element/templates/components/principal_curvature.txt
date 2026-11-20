@@ -1,0 +1,17 @@
+//@concepts
+template<typename T>
+concept HasPrincipalCurvature = comp::HasPrincipalCurvature<T>;
+template<typename T>
+concept HasOptionalPrincipalCurvature = comp::HasOptionalPrincipalCurvature<T>;
+//@aliases
+/* Port PrincipalCurvature classes into %EL_NS% namespace */
+template<typename ScalarType, bool OPT = false>
+using PrincipalCurvature = comp::PrincipalCurvature<ScalarType, OPT>;
+
+template<typename ScalarType>
+using OptionalPrincipalCurvature = comp::PrincipalCurvature<ScalarType, true>;
+
+using PrincipalCurvaturef         = comp::PrincipalCurvaturef<false>;
+using PrincipalCurvatured         = comp::PrincipalCurvatured<false>;
+using OptionalPrincipalCurvaturef = comp::PrincipalCurvaturef<true>;
+using OptionalPrincipalCurvatured = comp::PrincipalCurvatured<true>;

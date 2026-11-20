@@ -16,6 +16,8 @@
 #include <vclib/mesh.h>
 #include <vclib/space/complex.h>
 
+#include <algorithm>
+#include <numeric>
 #include <vector>
 
 /**
@@ -37,16 +39,22 @@ namespace vcl {
 
 namespace detail {
 
-/* classe di confronto per l'algoritmo di eliminazione vertici duplicati*/
-template<typename VertexPointer>
+/* Comparison class for vertex position comparison */
+template<typename MeshType>
 class VertPositionComparator
 {
+    const MeshType* mMesh = nullptr;
+
 public:
-    inline bool operator()(const VertexPointer& a, const VertexPointer& b)
+    VertPositionComparator(const MeshType& m) : mMesh(&m) {}
+
+    inline bool operator()(
+        typename MeshType::IndexType a,
+        typename MeshType::IndexType b) const
     {
-        return (a->position() == b->position()) ?
-                   (a < b) :
-                   (a->position() < b->position());
+        const auto& pa = mMesh->vertex(a).position();
+        const auto& pb = mMesh->vertex(b).position();
+        return (pa == pb) ? (a < b) : (pa < pb);
     }
 };
 
@@ -66,46 +74,47 @@ template<typename IndexType, typename SentinelType, int N>
 class SortedIndexContainer
 {
 public:
-    SortedIndexContainer() {}
+    SortedIndexContainer() = default;
 
     template<Range RangeType>
-    SortedIndexContainer(SentinelType s, RangeType rng) : s(s), v(rng)
+    SortedIndexContainer(SentinelType s, RangeType&& rng) :
+            s(s), v(std::forward<RangeType>(rng))
     {
         std::sort(v.begin(), v.end());
     }
 
-    bool operator<(const SortedIndexContainer& s) const
+    bool operator<(const SortedIndexContainer& other) const
     {
         if constexpr (N >= 0) {
             for (uint i = 0; i < N; ++i) {
-                if (v[i] != s.v[i])
-                    return v[i] < s.v[i];
+                if (v[i] != other.v[i])
+                    return v[i] < other.v[i];
             }
             return false;
         }
         else {
-            for (uint i = 0; i < v.size() && i < s.v.size(); ++i) {
-                if (v[i] != s.v[i])
-                    return v[i] < s.v[i];
+            for (std::size_t i = 0; i < v.size() && i < other.v.size(); ++i) {
+                if (v[i] != other.v[i])
+                    return v[i] < other.v[i];
             }
-            return v.size() < s.v.size();
+            return v.size() < other.v.size();
         }
     }
 
-    bool operator==(const SortedIndexContainer& s) const
+    bool operator==(const SortedIndexContainer& other) const
     {
         if constexpr (N >= 0) {
             for (uint i = 0; i < N; ++i) {
-                if (v[i] != s.v[i])
+                if (v[i] != other.v[i])
                     return false;
             }
             return true;
         }
         else {
-            if (v.size() != s.v.size())
+            if (v.size() != other.v.size())
                 return false;
-            for (uint i = 0; i < v.size(); ++i) {
-                if (v[i] != s.v[i])
+            for (std::size_t i = 0; i < v.size(); ++i) {
+                if (v[i] != other.v[i])
                     return false;
             }
             return true;
@@ -120,26 +129,27 @@ private:
 };
 
 template<typename Cont, MeshConcept MeshType>
-void deleteElementsWithDeletedVertices(MeshType& m, uint& deletedCount)
+void deleteElementsWithDeletedVertices(
+    MeshType&                     m,
+    typename MeshType::IndexType& deletedCount)
 {
     if constexpr (comp::HasVertexReferences<typename Cont::ElementType>) {
-        constexpr uint ELEM_ID = Cont::ElementType::ELEMENT_ID;
-        deletedCount +=
-            deleteElementsIf<MeshType, ELEM_ID>(m, [](const auto& el) {
-                for (const auto* v : el.vertices()) {
-                    if (v == nullptr) {
-                        return true;
-                    }
+        constexpr ElemId ELEM_ID = Cont::ElementType::ELEMENT_ID;
+        deletedCount += deleteElementsIf<MeshType, ELEM_ID>(m, [](auto el) {
+            for (auto v : el.vertices()) {
+                if (v == nullptr || v.deleted()) {
+                    return true;
                 }
-                return false;
-            });
+            }
+            return false;
+        });
     }
 }
 
 template<typename... Cont, MeshConcept MeshType>
 void deleteElementsWithDeletedVertices(
-    MeshType& m,
-    uint&     deletedCount,
+    MeshType&                     m,
+    typename MeshType::IndexType& deletedCount,
     TypeWrapper<Cont...>)
 {
     (deleteElementsWithDeletedVertices<Cont>(m, deletedCount), ...);
@@ -166,24 +176,21 @@ void deleteElementsWithDeletedVertices(
  * @ingroup clean
  */
 template<MeshConcept MeshType>
-uint removeUnreferencedVertices(MeshType& m)
+auto removeUnreferencedVertices(MeshType& m)
 {
-    using VertexType = MeshType::VertexType;
+    using IndexType = typename MeshType::IndexType;
 
     // Generate a vector of boolean flags indicating whether each vertex is
     // referenced by any of the mesh's elements.
+    IndexType         n           = 0;
+    std::vector<bool> refVertices = referencedVertices(m, n);
 
-    uint              n           = 0;
-    std::vector<bool> refVertices = referencedVertices<std::vector<bool>>(m, n);
-
-    // need to mark as deleted vertices only if the number of unreferenced is
-    // less than vn
-    if (n < m.vertexCount()) {
-        deleteVerticesIf(
-            m, [&](const VertexType& v) { return !refVertices[m.index(v)]; });
+    if (n > 0) {
+        return deleteVerticesIf(
+            m, [&](auto v) { return !refVertices[v.index()]; });
     }
 
-    return n;
+    return IndexType(0);
 }
 
 /**
@@ -205,47 +212,55 @@ uint removeUnreferencedVertices(MeshType& m)
  * @ingroup clean
  */
 template<MeshConcept MeshType>
-uint removeDuplicateVertices(MeshType& m)
+auto removeDuplicateVertices(MeshType& m)
 {
-    using VertexType    = MeshType::VertexType;
-    using VertexPointer = MeshType::VertexType*;
+    using IndexType = typename MeshType::IndexType;
 
     if (m.vertexCount() == 0)
-        return 0;
+        return IndexType(0);
 
     // a map that will be used to keep track of deleted vertices and their
-    // corresponding pointers.
-    std::vector<uint> newVertexIndices(m.vertexContainerSize());
+    // corresponding indices.
+    std::vector<IndexType> newVertexIndices(m.vertexContainerSize());
     // assigning each vertex index to itself.
-    std::iota(newVertexIndices.begin(), newVertexIndices.end(), 0);
+    std::iota(newVertexIndices.begin(), newVertexIndices.end(), IndexType(0));
 
-    uint deleted = 0;
+    // mark any already deleted vertices as NULL_INDEX
+    for (IndexType v = 0; v < m.vertexContainerSize(); ++v) {
+        if (m.vertex(v).deleted()) {
+            newVertexIndices[v] = MeshType::NULL_INDEX;
+        }
+    }
 
-    std::vector<VertexPointer> perm(m.vertexCount());
+    IndexType deleted = 0;
 
-    // put all the vertices into a vector for sorting.
-    uint k = 0;
-    for (VertexType& v : m.vertices())
-        perm[k++] = &v;
+    std::vector<IndexType> perm;
+    perm.reserve(m.vertexCount());
+
+    // put all the active vertices into a vector for sorting.
+    for (auto v : m.vertices()) {
+        perm.push_back(v.index());
+    }
 
     // sort the vector based on the vertices' spatial positions.
     std::sort(
         std::execution::par_unseq,
         perm.begin(),
         perm.end(),
-        detail::VertPositionComparator<VertexPointer>());
+        detail::VertPositionComparator<MeshType>(m));
 
-    uint i = 0;
+    std::size_t i = 0;
 
     // compare the i-th position with the next ones while they are equal to the
     // i-th.
-    while (i < perm.size() - 1) {
-        uint j = i + 1;
-        while (j < perm.size() && perm[i]->position() == perm[j]->position()) {
-            // j will be deleted, so we map its pointer to the i-th vertex's
-            // pointer.
-            newVertexIndices[m.index(perm[j])] = m.index(perm[i]); // map j -> i
-            m.deleteVertex(m.index(perm[j]));
+    while (i + 1 < perm.size()) {
+        std::size_t j = i + 1;
+        while (j < perm.size() &&
+               m.vertex(perm[i]).position() == m.vertex(perm[j]).position()) {
+            // j will be deleted, so we map its index to the i-th vertex's
+            // index.
+            newVertexIndices[perm[j]] = perm[i]; // map j -> i
+            m.deleteVertex(perm[j]);
             j++;
             deleted++;
         }
@@ -254,9 +269,11 @@ uint removeDuplicateVertices(MeshType& m)
         i = j;
     }
 
-    // update the vertex pointers to point to the correct vertices, in every
+    // update the vertex references to point to the correct vertices, in every
     // container of the mesh
-    m.updateVertexReferences(newVertexIndices);
+    if (deleted > 0) {
+        m.updateVertexReferences(newVertexIndices);
+    }
 
     // todo:
     // - add a flag that removes degenerate elements after
@@ -272,15 +289,12 @@ uint removeDuplicateVertices(MeshType& m)
  * references is based on the indices of the face vertices, so it assumes that
  * the mesh's vertices have already been unified.
  *
- * @note This function currently only works for triangle meshes. It should be
- * made more general to work for polygonal meshes as well.
- *
  * @note This function automatically updates all internal topological references
- * to the deleted faces, invalidating them (e.g. setting them to `nullptr` or
- * `UINT_NULL`).
+ * to the deleted faces, invalidating them (setting them to
+ * `MeshType::NULL_INDEX`).
  *
  * @tparam MeshType: The type of the input Mesh. It must satisfy the
- * TriangleMeshConcept.
+ * FaceMeshConcept.
  *
  * @param[in,out] m: The input mesh for which to remove duplicate faces. This
  * mesh will be modified in place, with all duplicate faces being marked as
@@ -290,21 +304,21 @@ uint removeDuplicateVertices(MeshType& m)
  * @ingroup clean
  */
 template<FaceMeshConcept MeshType>
-uint removeDuplicateFaces(MeshType& m)
+auto removeDuplicateFaces(MeshType& m)
 {
-    using VertexType = MeshType::VertexType;
-    using FaceType   = MeshType::FaceType;
+    using IndexType = typename MeshType::IndexType;
+    using FaceType  = typename MeshType::Face;
 
     // create a vector of sorted tuples of indices, where each tuple represents
-    // a face's vertices and a pointer to the face.
-    std::vector<detail::SortedIndexContainer<
-        VertexType*,
-        FaceType*,
-        FaceType::VERTEX_COUNT>>
+    // a face's vertices and its face index.
+    std::vector<
+        detail::
+            SortedIndexContainer<IndexType, IndexType, FaceType::VERTEX_COUNT>>
         fvec;
+    fvec.reserve(m.faceCount());
 
-    for (FaceType& f : m.faces()) {
-        fvec.emplace_back(&f, f.vertices());
+    for (auto f : m.faces()) {
+        fvec.emplace_back(f.index(), f.vertexIndices());
     }
 
     // sort the vector based on the face vertex indices.
@@ -313,13 +327,13 @@ uint removeDuplicateFaces(MeshType& m)
     std::vector<bool> shouldDelete(m.faceContainerSize(), false);
 
     // iterate over the sorted vector, and mark any duplicate faces as deleted.
-    for (uint i = 0; i < fvec.size() - 1; ++i) {
+    for (std::size_t i = 0; i + 1 < fvec.size(); ++i) {
         if (fvec[i] == fvec[i + 1]) {
-            shouldDelete[m.index(fvec[i].sentinel())] = true;
+            shouldDelete[fvec[i].sentinel()] = true;
         }
     }
 
-    return deleteFacesIf(m, shouldDelete);
+    return deleteFacesIf(m, [&](auto f) { return shouldDelete[f.index()]; });
 }
 
 /**
@@ -346,17 +360,19 @@ uint removeDuplicateFaces(MeshType& m)
  * @ingroup clean
  */
 template<MeshConcept MeshType>
-uint removeDegenerateVertices(MeshType& m, bool deleteAlsoIncidentElements)
+auto removeDegenerateVertices(
+    MeshType& m,
+    bool      deleteAlsoIncidentElements = false)
 {
-    using VertexType = MeshType::VertexType;
+    using IndexType = typename MeshType::IndexType;
 
-    uint count_vd = deleteVerticesIf(
-        m, [](const VertexType& v) { return v.position().isDegenerate(); });
+    auto count_vd =
+        deleteVerticesIf(m, [](auto v) { return v.position().isDegenerate(); });
 
-    if (deleteAlsoIncidentElements) {
-        uint dummy = 0;
+    if (deleteAlsoIncidentElements && count_vd > 0) {
+        IndexType dummy = 0;
         detail::deleteElementsWithDeletedVertices(
-            m, dummy, typename MeshType::Containers());
+            m, dummy, typename MeshType::ElementContainers());
     }
 
     return count_vd;
@@ -381,8 +397,8 @@ uint removeDegenerateVertices(MeshType& m, bool deleteAlsoIncidentElements)
  * these kinds of faces, you should call `removeDuplicateVertices(m)` first.
  *
  * @note This function automatically updates all internal topological references
- * to the deleted faces, invalidating them (e.g. setting them to `nullptr` or
- * `UINT_NULL`).
+ * to the deleted faces, invalidating them (setting them to
+ * `MeshType::NULL_INDEX`).
  *
  * @tparam MeshType The type of the input Mesh. It must satisfy the
  * FaceMeshConcept.
@@ -395,30 +411,30 @@ uint removeDegenerateVertices(MeshType& m, bool deleteAlsoIncidentElements)
  * @ingroup clean
  */
 template<FaceMeshConcept MeshType>
-uint removeDegenerateFaces(MeshType& m)
+auto removeDegenerateFaces(MeshType& m)
 {
-    using FaceType = typename MeshType::FaceType;
+    using FaceType = typename MeshType::Face;
 
     if constexpr (PolygonFaceConcept<FaceType>) {
-        for (FaceType& f : m.faces()) {
+        for (auto f : m.faces()) {
             for (int i = int(f.vertexCount()) - 1; i >= 0; --i) {
                 if (f.vertexCount() < 3)
                     break;
-                if (f.vertex(i) == f.vertexMod(i + 1)) {
+                if (f.vertexIndex(i) == f.vertexIndexMod(i + 1)) {
                     f.eraseVertex(i);
                 }
             }
         }
     }
 
-    return deleteFacesIf(m, [&](const FaceType& f) {
+    return deleteFacesIf(m, [&](auto f) {
         if constexpr (PolygonFaceConcept<FaceType>) {
             if (f.vertexCount() < 3) {
                 return true;
             }
         }
         for (uint i = 0; i < f.vertexCount(); ++i) {
-            if (f.vertex(i) == f.vertexMod(i + 1)) {
+            if (f.vertexIndex(i) == f.vertexIndexMod(i + 1)) {
                 return true;
             }
         }

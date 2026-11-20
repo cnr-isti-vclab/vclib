@@ -45,7 +45,7 @@ class DrawableEnvironment
         Uniform("s_specular", bgfx::UniformType::Sampler);
     // Sampler of mBrdfLuTexture
     const Uniform mBrdfLutSamplerUniform =
-        Uniform("s_tex5", bgfx::UniformType::Sampler);
+        Uniform("s_brdfLut", bgfx::UniformType::Sampler);
 
     // The number of mip levels in the specular cubemap,
     // this value is needed by the shader to correctly sample the specular map.

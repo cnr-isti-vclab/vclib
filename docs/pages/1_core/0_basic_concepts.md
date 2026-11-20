@@ -5,8 +5,8 @@
 We can first declare a new Triangle Mesh and load a ply file:
 
 ```cpp
+#include <vclib/io.h>
 #include <vclib/meshes.h>
-#include <vclib/load_save.h>
 
 vcl::TriMesh myTriMesh;
 
@@ -35,8 +35,8 @@ vcl::updateBoundingBox(myTriMesh);
 
 std::cout << "Min bb: " << myTriMesh.boundingBox().min() << "; "
           << "Max bb: " << myTriMesh.boundingBox().max() << "\n";
-std::cout << "Vertex number: " << myTriMesh.vertexNumber() "; "
-          << "Face number: "<< myTriMesh.faceNumber() "\n";
+std::cout << "Vertex count: " << myTriMesh.vertexCount() << "; "
+          << "Face count: " << myTriMesh.faceCount() << "\n";
 ```
 
 ## Access Elements
@@ -45,7 +45,7 @@ We can access to the elements (Vertices, Faces, ...) of the mesh by index:
 
 ```cpp
 vcl::Point3d p = myTriMesh.vertex(0).position();
-vcl::Point3d p1 = myTriMesh.face(0).vertex(1)->position();
+vcl::Point3d p1 = myTriMesh.face(0).vertex(1).position();
 ```
 
 We can also iterate over Vertices and over Faces of the mesh:
@@ -56,17 +56,17 @@ We can also iterate over Vertices and over Faces of the mesh:
 vcl::Point3d bar;
 bar.setZero();
 
-for (const vcl::TriMesh::Vertex& v : myTriMesh.vertices()) {
+for (const auto& v : myTriMesh.vertices()) {
     bar += v.position();
 }
-bar /= myTriMesh.vertexNumber();
+bar /= myTriMesh.vertexCount();
 
 // print all the faces id with all vertices with y > barycenter.y()
 
-for (const vcl::TriMesh::Face& f : myTriMesh.faces()) {
+for (const auto& f : myTriMesh.faces()) {
     bool up = true;
-    for (const vcl::TriMesh::Vertex* v : f.vertices()) { // iterate over verts of f
-        if (v->position().y() < bar.y())
+    for (const auto& v : f.vertices()) { // iterate over verts of f
+        if (v.position().y() < bar.y())
             up = false;
     }
     if (up) {
@@ -75,13 +75,33 @@ for (const vcl::TriMesh::Face& f : myTriMesh.faces()) {
 }
 ```
 
-Note that iterating over the vertices of the faces of the Mesh returns the
-vertices/faces/elements objects by reference, while iterating over the
-vertices of the face (or, in general, adjacencies of a specific element)
-returns the pointer to an element that is stored inside the same Mesh. Note
-also that this pointer may be `nullptr`: in this small example we assume
-that the mesh is consistent meaning that this cannot happen.
+Note that the Elements returned by the Mesh (and by the vertices of a face, or,
+in general, by the adjacencies of a specific element) are lightweight proxies
+that are returned by value: they store the index of the Element and a reference
+to the Container that contains it, and they give access to its Components. For
+this reason, they can be cheaply copied, and they are always valid as long as
+the Mesh that contains them is alive and is not moved. The adjacencies of an
+Element may be missing (e.g. the adjacent face of a border edge): in that case,
+the returned proxy is not valid, and it converts to `false`. In this small
+example we assume that the mesh is consistent, meaning that this cannot happen.
 
+If we are interested only in a Component of all the elements, we can iterate
+directly over it, with the same performance of iterating over a contiguous
+array:
+
+```cpp
+for (vcl::Point3d& p : myTriMesh.vertices().positions()) {
+    p *= 2;
+}
+```
+
+The same can be done using the views of VCLib:
+
+```cpp
+for (const vcl::Point3d& p : myTriMesh | vcl::views::vertices | vcl::views::positions) {
+    std::cout << p << "\n";
+}
+```
 
 ## Add, set and delete Elements
 
@@ -105,7 +125,7 @@ mesh.addFace(0, 1, 2);
 
 // add another face but initialize vertices later:
 uint fid = mesh.addFace(); // each add returns an id telling the first added element
-mesh.face(fid).setVertices(&mesh.vertex(2), &mesh.vertex(1), &mesh.vertex(3));
+mesh.face(fid).setVertices(mesh.vertex(2), mesh.vertex(1), mesh.vertex(3));
 ```
 
 
@@ -123,8 +143,9 @@ For example, in the TriMesh class, the Vertex and Face elements have their
 Color component optional, and disabled by default. We can enable them by calling:
 
 ```cpp
-myTriMesh.enablePerVertexColor();
-myTriMesh.enablePerFaceColor();
+myTriMesh.enableVertexColor();
+myTriMesh.enableFaceColor();
 ```
 
 Accessing to disabled components is not allowed, and will cause undefined behavior.
+The availability of an optional component can be checked using, for example, `myTriMesh.isVertexColorAvailable()`.

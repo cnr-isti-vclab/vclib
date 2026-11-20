@@ -22,7 +22,7 @@
 // 4. Using grids with points and mesh faces
 // 5. Spatial queries: nearest neighbor, k-closest, sphere queries
 
-void meshGridExamples()
+inline void meshGridExamples()
 {
     std::cout << "=== VCLib Example 022: Mesh Grid Structures ===\n\n";
 
@@ -146,22 +146,22 @@ void meshGridExamples()
 
     // Create a simple mesh (hexahedron)
     vcl::TriMesh mesh = vcl::createHexahedron<vcl::TriMesh>();
-    using ScalarType  = vcl::TriMesh::ScalarType;
+    using ScalarType  = vcl::ScalarType<vcl::TriMesh>;
 
     std::cout << "Created hexahedron mesh with " << mesh.faceCount() << " faces"
               << std::endl;
 
     // Create intersection function for faces and bounding boxes
-    auto intersectionFunc =
-        vcl::intersectFunction<vcl::Box3<ScalarType>, vcl::TriMesh::Face>();
+    auto intersectionFunc = vcl::
+        intersectFunction<vcl::Box3<ScalarType>, vcl::TriMesh::ConstFace>();
 
     // HashTableGrid storing face pointers
-    vcl::HashTableGrid3<const vcl::TriMesh::Face*, ScalarType> faceHashGrid(
-        mesh.faces() | vcl::views::constAddrOf, intersectionFunc);
+    vcl::HashTableGrid3<vcl::TriMesh::ConstFace, ScalarType> faceHashGrid(
+        mesh.faces(), intersectionFunc);
 
     std::cout << "Face indices in HashTableGrid:" << std::endl;
     for (const auto& element : faceHashGrid) {
-        std::cout << "  Face " << mesh.index(element.second) << " in cell "
+        std::cout << "  Face " << element.second.index() << " in cell "
                   << element.first << std::endl;
     }
 
@@ -170,15 +170,15 @@ void meshGridExamples()
         faceHashGrid.valuesInSphere({vcl::Point3<ScalarType>(-1, -1, -1), 0.5});
     std::cout << "Faces near point (-1,-1,-1) within radius 0.5:" << std::endl;
     for (const auto& face : nearbyFaces) {
-        std::cout << "  Face " << mesh.index(face->second) << std::endl;
+        std::cout << "  Face " << face->second.index() << std::endl;
     }
 
     /****** StaticGrid with Mesh Faces ******/
 
     std::cout << "\n=== StaticGrid with Mesh Faces ===" << std::endl;
 
-    vcl::StaticGrid3<const vcl::TriMesh::Face*, ScalarType> faceStaticGrid(
-        mesh.faces() | vcl::views::constAddrOf, intersectionFunc);
+    vcl::StaticGrid3<vcl::TriMesh::ConstFace, ScalarType> faceStaticGrid(
+        mesh.faces(), intersectionFunc);
 
     std::cout << "Built StaticGrid with mesh faces" << std::endl;
 
@@ -186,7 +186,7 @@ void meshGridExamples()
         {vcl::Point3<ScalarType>(-1, -1, -1), 0.5});
     std::cout << "Faces near point (-1,-1,-1) in StaticGrid:" << std::endl;
     for (const auto& face : staticNearbyFaces) {
-        std::cout << "  Face " << mesh.index(face->second) << std::endl;
+        std::cout << "  Face " << face->second.index() << std::endl;
     }
 
     /****** K-Nearest Neighbors ******/
@@ -201,7 +201,7 @@ void meshGridExamples()
                   << " vertices" << std::endl;
 
         // Create StaticGrid with mesh vertices
-        vcl::StaticGrid vertexGrid(mesh.vertices() | vcl::views::constAddrOf);
+        vcl::StaticGrid vertexGrid(mesh.vertices());
 
         const vcl::Point3<ScalarType> queryPoint(0.5, 0.5, 0.5);
         const int                     k = 5;
@@ -211,7 +211,7 @@ void meshGridExamples()
 
         std::cout << "5 closest vertices to point (0.5,0.5,0.5):" << std::endl;
         for (const auto& vertex : kClosest) {
-            std::cout << "  Vertex " << mesh.index(vertex->second) << " at "
+            std::cout << "  Vertex " << vertex->second.index() << " at "
                       << vertex->first << std::endl;
         }
     }

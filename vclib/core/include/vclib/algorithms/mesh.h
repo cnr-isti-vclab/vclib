@@ -8,7 +8,7 @@
 #ifndef VCL_ALGORITHMS_MESH_H
 #define VCL_ALGORITHMS_MESH_H
 
-#include "mesh/check_pointers.h"
+#include "mesh/check_references.h"
 #include "mesh/clean.h"
 #include "mesh/convex_hull.h"
 #include "mesh/create.h"
@@ -17,6 +17,7 @@
 #include "mesh/face_topology.h"
 #include "mesh/filter.h"
 #include "mesh/import_export.h"
+#include "mesh/intersection.h"
 #include "mesh/point_sampling.h"
 #include "mesh/shuffle.h"
 #include "mesh/smooth.h"

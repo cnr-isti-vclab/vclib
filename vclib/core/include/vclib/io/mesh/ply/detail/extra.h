@@ -87,29 +87,29 @@ void readPlyMaterialIndexPostProcessing(
 {
     if constexpr (HasMaterials<MeshType>) {
         if (mesh.materialCount() > 0) {
-            if (loadedInfo.hasPerVertexTexCoord() &&
-                !loadedInfo.hasPerVertexMaterialIndex()) {
-                if constexpr (HasPerVertexMaterialIndex<MeshType>) {
+            if (loadedInfo.hasVertexTexCoord() &&
+                !loadedInfo.hasVertexMaterialIndex()) {
+                if constexpr (HasVertexMaterialIndex<MeshType>) {
                     if (settings.enableOptionalComponents) {
-                        enableIfPerVertexMaterialIndexOptional(mesh);
-                        loadedInfo.setPerVertexMaterialIndex();
+                        enableIfVertexMaterialIndexOptional(mesh);
+                        loadedInfo.setVertexMaterialIndex();
                     }
-                    if (loadedInfo.hasPerVertexMaterialIndex()) {
-                        for (auto& v : mesh.vertices()) {
+                    if (loadedInfo.hasVertexMaterialIndex()) {
+                        for (auto v : mesh.vertices()) {
                             v.materialIndex() = 0;
                         }
                     }
                 }
             }
-            if (loadedInfo.hasPerFaceWedgeTexCoords() &&
-                !loadedInfo.hasPerFaceMaterialIndex()) {
-                if constexpr (HasPerFaceMaterialIndex<MeshType>) {
+            if (loadedInfo.hasFaceWedgeTexCoords() &&
+                !loadedInfo.hasFaceMaterialIndex()) {
+                if constexpr (HasFaceMaterialIndex<MeshType>) {
                     if (settings.enableOptionalComponents) {
-                        enableIfPerFaceMaterialIndexOptional(mesh);
-                        loadedInfo.setPerFaceMaterialIndex();
+                        enableIfFaceMaterialIndexOptional(mesh);
+                        loadedInfo.setFaceMaterialIndex();
                     }
-                    if (loadedInfo.hasPerFaceMaterialIndex()) {
-                        for (auto& f : mesh.faces()) {
+                    if (loadedInfo.hasFaceMaterialIndex()) {
+                        for (auto f : mesh.faces()) {
                             f.materialIndex() = 0;
                         }
                     }

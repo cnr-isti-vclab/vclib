@@ -162,6 +162,9 @@ template<typename MeshType, typename FMatrix>
 void testPolyFaceIndicesFromMatrix()
 {
     if constexpr (vcl::HasFaces<MeshType> && vcl::HasPolygons<MeshType>) {
+        using Scalar            = typename FMatrix::Scalar;
+        constexpr auto SENTINEL = static_cast<Scalar>(-1);
+
         // Create a mesh with vertices
         MeshType mesh;
         mesh.addVertices(6);
@@ -170,11 +173,11 @@ void testPolyFaceIndicesFromMatrix()
         // Face 0: triangle (0, 1, 2)
         // Face 1: quadrilateral (0, 2, 3, 4)
         // Face 2: pentagon (0, 4, 5, 1, 2)
-        // Use UINT_NULL (-1) to indicate end of face for smaller faces
+        // Use sentinel (-1) to indicate end of face for smaller faces
         FMatrix faces(3, 5);
-        faces << 0, 1, 2, vcl::UINT_NULL, vcl::UINT_NULL, // triangle
-            0, 2, 3, 4, vcl::UINT_NULL,                   // quadrilateral
-            0, 4, 5, 1, 2;                                // pentagon
+        faces << 0, 1, 2, SENTINEL, SENTINEL, // triangle
+            0, 2, 3, 4, SENTINEL,             // quadrilateral
+            0, 4, 5, 1, 2;                    // pentagon
 
         // Test faceIndicesFromMatrix
         vcl::faceIndicesFromMatrix(mesh, faces);
@@ -189,7 +192,7 @@ void testPolyFaceIndicesFromMatrix()
 
             // Count non-null vertices in the row to get expected vertex count
             for (vcl::uint j = 0; j < faces.cols(); ++j) {
-                if (faces(i, j) != vcl::UINT_NULL) {
+                if (faces(i, j) != SENTINEL) {
                     expectedVertexCount++;
                 }
             }
@@ -198,7 +201,7 @@ void testPolyFaceIndicesFromMatrix()
 
             // Check vertex indices (only non-null ones)
             for (vcl::uint j = 0; j < faces.cols(); ++j) {
-                if (faces(i, j) != vcl::UINT_NULL) {
+                if (faces(i, j) != SENTINEL) {
                     REQUIRE(f.vertexIndex(j) == faces(i, j));
                 }
             }
@@ -289,7 +292,7 @@ void testVertexColorsFromMatrix()
     vcl::elementColorsFromMatrix<vcl::ElemId::VERTEX>(mesh, colors);
 
     // Verify colors
-    REQUIRE(mesh.isPerVertexColorEnabled());
+    REQUIRE(mesh.isVertexColorAvailable());
     REQUIRE(mesh.vertex(0).color().red() == 255);
     REQUIRE(mesh.vertex(0).color().green() == 0);
     REQUIRE(mesh.vertex(0).color().blue() == 0);
@@ -320,7 +323,7 @@ void testVertexColorsFromRange()
 
     // Verify colors
     vcl::uint c = 0;
-    REQUIRE(mesh.isPerVertexColorEnabled());
+    REQUIRE(mesh.isVertexColorAvailable());
     REQUIRE(mesh.vertex(0).color().red() == 255);
     REQUIRE(mesh.vertex(0).color().green() == 0);
     REQUIRE(mesh.vertex(0).color().blue() == 0);
@@ -359,7 +362,7 @@ void testVertexColorsFromRange()
 template<typename MeshType>
 void testVertexQualityFromRange()
 {
-    using QualityType = MeshType::VertexType::QualityType;
+    using QualityType = vcl::VertexType<MeshType>::QualityType;
 
     // Create a mesh with vertices
     MeshType mesh;
@@ -374,7 +377,7 @@ void testVertexQualityFromRange()
 
     // Verify quality values
     vcl::uint c = 0;
-    REQUIRE(mesh.isPerVertexQualityEnabled());
+    REQUIRE(mesh.isVertexQualityAvailable());
     REQUIRE(mesh.vertex(0).quality() == quality[c++]);
     REQUIRE(mesh.vertex(1).quality() == quality[c++]);
     REQUIRE(mesh.vertex(3).quality() == quality[c++]);
@@ -384,7 +387,7 @@ template<typename MeshType>
 void testFaceQualityFromRange()
 {
     if constexpr (vcl::HasFaces<MeshType>) {
-        using QualityType = MeshType::FaceType::QualityType;
+        using QualityType = vcl::FaceType<MeshType>::QualityType;
 
         // Create a mesh with vertices and faces
         MeshType mesh;
@@ -400,7 +403,7 @@ void testFaceQualityFromRange()
 
         // Verify quality values
         vcl::uint c = 0;
-        REQUIRE(mesh.isPerFaceQualityEnabled());
+        REQUIRE(mesh.isFaceQualityAvailable());
         REQUIRE(mesh.face(0).quality() == quality[c++]);
         REQUIRE(mesh.face(1).quality() == quality[c++]);
     }
@@ -425,7 +428,7 @@ void testFaceColorsFromRange()
         vcl::faceColorsFromRange(mesh, colors, vcl::Color::Format::ABGR);
 
         // Verify colors
-        REQUIRE(mesh.isPerFaceColorEnabled());
+        REQUIRE(mesh.isFaceColorAvailable());
         REQUIRE(mesh.face(0).color().red() == 255);
         REQUIRE(mesh.face(0).color().green() == 0);
         REQUIRE(mesh.face(0).color().blue() == 0);
@@ -479,8 +482,8 @@ void testVertexTexCoords()
 
     // Verify texture coordinate and material indices
     vcl::uint c = 0;
-    REQUIRE(mesh.isPerVertexTexCoordEnabled());
-    REQUIRE(mesh.isPerVertexMaterialIndexEnabled());
+    REQUIRE(mesh.isVertexTexCoordAvailable());
+    REQUIRE(mesh.isVertexMaterialIndexAvailable());
     REQUIRE(mesh.vertex(0).texCoord().u() == texCoords(c, 0));
     REQUIRE(mesh.vertex(0).texCoord().v() == texCoords(c, 1));
     REQUIRE(mesh.vertex(0).materialIndex() == materialIndices[c]);
@@ -524,11 +527,11 @@ void testFaceWedgeTexCoords()
         vcl::faceMaterialIndicesFromRange(mesh, faceMaterialIndices);
 
         // Verify wedge texture coordinates and face material indices
-        REQUIRE(mesh.isPerFaceMaterialIndexEnabled());
-        REQUIRE(mesh.isPerFaceWedgeTexCoordsEnabled());
+        REQUIRE(mesh.isFaceMaterialIndexAvailable());
+        REQUIRE(mesh.isFaceWedgeTexCoordsAvailable());
 
         for (vcl::uint i = 0; const auto& f : mesh.faces()) {
-            for (vcl::uint j = 0; const auto& w : f.wedgeTexCoords()) {
+            for (vcl::uint j = 0; const auto& w : f.wedges().texCoords()) {
                 REQUIRE(w.u() == wedgeTexCoords(i, j++));
                 REQUIRE(w.v() == wedgeTexCoords(i, j++));
             }
@@ -591,11 +594,11 @@ void testPolyFaceWedgeTexCoords()
         vcl::faceMaterialIndicesFromRange(mesh, faceMaterialIndices);
 
         // Verify wedge texture coordinates and indices
-        REQUIRE(mesh.isPerFaceMaterialIndexEnabled());
-        REQUIRE(mesh.isPerFaceWedgeTexCoordsEnabled());
+        REQUIRE(mesh.isFaceMaterialIndexAvailable());
+        REQUIRE(mesh.isFaceWedgeTexCoordsAvailable());
 
         for (vcl::uint i = 0; const auto& f : mesh.faces()) {
-            for (vcl::uint j = 0; const auto& w : f.wedgeTexCoords()) {
+            for (vcl::uint j = 0; const auto& w : f.wedges().texCoords()) {
                 REQUIRE(w.u() == wedgeTexCoords(i, j++));
                 REQUIRE(w.v() == wedgeTexCoords(i, j++));
             }
@@ -609,7 +612,7 @@ void testPolyFaceWedgeTexCoords()
 TEMPLATE_TEST_CASE("Import mesh from matrices", "", vcl::TriMeshf, vcl::TriMesh)
 {
     using MeshType = TestType;
-    using Scalar   = MeshType::VertexType::PositionType::ScalarType;
+    using Scalar   = vcl::ScalarType<MeshType>;
 
     SECTION("Row major matrices")
     {
@@ -637,7 +640,7 @@ TEMPLATE_TEST_CASE(
     vcl::PolyMesh)
 {
     using MeshType = TestType;
-    using Scalar   = MeshType::VertexType::PositionType::ScalarType;
+    using Scalar   = vcl::ScalarType<MeshType>;
 
     SECTION("Row major matrix")
     {
@@ -723,7 +726,7 @@ TEMPLATE_TEST_CASE(
     vcl::PolyMesh)
 {
     using MeshType = TestType;
-    using Scalar   = MeshType::VertexType::PositionType::ScalarType;
+    using Scalar   = vcl::ScalarType<MeshType>;
 
     SECTION("Row major matrix")
     {
@@ -814,7 +817,7 @@ TEMPLATE_TEST_CASE(
     vcl::PolyMesh)
 {
     using MeshType = TestType;
-    using Scalar   = MeshType::VertexType::PositionType::ScalarType;
+    using Scalar   = vcl::ScalarType<MeshType>;
 
     SECTION("Row major matrix")
     {
@@ -840,7 +843,7 @@ TEMPLATE_TEST_CASE(
     vcl::PolyMesh)
 {
     using MeshType = TestType;
-    using Scalar   = MeshType::VertexType::PositionType::ScalarType;
+    using Scalar   = vcl::ScalarType<MeshType>;
 
     SECTION("Row major matrix - triangular faces")
     {
@@ -864,7 +867,7 @@ TEMPLATE_TEST_CASE(
     vcl::PolyMesh)
 {
     using MeshType = TestType;
-    using Scalar   = MeshType::VertexType::PositionType::ScalarType;
+    using Scalar   = vcl::ScalarType<MeshType>;
 
     SECTION("Row major matrix - mixed face sizes")
     {
@@ -1038,5 +1041,41 @@ TEST_CASE("Import mesh - error handling")
             vcl::faceColorsFromRange(
                 mesh, wrongColors, vcl::Color::Format::ABGR),
             vcl::WrongSizeException);
+    }
+}
+
+TEST_CASE("Import Material Index Sentinels", "[import][sentinels]")
+{
+    using TriMesh = vcl::TriMesh;
+    TriMesh mesh;
+    mesh.addVertices(3);
+    mesh.addFace(0, 1, 2);
+
+    SECTION("Import from signed integers")
+    {
+        std::vector<int> vertMat = {5, -1, 100};
+        vcl::vertexMaterialIndicesFromRange(mesh, vertMat);
+        REQUIRE(mesh.isVertexMaterialIndexAvailable());
+        REQUIRE(mesh.vertex(0).materialIndex() == 5);
+        REQUIRE(mesh.vertex(1).materialIndex() == vcl::USHORT_NULL);
+        REQUIRE(mesh.vertex(2).materialIndex() == 100);
+
+        std::vector<int> faceMat = {-1};
+        vcl::faceMaterialIndicesFromRange(mesh, faceMat);
+        REQUIRE(mesh.isFaceMaterialIndexAvailable());
+        REQUIRE(mesh.face(0).materialIndex() == vcl::USHORT_NULL);
+    }
+
+    SECTION("Import from floating point")
+    {
+        std::vector<double> vertMat = {12.0, -1.0, 99.0};
+        vcl::vertexMaterialIndicesFromRange(mesh, vertMat);
+        REQUIRE(mesh.vertex(0).materialIndex() == 12);
+        REQUIRE(mesh.vertex(1).materialIndex() == vcl::USHORT_NULL);
+        REQUIRE(mesh.vertex(2).materialIndex() == 99);
+
+        std::vector<double> faceMat = {-1.0};
+        vcl::faceMaterialIndicesFromRange(mesh, faceMat);
+        REQUIRE(mesh.face(0).materialIndex() == vcl::USHORT_NULL);
     }
 }

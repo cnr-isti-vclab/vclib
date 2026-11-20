@@ -123,8 +123,12 @@ public:
             if (params.mode.primitive == SelectionPrimitive::FACE)
                 return;
 
-        mMRB.computeSelection(
-            params, this->transformMatrix().template cast<float>());
+        vcl::Matrix44f model = vcl::Matrix44f::Identity();
+        if constexpr (HasTransformMatrix<MeshType>) {
+            model = MeshType::transformMatrix().template cast<float>();
+        }
+
+        mMRB.computeSelection(params, model);
     }
 
     vcl::BitVector<true> vertexSelectionBitVector() const override
@@ -139,7 +143,7 @@ public:
             return;
 
         uint vidx = 0;
-        for (auto& v : MeshType::vertices()) {
+        for (auto v : MeshType::vertices()) {
             if (vidx < bitVector.size()) {
                 v.selected() = bitVector[vidx++];
             }
@@ -167,7 +171,7 @@ public:
             const auto& indexMap         = mMRB.triPolyIndexMap();
             const bool  isMappingTrivial = indexMap.isMappingTrivial();
 
-            for (auto& f : MeshType::faces()) {
+            for (auto f : MeshType::faces()) {
                 const uint faceIdx     = f.index();
                 const uint firstTriIdx = isMappingTrivial ?
                                              faceIdx :
@@ -380,9 +384,9 @@ protected:
         else {
             using enum Material::AlphaMode;
 
-            uint materialId = mMRB.materialIndex(mMRS, chunkNumber);
+            ushort materialId = mMRB.materialIndex(mMRS, chunkNumber);
 
-            if (materialId == UINT_NULL) {
+            if (materialId == USHORT_NULL) {
                 // fallback to default material
                 MaterialUniforms::set(DEFAULT_MATERIAL);
             }

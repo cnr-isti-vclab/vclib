@@ -8,6 +8,7 @@
 #ifndef VCL_ALGORITHMS_MESH_DELETE_H
 #define VCL_ALGORITHMS_MESH_DELETE_H
 
+#include <functional>
 #include <ranges>
 #include <vclib/mesh.h>
 
@@ -23,7 +24,7 @@
  * faces, edges) in-place based on a filtering function or range. Elements
  * matching the condition will be deleted, and all internal topology references
  * pointing to the deleted elements will be automatically updated and
- * invalidated (set to `nullptr` / `UINT_NULL`).
+ * invalidated (set to `MeshType::NULL_INDEX`).
  *
  * You can access these algorithms by including
  * `#include <vclib/algorithms/mesh.h>`
@@ -33,23 +34,25 @@ namespace vcl {
 
 namespace detail {
 
-template<MeshConcept MeshType, uint ELEM_ID>
-uint deleteElementsIf(MeshType& m, Range auto&& elemFilterRng)
+template<MeshConcept MeshType, ElemId ELEM_ID>
+auto deleteElementsIf(MeshType& m, Range auto&& elemFilterRng)
 {
-    uint count = 0;
+    using IndexType = MeshType::IndexType;
+
+    IndexType count = 0;
 
     if constexpr (MeshType::template hasContainerOf<ELEM_ID>()) {
-        std::vector<uint> refIndices(
-            m.template containerSize<ELEM_ID>(), UINT_NULL);
+        std::vector<IndexType> refIndices(
+            m.template containerSize<ELEM_ID>(), MeshType::NULL_INDEX);
 
         for (const auto& [e, filter] :
              std::views::zip(m.template elements<ELEM_ID>(), elemFilterRng)) {
             if (filter) {
-                m.template deleteElement<ELEM_ID>(m.index(e));
+                m.template deleteElement<ELEM_ID>(e.index());
                 count++;
             }
             else {
-                refIndices[m.index(e)] = m.index(e);
+                refIndices[e.index()] = e.index();
             }
         }
 
@@ -61,11 +64,11 @@ uint deleteElementsIf(MeshType& m, Range auto&& elemFilterRng)
     return count;
 }
 
-template<MeshConcept MeshType, uint ELEM_ID>
-uint deleteElementsIf(
-    MeshType&                                                      m,
+template<MeshConcept MeshType, ElemId ELEM_ID>
+auto deleteElementsIf(
+    MeshType&                                                    m,
     const std::function<bool(
-        const typename MeshType::template ElementType<ELEM_ID>&)>& elemFilter)
+        typename MeshType::template ConstElementType<ELEM_ID>)>& elemFilter)
 {
     auto view =
         m.template elements<ELEM_ID>() | std::views::transform(elemFilter);
@@ -96,10 +99,9 @@ uint deleteElementsIf(
  * @ingroup delete
  */
 template<MeshConcept MeshType>
-uint deleteVerticesIf(
-    MeshType& m,
-    const std::function<bool(const typename MeshType::VertexType&)>&
-        vertexFilter)
+auto deleteVerticesIf(
+    MeshType&                                                  m,
+    const std::function<bool(typename MeshType::ConstVertex)>& vertexFilter)
 {
     return detail::deleteElementsIf<MeshType, ElemId::VERTEX>(m, vertexFilter);
 }
@@ -125,7 +127,7 @@ uint deleteVerticesIf(
  * @ingroup delete
  */
 template<MeshConcept MeshType>
-uint deleteVerticesIf(MeshType& m, Range auto&& vertexFilterRng)
+auto deleteVerticesIf(MeshType& m, Range auto&& vertexFilterRng)
 {
     return detail::deleteElementsIf<MeshType, ElemId::VERTEX>(
         m, vertexFilterRng);
@@ -153,9 +155,9 @@ uint deleteVerticesIf(MeshType& m, Range auto&& vertexFilterRng)
  * @ingroup delete
  */
 template<FaceMeshConcept MeshType>
-uint deleteFacesIf(
-    MeshType&                                                      m,
-    const std::function<bool(const typename MeshType::FaceType&)>& faceFilter)
+auto deleteFacesIf(
+    MeshType&                                                m,
+    const std::function<bool(typename MeshType::ConstFace)>& faceFilter)
 {
     return detail::deleteElementsIf<MeshType, ElemId::FACE>(m, faceFilter);
 }
@@ -182,7 +184,7 @@ uint deleteFacesIf(
  * @ingroup delete
  */
 template<FaceMeshConcept MeshType>
-uint deleteFacesIf(MeshType& m, Range auto&& faceFilterRng)
+auto deleteFacesIf(MeshType& m, Range auto&& faceFilterRng)
 {
     return detail::deleteElementsIf<MeshType, ElemId::FACE>(m, faceFilterRng);
 }
@@ -209,9 +211,9 @@ uint deleteFacesIf(MeshType& m, Range auto&& faceFilterRng)
  * @ingroup delete
  */
 template<EdgeMeshConcept MeshType>
-uint deleteEdgesIf(
-    MeshType&                                                      m,
-    const std::function<bool(const typename MeshType::EdgeType&)>& edgeFilter)
+auto deleteEdgesIf(
+    MeshType&                                                m,
+    const std::function<bool(typename MeshType::ConstEdge)>& edgeFilter)
 {
     return detail::deleteElementsIf<MeshType, ElemId::EDGE>(m, edgeFilter);
 }
@@ -238,7 +240,7 @@ uint deleteEdgesIf(
  * @ingroup delete
  */
 template<EdgeMeshConcept MeshType>
-uint deleteEdgesIf(MeshType& m, Range auto&& edgeFilterRng)
+auto deleteEdgesIf(MeshType& m, Range auto&& edgeFilterRng)
 {
     return detail::deleteElementsIf<MeshType, ElemId::EDGE>(m, edgeFilterRng);
 }

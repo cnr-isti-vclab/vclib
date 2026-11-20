@@ -23,7 +23,7 @@
 // 3. Use transformation matrices
 // 4. Combine multiple meshes through append
 
-auto meshCopyAndTransform()
+inline auto meshCopyAndTransform()
 {
     std::cout << "=== VCLib Example 004: Mesh Copy and Transform ===\n\n";
 
@@ -33,6 +33,8 @@ auto meshCopyAndTransform()
 
     std::cout << "PART 1: Mesh Copying and Cloning\n";
     std::cout << "---------------------------------\n";
+
+    using Scalar = vcl::ScalarType<vcl::TriMesh>;
 
     // Create a starting mesh: an icosahedron
     vcl::TriMesh originalMesh = vcl::createIcosahedron<vcl::TriMesh>();
@@ -222,6 +224,9 @@ auto meshCopyAndTransform()
     std::cout << "\n\nPART 4: Mesh Combination (Append)\n";
     std::cout << "----------------------------------\n";
 
+    using SPoint  = vcl::Point3<Scalar>;
+    using SSphere = vcl::Sphere<Scalar>;
+
     // Create a main mesh
     vcl::TriMesh combinedMesh = vcl::createCube<vcl::TriMesh>();
     std::cout << "Main mesh (cube): " << combinedMesh.vertexCount()
@@ -230,24 +235,17 @@ auto meshCopyAndTransform()
 
     // Create different primitives to add
     vcl::TriMesh sphere1 = vcl::createSphereIcosahedron<vcl::TriMesh>(
-        vcl::Sphere<vcl::TriMesh::ScalarType>(
-            vcl::Point3<vcl::TriMesh::ScalarType>(0, 0, 0), 1.0),
-        3);
-    vcl::translate(sphere1, vcl::Point3d(3.0, 0.0, 0.0)); // Move the sphere
+        SSphere(SPoint(0, 0, 0), 1.0), 3);
+    vcl::translate(sphere1, SPoint(3.0, 0.0, 0.0)); // Move the sphere
 
     vcl::TriMesh sphere2 = vcl::createSphereUV<vcl::TriMesh>(
-        vcl::Sphere<vcl::TriMesh::ScalarType>(
-            vcl::Point3<vcl::TriMesh::ScalarType>(0, 0, 0), 1.0),
-        16,
-        16);
-    vcl::translate(
-        sphere2, vcl::Point3d(-3.0, 0.0, 0.0)); // Move the other sphere
-    vcl::scale(sphere2, 0.8);                   // Reduce the second sphere
+        SSphere(SPoint(0, 0, 0), 1.0), 16, 16);
+    vcl::translate(sphere2, SPoint(-3.0, 0.0, 0.0)); // Move the other sphere
+    vcl::scale(sphere2, 0.8);                        // Reduce the second sphere
 
     vcl::TriMesh tetrahedron = vcl::createTetrahedron<vcl::TriMesh>();
-    vcl::translate(
-        tetrahedron, vcl::Point3d(0.0, 3.0, 0.0)); // Move the tetrahedron
-    vcl::scale(tetrahedron, 1.5);                  // Enlarge the tetrahedron
+    vcl::translate(tetrahedron, SPoint(0.0, 3.0, 0.0)); // Move the tetrahedron
+    vcl::scale(tetrahedron, 1.5); // Enlarge the tetrahedron
 
     std::cout << "\nPrimitives to add:\n";
     std::cout << "- Icosphere (3 subdivisions): " << sphere1.vertexCount()

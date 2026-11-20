@@ -16,37 +16,37 @@ void boundingBoxComponentStaticAsserts()
 
     // test only the bounding box component
     static_assert(
-        comp::HasBoundingBox<mesh::BoundingBox3d>,
+        HasBoundingBox<mesh::BoundingBox3d>,
         "mesh::BoundingBox3d does not satisfy the HasBoundingBox concept");
     static_assert(
-        comp::HasBoundingBox<const mesh::BoundingBox3d>,
+        HasBoundingBox<const mesh::BoundingBox3d>,
         "const mesh::BoundingBox3d does not satisfy the HasBoundingBox "
         "concept");
     static_assert(
-        comp::HasBoundingBox<mesh::BoundingBox3d&>,
+        HasBoundingBox<mesh::BoundingBox3d&>,
         "mesh::BoundingBox3d& does not satisfy the HasBoundingBox concept");
     static_assert(
-        comp::HasBoundingBox<const mesh::BoundingBox3d&>,
+        HasBoundingBox<const mesh::BoundingBox3d&>,
         "const mesh::BoundingBox3d& does not satisfy the HasBoundingBox "
         "concept");
     static_assert(
-        comp::HasBoundingBox<mesh::BoundingBox3d&&>,
+        HasBoundingBox<mesh::BoundingBox3d&&>,
         "mesh::BoundingBox3d&& does not satisfy the HasBoundingBox concept");
 
     static_assert(
-        comp::HasBoundingBox<TriMesh>,
+        HasBoundingBox<TriMesh>,
         "TriMesh does not satisfy the HasBoundingBox concept");
     static_assert(
-        comp::HasBoundingBox<const TriMesh>,
+        HasBoundingBox<const TriMesh>,
         "const TriMesh does not satisfy the HasBoundingBox concept");
     static_assert(
-        comp::HasBoundingBox<TriMesh&>,
+        HasBoundingBox<TriMesh&>,
         "TriMesh& does not satisfy the HasBoundingBox concept");
     static_assert(
-        comp::HasBoundingBox<const TriMesh&>,
+        HasBoundingBox<const TriMesh&>,
         "const TriMesh& does not satisfy the HasBoundingBox concept");
     static_assert(
-        comp::HasBoundingBox<TriMesh&&>,
+        HasBoundingBox<TriMesh&&>,
         "TriMesh&& does not satisfy the HasBoundingBox concept");
 }
 

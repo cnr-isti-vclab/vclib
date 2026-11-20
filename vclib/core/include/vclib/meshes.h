@@ -19,24 +19,7 @@
 /**
  * @defgroup meshes Meshes
  *
- * @brief List of predefined Mesh data structures that are available in VCLib.
- *
- * All the Mesh data structure have three configurations available:
- * - `MeshTypeNameT`: a Templated Mesh data structure that allows to select the
- * scalar data type  and whether the mesh uses pointers or indices to store
- * references, with templates (e.g. `MeshTypeNameT<long double, true>`);
- * - `MeshTypeName`: The same Mesh data structure that uses, for all its stored
- * scalar data, the `double` type, and pointers to store references (equivalent
- * to `MeshTypeNameT<double, false>`);
- * - `MeshTypeNamef`: The same Mesh data structure that uses, for all its stored
- * scalar data, the `float` type, and pointers to store references (equivalent
- * to `MeshTypeNameT<float, false>`);
- * - `MeshTypeNameIndexed`: The same Mesh data structure that uses, for all its
- * stored scalar data, the `double` type, and indices to store references
- * (equivalent to `MeshTypeNameT<double, true>`);
- * - `MeshTypeNameIndexedf`: The same Mesh data structure that uses, for all its
- * stored scalar data, the `float` type, and indices to store references
- * (equivalent to `MeshTypeNameT<float, true>`).
+ * @brief List of predefined Mesh data structures available in VCLib.
  */
 
 #endif // VCL_MESHES_H

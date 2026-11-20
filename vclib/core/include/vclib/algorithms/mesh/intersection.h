@@ -67,65 +67,60 @@ template<
     PlaneConcept    PlaneType>
 EdgeMesh intersection(const MeshType& m, const PlaneType& pl)
 {
-    using VertexType   = MeshType::VertexType;
-    using FaceType     = MeshType::FaceType;
-    using PositionType = VertexType::PositionType;
+    using PositionType = PositionType<MeshType>;
+    using IndexType    = EdgeMesh::IndexType;
 
     EdgeMesh em;
 
     std::vector<double> qH(m.vertexContainerSize());
 
-    for (const VertexType& v : m.vertices())
-        qH[m.index(v)] = pl.dist(v.position());
+    for (auto&& v : m.vertices())
+        qH[v.index()] = pl.dist(v.position());
 
-    for (const FaceType& f : m.faces()) {
+    for (auto&& f : m.faces()) {
         std::vector<PositionType> ptVec;
         std::vector<PositionType> nmVec;
         for (uint j = 0; j < f.vertexCount(); ++j) {
-            if (qH[m.index(f.vertex(j))] == 0) {
-                ptVec.push_back(f.vertex(j)->position());
-                if constexpr (HasPerVertexNormal<MeshType>) {
-                    if (isPerVertexNormalAvailable(m)) {
-                        nmVec.push_back(f.vertex(j)->normal());
+            if (qH[f.vertexIndex(j)] == 0) {
+                ptVec.push_back(f.vertex(j).position());
+                if constexpr (HasVertexNormal<MeshType>) {
+                    if (m.isVertexNormalAvailable()) {
+                        nmVec.push_back(f.vertex(j).normal());
                     }
                 }
             }
-            else if (
-                (qH[m.index(f.vertex(j))] * qH[m.index(f.vertexMod(j + 1))]) <
-                0) {
-                const PositionType& p0 = f.vertex(j)->position();
-                const PositionType& p1 = f.vertexMod(j + 1)->position();
+            else if ((qH[f.vertexIndex(j)] * qH[f.vertexIndexMod(j + 1)]) < 0) {
+                const PositionType& p0 = f.vertex(j).position();
+                const PositionType& p1 = f.vertexMod(j + 1).position();
 
-                float q0 = qH[m.index(f.vertex(j))];
-                float q1 = qH[m.index(f.vertexMod(j + 1))];
+                double q0 = qH[f.vertexIndex(j)];
+                double q1 = qH[f.vertexIndexMod(j + 1)];
 
                 std::pair<PositionType, PositionType> seg(p0, p1);
                 PositionType pp = pl.segmentIntersection(seg);
                 ptVec.push_back(pp);
-                if constexpr (HasPerVertexNormal<MeshType>) {
-                    if (isPerVertexNormalAvailable(m)) {
-                        using NormalType     = VertexType::NormalType;
-                        const NormalType& n0 = f.vertex(j)->normal();
-                        const NormalType& n1 = f.vertexMod(j + 1)->normal();
-                        PositionType      nn =
-                            (n0 * fabs(q1) + n1 * fabs(q0)) / fabs(q0 - q1);
+                if constexpr (HasVertexNormal<MeshType>) {
+                    if (m.isVertexNormalAvailable()) {
+                        const auto&  n0 = f.vertex(j).normal();
+                        const auto&  n1 = f.vertexMod(j + 1).normal();
+                        PositionType nn =
+                            (n0 * std::abs(q1) + n1 * std::abs(q0)) /
+                            std::abs(q0 - q1);
                         nmVec.push_back(nn);
                     }
                 }
             }
         }
         if (ptVec.size() >= 2) {
-            uint eid                 = em.addEdge();
-            uint v0                  = em.addVertices(2);
-            uint v1                  = v0 + 1;
+            IndexType v0             = em.addVertices(2);
+            IndexType v1             = v0 + 1;
+            IndexType eid            = em.addEdge(v0, v1);
             em.vertex(v0).position() = ptVec[0];
             em.vertex(v1).position() = ptVec[1];
-            em.edge(eid).setVertex(0, v0);
-            em.edge(eid).setVertex(1, v1);
             if constexpr (
-                HasPerVertexNormal<MeshType> && HasPerVertexNormal<EdgeMesh>) {
-                if (isPerVertexNormalAvailable(m) &&
-                    isPerVertexNormalAvailable(em)) {
+                HasVertexNormal<MeshType> && HasVertexNormal<EdgeMesh>) {
+                if (m.isVertexNormalAvailable() &&
+                    em.isVertexNormalAvailable()) {
                     em.vertex(v0).normal() = nmVec[0];
                     em.vertex(v1).normal() = nmVec[1];
                 }
@@ -177,65 +172,68 @@ MeshType intersection(
     const Sphere<SScalar>& sphere,
     double                 tol)
 {
-    using VertexType   = MeshType::VertexType;
-    using PositionType = VertexType::PositionType;
-    using ScalarType   = PositionType::ScalarType;
-    using FaceType     = MeshType::FaceType;
+    using IndexType    = MeshType::IndexType;
+    using PositionType = PositionType<MeshType>;
+    using ScalarType   = ScalarType<MeshType>;
+    using FaceType     = ConstFaceType<MeshType>;
 
-    auto faceSphereIntersectionFilter = [&sphere](const FaceType& f) -> bool {
+    auto faceSphereIntersectionFilter = [&sphere](FaceType f) -> bool {
         return intersect(f, sphere);
     };
 
-    MeshType res = perFaceMeshFilter(m, faceSphereIntersectionFilter);
+    MeshType res = faceMeshFilter(m, faceSphereIntersectionFilter);
 
-    uint i = 0;
+    IndexType i = 0;
     while (i < res.faceContainerSize()) {
-        FaceType& f = res.face(i);
+        auto f = res.face(i);
+        if (f.deleted()) {
+            ++i;
+            continue;
+        }
 
         PositionType                      witness;
         std::pair<ScalarType, ScalarType> ires(0, 0);
 
         bool allIn = true;
-        for (const auto* v : f.vertices()) {
-            allIn = allIn && sphere.isInside(v->position());
+        for (auto&& v : f.vertices()) {
+            allIn = allIn && sphere.isInside(v.position());
         }
         if (!allIn && intersect(f, sphere, witness, ires)) {
             if (faceArea(f) > tol) {
-                uint v0 = res.addVertices(3);
-                uint v1 = v0 + 1;
-                uint v2 = v0 + 2;
-                uint fi = res.addFaces(4);
+                IndexType v0 = res.addVertices(3);
+                IndexType v1 = v0 + 1;
+                IndexType v2 = v0 + 2;
+                IndexType fi = res.addFaces(4);
 
-                FaceType& f = res.face(i);
+                auto currF = res.face(i);
 
-                res.vertex(v0).importFrom(*f.vertex(0), false);
+                res.vertex(v0).importFrom(currF.vertex(0), false);
                 res.vertex(v0).position() =
-                    (f.vertex(0)->position() + f.vertex(1)->position()) / 2;
-                res.vertex(v1).importFrom(*f.vertex(1), false);
+                    (currF.vertex(0).position() + currF.vertex(1).position()) /
+                    ScalarType(2);
+                res.vertex(v1).importFrom(currF.vertex(1), false);
                 res.vertex(v1).position() =
-                    (f.vertex(1)->position() + f.vertex(2)->position()) / 2;
-                res.vertex(v2).importFrom(*f.vertex(2), false);
+                    (currF.vertex(1).position() + currF.vertex(2).position()) /
+                    ScalarType(2);
+                res.vertex(v2).importFrom(currF.vertex(2), false);
                 res.vertex(v2).position() =
-                    (f.vertex(2)->position() + f.vertex(0)->position()) / 2;
+                    (currF.vertex(2).position() + currF.vertex(0).position()) /
+                    ScalarType(2);
 
-                res.face(fi).importFrom(f, false);
-                res.face(fi).setVertices(
-                    f.vertex(0), &res.vertex(v0), &res.vertex(v2));
-
-                ++fi;
-                res.face(fi).importFrom(f, false);
-                res.face(fi).setVertices(
-                    f.vertex(1), &res.vertex(v1), &res.vertex(v0));
+                res.face(fi).importFrom(currF, false);
+                res.face(fi).setVertices(currF.vertexIndex(0), v0, v2);
 
                 ++fi;
-                res.face(fi).importFrom(f, false);
-                res.face(fi).setVertices(
-                    &res.vertex(v0), &res.vertex(v1), &res.vertex(v2));
+                res.face(fi).importFrom(currF, false);
+                res.face(fi).setVertices(currF.vertexIndex(1), v1, v0);
 
                 ++fi;
-                res.face(fi).importFrom(f, false);
-                res.face(fi).setVertices(
-                    &res.vertex(v2), &res.vertex(v1), f.vertex(2));
+                res.face(fi).importFrom(currF, false);
+                res.face(fi).setVertices(v0, v1, v2);
+
+                ++fi;
+                res.face(fi).importFrom(currF, false);
+                res.face(fi).setVertices(v2, v1, currF.vertexIndex(2));
 
                 res.deleteFace(i);
             }
@@ -251,9 +249,16 @@ MeshType intersection(
 }
 
 /**
- * @copydoc intersection(const MeshType&, const PlaneType&)
+ * @brief Compute the intersection between a mesh and a ball.
  *
- * The tolerance is set as 1/10^5*2*pi*radius.
+ * Same as intersection(const MeshType&, const Sphere<SScalar>&, double), where
+ * the tolerance is set as 1/10^5*2*pi*radius.
+ *
+ * @note The returned mesh is a triangle soup
+ *
+ * @param m
+ * @param sphere
+ * @return
  *
  * @ingroup intersection_mesh
  */

@@ -88,10 +88,10 @@ inline void checkComments(std::istringstream& iss)
     REQUIRE(line == "####");
 }
 
-using Meshes         = std::pair<vcl::TriMesh, vcl::PolyMesh>;
-using Meshesf        = std::pair<vcl::TriMeshf, vcl::PolyMeshf>;
-using MeshesIndexed  = std::pair<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
-using MeshesIndexedf = std::pair<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf>;
+using Meshes    = std::pair<vcl::TriMesh, vcl::PolyMesh>;
+using Meshesf   = std::pair<vcl::TriMeshf, vcl::PolyMeshf>;
+using Meshes64  = std::pair<vcl::TriMesh64, vcl::PolyMesh64>;
+using Meshes64f = std::pair<vcl::TriMesh64f, vcl::PolyMesh64f>;
 
 // Test to load off from a istringstream
 TEMPLATE_TEST_CASE(
@@ -99,8 +99,8 @@ TEMPLATE_TEST_CASE(
     "",
     Meshes,
     Meshesf,
-    MeshesIndexed,
-    MeshesIndexedf)
+    Meshes64,
+    Meshes64f)
 {
     using TriMesh  = typename TestType::first_type;
     using PolyMesh = typename TestType::second_type;
@@ -151,8 +151,8 @@ TEMPLATE_TEST_CASE(
     "",
     Meshes,
     Meshesf,
-    MeshesIndexed,
-    MeshesIndexedf)
+    Meshes64,
+    Meshes64f)
 {
     using TriMesh  = typename TestType::first_type;
     using PolyMesh = typename TestType::second_type;
@@ -163,7 +163,7 @@ TEMPLATE_TEST_CASE(
 
         std::ostringstream oss;
         vcl::MeshInfo      i(tm);
-        i.setPerVertexNormal(false);
+        i.setVertexNormal(false);
         vcl::SaveSettings settings;
         settings.info = i;
         vcl::saveOff(tm, oss, settings);
@@ -186,7 +186,7 @@ TEMPLATE_TEST_CASE(
     SECTION("TriMesh - Cube (Normals)")
     {
         TriMesh tm = vcl::createCube<TriMesh>();
-        vcl::updatePerVertexNormals(tm);
+        vcl::updateVertexNormals(tm);
 
         std::ostringstream oss;
         vcl::saveOff(tm, oss);
@@ -209,10 +209,10 @@ TEMPLATE_TEST_CASE(
     SECTION("PolyMesh - Cube (Normals and Colors)")
     {
         PolyMesh pm = vcl::createCube<PolyMesh>();
-        vcl::updatePerVertexNormals(pm);
+        vcl::updateVertexNormals(pm);
 
-        pm.enablePerVertexColor();
-        vcl::setPerVertexColor(pm, vcl::Color::Blue);
+        pm.enableVertexColor();
+        vcl::setVertexColor(pm, vcl::Color::Blue);
 
         std::ostringstream oss;
         vcl::saveOff(pm, oss);

@@ -263,7 +263,7 @@ public:
         vcl::deserialize(is, mOpacity);
         mScale.deserialize(is);
         vcl::deserializeN(is, mRotation.coeffs().data(), 4);
-        vcl::deserializeN(is, mSHCoeffs.begin(), SH_COEFF_COUNT);
+        vcl::deserializeN(is, mSHCoeffs.data(), SH_COEFF_COUNT);
     }
 };
 

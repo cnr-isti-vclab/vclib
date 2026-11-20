@@ -35,18 +35,6 @@ void meshViewsStaticAsserts()
         "The view returned by pipe operation cm | views::vertices is not a "
         "valid range.");
 
-    static_assert(
-        vcl::VertexPointerRangeConcept<
-            decltype(m.vertices() | vcl::views::addrOf)>,
-        "The view returned by pipe operation m | views::reference is not a "
-        "VertexPointerRangeConcept.");
-
-    static_assert(
-        vcl::VertexPointerRangeConcept<
-            decltype(cm.vertices() | vcl::views::addrOf)>,
-        "The view returned by pipe operation cm | views::reference is not a "
-        "VertexPointerRangeConcept.");
-
     // assure that component ranges are ranges
     static_assert(
         std::ranges::range<decltype(m.vertices() | vcl::views::colors)>, "");
@@ -84,30 +72,18 @@ void meshViewsStaticAsserts()
             "valid range.");
 
         m.addFace();
-        auto&       f  = m.face(0);
-        const auto& cf = cm.face(0);
+        auto        f  = m.face(0);
+        const auto& cf = f;
 
         static_assert(
-            vcl::VertexRangeConcept<decltype(f.vertices() | vcl::views::deref)>,
+            vcl::VertexRangeConcept<decltype(f.vertices())>,
             "The view returned by f.vertices() is not a "
             "VertexRangeConcept.");
 
         static_assert(
-            vcl::VertexRangeConcept<
-                decltype(cf.vertices() | vcl::views::deref)>,
+            vcl::VertexRangeConcept<decltype(cf.vertices())>,
             "The view returned by cf.vertices() is not a "
             "VertexRangeConcept.");
-
-        // TODO: fix these
-        // static_assert(
-        //     vcl::VertexPointerRangeConcept<decltype(f.vertices())>,
-        //     "The view returned by f.vertices() is not a "
-        //     "VertexPointerRangeConcept.");
-
-        // static_assert(
-        //     vcl::VertexPointerRangeConcept<decltype(cf.vertices())>,
-        //     "The view returned by cf.vertices() is not a "
-        //     "VertexPointerRangeConcept.");
     }
 
     if constexpr (vcl::HasEdges<MeshType>) {

@@ -10,6 +10,7 @@
 
 #include <vclib/base/base.h>
 
+#include <limits>
 #include <vector>
 
 namespace vcl {
@@ -23,8 +24,8 @@ namespace vcl {
  * - for each position i:
  *   - newIndices[i] contains the new position of the element vec[i] after the
  *     compactness
- *   - newIndices[i] contains the value UINT_NULL if the element vec[i] must be
- *     deleted
+ *   - newIndices[i] contains the value NULL_INDEX<Index> if the
+ *     element vec[i] must be deleted
  * - the non-null elements of newIndices are unique and sorted in ascending
  *   order
  *
@@ -35,15 +36,15 @@ namespace vcl {
  * @param vec
  * @param newIndices
  */
-template<typename T, typename... Args>
+template<typename T, typename Index = uint, typename... Args>
 void compactVector(
-    std::vector<T, Args...>& vec,
-    const std::vector<uint>& newIndices)
+    std::vector<T, Args...>&  vec,
+    const std::vector<Index>& newIndices)
 {
     assert(vec.size() == newIndices.size());
-    uint newSize = 0;
-    for (uint i = 0; i < newIndices.size(); ++i) {
-        if (newIndices[i] != UINT_NULL) {
+    std::size_t newSize = 0;
+    for (std::size_t i = 0; i < newIndices.size(); ++i) {
+        if (newIndices[i] != NULL_INDEX<Index>) {
             ++newSize;
             if (newIndices[i] != i) {
                 // must move the element from position i to position
@@ -91,10 +92,11 @@ void compactVector(
  * // (vec[0] moved to position 2, vec[1] moved to position 0, etc.)
  * @endcode
  */
-template<typename T, typename... Args>
+template<typename T, typename Index = uint, typename... Args>
+requires std::unsigned_integral<Index>
 void permuteInPlace(
-    std::vector<T, Args...>& vec,
-    const std::vector<uint>& newIndices)
+    std::vector<T, Args...>&  vec,
+    const std::vector<Index>& newIndices)
 {
     using std::swap;
 
@@ -102,17 +104,17 @@ void permuteInPlace(
 
     std::vector<bool> visited(vec.size(), false);
 
-    for (uint i = 0; i < vec.size(); ++i) {
+    for (std::size_t i = 0; i < vec.size(); ++i) {
         if (visited[i] || newIndices[i] == i) {
             continue;
         }
 
-        uint current = i;
-        T    temp    = std::move(vec[i]);
+        std::size_t current = i;
+        T           temp    = std::move(vec[i]);
 
         while (!visited[current]) {
             visited[current] = true;
-            int next         = newIndices[current];
+            std::size_t next = newIndices[current];
             swap(temp, vec[next]);
             current = next;
         }

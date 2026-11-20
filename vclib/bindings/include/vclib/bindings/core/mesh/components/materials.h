@@ -25,23 +25,42 @@ void initMaterials(pybind11::class_<MeshType, Options...>& c)
 
     c.def("material_count", &MeshType::materialCount);
     c.def("texture_image_count", &MeshType::textureImageCount);
-    c.def(
-        "mesh_base_path",
-        py::overload_cast<>(&MeshType::meshBasePath, py::const_));
+    c.def("mesh_base_path", [](const MeshType& t) -> const std::string& {
+        return t.meshBasePath();
+    });
     c.def(
         "set_mesh_base_path",
         [](MeshType& t, const std::string& p) { t.meshBasePath() = p; },
         "path"_a);
-    c.def("material", py::overload_cast<uint>(&MeshType::material, py::const_));
+    c.def(
+        "material",
+        [](const MeshType& t, ushort i) -> const Material& {
+            if (i >= t.materialCount()) {
+                throw py::index_error();
+            }
+            return t.material(i);
+        },
+        py::return_value_policy::reference_internal);
     c.def(
         "set_material",
-        [](MeshType& t, uint i, const Material& m) { t.material(i) = m; },
+        [](MeshType& t, ushort i, const Material& m) {
+            if (i >= t.materialCount()) {
+                throw py::index_error();
+            }
+            t.material(i) = m;
+        },
         "index"_a,
         "material"_a);
-    c.def("texture_image", &MeshType::textureImage);
+    c.def(
+        "texture_image",
+        &MeshType::textureImage,
+        py::return_value_policy::reference_internal);
 
     c.def("clear_materials", &MeshType::clearMaterials);
-    c.def("push_material", &MeshType::pushMaterial);
+    c.def(
+        "push_material",
+        [](MeshType& t, const Material& m) { t.pushMaterial(m); },
+        "material"_a);
     c.def(
         "push_texture_image",
         [](MeshType& t, const std::string& path, const Image& img) {
@@ -50,7 +69,7 @@ void initMaterials(pybind11::class_<MeshType, Options...>& c)
         "texture_path"_a,
         "image"_a);
 
-    using MaterialView = decltype(MeshType().materials());
+    using MaterialView = decltype(std::declval<MeshType&>().materials());
 
     if (!registeredTypes.contains(typeid(MaterialView))) {
         // inner class that allows to iterate over textures
@@ -61,12 +80,30 @@ void initMaterials(pybind11::class_<MeshType, Options...>& c)
                 return py::make_iterator(v.begin(), v.end());
             },
             py::keep_alive<0, 1>());
+        v.def("__len__", [](const MaterialView& v) { return v.size(); });
+        v.def(
+            "__getitem__",
+            [](MaterialView& v, int i) -> const Material& {
+                int s = static_cast<int>(v.size());
+                if (i < 0) {
+                    i += s;
+                }
+                if (i < 0 || i >= s) {
+                    throw py::index_error();
+                }
+                return v[static_cast<uint>(i)];
+            },
+            py::return_value_policy::reference_internal);
         registeredTypes.insert(typeid(MaterialView));
     }
 
-    c.def("materials", py::overload_cast<>(&MeshType::materials));
+    c.def(
+        "materials",
+        [](MeshType& t) { return t.materials(); },
+        py::keep_alive<0, 1>());
 
-    using TextureImageView = decltype(MeshType().textureImages());
+    using TextureImageView =
+        decltype(std::declval<MeshType&>().textureImages());
 
     if (!registeredTypes.contains(typeid(TextureImageView))) {
         // inner class that allows to iterate over texture images
@@ -80,7 +117,10 @@ void initMaterials(pybind11::class_<MeshType, Options...>& c)
         registeredTypes.insert(typeid(TextureImageView));
     }
 
-    c.def("texture_images", py::overload_cast<>(&MeshType::textureImages));
+    c.def(
+        "texture_images",
+        [](MeshType& t) { return t.textureImages(); },
+        py::keep_alive<0, 1>());
 }
 
 } // namespace vcl::bind

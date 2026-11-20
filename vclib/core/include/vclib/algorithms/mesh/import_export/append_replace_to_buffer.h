@@ -9,8 +9,10 @@
 #define VCL_ALGORITHMS_MESH_IMPORT_EXPORT_APPEND_REPLACE_TO_BUFFER_H
 
 #include "detail.h"
+#include "vclib/mesh/requirements/contracts.h"
 
 #include <vclib/algorithms/mesh/sort.h>
+#include <vclib/algorithms/mesh/utility.h>
 
 #include <vclib/mesh.h>
 #include <vclib/space/complex.h>
@@ -59,11 +61,12 @@ namespace vcl {
  *
  * @code{.cpp}
  *
- * std::vector<std::pair<uint, uint>> vertWedgeMap;
- * std::list<uint> vertsToDuplicate;
- * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+ * using IndexType = IndexType<MeshType>;
+ * std::vector<std::pair<IndexType, uint>> vertWedgeMap;
+ * std::list<IndexType> vertsToDuplicate;
+ * std::list<std::list<std::pair<IndexType, uint>>> facesToReassign;
  *
- * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
+ * IndexType nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
  * std::vector<double> buffer((mesh.vertexCount() + nV) * 3);
@@ -80,27 +83,28 @@ namespace vcl {
  * @param[in] mesh: The mesh from which take the positions.
  * @param[in] vertsToDuplicate: The list of vertices to duplicate: each element
  * is the index of a vertex in the mesh, that must be appended to the buffer.
- * @param[in/out] buffer: The buffer where to append the duplicated vertices.
+ * @param[in,out] buffer: The buffer where to append the duplicated vertices.
  * @param[in] storage: The storage type of the matrix (row or column major).
  *
  * @ingroup append_replace_to_buffer
  */
 template<MeshConcept MeshType>
 void appendDuplicateVertexPositionsToBuffer(
-    const MeshType&        mesh,
-    const std::list<uint>& vertsToDuplicate,
-    auto*                  buffer,
-    MatrixStorageType      storage = MatrixStorageType::ROW_MAJOR)
+    const MeshType&                       mesh,
+    const std::list<IndexType<MeshType>>& vertsToDuplicate,
+    auto*                                 buffer,
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
 {
     using namespace detail;
+    using IndexType = IndexType<MeshType>;
 
     // no vertices to duplicate, do nothing
     if (vertsToDuplicate.empty())
         return;
 
-    const uint NUM_ROWS = mesh.vertexCount() + vertsToDuplicate.size();
+    const IndexType NUM_ROWS = mesh.vertexCount() + vertsToDuplicate.size();
 
-    for (uint i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
+    for (IndexType i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
         const auto& pos = mesh.vertex(v).position();
 
         at(buffer, i, 0, NUM_ROWS, 3, storage) = pos.x();
@@ -126,15 +130,16 @@ void appendDuplicateVertexPositionsToBuffer(
  *
  * @code{.cpp}
  *
- * std::vector<std::pair<uint, uint>> vertWedgeMap;
- * std::list<uint> vertsToDuplicate;
- * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+ * using IndexType = IndexType<MeshType>;
+ * std::vector<std::pair<IndexType, uint>> vertWedgeMap;
+ * std::list<IndexType> vertsToDuplicate;
+ * std::list<std::list<std::pair<IndexType, uint>>> facesToReassign;
  *
- * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
+ * IndexType nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  * uint lfs = vcl::largestFaceSize(mesh);
  *
- * std::vector<uint> buffer(mesh.faceCount() * lfs);
+ * std::vector<IndexType> buffer(mesh.faceCount() * lfs);
  * faceVertexIndicesToBuffer(mesh, buffer.data(), lfs);
  * replaceFaceVertexIndicesByVertexDuplicationToBuffer(mesh, vertsToDuplicate,
  *    faceToReassign, buffer.data(), lfs);
@@ -158,14 +163,16 @@ void appendDuplicateVertexPositionsToBuffer(
  */
 template<FaceMeshConcept MeshType>
 void replaceFaceVertexIndicesByVertexDuplicationToBuffer(
-    const MeshType&                                    mesh,
-    const std::list<uint>&                             vertsToDuplicate,
-    const std::list<std::list<std::pair<uint, uint>>>& facesToReassign,
-    auto*                                              buffer,
-    uint                                               largestFaceSize = 3,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
+    const MeshType&                       mesh,
+    const std::list<IndexType<MeshType>>& vertsToDuplicate,
+    const std::list<std::list<std::pair<IndexType<MeshType>, uint>>>&
+                      facesToReassign,
+    auto*             buffer,
+    uint              largestFaceSize = 3,
+    MatrixStorageType storage         = MatrixStorageType::ROW_MAJOR)
 {
     using namespace detail;
+    using IndexType = IndexType<MeshType>;
 
     // no vertices have been duplicated, do nothing
     if (vertsToDuplicate.empty())
@@ -173,14 +180,16 @@ void replaceFaceVertexIndicesByVertexDuplicationToBuffer(
 
     assert(vertsToDuplicate.size() == facesToReassign.size());
 
-    const uint NUM_ROWS = mesh.faceCount();
+    const IndexType NUM_ROWS        = mesh.faceCount();
+    auto            faceCompIndices = detail::faceCompactIndices(mesh, true);
 
-    uint vFirst = mesh.vertexCount();
-    uint vLast  = mesh.vertexCount() + vertsToDuplicate.size();
-    for (uint vi = vFirst; const auto& faces : facesToReassign) {
+    IndexType vFirst = mesh.vertexCount();
+    IndexType vLast  = mesh.vertexCount() + vertsToDuplicate.size();
+    for (IndexType vi = vFirst; const auto& faces : facesToReassign) {
         for (const auto& f : faces) {
-            at(buffer, f.first, f.second, NUM_ROWS, largestFaceSize, storage) =
-                vi;
+            IndexType fRow =
+                faceCompIndices.empty() ? f.first : faceCompIndices[f.first];
+            at(buffer, fRow, f.second, NUM_ROWS, largestFaceSize, storage) = vi;
         }
         ++vi;
     }
@@ -197,22 +206,23 @@ void replaceFaceVertexIndicesByVertexDuplicationToBuffer(
  *
  * Typical usage of this function is after the @ref
  * verticesToDuplicateByWedgeTexCoordsCount function and along with @ref
- * triangulatedFaceIndicesToBuffer function that export triangulated face
+ * triangulatedFaceVertexIndicesToBuffer function that export triangulated face
  * indices. e.g.:
  *
  * @code{.cpp}
  *
- * std::vector<std::pair<uint, uint>> vertWedgeMap;
- * std::list<uint> vertsToDuplicate;
- * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+ * using IndexType = IndexType<MeshType>;
+ * std::vector<std::pair<IndexType, uint>> vertWedgeMap;
+ * std::list<IndexType> vertsToDuplicate;
+ * std::list<std::list<std::pair<IndexType, uint>>> facesToReassign;
  * TriPolyIndexBiMap indexMap;
  *
- * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
+ * IndexType nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
- * uint numTris = vcl::triangulatedFaceCount(myMesh);
+ * IndexType numTris = vcl::triangulatedFaceCount(myMesh);
  *
- * std::vector<uint> buffer(numTris * 3);
+ * std::vector<IndexType> buffer(numTris * 3);
  * triangulatedFaceVertexIndicesToBuffer(mesh, buffer.data(), indexMap);
  * replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(mesh,
  *    vertsToDuplicate, faceToReassign, indexMap, buffer.data());
@@ -235,14 +245,16 @@ void replaceFaceVertexIndicesByVertexDuplicationToBuffer(
  */
 template<FaceMeshConcept MeshType>
 void replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
-    const MeshType&                                    mesh,
-    const std::list<uint>&                             vertsToDuplicate,
-    const std::list<std::list<std::pair<uint, uint>>>& facesToReassign,
-    const TriPolyIndexBiMap&                           indexMap,
-    auto*                                              buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
+    const MeshType&                       mesh,
+    const std::list<IndexType<MeshType>>& vertsToDuplicate,
+    const std::list<std::list<std::pair<IndexType<MeshType>, uint>>>&
+                             facesToReassign,
+    const TriPolyIndexBiMap& indexMap,
+    auto*                    buffer,
+    MatrixStorageType        storage = MatrixStorageType::ROW_MAJOR)
 {
     using namespace detail;
+    using IndexType = IndexType<MeshType>;
 
     // no vertices have been duplicated, do nothing
     if (vertsToDuplicate.empty())
@@ -250,10 +262,11 @@ void replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
 
     assert(vertsToDuplicate.size() == facesToReassign.size());
 
-    uint vFirst = mesh.vertexCount();
-    uint vLast  = mesh.vertexCount() + vertsToDuplicate.size();
+    IndexType vFirst = mesh.vertexCount();
+    IndexType vLast  = mesh.vertexCount() + vertsToDuplicate.size();
 
-    const uint NUM_ROWS = indexMap.triangleCount();
+    const IndexType NUM_ROWS        = indexMap.triangleCount();
+    auto            vertCompIndices = detail::vertCompactIndices(mesh, true);
 
     // the facesToReassign lists for each vertex contain pairs that in the
     // second element store the index of the vertex in the face. However, the
@@ -261,20 +274,23 @@ void replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
     // to look into the triangles generated for the face (first elem of the
     // pair) and look for the vertex index to set (that is the vertex index
     // stored in the vertsToDuplicate list).
-    for (uint vi = vFirst; const auto& [vert, faces] :
-                           std::views::zip(vertsToDuplicate, facesToReassign)) {
+    for (IndexType vi = vFirst; const auto& [vert, faces] : std::views::zip(
+                                    vertsToDuplicate, facesToReassign)) {
         // vert is the vertex index in the mesh that we need to reassign with
         // the index vi in the buffer
+        IndexType targetVert =
+            vertCompIndices.empty() ? vert : vertCompIndices[vert];
 
         // for each face f that has at least a vertex to reassign
         for (const auto& f : faces) {
             // get the triangle indices of the face using the index map
-            uint tBegin = indexMap.triangleBegin(f.first);
-            uint tEnd   = tBegin + indexMap.triangleCount(f.first);
-            for (uint t = tBegin; t < tEnd; ++t) { // look into the triangles
+            IndexType tBegin = indexMap.triangleBegin(f.first);
+            IndexType tEnd   = tBegin + indexMap.triangleCount(f.first);
+            for (IndexType t = tBegin; t < tEnd;
+                 ++t) {                        // look into the triangles
                 for (uint j = 0; j < 3; ++j) { // for each vertex of triangle
                     auto& triVert = at(buffer, t, j, NUM_ROWS, 3, storage);
-                    if (triVert == vert) {
+                    if (triVert == targetVert) {
                         triVert = vi;
                     }
                 }
@@ -299,28 +315,30 @@ void replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
  * triangles in the same order of the faces in the mesh.
  *
  * @param[in] mesh: The input mesh.
- * @param[in/out] buffer: The buffer where the face vertex indices are stored
+ * @param[in,out] buffer: The buffer where the face vertex indices are stored
  * and must be permuted. The buffer is modified in place.
  * @param[in] func: The face comparator function that defines the new order of
  * the faces. The function must take as input two faces and return true if the
  * first face must be placed before the second face in the new order.
- * @param[in/out] indexMap: The map from triangle index to face index. The
+ * @param[in,out] indexMap: The map from triangle index to face index. The
  * function updates the map to keep it consistent with the new order of the
  * triangles in the buffer.
  */
 template<FaceMeshConcept MeshType>
 void permuteFaceVertexIndicesByFunctionToBuffer(
-    const MeshType&                           mesh,
-    auto*                                     buffer,
-    const std::function<bool(
-        const typename MeshType::FaceType&,
-        const typename MeshType::FaceType&)>& func,
-    TriPolyIndexBiMap&                        indexMap = detail::indexMap)
+    const MeshType& mesh,
+    auto*           buffer,
+    const std::function<bool(ConstFaceType<MeshType>, ConstFaceType<MeshType>)>&
+                       func,
+    TriPolyIndexBiMap& indexMap = detail::indexMap)
 {
+    using IndexType         = IndexType<MeshType>;
+    using BufferElementType = std::remove_cvref_t<decltype(*buffer)>;
+
     // get the list of face indices sorted by material ID and using the given
     // face comparator function. The result contains original container indices
     // of non-deleted faces in sorted order:
-    std::vector<uint> sortedFaceContainerIndices =
+    auto sortedFaceContainerIndices =
         sortFaceIndicesByFunction(mesh, func, false);
 
     // sortedFaceContainerIndices[newPos] = originalContainerIndex
@@ -329,9 +347,9 @@ void permuteFaceVertexIndicesByFunctionToBuffer(
     bool isIndexMapEmpty = indexMap.triangleCount() == 0;
 
     // temporary copy of the buffer
-    uint buffSize =
+    IndexType buffSize =
         isIndexMapEmpty ? mesh.faceCount() : indexMap.triangleCount();
-    std::vector<uint> bufferCopy(buffSize * 3);
+    std::vector<BufferElementType> bufferCopy(buffSize * 3);
 
     // temporary indexmap (not used if input map is empty)
     TriPolyIndexBiMap indexMapCopy;
@@ -339,14 +357,19 @@ void permuteFaceVertexIndicesByFunctionToBuffer(
     if (!isIndexMapEmpty)
         indexMapCopy.reserve(indexMap.triangleCount(), indexMap.polygonCount());
 
-    uint copiedTriangles = 0;
+    IndexType copiedTriangles = 0;
+    auto      faceCompIndices = detail::faceCompactIndices(mesh, true);
 
-    for (uint i = 0; i < sortedFaceContainerIndices.size(); ++i) {
+    for (std::size_t i = 0; i < sortedFaceContainerIndices.size(); ++i) {
         // place the triangles associated to the face at new position i
-        uint polyIndex = sortedFaceContainerIndices[i];
-        uint firstTri =
-            isIndexMapEmpty ? polyIndex : indexMap.triangleBegin(polyIndex);
-        uint nTris = isIndexMapEmpty ? 1 : indexMap.triangleCount(polyIndex);
+        IndexType polyIndex = sortedFaceContainerIndices[i];
+        IndexType firstTri =
+            isIndexMapEmpty ?
+                (faceCompIndices.empty() ? polyIndex :
+                                           faceCompIndices[polyIndex]) :
+                indexMap.triangleBegin(polyIndex);
+        IndexType nTris =
+            isIndexMapEmpty ? 1 : indexMap.triangleCount(polyIndex);
 
         std::copy(
             buffer + firstTri * 3,
@@ -354,7 +377,8 @@ void permuteFaceVertexIndicesByFunctionToBuffer(
             bufferCopy.data() + copiedTriangles * 3);
 
         if (!isIndexMapEmpty) {
-            for (uint t = copiedTriangles; t < copiedTriangles + nTris; ++t) {
+            for (IndexType t = copiedTriangles; t < copiedTriangles + nTris;
+                 ++t) {
                 indexMapCopy.insert(t, polyIndex);
             }
         }
@@ -382,16 +406,18 @@ void permuteFaceVertexIndicesByFunctionToBuffer(
  *
  * @code{.cpp}
  *
- * std::vector<std::pair<uint, uint>> vertWedgeMap;
- * std::list<uint> vertsToDuplicate;
- * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+ * using IndexType = IndexType<MeshType>;
+ * std::vector<std::pair<IndexType, uint>> vertWedgeMap;
+ * std::list<IndexType> vertsToDuplicate;
+ * std::list<std::list<std::pair<IndexType, uint>>> facesToReassign;
  *
- * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
+ * IndexType nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
- * std::vector<uint> buffer(mesh.vertexCount() + nV);
+ * std::vector<bool> buffer(mesh.vertexCount() + nV);
  * vertexSelectionToBuffer(mesh, buffer.data());
- * appendDuplicateVertexCoordsToBuffer(mesh, vertsToDuplicate, buffer.data());
+ * appendDuplicateVertexSelectionToBuffer(mesh, vertsToDuplicate,
+ * buffer.data());
  * @endcode
  *
  * @note The buffer must be preallocated with the correct size (total number of
@@ -409,15 +435,17 @@ void permuteFaceVertexIndicesByFunctionToBuffer(
  */
 template<MeshConcept MeshType>
 void appendDuplicateVertexSelectionToBuffer(
-    const MeshType&        mesh,
-    const std::list<uint>& vertsToDuplicate,
-    auto*                  buffer)
+    const MeshType&                       mesh,
+    const std::list<IndexType<MeshType>>& vertsToDuplicate,
+    auto*                                 buffer)
 {
+    using IndexType = IndexType<MeshType>;
+
     // no vertices to duplicate, do nothing
     if (vertsToDuplicate.empty())
         return;
 
-    for (uint i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
+    for (IndexType i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
         buffer[i] = mesh.vertex(v).selected();
         ++i;
     }
@@ -435,11 +463,12 @@ void appendDuplicateVertexSelectionToBuffer(
  *
  * @code{.cpp}
  *
- * std::vector<std::pair<uint, uint>> vertWedgeMap;
- * std::list<uint> vertsToDuplicate;
- * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+ * using IndexType = IndexType<MeshType>;
+ * std::vector<std::pair<IndexType, uint>> vertWedgeMap;
+ * std::list<IndexType> vertsToDuplicate;
+ * std::list<std::list<std::pair<IndexType, uint>>> facesToReassign;
  *
- * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
+ * IndexType nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
  * std::vector<double> buffer((mesh.vertexCount() + nV) * 3);
@@ -464,23 +493,24 @@ void appendDuplicateVertexSelectionToBuffer(
  */
 template<MeshConcept MeshType>
 void appendDuplicateVertexNormalsToBuffer(
-    const MeshType&        mesh,
-    const std::list<uint>& vertsToDuplicate,
-    auto*                  buffer,
-    bool                   normalize = false,
-    MatrixStorageType      storage   = MatrixStorageType::ROW_MAJOR)
+    const MeshType&                       mesh,
+    const std::list<IndexType<MeshType>>& vertsToDuplicate,
+    auto*                                 buffer,
+    bool                                  normalize = false,
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
 {
     using namespace detail;
+    using IndexType = IndexType<MeshType>;
 
     // no vertices to duplicate, do nothing
     if (vertsToDuplicate.empty())
         return;
 
-    requirePerVertexNormal(mesh);
+    requireVertexNormal(mesh);
 
-    const uint NUM_ROWS = mesh.vertexCount() + vertsToDuplicate.size();
+    const IndexType NUM_ROWS = mesh.vertexCount() + vertsToDuplicate.size();
 
-    for (uint i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
+    for (IndexType i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
         auto normal = mesh.vertex(v).normal();
         if (normalize)
             normal.normalize();
@@ -504,11 +534,12 @@ void appendDuplicateVertexNormalsToBuffer(
  *
  * @code{.cpp}
  *
- * std::vector<std::pair<uint, uint>> vertWedgeMap;
- * std::list<uint> vertsToDuplicate;
- * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+ * using IndexType = IndexType<MeshType>;
+ * std::vector<std::pair<IndexType, uint>> vertWedgeMap;
+ * std::list<IndexType> vertsToDuplicate;
+ * std::list<std::list<std::pair<IndexType, uint>>> facesToReassign;
  *
- * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
+ * IndexType nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
  * std::vector<uint> buffer((mesh.vertexCount() + nV) * 4);
@@ -532,24 +563,25 @@ void appendDuplicateVertexNormalsToBuffer(
  */
 template<MeshConcept MeshType>
 void appendDuplicateVertexColorsToBuffer(
-    const MeshType&        mesh,
-    const std::list<uint>& vertsToDuplicate,
-    auto*                  buffer,
-    Color::Representation  representation = Color::Representation::INT_0_255,
-    MatrixStorageType      storage        = MatrixStorageType::ROW_MAJOR)
+    const MeshType&                       mesh,
+    const std::list<IndexType<MeshType>>& vertsToDuplicate,
+    auto*                                 buffer,
+    Color::Representation representation = Color::Representation::INT_0_255,
+    MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR)
 {
     using namespace detail;
+    using IndexType = IndexType<MeshType>;
 
     // no vertices to duplicate, do nothing
     if (vertsToDuplicate.empty())
         return;
 
-    requirePerVertexColor(mesh);
+    requireVertexColor(mesh);
 
-    const bool R_INT    = representation == Color::Representation::INT_0_255;
-    const uint NUM_ROWS = mesh.vertexCount() + vertsToDuplicate.size();
+    const bool      R_INT = representation == Color::Representation::INT_0_255;
+    const IndexType NUM_ROWS = mesh.vertexCount() + vertsToDuplicate.size();
 
-    for (uint i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
+    for (IndexType i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
         const auto& c                          = mesh.vertex(v).color();
         at(buffer, i, 0, NUM_ROWS, 4, storage) = R_INT ? c.red() : c.redF();
         at(buffer, i, 1, NUM_ROWS, 4, storage) = R_INT ? c.green() : c.greenF();
@@ -570,15 +602,16 @@ void appendDuplicateVertexColorsToBuffer(
  *
  * Typical usage of this function is after the @ref
  * verticesToDuplicateByWedgeTexCoordsCount function and along with the @ref
- * vertexColorToBuffer function:
+ * vertexColorsToBuffer function:
  *
  * @code{.cpp}
  *
- * std::vector<std::pair<uint, uint>> vertWedgeMap;
- * std::list<uint> vertsToDuplicate;
- * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+ * using IndexType = IndexType<MeshType>;
+ * std::vector<std::pair<IndexType, uint>> vertWedgeMap;
+ * std::list<IndexType> vertsToDuplicate;
+ * std::list<std::list<std::pair<IndexType, uint>>> facesToReassign;
  *
- * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
+ * IndexType nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
  * std::vector<double> buffer(mesh.vertexCount() + nV);
@@ -601,18 +634,20 @@ void appendDuplicateVertexColorsToBuffer(
  */
 template<MeshConcept MeshType>
 void appendDuplicateVertexColorsToBuffer(
-    const MeshType&        mesh,
-    const std::list<uint>& vertsToDuplicate,
-    auto*                  buffer,
-    Color::Format          colorFormat)
+    const MeshType&                       mesh,
+    const std::list<IndexType<MeshType>>& vertsToDuplicate,
+    auto*                                 buffer,
+    Color::Format                         colorFormat)
 {
+    using IndexType = IndexType<MeshType>;
+
     // no vertices to duplicate, do nothing
     if (vertsToDuplicate.empty())
         return;
 
-    requirePerVertexColor(mesh);
+    requireVertexColor(mesh);
 
-    for (uint i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
+    for (IndexType i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
         const auto& c = mesh.vertex(v).color();
         switch (colorFormat) {
             using enum Color::Format;
@@ -637,11 +672,12 @@ void appendDuplicateVertexColorsToBuffer(
  *
  * @code{.cpp}
  *
- * std::vector<std::pair<uint, uint>> vertWedgeMap;
- * std::list<uint> vertsToDuplicate;
- * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+ * using IndexType = IndexType<MeshType>;
+ * std::vector<std::pair<IndexType, uint>> vertWedgeMap;
+ * std::list<IndexType> vertsToDuplicate;
+ * std::list<std::list<std::pair<IndexType, uint>>> facesToReassign;
  *
- * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
+ * IndexType nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
  * std::vector<double> buffer(mesh.vertexCount() + nV);
@@ -663,17 +699,19 @@ void appendDuplicateVertexColorsToBuffer(
  */
 template<MeshConcept MeshType>
 void appendDuplicateVertexQualityToBuffer(
-    const MeshType&        mesh,
-    const std::list<uint>& vertsToDuplicate,
-    auto*                  buffer)
+    const MeshType&                                mesh,
+    const std::list<typename MeshType::IndexType>& vertsToDuplicate,
+    auto*                                          buffer)
 {
+    using IndexType = IndexType<MeshType>;
+
     // no vertices to duplicate, do nothing
     if (vertsToDuplicate.empty())
         return;
 
-    requirePerVertexQuality(mesh);
+    requireVertexQuality(mesh);
 
-    for (uint i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
+    for (IndexType i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
         buffer[i] = mesh.vertex(v).quality();
         ++i;
     }
@@ -693,11 +731,12 @@ void appendDuplicateVertexQualityToBuffer(
  *
  * @code{.cpp}
  *
- * std::vector<std::pair<uint, uint>> vertWedgeMap;
- * std::list<uint> vertsToDuplicate;
- * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+ * using IndexType = IndexType<MeshType>;
+ * std::vector<std::pair<IndexType, uint>> vertWedgeMap;
+ * std::list<IndexType> vertsToDuplicate;
+ * std::list<std::list<std::pair<IndexType, uint>>> facesToReassign;
  *
- * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
+ * IndexType nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
  * std::vector<double> buffer((mesh.vertexCount() + nV) * 2);
@@ -722,22 +761,23 @@ void appendDuplicateVertexQualityToBuffer(
  */
 template<MeshConcept MeshType>
 void appendDuplicateVertexTexCoordsToBuffer(
-    const MeshType&        mesh,
-    const std::list<uint>& vertsToDuplicate,
-    auto*                  buffer,
-    MatrixStorageType      storage = MatrixStorageType::ROW_MAJOR)
+    const MeshType&                       mesh,
+    const std::list<IndexType<MeshType>>& vertsToDuplicate,
+    auto*                                 buffer,
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
 {
     using namespace detail;
+    using IndexType = IndexType<MeshType>;
 
     // no vertices to duplicate, do nothing
     if (vertsToDuplicate.empty())
         return;
 
-    requirePerVertexTexCoord(mesh);
+    requireVertexTexCoord(mesh);
 
-    const uint NUM_ROWS = mesh.vertexCount() + vertsToDuplicate.size();
+    const IndexType NUM_ROWS = mesh.vertexCount() + vertsToDuplicate.size();
 
-    for (uint i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
+    for (IndexType i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
         const auto& t                          = mesh.vertex(v).texCoord();
         at(buffer, i, 0, NUM_ROWS, 2, storage) = t.u();
         at(buffer, i, 1, NUM_ROWS, 2, storage) = t.v();
@@ -760,15 +800,16 @@ void appendDuplicateVertexTexCoordsToBuffer(
  *
  * Typical usage of this function is after the @ref
  * verticesToDuplicateByWedgeTexCoordsCount function and along with the @ref
- * vertexTangentToBuffer function:
+ * vertexTangentsToBuffer function:
  *
  * @code{.cpp}
  *
- * std::vector<std::pair<uint, uint>> vertWedgeMap;
- * std::list<uint> vertsToDuplicate;
- * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+ * using IndexType = IndexType<MeshType>;
+ * std::vector<std::pair<IndexType, uint>> vertWedgeMap;
+ * std::list<IndexType> vertsToDuplicate;
+ * std::list<std::list<std::pair<IndexType, uint>>> facesToReassign;
  *
- * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
+ * IndexType nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
  * std::vector<double> buffer((mesh.vertexCount() + nV) * 4);
@@ -795,24 +836,25 @@ void appendDuplicateVertexTexCoordsToBuffer(
  */
 template<MeshConcept MeshType>
 void appendDuplicateVertexTangentsToBuffer(
-    const MeshType&        mesh,
-    const std::list<uint>& vertsToDuplicate,
-    auto*                  buffer,
-    bool                   storeHandednessAsW = true,
-    MatrixStorageType      storage            = MatrixStorageType::ROW_MAJOR)
+    const MeshType&                       mesh,
+    const std::list<IndexType<MeshType>>& vertsToDuplicate,
+    auto*                                 buffer,
+    bool                                  storeHandednessAsW = true,
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
 {
     using namespace detail;
+    using IndexType = IndexType<MeshType>;
 
     // no vertices to duplicate, do nothing
     if (vertsToDuplicate.empty())
         return;
 
-    requirePerVertexTangent(mesh);
+    requireVertexTangent(mesh);
 
-    const uint NUM_ROWS = mesh.vertexCount() + vertsToDuplicate.size();
-    const uint NUM_COLS = storeHandednessAsW ? 4 : 3;
+    const IndexType NUM_ROWS = mesh.vertexCount() + vertsToDuplicate.size();
+    const uint      NUM_COLS = storeHandednessAsW ? 4 : 3;
 
-    for (uint i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
+    for (IndexType i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
         const auto& t = mesh.vertex(v).tangent();
 
         at(buffer, i, 0, NUM_ROWS, NUM_COLS, storage) = t.x();
@@ -840,11 +882,12 @@ void appendDuplicateVertexTangentsToBuffer(
  *
  * @code{.cpp}
  *
- * std::vector<std::pair<uint, uint>> vertWedgeMap;
- * std::list<uint> vertsToDuplicate;
- * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+ * using IndexType = IndexType<MeshType>;
+ * std::vector<std::pair<IndexType, uint>> vertWedgeMap;
+ * std::list<IndexType> vertsToDuplicate;
+ * std::list<std::list<std::pair<IndexType, uint>>> facesToReassign;
  *
- * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
+ * IndexType nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
  * std::vector<ushort> buffer(mesh.vertexCount() + nV);
@@ -868,17 +911,19 @@ void appendDuplicateVertexTangentsToBuffer(
  */
 template<MeshConcept MeshType>
 void appendDuplicateVertexMaterialIndicesToBuffer(
-    const MeshType&        mesh,
-    const std::list<uint>& vertsToDuplicate,
-    auto*                  buffer)
+    const MeshType&                       mesh,
+    const std::list<IndexType<MeshType>>& vertsToDuplicate,
+    auto*                                 buffer)
 {
+    using IndexType = IndexType<MeshType>;
+
     // no vertices to duplicate, do nothing
     if (vertsToDuplicate.empty())
         return;
 
-    requirePerVertexMaterialIndex(mesh);
+    requireVertexMaterialIndex(mesh);
 
-    for (uint i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
+    for (IndexType i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
         buffer[i] = mesh.vertex(v).materialIndex();
         ++i;
     }

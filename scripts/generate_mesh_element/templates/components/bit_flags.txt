@@ -1,0 +1,6 @@
+//@concepts
+template<typename T>
+concept HasBitFlags = comp::HasBitFlags<T>;
+//@aliases
+/* Port BitFlags class into %EL_NS% namespace */
+using BitFlags = comp::BitFlags;

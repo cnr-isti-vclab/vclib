@@ -9,10 +9,10 @@
 #include "nearest.h"
 #include "sphere.h"
 
-using Meshes         = std::tuple<vcl::TriMesh, vcl::PolyMesh>;
-using Meshesf        = std::tuple<vcl::TriMeshf, vcl::PolyMeshf>;
-using MeshesIndexed  = std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
-using MeshesIndexedf = std::tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf>;
+using Meshes    = std::tuple<vcl::TriMesh, vcl::PolyMesh>;
+using Meshesf   = std::tuple<vcl::TriMeshf, vcl::PolyMeshf>;
+using Meshes64  = std::tuple<vcl::TriMesh64, vcl::PolyMesh64>;
+using Meshes64f = std::tuple<vcl::TriMesh64f, vcl::PolyMesh64f>;
 
 static const vcl::uint N_POINTS_TEST = 50;
 
@@ -21,8 +21,8 @@ TEMPLATE_TEST_CASE(
     "",
     Meshes,
     Meshesf,
-    MeshesIndexed,
-    MeshesIndexedf)
+    Meshes64,
+    Meshes64f)
 {
     using TriMesh  = std::tuple_element_t<0, TestType>;
     using PolyMesh = std::tuple_element_t<1, TestType>;
@@ -33,7 +33,7 @@ TEMPLATE_TEST_CASE(
 
     SECTION("TriMesh")
     {
-        using PointType = TriMesh::VertexType::PositionType;
+        using PointType = vcl::PositionType<TriMesh>;
 
         std::size_t seed = std::random_device()();
 
@@ -56,7 +56,7 @@ TEMPLATE_TEST_CASE(
 
     SECTION("PolyMesh")
     {
-        using PointType = PolyMesh::VertexType::PositionType;
+        using PointType = vcl::PositionType<PolyMesh>;
 
         std::size_t seed = std::random_device()();
 
@@ -83,8 +83,8 @@ TEMPLATE_TEST_CASE(
     "",
     Meshes,
     Meshesf,
-    MeshesIndexed,
-    MeshesIndexedf)
+    Meshes64,
+    Meshes64f)
 {
     using TriMesh  = std::tuple_element_t<0, TestType>;
     using PolyMesh = std::tuple_element_t<1, TestType>;
@@ -97,7 +97,7 @@ TEMPLATE_TEST_CASE(
 
     SECTION("TriMesh")
     {
-        using PointType = TriMesh::VertexType::PositionType;
+        using PointType = vcl::PositionType<TriMesh>;
 
         std::size_t seed = std::random_device()();
 
@@ -121,7 +121,7 @@ TEMPLATE_TEST_CASE(
 
     SECTION("PolyMesh")
     {
-        using PointType = PolyMesh::VertexType::PositionType;
+        using PointType = vcl::PositionType<PolyMesh>;
 
         std::size_t seed = std::random_device()();
 
@@ -149,8 +149,8 @@ TEMPLATE_TEST_CASE(
     "",
     Meshes,
     Meshesf,
-    MeshesIndexed,
-    MeshesIndexedf)
+    Meshes64,
+    Meshes64f)
 {
     using TriMesh  = std::tuple_element_t<0, TestType>;
     using PolyMesh = std::tuple_element_t<1, TestType>;
@@ -161,7 +161,7 @@ TEMPLATE_TEST_CASE(
 
     SECTION("TriMesh")
     {
-        using PointType  = TriMesh::VertexType::PositionType;
+        using PointType  = vcl::PositionType<TriMesh>;
         using ScalarType = PointType::ScalarType;
         using SphereType = Sphere<ScalarType>;
 
@@ -186,7 +186,7 @@ TEMPLATE_TEST_CASE(
 
     SECTION("PolyMesh")
     {
-        using PointType  = PolyMesh::VertexType::PositionType;
+        using PointType  = vcl::PositionType<PolyMesh>;
         using ScalarType = PointType::ScalarType;
         using SphereType = Sphere<ScalarType>;
 

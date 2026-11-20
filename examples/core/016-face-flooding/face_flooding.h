@@ -17,35 +17,37 @@
 // to find all connected faces that satisfy the selection condition, using a
 // depth-first search approach.
 
-auto faceFlooding()
+inline auto faceFlooding()
 {
     std::cout << "=== VCLib Example 016: Face Flooding ===\n\n";
+
+    using IndexType = vcl::TriMesh::IndexType;
 
     // Load mesh
     vcl::TriMesh m =
         vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
     // Enable required components
-    m.enablePerFaceAdjacentFaces();
-    m.enablePerFaceColor();
+    m.enableFaceAdjacentFaces();
+    m.enableFaceColor();
 
     // Update topology and normals
-    vcl::updatePerFaceAdjacentFaces(m);
-    vcl::updatePerVertexAndFaceNormals(m);
+    vcl::updateFaceAdjacentFaces(m);
+    vcl::updateVertexAndFaceNormals(m);
     vcl::updateBoundingBox(m);
 
     // Initialize face colors
-    vcl::setPerFaceColor(m, vcl::Color::LightGray);
+    vcl::setFaceColor(m, vcl::Color::LightGray);
 
     std::cout << "Mesh loaded: " << m.faceCount() << " faces\n";
 
     // Custom flooding function: select faces with normal pointing upward
-    auto upwardFacingSelector = [](const vcl::TriMesh::Face& f) {
+    auto upwardFacingSelector = [](vcl::TriMesh::ConstFace f) {
         return f.normal().y() > 0.5; // faces pointing significantly upward
     };
 
     // Find a seed face that satisfies our condition
-    vcl::uint seedFaceId = vcl::UINT_NULL;
+    IndexType seedFaceId = m.NULL_INDEX;
     for (const auto& f : m.faces()) {
         if (upwardFacingSelector(f)) {
             seedFaceId = f.index();
@@ -53,7 +55,7 @@ auto faceFlooding()
         }
     }
 
-    if (seedFaceId == vcl::UINT_NULL) {
+    if (seedFaceId == m.NULL_INDEX) {
         std::cout << "No suitable seed face found!\n";
         return std::make_tuple(m);
         ;
@@ -68,9 +70,9 @@ auto faceFlooding()
         vcl::floodFacePatch(m.face(seedFaceId), upwardFacingSelector);
 
     // Color flooded faces in green
-    for (const auto* fPtr : floodedFaces) {
-        if (fPtr->index() != seedFaceId) {
-            m.face(fPtr->index()).color() = vcl::Color::Green;
+    for (auto&& ff : floodedFaces) {
+        if (ff.index() != seedFaceId) {
+            m.face(ff.index()).color() = vcl::Color::Green;
         }
     }
 

@@ -32,7 +32,7 @@ def mesh_normals():
     print("------------------")
 
     # Calculate face normals
-    vcl.update_per_face_normals(mesh)
+    vcl.update_face_normals(mesh)
     print("Face normals calculated.")
 
     # Show normals for first few faces
@@ -47,30 +47,30 @@ def mesh_normals():
 
     # 2.1 Basic vertex normals (area weighted)
     print("\n2.1 Basic Vertex Normals (area weighted):")
-    vcl.update_per_vertex_normals(mesh)
+    vcl.update_vertex_normals(mesh)
     print("Basic vertex normals calculated.")
 
     # Show normal for first vertex
     # Store this result for comparison
-    basic_normal = mesh.vertex(0).normal()
+    basic_normal = mesh.vertex(0).normal().copy()
     print(f"First vertex normal: {basic_normal}")
 
     # 2.2 Vertex normals from face normals (uniform weight)
     print("\n2.2 Vertex Normals from Face Normals (uniform weight):")
-    vcl.update_per_vertex_normals_from_face_normals(mesh)
-    uniform_normal = mesh.vertex(0).normal()
+    vcl.update_vertex_normals_from_face_normals(mesh)
+    uniform_normal = mesh.vertex(0).normal().copy()
     print(f"First vertex normal: {uniform_normal}")
 
     # 2.3 Angle weighted vertex normals
     print("\n2.3 Angle Weighted Vertex Normals:")
-    vcl.update_per_vertex_normals_angle_weighted(mesh)
-    angle_normal = mesh.vertex(0).normal()
+    vcl.update_vertex_normals_angle_weighted(mesh)
+    angle_normal = mesh.vertex(0).normal().copy()
     print(f"First vertex normal: {angle_normal}")
 
     # 2.4 Nelson-Max weighted vertex normals
     print("\n2.4 Nelson-Max Weighted Vertex Normals:")
-    vcl.update_per_vertex_normals_nelson_max_weighted(mesh)
-    nelson_max_normal = mesh.vertex(0).normal()
+    vcl.update_vertex_normals_nelson_max_weighted(mesh)
+    nelson_max_normal = mesh.vertex(0).normal().copy()
     print(f"First vertex normal: {nelson_max_normal}")
 
     # Compare the different methods
@@ -95,20 +95,20 @@ def mesh_normals():
     flip_matrix[2, 2] = -1
 
     # Store original normal for comparison
-    original_face_normal = mesh.face(0).normal()
+    original_face_normal = mesh.face(0).normal().copy()
     print(f"Original face 0 normal: {original_face_normal}")
 
     # Apply transformation to face normals
-    vcl.multiply_per_face_normals_by_matrix(mesh, flip_matrix)
+    vcl.multiply_face_normals_by_matrix(mesh, flip_matrix)
 
     flipped_face_normal = mesh.face(0).normal()
     print(f"Flipped face 0 normal: {flipped_face_normal}")
 
     # Apply transformation to vertex normals
-    original_vertex_normal = mesh.vertex(0).normal()
+    original_vertex_normal = mesh.vertex(0).normal().copy()
     print(f"Original vertex 0 normal: {original_vertex_normal}")
 
-    vcl.multiply_per_vertex_normals_by_matrix(mesh, flip_matrix)
+    vcl.multiply_vertex_normals_by_matrix(mesh, flip_matrix)
 
     flipped_vertex_normal = mesh.vertex(0).normal()
     print(f"Flipped vertex 0 normal: {flipped_vertex_normal}")
@@ -124,16 +124,16 @@ def mesh_normals():
     print(f"Loaded polygon mesh with {poly_mesh.vertex_count()} vertices and {poly_mesh.face_count()} faces.")
 
     # Calculate normals for polygon mesh
-    vcl.update_per_face_normals(poly_mesh)
-    vcl.update_per_vertex_normals(poly_mesh)
+    vcl.update_face_normals(poly_mesh)
+    vcl.update_vertex_normals(poly_mesh)
 
     print("Calculated normals for polygon mesh.")
     print(f"First polygon face normal: {poly_mesh.face(0).normal()}")
     print(f"First polygon vertex normal: {poly_mesh.vertex(0).normal()}")
 
     # Restore proper normals before returning
-    vcl.update_per_face_normals(mesh)
-    vcl.update_per_vertex_normals(mesh)
+    vcl.update_face_normals(mesh)
+    vcl.update_vertex_normals(mesh)
 
     return mesh, poly_mesh
 

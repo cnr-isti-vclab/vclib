@@ -46,43 +46,43 @@ using VclVector = vcl::Vector<ScalarType, -1>;
 
 // utility functions
 
-template<vcl::uint ELEM_ID>
+template<vcl::ElemId ELEM_ID>
 void randomSelection(auto& tm)
 {
     std::random_device              rd;
     std::mt19937                    gen(rd());
     std::uniform_int_distribution<> dis(0, 1);
 
-    for (auto& el : tm.template elements<ELEM_ID>()) {
+    for (auto el : tm.template elements<ELEM_ID>()) {
         bool sel      = dis(gen);
         el.selected() = sel;
     }
 }
 
-template<vcl::uint ELEM_ID>
+template<vcl::ElemId ELEM_ID>
 void randomColor(auto& tm)
 {
     std::random_device              rd;
     std::mt19937                    gen(rd());
     std::uniform_int_distribution<> dis(0, 255);
 
-    tm.template enablePerElementComponent<ELEM_ID, vcl::CompId::COLOR>();
+    tm.template enableElementComponent<ELEM_ID, vcl::CompId::COLOR>();
 
-    for (auto& el : tm.template elements<ELEM_ID>()) {
+    for (auto el : tm.template elements<ELEM_ID>()) {
         el.color() = vcl::Color(dis(gen), dis(gen), dis(gen), dis(gen));
     }
 }
 
-template<vcl::uint ELEM_ID>
+template<vcl::ElemId ELEM_ID>
 void randomQuality(auto& tm)
 {
     std::random_device               rd;
     std::mt19937                     gen(rd());
     std::uniform_real_distribution<> dis(-100, 100);
 
-    tm.template enablePerElementComponent<ELEM_ID, vcl::CompId::QUALITY>();
+    tm.template enableElementComponent<ELEM_ID, vcl::CompId::QUALITY>();
 
-    for (auto& el : tm.template elements<ELEM_ID>()) {
+    for (auto el : tm.template elements<ELEM_ID>()) {
         double qual  = dis(gen);
         el.quality() = qual;
     }
@@ -145,8 +145,8 @@ void testFaceVector(const auto& pm)
     REQUIRE(faces.size() == nIndices);
 
     for (vcl::uint i = 0; const auto& f : pm.faces()) {
-        for (const auto* v : f.vertices()) {
-            REQUIRE(faces[i] == pm.index(v));
+        for (auto vi : f.vertexIndices()) {
+            REQUIRE(faces[i] == vi);
             ++i;
         }
     }
@@ -180,15 +180,15 @@ void testTriangulatedFaceMatrix(const auto& pm)
     auto                   tris =
         vcl::triangulatedFaceVertexIndicesMatrix<MatrixType>(pm, indexMap);
 
-    vcl::uint tCount = triangulatedFaceCount(pm);
+    auto tCount = triangulatedFaceCount(pm);
 
     REQUIRE(tris.rows() == tCount);
     REQUIRE(tris.cols() == 3);
 
     for (vcl::uint i = 0; i < 3; ++i) {
         // polygon associated to ith triangle
-        vcl::uint   fIdx = indexMap.polygon(i);
-        const auto& f    = pm.face(fIdx);
+        auto fIdx = indexMap.polygon(i);
+        auto f    = pm.face(fIdx);
 
         for (vcl::uint j = 0; j < 3; ++j) {
             REQUIRE(f.containsVertex(tris(i, j)));
@@ -355,8 +355,8 @@ void testVertexAdjacentVerticesVectors(const auto& tm)
         REQUIRE(adjList.size() == v.adjVertexCount());
 
         vcl::uint j = 0;
-        for (const auto* adjV : v.adjVertices()) {
-            REQUIRE(adjList[j] == static_cast<T>(adjV->index()));
+        for (auto adjV : v.adjVertexIndices()) {
+            REQUIRE(adjList[j] == static_cast<T>(adjV));
             ++j;
         }
         ++i;
@@ -368,15 +368,15 @@ void testVertexAdjacentVerticesMatrix(const auto& tm)
 {
     auto adjMatrix = vcl::vertexAdjacentVerticesMatrix<MatrixType>(tm);
 
-    vcl::uint lva = vcl::largestPerVertexAdjacentVerticesCount(tm);
+    vcl::uint lva = vcl::largestVertexAdjacentVerticesCount(tm);
 
     REQUIRE(adjMatrix.rows() == tm.vertexCount());
     REQUIRE(adjMatrix.cols() == lva);
 
     for (vcl::uint i = 0; const auto& v : tm.vertices()) {
         vcl::uint j = 0;
-        for (const auto* adjV : v.adjVertices()) {
-            REQUIRE(adjMatrix(i, j) == static_cast<vcl::uint>(adjV->index()));
+        for (auto adjV : v.adjVertexIndices()) {
+            REQUIRE(adjMatrix(i, j) == static_cast<vcl::uint>(adjV));
             ++j;
         }
         // Check that remaining entries are set to -1 (UINT_NULL)
@@ -399,8 +399,8 @@ void testVertexAdjacentFacesVectors(const auto& tm)
         REQUIRE(adjList.size() == v.adjFaceCount());
 
         vcl::uint j = 0;
-        for (const auto* adjF : v.adjFaces()) {
-            REQUIRE(adjList[j] == static_cast<T>(adjF->index()));
+        for (auto adjF : v.adjFaceIndices()) {
+            REQUIRE(adjList[j] == static_cast<T>(adjF));
             ++j;
         }
         ++i;
@@ -412,15 +412,15 @@ void testVertexAdjacentFacesMatrix(const auto& tm)
 {
     auto adjMatrix = vcl::vertexAdjacentFacesMatrix<MatrixType>(tm);
 
-    vcl::uint lfa = vcl::largestPerVertexAdjacentFacesCount(tm);
+    vcl::uint lfa = vcl::largestVertexAdjacentFacesCount(tm);
 
     REQUIRE(adjMatrix.rows() == tm.vertexCount());
     REQUIRE(adjMatrix.cols() == lfa);
 
     for (vcl::uint i = 0; const auto& v : tm.vertices()) {
         vcl::uint j = 0;
-        for (const auto* adjF : v.adjFaces()) {
-            REQUIRE(adjMatrix(i, j) == static_cast<vcl::uint>(adjF->index()));
+        for (auto adjF : v.adjFaceIndices()) {
+            REQUIRE(adjMatrix(i, j) == static_cast<vcl::uint>(adjF));
             ++j;
         }
         // Check that remaining entries are set to -1 (UINT_NULL)
@@ -443,8 +443,8 @@ void testFaceAdjacentFacesVectors(const auto& tm)
         REQUIRE(adjList.size() == f.adjFaceCount());
 
         vcl::uint j = 0;
-        for (const auto* adjF : f.adjFaces()) {
-            REQUIRE(adjList[j] == static_cast<T>(adjF->index()));
+        for (auto adjF : f.adjFaceIndices()) {
+            REQUIRE(adjList[j] == static_cast<T>(adjF));
             ++j;
         }
         ++i;
@@ -463,8 +463,8 @@ void testFaceAdjacentFacesMatrix(const auto& tm)
 
     for (vcl::uint i = 0; const auto& f : tm.faces()) {
         vcl::uint j = 0;
-        for (const auto* adjF : f.adjFaces()) {
-            REQUIRE(adjMatrix(i, j) == static_cast<vcl::uint>(adjF->index()));
+        for (auto adjF : f.adjFaceIndices()) {
+            REQUIRE(adjMatrix(i, j) == static_cast<vcl::uint>(adjF));
             ++j;
         }
         // Check that remaining entries are set to -1 (UINT_NULL)
@@ -475,20 +475,19 @@ void testFaceAdjacentFacesMatrix(const auto& tm)
     }
 }
 
-using Meshes  = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
-using Meshesf = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
-using MeshesIndexed =
-    std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed, vcl::EdgeMeshIndexed>;
-using MeshesIndexedf = std::
-    tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf, vcl::EdgeMeshIndexedf>;
+using Meshes   = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
+using Meshesf  = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
+using Meshes64 = std::tuple<vcl::TriMesh64, vcl::PolyMesh64, vcl::EdgeMesh64>;
+using Meshes64f =
+    std::tuple<vcl::TriMesh64f, vcl::PolyMesh64f, vcl::EdgeMesh64f>;
 
 TEMPLATE_TEST_CASE(
     "Export Mesh to Matrix",
     "",
     Meshes,
     Meshesf,
-    MeshesIndexed,
-    MeshesIndexedf)
+    Meshes64,
+    Meshes64f)
 {
     using TriMesh  = std::tuple_element_t<0, TestType>;
     using PolyMesh = std::tuple_element_t<1, TestType>;
@@ -501,8 +500,7 @@ TEMPLATE_TEST_CASE(
 
     SECTION("Positions...")
     {
-        using ScalarType =
-            typename TriMesh::VertexType::PositionType::ScalarType;
+        using ScalarType = vcl::ScalarType<TriMesh>;
 
         SECTION("Eigen Row Major")
         {
@@ -705,9 +703,9 @@ TEMPLATE_TEST_CASE(
 
     SECTION("Vertex Normals...")
     {
-        using ScalarType = typename TriMesh::VertexType::NormalType::ScalarType;
+        using ScalarType = vcl::VertexType<TriMesh>::NormalType::ScalarType;
 
-        vcl::updatePerVertexNormals(tm);
+        vcl::updateVertexNormals(tm);
 
         SECTION("Eigen Row Major")
         {
@@ -733,9 +731,9 @@ TEMPLATE_TEST_CASE(
 
     SECTION("Face Normals...")
     {
-        using ScalarType = typename TriMesh::FaceType::NormalType::ScalarType;
+        using ScalarType = vcl::FaceType<TriMesh>::NormalType::ScalarType;
 
-        vcl::updatePerFaceNormals(tm);
+        vcl::updateFaceNormals(tm);
 
         SECTION("Eigen Row Major")
         {
@@ -837,7 +835,7 @@ TEMPLATE_TEST_CASE(
 
     SECTION("Vertex Quality...")
     {
-        using ScalarType = typename TriMesh::VertexType::QualityType;
+        using ScalarType = vcl::VertexType<TriMesh>::QualityType;
 
         randomQuality<vcl::ElemId::VERTEX>(tm);
 
@@ -857,7 +855,7 @@ TEMPLATE_TEST_CASE(
 
     SECTION("Face Quality...")
     {
-        using ScalarType = typename TriMesh::FaceType::QualityType;
+        using ScalarType = vcl::FaceType<TriMesh>::QualityType;
 
         randomQuality<vcl::ElemId::FACE>(tm);
 
@@ -878,8 +876,8 @@ TEMPLATE_TEST_CASE(
     SECTION("Vertex Adjacent Vertices Vectors...")
     {
         // Update per-vertex adjacency information first
-        tm.enablePerVertexAdjacentVertices();
-        vcl::updatePerVertexAdjacentVertices(tm);
+        tm.enableVertexAdjacentVertices();
+        vcl::updateVertexAdjacentVertices(tm);
 
         SECTION("std::vector<std::vector<vcl::uint>>")
         {
@@ -898,8 +896,8 @@ TEMPLATE_TEST_CASE(
     SECTION("Vertex Adjacent Vertices Matrix...")
     {
         // Update per-vertex adjacency information first
-        tm.enablePerVertexAdjacentVertices();
-        vcl::updatePerVertexAdjacentVertices(tm);
+        tm.enableVertexAdjacentVertices();
+        vcl::updateVertexAdjacentVertices(tm);
 
         SECTION("Eigen Row Major")
         {
@@ -918,8 +916,8 @@ TEMPLATE_TEST_CASE(
     SECTION("Vertex Adjacent Faces Vectors...")
     {
         // Update per-vertex adjacent faces information first
-        tm.enablePerVertexAdjacentFaces();
-        vcl::updatePerVertexAdjacentFaces(tm);
+        tm.enableVertexAdjacentFaces();
+        vcl::updateVertexAdjacentFaces(tm);
 
         SECTION("std::vector<std::vector<vcl::uint>>")
         {
@@ -938,8 +936,8 @@ TEMPLATE_TEST_CASE(
     SECTION("Vertex Adjacent Faces Matrix...")
     {
         // Update per-vertex adjacent faces information first
-        tm.enablePerVertexAdjacentFaces();
-        vcl::updatePerVertexAdjacentFaces(tm);
+        tm.enableVertexAdjacentFaces();
+        vcl::updateVertexAdjacentFaces(tm);
 
         SECTION("Eigen Row Major")
         {
@@ -958,8 +956,8 @@ TEMPLATE_TEST_CASE(
     SECTION("Face Adjacent Faces Vectors...")
     {
         // Update per-face adjacent faces information first
-        tm.enablePerFaceAdjacentFaces();
-        vcl::updatePerFaceAdjacentFaces(tm);
+        tm.enableFaceAdjacentFaces();
+        vcl::updateFaceAdjacentFaces(tm);
 
         SECTION("std::vector<std::vector<vcl::uint>>")
         {
@@ -978,8 +976,8 @@ TEMPLATE_TEST_CASE(
     SECTION("Face Adjacent Faces Matrix...")
     {
         // Update per-face adjacent faces information first
-        tm.enablePerFaceAdjacentFaces();
-        vcl::updatePerFaceAdjacentFaces(tm);
+        tm.enableFaceAdjacentFaces();
+        vcl::updateFaceAdjacentFaces(tm);
 
         SECTION("Eigen Row Major")
         {
@@ -993,5 +991,121 @@ TEMPLATE_TEST_CASE(
         {
             testFaceAdjacentFacesMatrix<vcl::Array2<vcl::uint>>(tm);
         }
+    }
+}
+
+TEST_CASE(
+    "Export Material Index and Adjacency Sentinels",
+    "[export][sentinels]")
+{
+    using TriMesh = vcl::TriMesh;
+    TriMesh mesh;
+    mesh.addVertices(3);
+    mesh.addFace(0, 1, 2);
+
+    SECTION("Material Index Sentinel Export")
+    {
+        mesh.enableVertexMaterialIndex();
+        mesh.enableFaceMaterialIndex();
+
+        mesh.vertex(0).materialIndex() = 0;
+        mesh.vertex(1).materialIndex() = 42;
+        mesh.vertex(2).materialIndex() = vcl::USHORT_NULL;
+
+        mesh.face(0).materialIndex() = vcl::USHORT_NULL;
+
+        auto vMatInt = vcl::vertexMaterialIndicesVector<Eigen::VectorXi>(mesh);
+        REQUIRE(vMatInt.size() == 3);
+        REQUIRE(vMatInt(0) == 0);
+        REQUIRE(vMatInt(1) == 42);
+        REQUIRE(vMatInt(2) == -1);
+
+        auto vMatDouble =
+            vcl::vertexMaterialIndicesVector<Eigen::VectorXd>(mesh);
+        REQUIRE(vMatDouble.size() == 3);
+        REQUIRE(vMatDouble(0) == 0.0);
+        REQUIRE(vMatDouble(1) == 42.0);
+        REQUIRE(vMatDouble(2) == -1.0);
+
+        auto fMatInt = vcl::faceMaterialIndicesVector<Eigen::VectorXi>(mesh);
+        REQUIRE(fMatInt.size() == 1);
+        REQUIRE(fMatInt(0) == -1);
+
+        auto fMatDouble = vcl::faceMaterialIndicesVector<Eigen::VectorXd>(mesh);
+        REQUIRE(fMatDouble.size() == 1);
+        REQUIRE(fMatDouble(0) == -1.0);
+    }
+
+    SECTION("64-bit Adjacency Sentinel Export")
+    {
+        mesh.enableFaceAdjacentFaces();
+        vcl::updateFaceAdjacentFaces(mesh);
+
+        // Since it's a single triangle, all adjacent faces are NULL_INDEX
+        auto fAdj64 =
+            vcl::faceAdjacentFacesMatrix<EigenRowMatrix<int64_t>>(mesh);
+        REQUIRE(fAdj64.rows() == 1);
+        REQUIRE(fAdj64.cols() == 3);
+        REQUIRE(fAdj64(0, 0) == -1);
+        REQUIRE(fAdj64(0, 1) == -1);
+        REQUIRE(fAdj64(0, 2) == -1);
+
+        auto fAdjInt = vcl::faceAdjacentFacesMatrix<EigenRowMatrix<int>>(mesh);
+        REQUIRE(fAdjInt(0, 0) == -1);
+        REQUIRE(fAdjInt(0, 1) == -1);
+        REQUIRE(fAdjInt(0, 2) == -1);
+    }
+}
+
+TEST_CASE("TriPolyIndexBiMap - isMappingTrivial and exportBuffer cleanup")
+{
+    SECTION("isMappingTrivial")
+    {
+        vcl::TriPolyIndexBiMap map;
+        REQUIRE(map.isMappingTrivial());
+
+        // Identity 1:1 mapping: 0->0, 1->1, 2->2
+        map.insert(0, 0);
+        map.insert(1, 1);
+        map.insert(2, 2);
+        REQUIRE(map.isMappingTrivial());
+
+        // Permuted mapping: polygon 0 -> triangle 1, polygon 1 -> triangle 0
+        vcl::TriPolyIndexBiMap permutedMap;
+        permutedMap.insert(1, 0);
+        permutedMap.insert(0, 1);
+        REQUIRE_FALSE(permutedMap.isMappingTrivial());
+
+        // Non-trivial 1:N mapping (quad triangulated into 2 triangles)
+        vcl::TriPolyIndexBiMap multiMap;
+        multiMap.insert(0, 0);
+        multiMap.insert(1, 0);
+        REQUIRE_FALSE(multiMap.isMappingTrivial());
+
+        // Non-trivial mapping with gap (deleted face in middle)
+        vcl::TriPolyIndexBiMap gapMap;
+        gapMap.insert(0, 0);
+        gapMap.insert(1, 2); // polygon 1 was deleted
+        REQUIRE_FALSE(gapMap.isMappingTrivial());
+    }
+
+    SECTION(
+        "triangulatedFaceVertexIndicesToBuffer clears detail::indexMap on "
+        "TriMesh")
+    {
+        vcl::TriMesh tm;
+        tm.addVertices(3);
+        tm.vertex(0).position() = vcl::Point3d(0, 0, 0);
+        tm.vertex(1).position() = vcl::Point3d(1, 0, 0);
+        tm.vertex(2).position() = vcl::Point3d(0, 1, 0);
+        tm.addFace(0, 1, 2);
+
+        std::vector<vcl::uint> buffer(3);
+        // Call using default indexMap argument (&detail::indexMap)
+        vcl::triangulatedFaceVertexIndicesToBuffer(tm, buffer.data());
+
+        // detail::indexMap should be empty after the call
+        REQUIRE(vcl::detail::indexMap.triangleCount() == 0);
+        REQUIRE(vcl::detail::indexMap.polygonCount() == 0);
     }
 }

@@ -12,103 +12,76 @@
 
 namespace vcl {
 
-template<typename ScalarType>
-class PointCloudT;
-
-} // namespace vcl
-
-namespace vcl::pointcloud {
-
-template<typename Scalar>
-class Vertex;
+namespace pointcloud {
 
 /**
- * @brief The Vertex type used by the PointCloudT class.
- *
- * @extends vert::BitFlags
- * @extends vert::Position3
- * @extends vert::Normal3
- * @extends vert::OptionalColor
- * @extends vert::OptionalQuality
- * @extends vert::OptionalAdjacentVertexPointers
- * @extends vert::OptionalTexCoord
- * @extends vert::OptionalMaterialIndex
- * @extends vert::OptionalMark
- * @extends vert::CustomComponents
+ * @brief The VertexComponents type used by the PointCloudT class.
  *
  * @tparam Scalar: The scalar type used for the mesh.
+ * @tparam Index: The unsigned integral type used for indexing elements.
  *
  * @ingroup meshes
  */
-template<typename Scalar>
-class Vertex :
-        public vcl::Vertex<
-            PointCloudT<Scalar>,
-            vert::BitFlags,
-            vert::Position3<Scalar>,
-            vert::Normal3<Scalar>,
-            vert::OptionalColor<Vertex<Scalar>>,
-            vert::OptionalQuality<Scalar, Vertex<Scalar>>,
-            vert::OptionalAdjacentVertexPointers<Vertex<Scalar>>,
-            vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
-            vert::OptionalMaterialIndex<Vertex<Scalar>>,
-            vert::OptionalMark<Vertex<Scalar>>,
-            vert::CustomComponents<Vertex<Scalar>>>
-{
-public:
-    friend void swap(Vertex& a, Vertex& b) { a.swap(b); }
-};
+template<typename Scalar = double, std::unsigned_integral Index = uint>
+using VertexComponents = vcl::VertexComponents<
+    vert::BitFlags,
+    vert::Position3<Scalar>,
+    vert::Normal3<Scalar>,
+    vert::OptionalColor,
+    vert::OptionalQuality<Scalar>,
+    vert::OptionalAdjacentVertices<Index>,
+    vert::OptionalTexCoord<Scalar>,
+    vert::OptionalMaterialIndex,
+    vert::CustomComponents>;
 
-} // namespace vcl::pointcloud
-
-namespace vcl {
+} // namespace pointcloud
 
 /**
  * @brief The PointCloudT class is a mesh class that represents a point cloud.
  *
- * It allows to store only pointcloud::Vertex elements.
+ * It allows to store only pointcloud vertices.
  *
  * @tparam Scalar: The scalar type used for the mesh.
- *
- * @extends mesh::VertexContainer
- * @extends mesh::BoundingBox3
- * @extends mesh::Mark
- * @extends mesh::Materials
- * @extends mesh::Name
- * @extends mesh::TransformMatrix
- * @extends mesh::CustomComponents
+ * @tparam Index: The unsigned integral type used for indexing elements.
  *
  * @ingroup meshes
  */
-template<typename Scalar>
-class PointCloudT :
-        public Mesh<
-            mesh::VertexContainer<pointcloud::Vertex<Scalar>>,
-            mesh::BoundingBox3<Scalar>,
-            mesh::Mark,
-            mesh::Materials,
-            mesh::Name,
-            mesh::TransformMatrix<Scalar>,
-            mesh::CustomComponents>
-{
-public:
-    /** @brief The scalar used to store all the data of the Mesh. */
-    using ScalarType = Scalar;
-};
-
-/**
- * @brief The PointCloudf class is a specialization of the PointCloudT class
- * that uses `float` as scalar.
- * @ingroup meshes
- */
-using PointCloudf = PointCloudT<float>;
+template<typename Scalar = double, std::unsigned_integral Index = uint>
+using PointCloudT = Mesh<
+    mesh::VertexContainer<pointcloud::VertexComponents<Scalar, Index>, Index>,
+    mesh::BoundingBox3<Scalar>,
+    mesh::Materials,
+    mesh::Name,
+    mesh::TransformMatrix<Scalar>,
+    mesh::CustomComponents>;
 
 /**
  * @brief The PointCloud class is a specialization of the PointCloudT class
- * that uses `double` as scalar.
+ * that uses `double` as scalar and `uint` for indexing.
  * @ingroup meshes
  */
-using PointCloud = PointCloudT<double>;
+using PointCloud = PointCloudT<double, uint>;
+
+/**
+ * @brief The PointCloudf class is a specialization of the PointCloudT class
+ * that uses `float` as scalar and `uint` for indexing.
+ * @ingroup meshes
+ */
+using PointCloudf = PointCloudT<float, uint>;
+
+/**
+ * @brief The PointCloud64 class is a specialization of the PointCloudT class
+ * that uses `double` as scalar and `uint64_t` for indexing.
+ * @ingroup meshes
+ */
+using PointCloud64 = PointCloudT<double, uint64_t>;
+
+/**
+ * @brief The PointCloud64f class is a specialization of the PointCloudT class
+ * that uses `float` as scalar and `uint64_t` for indexing.
+ * @ingroup meshes
+ */
+using PointCloud64f = PointCloudT<float, uint64_t>;
 
 } // namespace vcl
 

@@ -47,8 +47,8 @@ namespace vcl {
  * AMeshType m;
  * MeshInfo info(m); // compute the default MeshInfo object from the Mesh
  *
- * info.setPerVertexPosition(true, MeshInfo::FLOAT); // force to store vertex
- *                                                   // positions using floats
+ * info.setVertexPosition(true, MeshInfo::FLOAT); // force to store vertex
+ *                                                // positions using floats
  * info.setVertexColors(false); // do not store vertex colors
  *
  * vcl::save(m, "meshfile.ply", info);
@@ -71,7 +71,7 @@ public:
      * file.
      *
      * @note: MESH is not an element, but it is used since some components can
-     * be stored per mesh.
+     * be stored at the mesh level.
      */
     enum Element { VERTEX, FACE, EDGE, MESH, NUM_ELEMENTS };
 
@@ -116,17 +116,16 @@ private:
     // Tell if elements are present in the file
     std::bitset<NUM_ELEMENTS> mElements = {false};
 
-    // Tell if per element components are present in the file
-    std::array<std::bitset<NUM_COMPONENTS>, NUM_ELEMENTS> mPerElemComponents = {
+    // Tell if element components are present in the file
+    std::array<std::bitset<NUM_COMPONENTS>, NUM_ELEMENTS> mElemComponents = {
         false};
 
     // Tell the data type for each component of each element
-    Eigen::Matrix<DataType, NUM_ELEMENTS, NUM_COMPONENTS>
-        mPerElemComponentsType;
+    Eigen::Matrix<DataType, NUM_ELEMENTS, NUM_COMPONENTS> mElemComponentsType;
 
-    // Store name and type of per element custom components
+    // Store name and type of element custom components
     std::array<std::vector<CustomComponent>, NUM_ELEMENTS>
-        mPerElemCustomComponents;
+        mElemCustomComponents;
 
     // Mesh Type
     MeshType mType = MeshType::UNKNOWN;
@@ -138,7 +137,7 @@ public:
      * All the Elements/Components are disabled, their type is set to
      * DataType::NONE and the Mesh Type is set to MeshType::POLYGON_MESH.
      */
-    MeshInfo() { mPerElemComponentsType.fill(PrimitiveType::NONE); }
+    MeshInfo() { mElemComponentsType.fill(PrimitiveType::NONE); }
 
     /**
      * @brief Sets the current status of the MeshInfo object from the input
@@ -153,64 +152,64 @@ public:
     MeshInfo(const Mesh& m)
     {
         setVertices();
-        setPerVertexPosition(
+        setVertexPosition(
             true,
-            getType<typename Mesh::VertexType::PositionType::ScalarType>());
-        setPerVertexBitFlags();
-        if constexpr (HasPerVertexNormal<Mesh>) {
-            if (isPerVertexNormalAvailable(m)) {
-                setPerVertexNormal(
+            getType<typename VertexType<Mesh>::PositionType::ScalarType>());
+        setVertexBitFlags();
+        if constexpr (HasVertexNormal<Mesh>) {
+            if (m.isVertexNormalAvailable()) {
+                setVertexNormal(
                     true,
                     getType<
-                        typename Mesh::VertexType::NormalType::ScalarType>());
+                        typename VertexType<Mesh>::NormalType::ScalarType>());
             }
         }
-        if constexpr (HasPerVertexTangent<Mesh>) {
-            if (isPerVertexTangentAvailable(m)) {
-                setPerVertexTangent(
+        if constexpr (HasVertexTangent<Mesh>) {
+            if (m.isVertexTangentAvailable()) {
+                setVertexTangent(
                     true,
                     getType<
-                        typename Mesh::VertexType::TangentType::ScalarType>());
+                        typename VertexType<Mesh>::TangentType::ScalarType>());
             }
         }
-        if constexpr (HasPerVertexColor<Mesh>) {
-            if (isPerVertexColorAvailable(m)) {
-                setPerVertexColor(true, PrimitiveType::UCHAR);
+        if constexpr (HasVertexColor<Mesh>) {
+            if (m.isVertexColorAvailable()) {
+                setVertexColor(true, PrimitiveType::UCHAR);
             }
         }
-        if constexpr (HasPerVertexQuality<Mesh>) {
-            if (isPerVertexQualityAvailable(m)) {
-                setPerVertexQuality(
-                    true, getType<typename Mesh::VertexType::QualityType>());
+        if constexpr (HasVertexQuality<Mesh>) {
+            if (m.isVertexQualityAvailable()) {
+                setVertexQuality(
+                    true, getType<typename VertexType<Mesh>::QualityType>());
             }
         }
-        if constexpr (HasPerVertexTexCoord<Mesh>) {
-            if (isPerVertexTexCoordAvailable(m)) {
-                setPerVertexTexCoord(
+        if constexpr (HasVertexTexCoord<Mesh>) {
+            if (m.isVertexTexCoordAvailable()) {
+                setVertexTexCoord(
                     true,
                     getType<
-                        typename Mesh::VertexType::TexCoordType::ScalarType>());
+                        typename VertexType<Mesh>::TexCoordType::ScalarType>());
             }
         }
-        if constexpr (HasPerVertexMaterialIndex<Mesh>) {
-            if (isPerVertexMaterialIndexAvailable(m)) {
-                setPerVertexMaterialIndex(true, PrimitiveType::UINT);
+        if constexpr (HasVertexMaterialIndex<Mesh>) {
+            if (m.isVertexMaterialIndexAvailable()) {
+                setVertexMaterialIndex(true, PrimitiveType::USHORT);
             }
         }
-        if constexpr (HasPerVertexCustomComponents<Mesh>) {
-            auto names = m.perVertexCustomComponentNames();
+        if constexpr (HasVertexCustomComponents<Mesh>) {
+            auto names = m.vertexCustomComponentNames();
             for (auto& name : names) {
-                DataType dt = getType(m.perVertexCustomComponentType(name));
+                DataType dt = getType(m.vertexCustomComponentType(name));
                 if (dt != PrimitiveType::NONE) {
-                    addPerVertexCustomComponent(name, dt);
+                    addVertexCustomComponent(name, dt);
                 }
             }
         }
 
         if constexpr (HasFaces<Mesh>) {
             setFaces();
-            setPerFaceVertexReferences();
-            setPerFaceBitFlags();
+            setFaceVertexReferences();
+            setFaceBitFlags();
             if (HasTriangles<Mesh>) {
                 setTriangleMesh();
             }
@@ -220,44 +219,44 @@ public:
             else {
                 setPolygonMesh();
             }
-            if constexpr (HasPerFaceNormal<Mesh>) {
-                if (isPerFaceNormalAvailable(m)) {
-                    setPerFaceNormal(
+            if constexpr (HasFaceNormal<Mesh>) {
+                if (m.isFaceNormalAvailable()) {
+                    setFaceNormal(
                         true,
                         getType<
-                            typename Mesh::FaceType::NormalType::ScalarType>());
+                            typename FaceType<Mesh>::NormalType::ScalarType>());
                 }
             }
-            if constexpr (HasPerFaceColor<Mesh>) {
-                if (isPerFaceColorAvailable(m)) {
-                    setPerFaceColor(true, PrimitiveType::UCHAR);
+            if constexpr (HasFaceColor<Mesh>) {
+                if (m.isFaceColorAvailable()) {
+                    setFaceColor(true, PrimitiveType::UCHAR);
                 }
             }
-            if constexpr (HasPerFaceQuality<Mesh>) {
-                if (isPerFaceQualityAvailable(m)) {
-                    setPerFaceQuality(
-                        true, getType<typename Mesh::FaceType::QualityType>());
+            if constexpr (HasFaceQuality<Mesh>) {
+                if (m.isFaceQualityAvailable()) {
+                    setFaceQuality(
+                        true, getType<typename FaceType<Mesh>::QualityType>());
                 }
             }
-            if constexpr (HasPerFaceWedgeTexCoords<Mesh>) {
-                if (isPerFaceWedgeTexCoordsAvailable(m)) {
-                    setPerFaceWedgeTexCoords(
+            if constexpr (HasFaceWedgeTexCoords<Mesh>) {
+                if (m.isFaceWedgeTexCoordsAvailable()) {
+                    setFaceWedgeTexCoords(
                         true,
-                        getType<typename Mesh::FaceType::WedgeTexCoordType::
-                                    ScalarType>());
+                        getType<typename TexCoordType<
+                            WedgeType<FaceType<Mesh>>>::ScalarType>());
                 }
             }
-            if constexpr (HasPerFaceMaterialIndex<Mesh>) {
-                if (isPerFaceMaterialIndexAvailable(m)) {
-                    setPerFaceMaterialIndex(true, PrimitiveType::UINT);
+            if constexpr (HasFaceMaterialIndex<Mesh>) {
+                if (m.isFaceMaterialIndexAvailable()) {
+                    setFaceMaterialIndex(true, PrimitiveType::USHORT);
                 }
             }
-            if constexpr (HasPerFaceCustomComponents<Mesh>) {
-                auto names = m.perFaceCustomComponentNames();
+            if constexpr (HasFaceCustomComponents<Mesh>) {
+                auto names = m.faceCustomComponentNames();
                 for (auto& name : names) {
-                    DataType dt = getType(m.perFaceCustomComponentType(name));
+                    DataType dt = getType(m.faceCustomComponentType(name));
                     if (dt != PrimitiveType::NONE) {
-                        addPerFaceCustomComponent(name, dt);
+                        addFaceCustomComponent(name, dt);
                     }
                 }
             }
@@ -265,11 +264,13 @@ public:
 
         if constexpr (HasEdges<Mesh>) {
             setEdges();
-            setPerEdgeVertexReferences();
-            setPerEdgeBitFlags();
-            // if constexpr (HasPerEdgeColor<Mesh>)
-            //     if (isPerEdgeColorAvailable(m))
-            //         setEdgeColors(true, UCHAR);
+            setEdgeVertexReferences();
+            setEdgeBitFlags();
+            if constexpr (HasEdgeColor<Mesh>) {
+                if (m.isEdgeColorAvailable()) {
+                    setEdgeColor(true, PrimitiveType::UCHAR);
+                }
+            }
         }
 
         if constexpr (HasMaterials<Mesh>) {
@@ -288,11 +289,11 @@ public:
     void clear()
     {
         mElements.reset();
-        for (auto& comp : mPerElemComponents)
+        for (auto& comp : mElemComponents)
             comp.reset();
-        mPerElemComponentsType.fill(PrimitiveType::NONE);
+        mElemComponentsType.fill(PrimitiveType::NONE);
 
-        for (auto& v : mPerElemCustomComponents)
+        for (auto& v : mElemCustomComponents)
             v.clear();
 
         mType = MeshType::UNKNOWN;
@@ -337,9 +338,9 @@ public:
 
     bool hasElement(Element el) const { return mElements[el]; }
 
-    bool hasPerElementComponent(Element el, Component comp) const
+    bool hasElementComponent(Element el, Component comp) const
     {
-        return mPerElemComponents[el][comp];
+        return mElemComponents[el][comp];
     }
 
     /**
@@ -352,81 +353,75 @@ public:
      * @brief Returns true if the current object has Vertex Positions.
      * @return true if the current object has Vertex Positions.
      */
-    bool hasPerVertexPosition() const
+    bool hasVertexPosition() const
     {
-        return hasPerElementComponent(VERTEX, POSITION);
+        return hasElementComponent(VERTEX, POSITION);
     }
 
     /**
      * @brief Returns true if the current object has Vertex Bit Flags.
      * @return true if the current object has Vertex Bit Flags.
      */
-    bool hasPerVertexBitFlags() const
+    bool hasVertexBitFlags() const
     {
-        return hasPerElementComponent(VERTEX, BIT_FLAGS);
+        return hasElementComponent(VERTEX, BIT_FLAGS);
     }
 
     /**
      * @brief Returns true if the current object has Vertex Normals.
      * @return true if the current object has Vertex Normals.
      */
-    bool hasPerVertexNormal() const
-    {
-        return hasPerElementComponent(VERTEX, NORMAL);
-    }
+    bool hasVertexNormal() const { return hasElementComponent(VERTEX, NORMAL); }
 
     /**
      * @brief Returns true if the current object has Vertex Tangents.
      * @return true if the current object has Vertex Tangents.
      */
-    bool hasPerVertexTangent() const
+    bool hasVertexTangent() const
     {
-        return hasPerElementComponent(VERTEX, TANGENT);
+        return hasElementComponent(VERTEX, TANGENT);
     }
 
     /**
      * @brief Returns true if the current object has Vertex Colors.
      * @return true if the current object has Vertex Colors.
      */
-    bool hasPerVertexColor() const
-    {
-        return hasPerElementComponent(VERTEX, COLOR);
-    }
+    bool hasVertexColor() const { return hasElementComponent(VERTEX, COLOR); }
 
     /**
      * @brief Returns true if the current object has Vertex Quality.
      * @return true if the current object has Vertex Quality.
      */
-    bool hasPerVertexQuality() const
+    bool hasVertexQuality() const
     {
-        return hasPerElementComponent(VERTEX, QUALITY);
+        return hasElementComponent(VERTEX, QUALITY);
     }
 
     /**
      * @brief Returns true if the current object has Vertex Texture Coordinates.
      * @return true if the current object has Vertex Texture Coordinates.
      */
-    bool hasPerVertexTexCoord() const
+    bool hasVertexTexCoord() const
     {
-        return hasPerElementComponent(VERTEX, TEXCOORD);
+        return hasElementComponent(VERTEX, TEXCOORD);
     }
 
     /**
      * @brief Returns true if the current object has Vertex Material Index.
      * @return true if the current object has Vertex Material Index.
      */
-    bool hasPerVertexMaterialIndex() const
+    bool hasVertexMaterialIndex() const
     {
-        return hasPerElementComponent(VERTEX, MATERIAL_INDEX);
+        return hasElementComponent(VERTEX, MATERIAL_INDEX);
     }
 
     /**
      * @brief Returns true if the current object has Vertex Custom Components.
      * @return true if the current object has Vertex Custom Components.
      */
-    bool hasPerVertexCustomComponents() const
+    bool hasVertexCustomComponents() const
     {
-        return hasPerElementComponent(VERTEX, CUSTOM_COMPONENTS);
+        return hasElementComponent(VERTEX, CUSTOM_COMPONENTS);
     }
 
     /**
@@ -436,52 +431,46 @@ public:
     bool hasFaces() const { return hasElement(FACE); }
 
     /**
-     * @brief Returns true if the current object has per Face Vertex References.
-     * @return true if the current object has per Face Vertex References.
+     * @brief Returns true if the current object has Face Vertex References.
+     * @return true if the current object has Face Vertex References.
      */
-    bool hasPerFaceVertexReferences() const
+    bool hasFaceVertexReferences() const
     {
-        return hasPerElementComponent(FACE, VREFS);
+        return hasElementComponent(FACE, VREFS);
     }
 
     /**
      * @brief Returns true if the current object has Face Bit Flags.
      * @return true if the current object has Face Bit Flags.
      */
-    bool hasPerFaceBitFlags() const
+    bool hasFaceBitFlags() const
     {
-        return hasPerElementComponent(FACE, BIT_FLAGS);
+        return hasElementComponent(FACE, BIT_FLAGS);
     }
 
-    bool hasPerFaceNormal() const
-    {
-        return hasPerElementComponent(FACE, NORMAL);
-    }
+    bool hasFaceNormal() const { return hasElementComponent(FACE, NORMAL); }
 
-    bool hasPerFaceColor() const { return hasPerElementComponent(FACE, COLOR); }
+    bool hasFaceColor() const { return hasElementComponent(FACE, COLOR); }
 
-    bool hasPerFaceQuality() const
-    {
-        return hasPerElementComponent(FACE, QUALITY);
-    }
+    bool hasFaceQuality() const { return hasElementComponent(FACE, QUALITY); }
 
-    bool hasPerFaceWedgeTexCoords() const
+    bool hasFaceWedgeTexCoords() const
     {
-        return hasPerElementComponent(FACE, WEDGE_TEXCOORDS);
+        return hasElementComponent(FACE, WEDGE_TEXCOORDS);
     }
 
     /**
      * @brief Returns true if the current object has Face Material Index.
      * @return true if the current object has Face Material Index.
      */
-    bool hasPerFaceMaterialIndex() const
+    bool hasFaceMaterialIndex() const
     {
-        return hasPerElementComponent(FACE, MATERIAL_INDEX);
+        return hasElementComponent(FACE, MATERIAL_INDEX);
     }
 
-    bool hasPerFaceCustomComponents() const
+    bool hasFaceCustomComponents() const
     {
-        return hasPerElementComponent(FACE, CUSTOM_COMPONENTS);
+        return hasElementComponent(FACE, CUSTOM_COMPONENTS);
     }
 
     /**
@@ -490,41 +479,32 @@ public:
      */
     bool hasEdges() const { return hasElement(EDGE); }
 
-    bool hasPerEdgeVertexReferences() const
+    bool hasEdgeVertexReferences() const
     {
-        return hasPerElementComponent(EDGE, VREFS);
+        return hasElementComponent(EDGE, VREFS);
     }
 
     /**
      * @brief Returns true if the current object has Edge Bit Flags.
      * @return true if the current object has Edge Bit Flags.
      */
-    bool hasPerEdgeBitFlags() const
+    bool hasEdgeBitFlags() const
     {
-        return hasPerElementComponent(EDGE, BIT_FLAGS);
+        return hasElementComponent(EDGE, BIT_FLAGS);
     }
 
-    bool hasPerEdgeColor() const { return hasPerElementComponent(EDGE, COLOR); }
+    bool hasEdgeColor() const { return hasElementComponent(EDGE, COLOR); }
 
-    bool hasPerEdgeNormal() const
+    bool hasEdgeNormal() const { return hasElementComponent(EDGE, NORMAL); }
+
+    bool hasEdgeQuality() const { return hasElementComponent(EDGE, QUALITY); }
+
+    bool hasEdgeCustomComponents() const
     {
-        return hasPerElementComponent(EDGE, NORMAL);
+        return hasElementComponent(EDGE, CUSTOM_COMPONENTS);
     }
 
-    bool hasPerEdgeQuality() const
-    {
-        return hasPerElementComponent(EDGE, QUALITY);
-    }
-
-    bool hasPerEdgeCustomComponents() const
-    {
-        return hasPerElementComponent(EDGE, CUSTOM_COMPONENTS);
-    }
-
-    bool hasMaterials() const
-    {
-        return hasPerElementComponent(MESH, MATERIALS);
-    }
+    bool hasMaterials() const { return hasElementComponent(MESH, MATERIALS); }
 
     /*
      * Setter functions: they are used by the load functions to tell which
@@ -563,313 +543,291 @@ public:
 
     void setElement(Element el, bool b = true) { mElements[el] = b; }
 
-    void setPerElementComponent(Element el, Component c, bool b, DataType t)
+    void setElementComponent(Element el, Component c, bool b, DataType t)
     {
-        mElements[el]             = b;
-        mPerElemComponents[el][c] = b;
+        mElements[el]          = b;
+        mElemComponents[el][c] = b;
         if (b)
-            mPerElemComponentsType(el, c) = t;
+            mElemComponentsType(el, c) = t;
     }
 
     void setVertices(bool b = true) { setElement(VERTEX, b); }
 
-    void setPerVertexPosition(bool b = true, DataType t = PrimitiveType::DOUBLE)
+    void setVertexPosition(bool b = true, DataType t = PrimitiveType::DOUBLE)
     {
-        setPerElementComponent(VERTEX, POSITION, b, t);
+        setElementComponent(VERTEX, POSITION, b, t);
     }
 
-    void setPerVertexBitFlags(bool b = true, DataType t = PrimitiveType::UINT)
+    void setVertexBitFlags(bool b = true, DataType t = PrimitiveType::UINT)
     {
-        setPerElementComponent(VERTEX, BIT_FLAGS, b, t);
+        setElementComponent(VERTEX, BIT_FLAGS, b, t);
     }
 
-    void setPerVertexNormal(bool b = true, DataType t = PrimitiveType::FLOAT)
+    void setVertexNormal(bool b = true, DataType t = PrimitiveType::FLOAT)
     {
-        setPerElementComponent(VERTEX, NORMAL, b, t);
+        setElementComponent(VERTEX, NORMAL, b, t);
     }
 
-    void setPerVertexTangent(bool b = true, DataType t = PrimitiveType::FLOAT)
+    void setVertexTangent(bool b = true, DataType t = PrimitiveType::FLOAT)
     {
-        setPerElementComponent(VERTEX, TANGENT, b, t);
+        setElementComponent(VERTEX, TANGENT, b, t);
     }
 
-    void setPerVertexColor(bool b = true, DataType t = PrimitiveType::UCHAR)
+    void setVertexColor(bool b = true, DataType t = PrimitiveType::UCHAR)
     {
-        setPerElementComponent(VERTEX, COLOR, b, t);
+        setElementComponent(VERTEX, COLOR, b, t);
     }
 
-    void setPerVertexQuality(bool b = true, DataType t = PrimitiveType::DOUBLE)
+    void setVertexQuality(bool b = true, DataType t = PrimitiveType::DOUBLE)
     {
-        setPerElementComponent(VERTEX, QUALITY, b, t);
+        setElementComponent(VERTEX, QUALITY, b, t);
     }
 
-    void setPerVertexTexCoord(bool b = true, DataType t = PrimitiveType::FLOAT)
+    void setVertexTexCoord(bool b = true, DataType t = PrimitiveType::FLOAT)
     {
-        setPerElementComponent(VERTEX, TEXCOORD, b, t);
+        setElementComponent(VERTEX, TEXCOORD, b, t);
     }
 
-    void setPerVertexMaterialIndex(
+    void setVertexMaterialIndex(
         bool     b = true,
         DataType t = PrimitiveType::USHORT)
     {
-        setPerElementComponent(VERTEX, MATERIAL_INDEX, b, t);
+        setElementComponent(VERTEX, MATERIAL_INDEX, b, t);
     }
 
-    void setPerVertexCustomComponents(bool b = true)
+    void setVertexCustomComponents(bool b = true)
     {
-        setPerElementComponent(
-            VERTEX, CUSTOM_COMPONENTS, b, PrimitiveType::NONE);
+        setElementComponent(VERTEX, CUSTOM_COMPONENTS, b, PrimitiveType::NONE);
     }
 
     void setFaces(bool b = true) { setElement(FACE, b); }
 
-    void setPerFaceVertexReferences(bool b = true)
+    void setFaceVertexReferences(bool b = true)
     {
-        setPerElementComponent(FACE, VREFS, b, PrimitiveType::NONE);
+        setElementComponent(FACE, VREFS, b, PrimitiveType::NONE);
     }
 
-    void setPerFaceBitFlags(bool b = true, DataType t = PrimitiveType::UINT)
+    void setFaceBitFlags(bool b = true, DataType t = PrimitiveType::UINT)
     {
-        setPerElementComponent(FACE, BIT_FLAGS, b, t);
+        setElementComponent(FACE, BIT_FLAGS, b, t);
     }
 
-    void setPerFaceNormal(bool b = true, DataType t = PrimitiveType::FLOAT)
+    void setFaceNormal(bool b = true, DataType t = PrimitiveType::FLOAT)
     {
-        setPerElementComponent(FACE, NORMAL, b, t);
+        setElementComponent(FACE, NORMAL, b, t);
     }
 
-    void setPerFaceColor(bool b = true, DataType t = PrimitiveType::UCHAR)
+    void setFaceColor(bool b = true, DataType t = PrimitiveType::UCHAR)
     {
-        setPerElementComponent(FACE, COLOR, b, t);
+        setElementComponent(FACE, COLOR, b, t);
     }
 
-    void setPerFaceQuality(bool b = true, DataType t = PrimitiveType::DOUBLE)
+    void setFaceQuality(bool b = true, DataType t = PrimitiveType::DOUBLE)
     {
-        setPerElementComponent(FACE, QUALITY, b, t);
+        setElementComponent(FACE, QUALITY, b, t);
     }
 
-    void setPerFaceWedgeTexCoords(
-        bool     b = true,
-        DataType t = PrimitiveType::FLOAT)
+    void setFaceWedgeTexCoords(bool b = true, DataType t = PrimitiveType::FLOAT)
     {
-        setPerElementComponent(FACE, WEDGE_TEXCOORDS, b, t);
+        setElementComponent(FACE, WEDGE_TEXCOORDS, b, t);
     }
 
-    void setPerFaceMaterialIndex(
-        bool     b = true,
-        DataType t = PrimitiveType::USHORT)
+    void setFaceMaterialIndex(bool b = true, DataType t = PrimitiveType::USHORT)
     {
-        setPerElementComponent(FACE, MATERIAL_INDEX, b, t);
+        setElementComponent(FACE, MATERIAL_INDEX, b, t);
     }
 
-    void setPerFaceCustomComponents(bool b = true)
+    void setFaceCustomComponents(bool b = true)
     {
-        setPerElementComponent(FACE, CUSTOM_COMPONENTS, b, PrimitiveType::NONE);
+        setElementComponent(FACE, CUSTOM_COMPONENTS, b, PrimitiveType::NONE);
     }
 
     void setEdges(bool b = true) { setElement(EDGE, b); }
 
-    void setPerEdgeVertexReferences(bool b = true)
+    void setEdgeVertexReferences(bool b = true)
     {
-        setPerElementComponent(EDGE, VREFS, b, PrimitiveType::NONE);
+        setElementComponent(EDGE, VREFS, b, PrimitiveType::NONE);
     }
 
-    void setPerEdgeBitFlags(bool b = true, DataType t = PrimitiveType::UINT)
+    void setEdgeBitFlags(bool b = true, DataType t = PrimitiveType::UINT)
     {
-        setPerElementComponent(EDGE, BIT_FLAGS, b, t);
+        setElementComponent(EDGE, BIT_FLAGS, b, t);
     }
 
-    void setPerEdgeColor(bool b = true, DataType t = PrimitiveType::UCHAR)
+    void setEdgeColor(bool b = true, DataType t = PrimitiveType::UCHAR)
     {
-        setPerElementComponent(EDGE, COLOR, b, t);
+        setElementComponent(EDGE, COLOR, b, t);
     }
 
-    void setPerEdgeNormal(bool b = true, DataType t = PrimitiveType::FLOAT)
+    void setEdgeNormal(bool b = true, DataType t = PrimitiveType::FLOAT)
     {
-        setPerElementComponent(EDGE, NORMAL, b, t);
+        setElementComponent(EDGE, NORMAL, b, t);
     }
 
-    void setPerEdgeQuality(bool b = true, DataType t = PrimitiveType::DOUBLE)
+    void setEdgeQuality(bool b = true, DataType t = PrimitiveType::DOUBLE)
     {
-        setPerElementComponent(EDGE, QUALITY, b, t);
+        setElementComponent(EDGE, QUALITY, b, t);
     }
 
-    void setPerEdgeCustomComponents(bool b = true)
+    void setEdgeCustomComponents(bool b = true)
     {
-        setPerElementComponent(EDGE, CUSTOM_COMPONENTS, b, PrimitiveType::NONE);
+        setElementComponent(EDGE, CUSTOM_COMPONENTS, b, PrimitiveType::NONE);
     }
 
     void setMaterials(bool b = true)
     {
-        setPerElementComponent(MESH, MATERIALS, b, PrimitiveType::NONE);
+        setElementComponent(MESH, MATERIALS, b, PrimitiveType::NONE);
     }
 
-    void addPerElementCustomComponent(
+    void addElementCustomComponent(
         Element            el,
         const std::string& name,
         DataType           t)
     {
-        setPerElementComponent(
-            el, CUSTOM_COMPONENTS, true, PrimitiveType::NONE);
-        mPerElemCustomComponents[el].emplace_back(name, t);
+        setElementComponent(el, CUSTOM_COMPONENTS, true, PrimitiveType::NONE);
+        mElemCustomComponents[el].emplace_back(name, t);
     }
 
-    void clearPerElementCustomComponents(Element el)
+    void clearElementCustomComponents(Element el)
     {
-        setPerElementComponent(
-            el, CUSTOM_COMPONENTS, false, PrimitiveType::NONE);
-        mPerElemCustomComponents[el].clear();
+        setElementComponent(el, CUSTOM_COMPONENTS, false, PrimitiveType::NONE);
+        mElemCustomComponents[el].clear();
     }
 
-    void addPerVertexCustomComponent(const std::string& name, DataType t)
+    void addVertexCustomComponent(const std::string& name, DataType t)
     {
-        addPerElementCustomComponent(VERTEX, name, t);
+        addElementCustomComponent(VERTEX, name, t);
     }
 
-    void clearPerVertexCustomComponents()
+    void clearVertexCustomComponents() { clearElementCustomComponents(VERTEX); }
+
+    void addFaceCustomComponent(const std::string& name, DataType t)
     {
-        clearPerElementCustomComponents(VERTEX);
+        addElementCustomComponent(FACE, name, t);
     }
 
-    void addPerFaceCustomComponent(const std::string& name, DataType t)
+    void clearFaceCustomComponents() { clearElementCustomComponents(FACE); }
+
+    void addEdgeCustomComponent(const std::string& name, DataType t)
     {
-        addPerElementCustomComponent(FACE, name, t);
+        addElementCustomComponent(EDGE, name, t);
     }
 
-    void clearPerFaceCustomComponents()
-    {
-        clearPerElementCustomComponents(FACE);
-    }
-
-    void addPerEdgeCustomComponent(const std::string& name, DataType t)
-    {
-        addPerElementCustomComponent(EDGE, name, t);
-    }
-
-    void clearPerEdgeCustomComponents()
-    {
-        clearPerElementCustomComponents(EDGE);
-    }
+    void clearEdgeCustomComponents() { clearElementCustomComponents(EDGE); }
 
     /*
      * Getter Component type functions : they are used mostly by save functions
      * to know the type that needs to use to save a given Component
      */
 
-    DataType perElementComponentType(Element el, Component comp) const
+    DataType elementComponentType(Element el, Component comp) const
     {
-        return mPerElemComponentsType(el, comp);
+        return mElemComponentsType(el, comp);
     }
 
-    DataType perVertexPositionType() const
+    DataType vertexPositionType() const
     {
-        return perElementComponentType(VERTEX, POSITION);
+        return elementComponentType(VERTEX, POSITION);
     }
 
-    DataType perVertexBitFlagsType() const
+    DataType vertexBitFlagsType() const
     {
-        return perElementComponentType(VERTEX, BIT_FLAGS);
+        return elementComponentType(VERTEX, BIT_FLAGS);
     }
 
-    DataType perVertexNormalType() const
+    DataType vertexNormalType() const
     {
-        return perElementComponentType(VERTEX, NORMAL);
+        return elementComponentType(VERTEX, NORMAL);
     }
 
-    DataType perVertexTangentType() const
+    DataType vertexTangentType() const
     {
-        return perElementComponentType(VERTEX, TANGENT);
+        return elementComponentType(VERTEX, TANGENT);
     }
 
-    DataType perVertexColorType() const
+    DataType vertexColorType() const
     {
-        return perElementComponentType(VERTEX, COLOR);
+        return elementComponentType(VERTEX, COLOR);
     }
 
-    DataType perVertexQualityType() const
+    DataType vertexQualityType() const
     {
-        return perElementComponentType(VERTEX, QUALITY);
+        return elementComponentType(VERTEX, QUALITY);
     }
 
-    DataType perVertexTexCoordType() const
+    DataType vertexTexCoordType() const
     {
-        return perElementComponentType(VERTEX, TEXCOORD);
+        return elementComponentType(VERTEX, TEXCOORD);
     }
 
-    DataType perVertexMaterialIndexType() const
+    DataType vertexMaterialIndexType() const
     {
-        return perElementComponentType(VERTEX, MATERIAL_INDEX);
+        return elementComponentType(VERTEX, MATERIAL_INDEX);
     }
 
-    DataType perFaceBitFlagsType() const
+    DataType faceBitFlagsType() const
     {
-        return perElementComponentType(FACE, BIT_FLAGS);
+        return elementComponentType(FACE, BIT_FLAGS);
     }
 
-    DataType perFaceNormalType() const
+    DataType faceNormalType() const
     {
-        return perElementComponentType(FACE, NORMAL);
+        return elementComponentType(FACE, NORMAL);
     }
 
-    DataType perFaceColorType() const
+    DataType faceColorType() const { return elementComponentType(FACE, COLOR); }
+
+    DataType faceQualityType() const
     {
-        return perElementComponentType(FACE, COLOR);
+        return elementComponentType(FACE, QUALITY);
     }
 
-    DataType perFaceQualityType() const
+    DataType faceWedgeTexCoordsType() const
     {
-        return perElementComponentType(FACE, QUALITY);
+        return elementComponentType(FACE, WEDGE_TEXCOORDS);
     }
 
-    DataType perFaceWedgeTexCoordsType() const
+    DataType faceMaterialIndexType() const
     {
-        return perElementComponentType(FACE, WEDGE_TEXCOORDS);
+        return elementComponentType(FACE, MATERIAL_INDEX);
     }
 
-    DataType perFaceMaterialIndexType() const
+    DataType edgeBitFlagsType() const
     {
-        return perElementComponentType(FACE, MATERIAL_INDEX);
+        return elementComponentType(EDGE, BIT_FLAGS);
     }
 
-    DataType perEdgeBitFlagsType() const
+    DataType edgeNormalType() const
     {
-        return perElementComponentType(EDGE, BIT_FLAGS);
+        return elementComponentType(EDGE, NORMAL);
     }
 
-    DataType perEdgeNormalType() const
+    DataType edgeColorType() const { return elementComponentType(EDGE, COLOR); }
+
+    DataType edgeQualityType() const
     {
-        return perElementComponentType(EDGE, NORMAL);
+        return elementComponentType(EDGE, QUALITY);
     }
 
-    DataType perEdgeColorType() const
-    {
-        return perElementComponentType(EDGE, COLOR);
-    }
-
-    DataType perEdgeQualityType() const
-    {
-        return perElementComponentType(EDGE, QUALITY);
-    }
-
-    const std::vector<CustomComponent>& perElementCustomComponents(
+    const std::vector<CustomComponent>& elementCustomComponents(
         Element el) const
     {
-        return mPerElemCustomComponents[el];
+        return mElemCustomComponents[el];
     }
 
-    const std::vector<CustomComponent>& perVertexCustomComponents() const
+    const std::vector<CustomComponent>& vertexCustomComponents() const
     {
-        return mPerElemCustomComponents[VERTEX];
+        return mElemCustomComponents[VERTEX];
     }
 
-    const std::vector<CustomComponent>& perFaceCustomComponents() const
+    const std::vector<CustomComponent>& faceCustomComponents() const
     {
-        return mPerElemCustomComponents[FACE];
+        return mElemCustomComponents[FACE];
     }
 
-    const std::vector<CustomComponent>& perEdgeCustomComponents() const
+    const std::vector<CustomComponent>& edgeCustomComponents() const
     {
-        return mPerElemCustomComponents[EDGE];
+        return mElemCustomComponents[EDGE];
     }
 
     /**
@@ -889,12 +847,11 @@ public:
         for (uint i = 0; i < NUM_ELEMENTS; ++i) {
             res.mElements[i] = mElements[i] && info.mElements[i];
             for (uint j = 0; j < NUM_COMPONENTS; ++j) {
-                res.mPerElemComponents[i][j] =
-                    mPerElemComponents[i][j] && info.mPerElemComponents[i][j];
+                res.mElemComponents[i][j] =
+                    mElemComponents[i][j] && info.mElemComponents[i][j];
 
-                if (res.mPerElemComponents[i][j]) {
-                    res.mPerElemComponentsType(i, j) =
-                        mPerElemComponentsType(i, j);
+                if (res.mElemComponents[i][j]) {
+                    res.mElemComponentsType(i, j) = mElemComponentsType(i, j);
                 }
             }
         }
@@ -902,7 +859,7 @@ public:
         if (mType == info.mType) {
             res.mType = mType;
         }
-        res.mPerElemCustomComponents = mPerElemCustomComponents;
+        res.mElemCustomComponents = mElemCustomComponents;
 
         return res;
     }
@@ -964,60 +921,54 @@ private:
     }
 };
 
-template<uint ELEM_ID, MeshConcept MeshType>
-void addPerElementCustomComponent(
-    MeshType&                        m,
-    const MeshInfo::CustomComponent& cc)
+template<ElemId ELEM_ID, MeshConcept MeshType>
+void addElementCustomComponent(MeshType& m, const MeshInfo::CustomComponent& cc)
 {
     switch (cc.type) {
     case PrimitiveType::CHAR:
-        m.template addPerElementCustomComponent<ELEM_ID, char>(cc.name);
+        m.template addElementCustomComponent<ELEM_ID, char>(cc.name);
         break;
     case PrimitiveType::UCHAR:
-        m.template addPerElementCustomComponent<ELEM_ID, unsigned char>(
-            cc.name);
+        m.template addElementCustomComponent<ELEM_ID, unsigned char>(cc.name);
         break;
     case PrimitiveType::SHORT:
-        m.template addPerElementCustomComponent<ELEM_ID, short>(cc.name);
+        m.template addElementCustomComponent<ELEM_ID, short>(cc.name);
         break;
     case PrimitiveType::USHORT:
-        m.template addPerElementCustomComponent<ELEM_ID, unsigned short>(
-            cc.name);
+        m.template addElementCustomComponent<ELEM_ID, unsigned short>(cc.name);
         break;
     case PrimitiveType::INT:
-        m.template addPerElementCustomComponent<ELEM_ID, int>(cc.name);
+        m.template addElementCustomComponent<ELEM_ID, int>(cc.name);
         break;
     case PrimitiveType::UINT:
-        m.template addPerElementCustomComponent<ELEM_ID, uint>(cc.name);
+        m.template addElementCustomComponent<ELEM_ID, uint>(cc.name);
         break;
     case PrimitiveType::FLOAT:
-        m.template addPerElementCustomComponent<ELEM_ID, float>(cc.name);
+        m.template addElementCustomComponent<ELEM_ID, float>(cc.name);
         break;
     case PrimitiveType::DOUBLE:
-        m.template addPerElementCustomComponent<ELEM_ID, double>(cc.name);
+        m.template addElementCustomComponent<ELEM_ID, double>(cc.name);
         break;
     default: assert(0);
     }
 }
 
 template<MeshConcept MeshType>
-void addPerVertexCustomComponent(
-    MeshType&                        m,
-    const MeshInfo::CustomComponent& cc)
+void addVertexCustomComponent(MeshType& m, const MeshInfo::CustomComponent& cc)
 {
-    addPerElementCustomComponent<ElemId::VERTEX>(m, cc);
+    addElementCustomComponent<ElemId::VERTEX>(m, cc);
 }
 
 template<FaceMeshConcept MeshType>
-void addPerFaceCustomComponent(MeshType& m, const MeshInfo::CustomComponent& cc)
+void addFaceCustomComponent(MeshType& m, const MeshInfo::CustomComponent& cc)
 {
-    addPerElementCustomComponent<ElemId::FACE>(m, cc);
+    addElementCustomComponent<ElemId::FACE>(m, cc);
 }
 
 template<EdgeMeshConcept MeshType>
-void addPerEdgeCustomComponent(MeshType& m, const MeshInfo::CustomComponent& cc)
+void addEdgeCustomComponent(MeshType& m, const MeshInfo::CustomComponent& cc)
 {
-    addPerElementCustomComponent<ElemId::EDGE>(m, cc);
+    addElementCustomComponent<ElemId::EDGE>(m, cc);
 }
 
 /**
@@ -1037,44 +988,44 @@ template<MeshConcept MeshType>
 void enableOptionalComponentsFromInfo(MeshInfo& info, MeshType& m)
 {
     if (info.hasVertices()) {
-        if (info.hasPerVertexColor()) {
-            if (!enableIfPerVertexColorOptional(m)) {
-                info.setPerVertexColor(false);
+        if (info.hasVertexColor()) {
+            if (!enableIfVertexColorOptional(m)) {
+                info.setVertexColor(false);
             }
         }
-        if (info.hasPerVertexNormal()) {
-            if (!enableIfPerVertexNormalOptional(m)) {
-                info.setPerVertexNormal(false);
+        if (info.hasVertexNormal()) {
+            if (!enableIfVertexNormalOptional(m)) {
+                info.setVertexNormal(false);
             }
         }
-        if (info.hasPerVertexQuality()) {
-            if (!enableIfPerVertexQualityOptional(m)) {
-                info.setPerVertexQuality(false);
+        if (info.hasVertexQuality()) {
+            if (!enableIfVertexQualityOptional(m)) {
+                info.setVertexQuality(false);
             }
         }
-        if (info.hasPerVertexTangent()) {
-            if (!enableIfPerVertexTangentOptional(m)) {
-                info.setPerVertexTangent(false);
+        if (info.hasVertexTangent()) {
+            if (!enableIfVertexTangentOptional(m)) {
+                info.setVertexTangent(false);
             }
         }
-        if (info.hasPerVertexTexCoord()) {
-            if (!enableIfPerVertexTexCoordOptional(m)) {
-                info.setPerVertexTexCoord(false);
+        if (info.hasVertexTexCoord()) {
+            if (!enableIfVertexTexCoordOptional(m)) {
+                info.setVertexTexCoord(false);
             }
         }
-        if (info.hasPerVertexMaterialIndex()) {
-            if (!enableIfPerVertexMaterialIndexOptional(m)) {
-                info.setPerVertexMaterialIndex(false);
+        if (info.hasVertexMaterialIndex()) {
+            if (!enableIfVertexMaterialIndexOptional(m)) {
+                info.setVertexMaterialIndex(false);
             }
         }
-        if (info.hasPerVertexCustomComponents()) {
-            if constexpr (HasPerVertexCustomComponents<MeshType>) {
-                for (const auto& cc : info.perVertexCustomComponents()) {
-                    addPerVertexCustomComponent(m, cc);
+        if (info.hasVertexCustomComponents()) {
+            if constexpr (HasVertexCustomComponents<MeshType>) {
+                for (const auto& cc : info.vertexCustomComponents()) {
+                    addVertexCustomComponent(m, cc);
                 }
             }
             else {
-                info.clearPerVertexCustomComponents();
+                info.clearVertexCustomComponents();
             }
         }
     }
@@ -1084,39 +1035,39 @@ void enableOptionalComponentsFromInfo(MeshInfo& info, MeshType& m)
 
     if constexpr (HasFaces<MeshType>) {
         if (info.hasFaces()) {
-            if (info.hasPerFaceColor()) {
-                if (!enableIfPerFaceColorOptional(m)) {
-                    info.setPerFaceColor(false);
+            if (info.hasFaceColor()) {
+                if (!enableIfFaceColorOptional(m)) {
+                    info.setFaceColor(false);
                 }
             }
-            if (info.hasPerFaceNormal()) {
-                if (!enableIfPerFaceNormalOptional(m)) {
-                    info.setPerFaceNormal(false);
+            if (info.hasFaceNormal()) {
+                if (!enableIfFaceNormalOptional(m)) {
+                    info.setFaceNormal(false);
                 }
             }
-            if (info.hasPerFaceQuality()) {
-                if (!enableIfPerFaceQualityOptional(m)) {
-                    info.setPerFaceQuality(false);
+            if (info.hasFaceQuality()) {
+                if (!enableIfFaceQualityOptional(m)) {
+                    info.setFaceQuality(false);
                 }
             }
-            if (info.hasPerFaceWedgeTexCoords()) {
-                if (!enableIfPerFaceWedgeTexCoordsOptional(m)) {
-                    info.setPerFaceWedgeTexCoords(false);
+            if (info.hasFaceWedgeTexCoords()) {
+                if (!enableIfFaceWedgeTexCoordsOptional(m)) {
+                    info.setFaceWedgeTexCoords(false);
                 }
             }
-            if (info.hasPerFaceMaterialIndex()) {
-                if (!enableIfPerFaceMaterialIndexOptional(m)) {
-                    info.setPerFaceMaterialIndex(false);
+            if (info.hasFaceMaterialIndex()) {
+                if (!enableIfFaceMaterialIndexOptional(m)) {
+                    info.setFaceMaterialIndex(false);
                 }
             }
-            if (info.hasPerFaceCustomComponents()) {
-                if constexpr (HasPerFaceCustomComponents<MeshType>) {
-                    for (const auto& cc : info.perFaceCustomComponents()) {
-                        addPerFaceCustomComponent(m, cc);
+            if (info.hasFaceCustomComponents()) {
+                if constexpr (HasFaceCustomComponents<MeshType>) {
+                    for (const auto& cc : info.faceCustomComponents()) {
+                        addFaceCustomComponent(m, cc);
                     }
                 }
                 else {
-                    info.clearPerFaceCustomComponents();
+                    info.clearFaceCustomComponents();
                 }
             }
         }
@@ -1130,29 +1081,29 @@ void enableOptionalComponentsFromInfo(MeshInfo& info, MeshType& m)
 
     if constexpr (HasEdges<MeshType>) {
         if (info.hasEdges()) {
-            if (info.hasPerEdgeColor()) {
-                if (!enableIfPerEdgeColorOptional(m)) {
-                    info.setPerEdgeColor(false);
+            if (info.hasEdgeColor()) {
+                if (!enableIfEdgeColorOptional(m)) {
+                    info.setEdgeColor(false);
                 }
             }
-            if (info.hasPerEdgeNormal()) {
-                if (!enableIfPerEdgeNormalOptional(m)) {
-                    info.setPerEdgeNormal(false);
+            if (info.hasEdgeNormal()) {
+                if (!enableIfEdgeNormalOptional(m)) {
+                    info.setEdgeNormal(false);
                 }
             }
-            if (info.hasPerEdgeQuality()) {
-                if (!enableIfPerEdgeQualityOptional(m)) {
-                    info.setPerEdgeQuality(false);
+            if (info.hasEdgeQuality()) {
+                if (!enableIfEdgeQualityOptional(m)) {
+                    info.setEdgeQuality(false);
                 }
             }
-            if (info.hasPerEdgeCustomComponents()) {
-                if constexpr (HasPerEdgeCustomComponents<MeshType>) {
-                    for (const auto& cc : info.perEdgeCustomComponents()) {
-                        addPerEdgeCustomComponent(m, cc);
+            if (info.hasEdgeCustomComponents()) {
+                if constexpr (HasEdgeCustomComponents<MeshType>) {
+                    for (const auto& cc : info.edgeCustomComponents()) {
+                        addEdgeCustomComponent(m, cc);
                     }
                 }
                 else {
-                    info.clearPerEdgeCustomComponents();
+                    info.clearEdgeCustomComponents();
                 }
             }
         }
