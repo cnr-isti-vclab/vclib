@@ -8,7 +8,13 @@
 get_filename_component(TEST_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(vclib-core-test-${TEST_NAME})
 
-set(SOURCES main.cpp)
+set(SOURCES
+    polymesh_poly_topology.cpp
+    polymesh_tri_topology.cpp
+    triedgemesh_topology.cpp
+    trimesh_topology.cpp
+    wedge_vertex_duplication.cpp
+)
 
 vclib_add_test(
     ${TEST_NAME}
