@@ -41,8 +41,7 @@ inline auto meshSphereIntersection()
     std::cout << "\n=== Defining Intersection Spheres ===" << std::endl;
 
     // Center sphere that intersects the bunny's body
-    SSphere centerSphere(
-        {0.28, 0.18, 0.49}, 0.08);
+    SSphere centerSphere({0.28, 0.18, 0.49}, 0.08);
 
     // Smaller sphere that intersects only part of the ears
     SSphere earSphere({0.25, 0.47, 0.27}, 0.04);

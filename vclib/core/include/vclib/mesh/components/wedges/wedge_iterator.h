@@ -34,27 +34,30 @@ public:
     using iterator_category = std::random_access_iterator_tag;
     using value_type        = WedgeProxy<FaceType>;
     using difference_type   = std::ptrdiff_t;
-    using reference        = WedgeProxy<FaceType>;
-    using pointer          = void;
+    using reference         = WedgeProxy<FaceType>;
+    using pointer           = void;
 
     template<typename>
     friend class WedgeIterator;
 
     WedgeIterator() = default;
+
     WedgeIterator(FaceType face, uint index) : mFace(face), mIndex(index) {}
 
     // Converting constructor from mutable to const (or convertible) FaceType
     template<typename OtherFace>
-        requires std::convertible_to<OtherFace, FaceType>
-    WedgeIterator(const WedgeIterator<OtherFace>& other)
-        : mFace(other.face()), mIndex(other.index())
+    requires std::convertible_to<OtherFace, FaceType>
+    WedgeIterator(const WedgeIterator<OtherFace>& other) :
+            mFace(other.face()), mIndex(other.index())
     {
     }
 
     reference operator*() const { return reference(mFace, mIndex); }
+
     reference operator[](difference_type n) const
     {
-        return reference(mFace, static_cast<uint>(static_cast<difference_type>(mIndex) + n));
+        return reference(
+            mFace, static_cast<uint>(static_cast<difference_type>(mIndex) + n));
     }
 
     WedgeIterator& operator++()
@@ -111,11 +114,12 @@ public:
     }
 
     const FaceType& face() const { return mFace; }
+
     uint index() const { return mIndex; }
 
     template<typename OtherFace>
     friend difference_type operator-(
-        const WedgeIterator& a,
+        const WedgeIterator&            a,
         const WedgeIterator<OtherFace>& b)
     {
         assert(a.face() == b.face());

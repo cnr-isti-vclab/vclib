@@ -17,7 +17,7 @@
 namespace vcl {
 
 template<typename T>
-concept HasTangentMember = requires(T&& t) {
+concept HasTangentMember = requires (T&& t) {
     { t.tangent() };
 };
 
@@ -49,15 +49,17 @@ struct TangentsView : std::ranges::range_adaptor_closure<TangentsView>
 } // namespace detail
 
 /**
- * @brief View adaptor that transforms a range of elements into a range of their tangents.
+ * @brief View adaptor that transforms a range of elements into a range of their
+ * tangents.
  *
- * When applied to a range of elements (e.g. `mesh.vertices() | views::tangents` or
- * `mesh.vertices() | views::selected | views::tangents`), it transforms each element to its tangent reference.
+ * When applied to a range of elements (e.g. `mesh.vertices() | views::tangents`
+ * or `mesh.vertices() | views::selected | views::tangents`), it transforms each
+ * element to its tangent reference.
  *
  * @ingroup views
  */
 inline constexpr detail::TangentsView tangents;
-inline constexpr auto tangent = tangents;
+inline constexpr auto                 tangent = tangents;
 
 template<>
 inline constexpr auto component<CompId::TANGENT> = tangents;

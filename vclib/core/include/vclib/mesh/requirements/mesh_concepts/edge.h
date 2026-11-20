@@ -18,8 +18,7 @@ namespace vcl {
 
 /* Normals */
 template<typename M>
-concept HasEdgeNormal =
-    HasElementComponent<M, ElemId::EDGE, CompId::NORMAL>;
+concept HasEdgeNormal = HasElementComponent<M, ElemId::EDGE, CompId::NORMAL>;
 
 template<typename M>
 concept HasEdgeOptionalNormal =
@@ -27,8 +26,7 @@ concept HasEdgeOptionalNormal =
 
 /* Colors */
 template<typename M>
-concept HasEdgeColor =
-    HasElementComponent<M, ElemId::EDGE, CompId::COLOR>;
+concept HasEdgeColor = HasElementComponent<M, ElemId::EDGE, CompId::COLOR>;
 
 template<typename M>
 concept HasEdgeOptionalColor =
@@ -36,16 +34,14 @@ concept HasEdgeOptionalColor =
 
 /* Adjacencies */
 template<typename M>
-concept HasEdgeAdjacentFaces =
-    HasElementAdjacentFaces<M, ElemId::EDGE>;
+concept HasEdgeAdjacentFaces = HasElementAdjacentFaces<M, ElemId::EDGE>;
 
 template<typename M>
 concept HasEdgeOptionalAdjacentFaces =
     HasElementOptionalAdjacentFaces<M, ElemId::EDGE>;
 
 template<typename M>
-concept HasEdgeAdjacentEdges =
-    HasElementAdjacentEdges<M, ElemId::EDGE>;
+concept HasEdgeAdjacentEdges = HasElementAdjacentEdges<M, ElemId::EDGE>;
 
 template<typename M>
 concept HasEdgeOptionalAdjacentEdges =
@@ -53,8 +49,7 @@ concept HasEdgeOptionalAdjacentEdges =
 
 /* Quality */
 template<typename M>
-concept HasEdgeQuality =
-    HasElementComponent<M, ElemId::EDGE, CompId::QUALITY>;
+concept HasEdgeQuality = HasElementComponent<M, ElemId::EDGE, CompId::QUALITY>;
 
 template<typename M>
 concept HasEdgeOptionalQuality =
@@ -62,8 +57,7 @@ concept HasEdgeOptionalQuality =
 
 /* Custom Components */
 template<typename M>
-concept HasEdgeCustomComponents =
-    HasElementCustomComponents<M, ElemId::EDGE>;
+concept HasEdgeCustomComponents = HasElementCustomComponents<M, ElemId::EDGE>;
 
 } // namespace vcl
 

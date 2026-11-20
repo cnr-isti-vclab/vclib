@@ -170,8 +170,7 @@ TEST_CASE("Mesh Info - Mesh Info From Mesh")
         REQUIRE(info.hasVertexCustomComponents());
         REQUIRE(info.vertexCustomComponents().size() == 1);
         REQUIRE(info.vertexCustomComponents()[0].name == "curvature");
-        REQUIRE(
-            info.vertexCustomComponents()[0].type == PrimitiveType::DOUBLE);
+        REQUIRE(info.vertexCustomComponents()[0].type == PrimitiveType::DOUBLE);
 
         REQUIRE(info.hasFaceCustomComponents());
         REQUIRE(info.faceCustomComponents().size() == 1);
@@ -203,10 +202,9 @@ TEST_CASE("Mesh Info - Mesh Info Intersect")
     REQUIRE(inter.hasVertices());
     REQUIRE(inter.hasVertexPosition());
     REQUIRE(
-        inter.vertexPositionType() ==
-        PrimitiveType::FLOAT);            // Taken from info1
-    REQUIRE(!inter.hasVertexNormal()); // Not in info2
-    REQUIRE(!inter.hasVertexColor());  // Not in info1
+        inter.vertexPositionType() == PrimitiveType::FLOAT); // Taken from info1
+    REQUIRE(!inter.hasVertexNormal());                       // Not in info2
+    REQUIRE(!inter.hasVertexColor());                        // Not in info1
     REQUIRE(inter.hasFaces());
     REQUIRE(inter.hasFaceColor());
     REQUIRE(inter.isTriangleMesh());

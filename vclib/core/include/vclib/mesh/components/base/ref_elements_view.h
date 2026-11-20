@@ -39,9 +39,9 @@ struct ElementTransform
  */
 template<typename MeshType, typename ContainerType, ElemId REF_ELEM_ID>
 class RefElementsView :
-    public std::ranges::transform_view<
-        std::ranges::views::all_t<ContainerType&>,
-        detail::ElementTransform<MeshType, REF_ELEM_ID>>
+        public std::ranges::transform_view<
+            std::ranges::views::all_t<ContainerType&>,
+            detail::ElementTransform<MeshType, REF_ELEM_ID>>
 {
     using Base = std::ranges::transform_view<
         std::ranges::views::all_t<ContainerType&>,
@@ -54,11 +54,10 @@ public:
     RefElementsView() = default;
 
     RefElementsView(MeshType& mesh, ContainerType& container) :
-        Base(
-            std::views::all(container),
-            detail::ElementTransform<MeshType, REF_ELEM_ID>{&mesh}),
-        mMesh(&mesh),
-        mContainer(&container)
+            Base(
+                std::views::all(container),
+                detail::ElementTransform<MeshType, REF_ELEM_ID> {&mesh}),
+            mMesh(&mesh), mContainer(&container)
     {
     }
 

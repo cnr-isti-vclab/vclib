@@ -175,7 +175,10 @@ public:
             if (getMesh().isVertexNormalAvailable() &&
                 vertId < getMesh().vertexContainerSize() &&
                 !getMesh().vertex(vertId).deleted()) {
-                return getMesh().vertex(vertId).normal().template cast<double>();
+                return getMesh()
+                    .vertex(vertId)
+                    .normal()
+                    .template cast<double>();
             }
         }
         return Point3d();

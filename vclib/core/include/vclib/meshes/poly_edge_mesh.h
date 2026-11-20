@@ -119,15 +119,15 @@ using PolyEdgeMesh = PolyEdgeMeshT<double, uint>;
 using PolyEdgeMeshf = PolyEdgeMeshT<float, uint>;
 
 /**
- * @brief The PolyEdgeMesh64 class is a specialization of the PolyEdgeMeshT class
- * that uses `double` as scalar and `uint64_t` for indexing.
+ * @brief The PolyEdgeMesh64 class is a specialization of the PolyEdgeMeshT
+ * class that uses `double` as scalar and `uint64_t` for indexing.
  * @ingroup meshes
  */
 using PolyEdgeMesh64 = PolyEdgeMeshT<double, uint64_t>;
 
 /**
- * @brief The PolyEdgeMesh64f class is a specialization of the PolyEdgeMeshT class
- * that uses `float` as scalar and `uint64_t` for indexing.
+ * @brief The PolyEdgeMesh64f class is a specialization of the PolyEdgeMeshT
+ * class that uses `float` as scalar and `uint64_t` for indexing.
  * @ingroup meshes
  */
 using PolyEdgeMesh64f = PolyEdgeMeshT<float, uint64_t>;

@@ -20,30 +20,28 @@
  * Example:
  *   VCL_CONTAINER_COMPONENT_METHODS(Vertex, Color, COLOR)
  * generates:
- *   bool isVertexColorAvailable() const { return isVertexComponentAvailable<CompId::COLOR>(); }
- *   void enableVertexColor() requires ... { enableVertexComponent<CompId::COLOR>(); }
- *   void disableVertexColor() requires ... { disableVertexComponent<CompId::COLOR>(); }
+ *   bool isVertexColorAvailable() const { return
+ * isVertexComponentAvailable<CompId::COLOR>(); } void enableVertexColor()
+ * requires ... { enableVertexComponent<CompId::COLOR>(); } void
+ * disableVertexColor() requires ... { disableVertexComponent<CompId::COLOR>();
+ * }
  *
  * TODO: Remove this macro when C++26 static reflection is available.
  */
-#define VCL_CONTAINER_COMPONENT_METHODS(Elem, CompName, COMP_ID) \
-    bool is##Elem##CompName##Available() const \
-    { \
-        return is##Elem##ComponentAvailable<CompId::COMP_ID>(); \
-    } \
-    void enable##Elem##CompName() \
-        requires comp::HasOptionalComponent< \
-            CompId::COMP_ID, \
-            typename Base::Components> \
-    { \
-        enable##Elem##Component<CompId::COMP_ID>(); \
-    } \
-    void disable##Elem##CompName() \
-        requires comp::HasOptionalComponent< \
-            CompId::COMP_ID, \
-            typename Base::Components> \
-    { \
-        disable##Elem##Component<CompId::COMP_ID>(); \
+#define VCL_CONTAINER_COMPONENT_METHODS(Elem, CompName, COMP_ID)         \
+    bool is##Elem##CompName##Available() const                           \
+    {                                                                    \
+        return is##Elem##ComponentAvailable<CompId::COMP_ID>();          \
+    }                                                                    \
+    void enable##Elem##CompName() requires comp::                        \
+        HasOptionalComponent<CompId::COMP_ID, typename Base::Components> \
+    {                                                                    \
+        enable##Elem##Component<CompId::COMP_ID>();                      \
+    }                                                                    \
+    void disable##Elem##CompName() requires comp::                       \
+        HasOptionalComponent<CompId::COMP_ID, typename Base::Components> \
+    {                                                                    \
+        disable##Elem##Component<CompId::COMP_ID>();                     \
     }
 
 /**
@@ -52,8 +50,8 @@
  *
  * TODO: Remove this macro when C++26 static reflection is available.
  */
-#define VCL_COMMON_CONTAINER_COMPONENT_METHODS(Elem) \
-    VCL_CONTAINER_COMPONENT_METHODS(Elem, Color, COLOR) \
+#define VCL_COMMON_CONTAINER_COMPONENT_METHODS(Elem)      \
+    VCL_CONTAINER_COMPONENT_METHODS(Elem, Color, COLOR)   \
     VCL_CONTAINER_COMPONENT_METHODS(Elem, Normal, NORMAL) \
     VCL_CONTAINER_COMPONENT_METHODS(Elem, Quality, QUALITY)
 

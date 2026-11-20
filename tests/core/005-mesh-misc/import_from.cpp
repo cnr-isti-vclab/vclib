@@ -383,7 +383,9 @@ TEST_CASE("Import From - Face importFrom with importRefs = false on PolyMesh")
     REQUIRE(f1.color() == vcl::Color::Yellow);
 }
 
-TEST_CASE("Import From - Element importFrom Updates Container Element Count on Deleted Status Change")
+TEST_CASE(
+    "Import From - Element importFrom Updates Container Element Count on "
+    "Deleted Status Change")
 {
     // 1. Vertices (BitFlags)
     MyMesh m1;
@@ -404,7 +406,8 @@ TEST_CASE("Import From - Element importFrom Updates Container Element Count on D
     REQUIRE(m1.deletedVertexCount() == 1);
     REQUIRE(!m1.isCompact());
 
-    // Importing active vertex into deleted vertex must increment m1's active count back
+    // Importing active vertex into deleted vertex must increment m1's active
+    // count back
     m1.vertex(1).importFrom(m2.vertex(0));
     REQUIRE(!m1.vertex(1).deleted());
     REQUIRE(m1.vertexCount() == 3);

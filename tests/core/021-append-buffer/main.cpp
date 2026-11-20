@@ -189,12 +189,11 @@ void testVertexSelectionVector(
     }
 }
 
-using Meshes  = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
-using Meshesf = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
-using Meshes64 =
-    std::tuple<vcl::TriMesh64, vcl::PolyMesh64, vcl::EdgeMesh64>;
-using Meshes64f = std::
-    tuple<vcl::TriMesh64f, vcl::PolyMesh64f, vcl::EdgeMesh64f>;
+using Meshes   = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
+using Meshesf  = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
+using Meshes64 = std::tuple<vcl::TriMesh64, vcl::PolyMesh64, vcl::EdgeMesh64>;
+using Meshes64f =
+    std::tuple<vcl::TriMesh64f, vcl::PolyMesh64f, vcl::EdgeMesh64f>;
 
 TEMPLATE_TEST_CASE(
     "Wedge driven duplication...",
@@ -204,7 +203,7 @@ TEMPLATE_TEST_CASE(
     Meshes64,
     Meshes64f)
 {
-    using TriMesh  = std::tuple_element_t<0, TestType>;
+    using TriMesh = std::tuple_element_t<0, TestType>;
 
     TriMesh tm =
         vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_textured.ply");
@@ -357,7 +356,7 @@ TEMPLATE_TEST_CASE(
     vcl::faceMaterialIndicesAsDuplicatedVertexMaterialIndicesToBuffer(
         tm, vertWedgeMap, facesToReassign, matBuffer.data());
     // The unreferenced vertex row should be SENTINEL (-1)
-    auto vertCompIndices = vcl::detail::vertCompactIndices(tm, true);
+    auto      vertCompIndices = vcl::detail::vertCompactIndices(tm, true);
     IndexType extraVRow =
         vertCompIndices.empty() ? extraV : vertCompIndices[extraV];
     REQUIRE(matBuffer[extraVRow] == -1);

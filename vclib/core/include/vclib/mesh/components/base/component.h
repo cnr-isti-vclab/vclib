@@ -17,8 +17,8 @@
 namespace vcl::comp {
 
 /**
- * @brief Concept that checks whether a type Data can be used as the data type of
- * a Component.
+ * @brief Concept that checks whether a type Data can be used as the data type
+ * of a Component.
  *
  * A valid component data type must be either `void` (for components that do not
  * store per-element data in the container tuple, like CustomComponents) or a
@@ -41,7 +41,7 @@ class Component
 public:
     using DataType                       = Data;
     static constexpr CompId COMPONENT_ID = COMP_ID;
-    static constexpr bool IS_OPTIONAL    = OPT;
+    static constexpr bool   IS_OPTIONAL  = OPT;
 
 protected:
     // needs to be static to be accessible from the derived classes
@@ -50,15 +50,18 @@ protected:
         assert(self.isValid() && "Element proxy is invalid!");
         if constexpr (OPT) {
             assert(
-                self.parentContainer().template isComponentAvailable<COMP_ID>() &&
-                "Component is optional and not currently enabled in the container!");
+                self.parentContainer()
+                    .template isComponentAvailable<COMP_ID>() &&
+                "Component is optional and not currently enabled in the "
+                "container!");
         }
         return self.parentContainer().template vector<COMP_ID>()[self.index()];
     }
 };
 
 /**
- * @brief Concept that checks whether a type T is a Component (has COMPONENT_ID).
+ * @brief Concept that checks whether a type T is a Component (has
+ * COMPONENT_ID).
  */
 template<typename T>
 concept ComponentConcept = requires {

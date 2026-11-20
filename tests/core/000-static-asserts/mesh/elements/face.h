@@ -14,8 +14,8 @@ void faceStaticAsserts()
 {
     using namespace vcl;
 
-    using TMFace  = FaceType<TriMesh>;
-    using PMFace  = FaceType<PolyMesh>;
+    using TMFace = FaceType<TriMesh>;
+    using PMFace = FaceType<PolyMesh>;
 
     static_assert(
         FaceConcept<TMFace>, "TMFace does not satisfy the FaceConcept");

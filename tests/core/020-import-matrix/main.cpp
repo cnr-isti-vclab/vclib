@@ -1079,4 +1079,3 @@ TEST_CASE("Import Material Index Sentinels", "[import][sentinels]")
         REQUIRE(mesh.face(0).materialIndex() == vcl::USHORT_NULL);
     }
 }
-

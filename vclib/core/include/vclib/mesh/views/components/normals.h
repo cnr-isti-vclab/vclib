@@ -17,14 +17,13 @@
 namespace vcl {
 
 template<typename T>
-concept HasNormalMember = requires(T&& t) {
+concept HasNormalMember = requires (T&& t) {
     { t.normal() };
 };
 
 template<typename R>
 concept NormalRangeConcept =
-    std::ranges::range<R> &&
-    (requires(R&& r) {
+    std::ranges::range<R> && (requires (R&& r) {
         { std::forward<R>(r).normals() } -> std::ranges::range;
     } || HasNormalMember<std::ranges::range_reference_t<R>>);
 
@@ -57,14 +56,16 @@ struct NormalsView : std::ranges::range_adaptor_closure<NormalsView>
 } // namespace detail
 
 /**
- * @brief View adaptor that transforms a range of elements into a range of their normals.
+ * @brief View adaptor that transforms a range of elements into a range of their
+ * normals.
  *
- * When applied directly to an ElementContainerProxy (e.g. `mesh.vertices() | views::normals` or
- * `mesh.faces() | views::normals`), it directly returns a contiguous ComponentView over the SoA buffer
- * without proxy overhead.
+ * When applied directly to an ElementContainerProxy (e.g. `mesh.vertices() |
+ * views::normals` or `mesh.faces() | views::normals`), it directly returns a
+ * contiguous ComponentView over the SoA buffer without proxy overhead.
  *
- * When applied to a filtered or transformed range (e.g. `mesh.vertices() | views::selected | views::normals`),
- * it transforms each element to its normal reference.
+ * When applied to a filtered or transformed range (e.g. `mesh.vertices() |
+ * views::selected | views::normals`), it transforms each element to its normal
+ * reference.
  *
  * @ingroup views
  */

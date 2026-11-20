@@ -88,8 +88,8 @@ inline void checkComments(std::istringstream& iss)
     REQUIRE(line == "####");
 }
 
-using Meshes         = std::pair<vcl::TriMesh, vcl::PolyMesh>;
-using Meshesf        = std::pair<vcl::TriMeshf, vcl::PolyMeshf>;
+using Meshes    = std::pair<vcl::TriMesh, vcl::PolyMesh>;
+using Meshesf   = std::pair<vcl::TriMeshf, vcl::PolyMeshf>;
 using Meshes64  = std::pair<vcl::TriMesh64, vcl::PolyMesh64>;
 using Meshes64f = std::pair<vcl::TriMesh64f, vcl::PolyMesh64f>;
 

@@ -15,8 +15,8 @@
  * @defgroup mesh_concepts Mesh Concepts
  * @ingroup mesh_requirements
  *
- * @brief Concepts that check the structure, topology, and component availability
- * of Mesh classes.
+ * @brief Concepts that check the structure, topology, and component
+ * availability of Mesh classes.
  */
 
 namespace vcl {
@@ -29,7 +29,8 @@ namespace vcl {
  * ========================================================================= */
 
 /**
- * @brief Concept that checks whether a Mesh has an ElementContainer of type ELEM_ID.
+ * @brief Concept that checks whether a Mesh has an ElementContainer of type
+ * ELEM_ID.
  * @tparam MeshType: The mesh type to check.
  * @tparam ELEM_ID: The element ID.
  * @ingroup mesh_concepts
@@ -130,4 +131,3 @@ concept HasElementCustomComponents =
 } // namespace vcl
 
 #endif // VCL_MESH_REQUIREMENTS_MESH_CONCEPTS_BASE_H
-

@@ -444,10 +444,7 @@ public:
      * @brief Returns the number of edges of the Polygon.
      * @return the number of edges of the Polygon.
      */
-    uint edgeCount(this auto&& self)
-    {
-        return self.edgeFlags().size();
-    }
+    uint edgeCount(this auto&& self) { return self.edgeFlags().size(); }
 
 protected:
     template<typename OtherElement>
@@ -521,11 +518,11 @@ void PolygonBitFlags<N>::importFrom(
         if constexpr (HasPolygonBitFlags<OtherElement>) {
             self.setUnderlyingBitFlags(other.underlyingBitFlags());
             self.setDeleted(isDeleted);
-            const uint n = std::min(
-                (uint) self.edgeCount(),
-                (uint) other.edgeCount());
+            const uint n =
+                std::min((uint) self.edgeCount(), (uint) other.edgeCount());
             for (uint i = 0; i < n; ++i) {
-                self.setUnderlyingEdgeBitFlags(i, other.underlyingEdgeBitFlags(i));
+                self.setUnderlyingEdgeBitFlags(
+                    i, other.underlyingEdgeBitFlags(i));
             }
         }
         else {
@@ -539,8 +536,7 @@ void PolygonBitFlags<N>::importFrom(
                 self.userBit(i) = other.userBit(i);
             }
             if constexpr (HasTriangleBitFlags<OtherElement>) {
-                const uint numEdges =
-                    std::min((uint) self.edgeCount(), 3u);
+                const uint numEdges = std::min((uint) self.edgeCount(), 3u);
                 for (uint i = 0; i < numEdges; ++i) {
                     self.edgeOnBorder(i) = other.edgeOnBorder(i);
                     self.edgeSelected(i) = other.edgeSelected(i);

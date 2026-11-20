@@ -66,7 +66,7 @@ auto deleteElementsIf(MeshType& m, Range auto&& elemFilterRng)
 
 template<MeshConcept MeshType, ElemId ELEM_ID>
 auto deleteElementsIf(
-    MeshType&                                                   m,
+    MeshType&                                                    m,
     const std::function<bool(
         typename MeshType::template ConstElementType<ELEM_ID>)>& elemFilter)
 {

@@ -104,12 +104,13 @@ if(CMAKE_EXPORT_COMPILE_COMMANDS)
     endif()
 
     add_custom_target(
-        vclib_bindings_enrich_compile_commands ALL
+        vclib_bindings_enrich_compile_commands
+        ALL
         COMMAND
             ${Python_EXECUTABLE}
             "${CMAKE_SOURCE_DIR}/cmake/enrich_compile_commands.py"
-            "${CMAKE_BINARY_DIR}"
-            "${CMAKE_SOURCE_DIR}"
-        COMMENT "Enriching compile_commands.json with bindings headers for clangd"
+            "${CMAKE_BINARY_DIR}" "${CMAKE_SOURCE_DIR}"
+        COMMENT
+            "Enriching compile_commands.json with bindings headers for clangd"
     )
 endif()

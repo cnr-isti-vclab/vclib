@@ -36,14 +36,14 @@ namespace vcl::mesh {
  */
 template<
     HasRequiredVertexComponents CompList,
-    std::unsigned_integral Index = uint,
-    typename ParentMesh          = void>
+    std::unsigned_integral      Index = uint,
+    typename ParentMesh               = void>
 class VertexContainer :
-    public ElementContainer<
-        typename comp::detail::ComponentListHelper<CompList>::type,
-        ParentMesh,
-        Index,
-        Vertex>
+        public ElementContainer<
+            typename comp::detail::ComponentListHelper<CompList>::type,
+            ParentMesh,
+            Index,
+            Vertex>
 {
     using Base = ElementContainer<
         typename comp::detail::ComponentListHelper<CompList>::type,
@@ -121,7 +121,10 @@ public:
      *
      * @return The number of all the vertices contained in the Mesh.
      */
-    std::size_t vertexContainerSize() const { return Base::elementContainerSize(); }
+    std::size_t vertexContainerSize() const
+    {
+        return Base::elementContainerSize();
+    }
 
     /**
      * @brief Returns the number of deleted vertices in the Vertex container,
@@ -129,11 +132,14 @@ public:
      *
      * @return The number of deleted vertices in the container.
      */
-    std::size_t deletedVertexCount() const { return Base::deletedElementCount(); }
+    std::size_t deletedVertexCount() const
+    {
+        return Base::deletedElementCount();
+    }
 
     /**
-     * @brief Adds a new vertex into the Vertex container, returning the index of
-     * the added vertex.
+     * @brief Adds a new vertex into the Vertex container, returning the index
+     * of the added vertex.
      *
      * @return The index of the new vertex.
      */
@@ -239,9 +245,9 @@ public:
     void resizeVertices(std::size_t n) { Base::resizeElements(n); }
 
     /**
-     * @brief Reserves a number of vertices in the container of Vertices. This is
-     * useful when you know (or you have an idea) of how many vertices will be
-     * added to a new or existing mesh. Calling this function before any
+     * @brief Reserves a number of vertices in the container of Vertices. This
+     * is useful when you know (or you have an idea) of how many vertices will
+     * be added to a new or existing mesh. Calling this function before any
      * addVertex() call will avoid unnecessary reallocations of the container,
      * saving execution time.
      *
@@ -348,8 +354,8 @@ public:
     }
 
     /**
-     * @brief Returns an ElementContainerProxy object that allows to iterate over
-     * the vertices of the container, providing begin() and end() member
+     * @brief Returns an ElementContainerProxy object that allows to iterate
+     * over the vertices of the container, providing begin() and end() member
      * functions.
      *
      * This member function is very useful when you want to iterate over the
@@ -376,8 +382,8 @@ public:
     }
 
     /**
-     * @brief Returns an ElementContainerProxy object that allows to iterate over
-     * the vertices of the container, providing begin() and end() member
+     * @brief Returns an ElementContainerProxy object that allows to iterate
+     * over the vertices of the container, providing begin() and end() member
      * functions.
      *
      * This member function is very useful when you want to iterate over the
@@ -414,12 +420,13 @@ public:
      * not.
      *
      * @param[in] begin: the index of the first vertex to be included in the
-     * range. It must be less than or equal to vertexContainerSize() and less than
-     * or equal to the end index.
+     * range. It must be less than or equal to vertexContainerSize() and less
+     * than or equal to the end index.
      * @param[in] end: the index of the last vertex to be included in the
      * range (exclusive). If NULL_INDEX (default) or greater than
      * vertexContainerSize(), it will be set to vertexContainerSize().
-     * @return A View object allowing to iterate over the given range of the container.
+     * @return A View object allowing to iterate over the given range of the
+     * container.
      */
     auto vertices(Index begin, Index end = NULL_INDEX)
     {
@@ -437,12 +444,13 @@ public:
      * not.
      *
      * @param[in] begin: the index of the first vertex to be included in the
-     * range. It must be less than or equal to vertexContainerSize() and less than
-     * or equal to the end index.
+     * range. It must be less than or equal to vertexContainerSize() and less
+     * than or equal to the end index.
      * @param[in] end: the index of the last vertex to be included in the
      * range (exclusive). If NULL_INDEX (default) or greater than
      * vertexContainerSize(), it will be set to vertexContainerSize().
-     * @return A View object allowing to iterate over the given range of the container.
+     * @return A View object allowing to iterate over the given range of the
+     * container.
      */
     auto vertices(Index begin, Index end = NULL_INDEX) const
     {
@@ -512,19 +520,13 @@ public:
      * @brief Enables all optional vertex components in the container.
      * Alias for enableAllVertexOptionalComponents().
      */
-    void enableAllVertexComponents()
-    {
-        Base::enableAllOptionalComponents();
-    }
+    void enableAllVertexComponents() { Base::enableAllOptionalComponents(); }
 
     /**
      * @brief Disables all optional vertex components in the container.
      * Alias for disableAllVertexOptionalComponents().
      */
-    void disableAllVertexComponents()
-    {
-        Base::disableAllOptionalComponents();
-    }
+    void disableAllVertexComponents() { Base::disableAllOptionalComponents(); }
 
     VCL_COMMON_CONTAINER_COMPONENT_METHODS(Vertex)
     VCL_CONTAINER_COMPONENT_METHODS(Vertex, AdjacentEdges, ADJACENT_EDGES)
@@ -678,8 +680,10 @@ public:
      * @note This function is available only if the Vertex Element has the
      * CustomComponents Component.
      *
-     * @tparam K: The type of the custom component for which to return the handle.
-     * @param[in] name: Name of the custom component for which to return the handle.
+     * @tparam K: The type of the custom component for which to return the
+     * handle.
+     * @param[in] name: Name of the custom component for which to return the
+     * handle.
      * @return A vector handle that allows access to the custom component.
      */
     template<typename K>
@@ -697,8 +701,10 @@ public:
      * @note This function is available only if the Vertex Element has the
      * CustomComponents Component.
      *
-     * @tparam K: The type of the custom component for which to return the handle.
-     * @param[in] name: Name of the custom component for which to return the handle.
+     * @tparam K: The type of the custom component for which to return the
+     * handle.
+     * @param[in] name: Name of the custom component for which to return the
+     * handle.
      * @return A const vector handle that allows access to the custom
      * component.
      */

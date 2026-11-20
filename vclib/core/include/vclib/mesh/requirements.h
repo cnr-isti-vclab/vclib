@@ -8,9 +8,9 @@
 #ifndef VCL_MESH_REQUIREMENTS_H
 #define VCL_MESH_REQUIREMENTS_H
 
+#include "requirements/contracts.h"
 #include "requirements/element_concepts.h"
 #include "requirements/mesh_concepts.h"
-#include "requirements/contracts.h"
 
 /**
  * @defgroup mesh_requirements Mesh Requirements

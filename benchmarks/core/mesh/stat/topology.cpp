@@ -130,7 +130,7 @@ BENCH("stat/topology/face_flooding", []<typename Mesh>(bench::State<Mesh>& s) {
                 }
             },
             [&]() {
-                Face start = m.face(0);
+                Face start      = m.face(0);
                 start.visited() = true;
                 stack.push_back(start);
 

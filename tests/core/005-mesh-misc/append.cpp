@@ -286,8 +286,10 @@ TEST_CASE("Append - Append With Transform Matrix")
     mSelf.append(mSelf);
     REQUIRE(mSelf.vertexCount() == 8);
     REQUIRE(mSelf.transformMatrix() == t5);
-    REQUIRE(nearlyEqual(mSelf.vertex(4).position(), mSelf.vertex(0).position()));
-    REQUIRE(nearlyEqual(mSelf.vertex(5).position(), mSelf.vertex(1).position()));
+    REQUIRE(
+        nearlyEqual(mSelf.vertex(4).position(), mSelf.vertex(0).position()));
+    REQUIRE(
+        nearlyEqual(mSelf.vertex(5).position(), mSelf.vertex(1).position()));
 
     // 6. Relative transform with Tangents and Curvatures
     using TransformedFullMesh = Mesh<
@@ -317,16 +319,18 @@ TEST_CASE("Append - Append With Transform Matrix")
     tfm2.vertex(2).position() = Point3d(0.0, 1.0, 0.0);
     tfm2.addFace(0, 1, 2);
 
-    tfm2.vertex(0).normal() = Point3d(0.0, 0.0, 1.0);
-    tfm2.vertex(0).tangent() = Point3d(1.0, 0.0, 0.0);
-    tfm2.vertex(0).tangentRightHanded() = true;
+    tfm2.vertex(0).normal()                      = Point3d(0.0, 0.0, 1.0);
+    tfm2.vertex(0).tangent()                     = Point3d(1.0, 0.0, 0.0);
+    tfm2.vertex(0).tangentRightHanded()          = true;
     tfm2.vertex(0).principalCurvature().maxDir() = Point3d(1.0, 0.0, 0.0);
     tfm2.vertex(0).principalCurvature().minDir() = Point3d(0.0, 1.0, 0.0);
 
     // Rotate tfm2 by 90 deg around Z: (x, y, z) -> (-y, x, z)
-    Matrix44d rZ = Matrix44d::Identity();
-    rZ(0, 0) =  0.0; rZ(0, 1) = -1.0;
-    rZ(1, 0) =  1.0; rZ(1, 1) =  0.0;
+    Matrix44d rZ           = Matrix44d::Identity();
+    rZ(0, 0)               = 0.0;
+    rZ(0, 1)               = -1.0;
+    rZ(1, 0)               = 1.0;
+    rZ(1, 1)               = 0.0;
     tfm2.transformMatrix() = rZ;
 
     tfm1.append(tfm2);
@@ -335,8 +339,12 @@ TEST_CASE("Append - Append With Transform Matrix")
     // Appended vertex 3 (original 0 of tfm2)
     REQUIRE((tfm1.vertex(3).tangent() - Point3d(0.0, 1.0, 0.0)).norm() < 1e-5);
     REQUIRE(tfm1.vertex(3).tangentRightHanded() == true);
-    REQUIRE((tfm1.vertex(3).principalCurvature().maxDir() - Point3d(0.0, 1.0, 0.0)).norm() < 1e-5);
-    REQUIRE((tfm1.vertex(3).principalCurvature().minDir() - Point3d(-1.0, 0.0, 0.0)).norm() < 1e-5);
+    REQUIRE(
+        (tfm1.vertex(3).principalCurvature().maxDir() - Point3d(0.0, 1.0, 0.0))
+            .norm() < 1e-5);
+    REQUIRE(
+        (tfm1.vertex(3).principalCurvature().minDir() - Point3d(-1.0, 0.0, 0.0))
+            .norm() < 1e-5);
 }
 
 TEST_CASE("Append - Append With Materials")
@@ -415,9 +423,12 @@ TEST_CASE("Append - Append With Materials")
     REQUIRE(mSelf.face(3).materialIndex() == 1);
 }
 
-TEST_CASE("Append - PolyMesh TTVC Invariant when Optional Component in Destination Only")
+TEST_CASE(
+    "Append - PolyMesh TTVC Invariant when Optional Component in Destination "
+    "Only")
 {
-    // m1 has optional TTVC components (WedgeTexCoords and AdjacentFaces) enabled
+    // m1 has optional TTVC components (WedgeTexCoords and AdjacentFaces)
+    // enabled
     vcl::PolyMesh m1;
     m1.enableFaceWedgeTexCoords();
     m1.enableFaceAdjacentFaces();
@@ -460,8 +471,8 @@ TEST_CASE("Append - PolyMesh TTVC Invariant when Optional Component in Destinati
     REQUIRE(m1.face(0).wedge(0).texCoord() == Point2d(0.0, 0.0));
     REQUIRE(m1.face(0).wedge(3).texCoord() == Point2d(0.0, 1.0));
 
-    // Appended face 1 MUST have its TTVC vectors properly resized to its vertex count (3),
-    // and NOT left at size 0!
+    // Appended face 1 MUST have its TTVC vectors properly resized to its vertex
+    // count (3), and NOT left at size 0!
     auto appF = m1.face(1);
     REQUIRE(appF.vertexCount() == 3);
     REQUIRE(appF.wedges().size() == 3);

@@ -20,7 +20,11 @@ namespace vcl::bind {
 
 namespace detail {
 
-template<ElemId ELEM_ID, CompId COMP_ID, MeshConcept MeshType, typename... Options>
+template<
+    ElemId      ELEM_ID,
+    CompId      COMP_ID,
+    MeshConcept MeshType,
+    typename... Options>
 void addOptionalComponentFunctions(
     pybind11::class_<MeshType, Options...>& c,
     const std::string&                      name,
@@ -38,10 +42,9 @@ void addOptionalComponentFunctions(
         c.def(("enable_" + name + "_" + compName).c_str(), [](MeshType& t) {
             t.template enableElementComponent<ELEM_ID, COMP_ID>();
         });
-        c.def(
-            ("disable_" + name + "_" + compName).c_str(), [](MeshType& t) {
-                t.template disableElementComponent<ELEM_ID, COMP_ID>();
-            });
+        c.def(("disable_" + name + "_" + compName).c_str(), [](MeshType& t) {
+            t.template disableElementComponent<ELEM_ID, COMP_ID>();
+        });
     }
 }
 
@@ -208,9 +211,7 @@ void initContainer(
                 c, "_" + capitalName + "PrincipalCurvaturesView");
             v.def(
                 "principal_curvatures",
-                [](ElemView& self) {
-                    return self.principalCurvatures();
-                },
+                [](ElemView& self) { return self.principalCurvatures(); },
                 py::keep_alive<0, 1>());
         }
 
@@ -219,9 +220,7 @@ void initContainer(
                 c, "_" + capitalName + "MaterialIndicesView");
             v.def(
                 "material_indices",
-                [](ElemView& self) {
-                    return self.materialIndices();
-                },
+                [](ElemView& self) { return self.materialIndices(); },
                 py::keep_alive<0, 1>());
         }
 
@@ -230,9 +229,7 @@ void initContainer(
                 c, "_" + capitalName + "VertexIndicesView");
             v.def(
                 "vertex_indices",
-                [](ElemView& self) {
-                    return self.vertexIndices();
-                },
+                [](ElemView& self) { return self.vertexIndices(); },
                 py::keep_alive<0, 1>());
         }
 

@@ -156,10 +156,10 @@ public:
      * @param other The container to move from.
      */
     ElementContainer(ElementContainer&& other) noexcept :
-        mParentMesh(std::exchange(other.mParentMesh, nullptr)),
-        mElemCount(std::exchange(other.mElemCount, 0)),
-        mElemComponents(std::move(other.mElemComponents)),
-        mCustomComponents(std::move(other.mCustomComponents))
+            mParentMesh(std::exchange(other.mParentMesh, nullptr)),
+            mElemCount(std::exchange(other.mElemCount, 0)),
+            mElemComponents(std::move(other.mElemComponents)),
+            mCustomComponents(std::move(other.mCustomComponents))
     {
     }
 
@@ -209,8 +209,9 @@ public:
      * = i.
      *
      * This function does not perform any sanity check: if i is less than
-     * elementContainerSize(), this function will return a valid ConstElementType
-     * (note that the Element may have been flagged as deleted).
+     * elementContainerSize(), this function will return a valid
+     * ConstElementType (note that the Element may have been flagged as
+     * deleted).
      *
      * @param[in] i: the index of the element that will be returned.
      * @return A const proxy of the i-th element of the Element Container.
@@ -270,7 +271,8 @@ public:
     std::size_t deletedElementCount() const { return size() - elementCount(); }
 
     /**
-     * @brief Returns whether the element at the given index is marked as deleted.
+     * @brief Returns whether the element at the given index is marked as
+     * deleted.
      *
      * @param[in] i: the index of the element to check.
      * @return `true` if the element is marked as deleted, `false` otherwise.
@@ -344,7 +346,8 @@ public:
      *
      * If the new size is greater than the old one, new elements are added to
      * the container. If the new size is smaller than the old one, the container
-     * is truncated to `newSize` elements (elements beyond `newSize` are removed).
+     * is truncated to `newSize` elements (elements beyond `newSize` are
+     * removed).
      *
      * @warning Any index to removed elements in the Mesh will be left
      * unchanged, and therefore will point to invalid elements.
@@ -462,10 +465,13 @@ public:
      * @brief Adjusts the active element count when an element's deleted state
      * changes.
      *
-     * @param[in] wasDeleted: Whether the element was previously marked as deleted.
+     * @param[in] wasDeleted: Whether the element was previously marked as
+     * deleted.
      * @param[in] isDeleted: Whether the element is now marked as deleted.
      */
-    void adjustElemCountOnDeletedChange(bool wasDeleted, bool isDeleted) noexcept
+    void adjustElemCountOnDeletedChange(
+        bool wasDeleted,
+        bool isDeleted) noexcept
     {
         if (wasDeleted != isDeleted) {
             if (isDeleted) {
@@ -561,8 +567,8 @@ public:
      * container. You can change this option by calling this function with
      * jumpDeleted = false.
      *
-     * @param[in] jumpDeleted (default: true): boolean that tells if the iterator
-     * should jump deleted elements.
+     * @param[in] jumpDeleted (default: true): boolean that tells if the
+     * iterator should jump deleted elements.
      * @return An iterator to the first element of the container.
      */
     Iterator begin(bool jumpDeleted = true)
@@ -578,8 +584,8 @@ public:
      * distance computations between the two iterators (end() - begin()) and
      * backward iteration from end() are not consistent.
      *
-     * @param[in] jumpDeleted (default: true): boolean that tells if the iterator
-     * should jump deleted elements.
+     * @param[in] jumpDeleted (default: true): boolean that tells if the
+     * iterator should jump deleted elements.
      * @return An iterator to the end of the container.
      */
     Iterator end(bool jumpDeleted = true)
@@ -595,8 +601,8 @@ public:
      * container. You can change this option by calling this function with
      * jumpDeleted = false.
      *
-     * @param[in] jumpDeleted (default: true): boolean that tells if the iterator
-     * should jump deleted elements.
+     * @param[in] jumpDeleted (default: true): boolean that tells if the
+     * iterator should jump deleted elements.
      * @return A const iterator to the first element of the container.
      */
     ConstIterator begin(bool jumpDeleted = true) const
@@ -612,8 +618,8 @@ public:
      * distance computations between the two iterators (end() - begin()) and
      * backward iteration from end() are not consistent.
      *
-     * @param[in] jumpDeleted (default: true): boolean that tells if the iterator
-     * should jump deleted elements.
+     * @param[in] jumpDeleted (default: true): boolean that tells if the
+     * iterator should jump deleted elements.
      * @return A const iterator to the end of the container.
      */
     ConstIterator end(bool jumpDeleted = true) const
@@ -623,9 +629,9 @@ public:
     }
 
     /**
-     * @brief Returns an ElementContainerProxy object that allows to iterate over
-     * the elements of the container, providing two member functions begin()
-     * and end(), and allows access to the vector of components.
+     * @brief Returns an ElementContainerProxy object that allows to iterate
+     * over the elements of the container, providing two member functions
+     * begin() and end(), and allows access to the vector of components.
      *
      * This member function is very useful when you want to iterate over the
      * elements using the C++ range-based for loop syntax:
@@ -640,8 +646,8 @@ public:
      * to jump deleted elements of the container. You can change this option by
      * calling this function with jumpDeleted = false.
      *
-     * @param[in] jumpDeleted (default: true): boolean that tells if the iterator
-     * should jump deleted elements.
+     * @param[in] jumpDeleted (default: true): boolean that tells if the
+     * iterator should jump deleted elements.
      * @return An object having begin() and end() functions, allowing to iterate
      * over the container.
      */
@@ -651,9 +657,9 @@ public:
     }
 
     /**
-     * @brief Returns an ElementContainerProxy object that allows to iterate over
-     * the elements of the container, providing two member functions begin()
-     * and end(), and allows access to the vector of components.
+     * @brief Returns an ElementContainerProxy object that allows to iterate
+     * over the elements of the container, providing two member functions
+     * begin() and end(), and allows access to the vector of components.
      *
      * This member function is very useful when you want to iterate over the
      * elements using the C++ range-based for loop syntax:
@@ -668,8 +674,8 @@ public:
      * to jump deleted elements of the container. You can change this option by
      * calling this function with jumpDeleted = false.
      *
-     * @param[in] jumpDeleted (default: true): boolean that tells if the iterator
-     * should jump deleted elements.
+     * @param[in] jumpDeleted (default: true): boolean that tells if the
+     * iterator should jump deleted elements.
      * @return An object having begin() and end() functions, allowing to iterate
      * over the container.
      */
@@ -690,12 +696,13 @@ public:
      * not.
      *
      * @param[in] begin: the index of the first element to be included in the
-     * range. It must be less than or equal to elementContainerSize() and less than
-     * or equal to the end index.
+     * range. It must be less than or equal to elementContainerSize() and less
+     * than or equal to the end index.
      * @param[in] end: the index of the last element to be included in the
      * range (exclusive). If NULL_INDEX (default) or greater than
      * elementContainerSize(), it will be set to elementContainerSize().
-     * @return A View object allowing to iterate over the given range of the container.
+     * @return A View object allowing to iterate over the given range of the
+     * container.
      */
     View<Iterator> elements(IndexType begin, IndexType end = NULL_INDEX)
     {
@@ -718,14 +725,16 @@ public:
      * not.
      *
      * @param[in] begin: the index of the first element to be included in the
-     * range. It must be less than or equal to elementContainerSize() and less than
-     * or equal to the end index.
+     * range. It must be less than or equal to elementContainerSize() and less
+     * than or equal to the end index.
      * @param[in] end: the index of the last element to be included in the
      * range (exclusive). If NULL_INDEX (default) or greater than
      * elementContainerSize(), it will be set to elementContainerSize().
-     * @return A View object allowing to iterate over the given range of the container.
+     * @return A View object allowing to iterate over the given range of the
+     * container.
      */
-    View<ConstIterator> elements(IndexType begin, IndexType end = NULL_INDEX) const
+    View<ConstIterator> elements(IndexType begin, IndexType end = NULL_INDEX)
+        const
     {
         assert(begin <= elementContainerSize());
         if (end == NULL_INDEX || end > elementContainerSize()) {
@@ -733,7 +742,8 @@ public:
         }
         assert(begin <= end);
         return View(
-            ConstIterator(*this, begin, false), ConstIterator(*this, end, false));
+            ConstIterator(*this, begin, false),
+            ConstIterator(*this, end, false));
     }
 
     // ### Enable - Disable
@@ -838,10 +848,7 @@ public:
     /**
      * @brief Checks if the container is compact (no deleted elements).
      */
-    bool isCompact() const
-    {
-        return deletedElementCount() == 0;
-    }
+    bool isCompact() const { return deletedElementCount() == 0; }
 
     // Custom Components
 
@@ -1080,14 +1087,15 @@ protected:
      * @brief Updates references to elements of type TARGET_ELEM_ID according to
      * the newIndices mapping vector.
      *
-     * @tparam TARGET_ELEM_ID: The element ID whose references should be updated.
+     * @tparam TARGET_ELEM_ID: The element ID whose references should be
+     * updated.
      * @param[in] newIndices: A vector mapping old element indices to new ones.
      */
     template<ElemId TARGET_ELEM_ID>
     void updateReferences(const std::vector<IndexType>& newIndices)
     {
-        if constexpr (
-            ElementType::template referencesElement<TARGET_ELEM_ID>()) {
+        if constexpr (ElementType::template referencesElement<
+                          TARGET_ELEM_ID>()) {
             for (std::size_t i = 0; i < size(); ++i) {
                 if (!isElementDeleted(i)) {
                     element(i).template updateReferences<TARGET_ELEM_ID>(
@@ -1101,15 +1109,16 @@ protected:
      * @brief Shifts references to elements of type TARGET_ELEM_ID starting from
      * a given index by an offset.
      *
-     * @tparam TARGET_ELEM_ID: The element ID whose references should be shifted.
+     * @tparam TARGET_ELEM_ID: The element ID whose references should be
+     * shifted.
      * @param[in] startFrom: The starting index.
      * @param[in] offset: The offset value to add to the references.
      */
     template<ElemId TARGET_ELEM_ID>
     void shiftReferences(IndexType startFrom, IndexType offset)
     {
-        if constexpr (
-            ElementType::template referencesElement<TARGET_ELEM_ID>()) {
+        if constexpr (ElementType::template referencesElement<
+                          TARGET_ELEM_ID>()) {
             if (offset != 0) {
                 for (std::size_t i = startFrom; i < size(); ++i) {
                     if (!isElementDeleted(i)) {
@@ -1410,8 +1419,7 @@ private:
                 if constexpr (comp::HasDefaultValue<Comp>) {
                     if (this->template isComponentAvailable<
                             Comp::COMPONENT_ID>()) {
-                        auto& vec =
-                            this->template vector<Comp::COMPONENT_ID>();
+                        auto& vec = this->template vector<Comp::COMPONENT_ID>();
                         std::fill(
                             vec.begin() + begin,
                             vec.begin() + end,
@@ -1439,9 +1447,9 @@ private:
             if constexpr (comp::IsOptionalComponent<Comp>) {
                 if (!this->template isComponentAvailable<
                         Comp::COMPONENT_ID>()) {
-                    if constexpr (
-                        comp::
-                            HasComponent<Comp::COMPONENT_ID, OtherContainer>) {
+                    if constexpr (comp::HasComponent<
+                                      Comp::COMPONENT_ID,
+                                      OtherContainer>) {
                         if (other.template isComponentAvailable<
                                 Comp::COMPONENT_ID>()) {
                             this->template enableOptionalComponent<
@@ -1467,12 +1475,16 @@ private:
 
         const std::size_t n = size();
 
-        // 1. Allocate space for 'on' new elements across all active component vectors.
-        //    Note: addElements(on) temporarily increments mElemCount by on (assuming all valid).
+        // 1. Allocate space for 'on' new elements across all active component
+        // vectors.
+        //    Note: addElements(on) temporarily increments mElemCount by on
+        //    (assuming all valid).
         addElements(on);
 
-        // 2. Fast-copy component data: for each component enabled in both containers,
-        //    copy elements from other's vector into this vector starting at offset n.
+        // 2. Fast-copy component data: for each component enabled in both
+        // containers,
+        //    copy elements from other's vector into this vector starting at
+        //    offset n.
         auto copyComponent = [&]<typename Comp>() {
             if constexpr (Comp::COMPONENT_ID != CompId::CUSTOM_COMPONENTS) {
                 if (this->template isComponentAvailable<Comp::COMPONENT_ID>() &&
@@ -1489,11 +1501,12 @@ private:
         (copyComponent.template operator()<Comps>(), ...);
 
         // 3. Preserve TTVC (Tied-To-Vertex-Count) invariant on polygon meshes:
-        //    If an optional TTVC component (e.g., AdjacentFaces, AdjacentEdges, Wedges,
-        //    PolygonBitFlags) is enabled in 'this' container but was disabled in 'other',
-        //    addElements(on) initialized inner vectors to size 0. Since the vertex references
-        //    were copied in step 2, we now have the correct vertexCount() for each appended
-        //    polygon and can resize the missing TTVC component to match it.
+        //    If an optional TTVC component (e.g., AdjacentFaces, AdjacentEdges,
+        //    Wedges, PolygonBitFlags) is enabled in 'this' container but was
+        //    disabled in 'other', addElements(on) initialized inner vectors to
+        //    size 0. Since the vertex references were copied in step 2, we now
+        //    have the correct vertexCount() for each appended polygon and can
+        //    resize the missing TTVC component to match it.
         if constexpr (comp::HasPolygonVertexReferences<Components>) {
             auto resizeTTVCIfMissingInOther = [&]<typename Comp>() {
                 if constexpr (comp::IsTiedToVertexCount<Comp>) {
@@ -1519,8 +1532,8 @@ private:
 
         // 5. Correct the valid element counter:
         //    addElements(on) assumed all 'on' elements were valid (+on).
-        //    We deduct 'on' and add other.elementCount() so deleted elements in 'other'
-        //    are properly accounted for.
+        //    We deduct 'on' and add other.elementCount() so deleted elements in
+        //    'other' are properly accounted for.
         mElemCount = (mElemCount - on) + other.elementCount();
     }
 
@@ -1580,25 +1593,29 @@ concept ElementContainerConcept = requires {
 };
 
 /**
- * @brief Concept that checks whether a type T is an ElementContainer of Vertices.
+ * @brief Concept that checks whether a type T is an ElementContainer of
+ * Vertices.
  */
 template<typename T>
 concept VertexContainerConcept =
-    ElementContainerConcept<T> && (std::remove_cvref_t<T>::ELEMENT_ID == ElemId::VERTEX);
+    ElementContainerConcept<T> &&
+    (std::remove_cvref_t<T>::ELEMENT_ID == ElemId::VERTEX);
 
 /**
  * @brief Concept that checks whether a type T is an ElementContainer of Faces.
  */
 template<typename T>
 concept FaceContainerConcept =
-    ElementContainerConcept<T> && (std::remove_cvref_t<T>::ELEMENT_ID == ElemId::FACE);
+    ElementContainerConcept<T> &&
+    (std::remove_cvref_t<T>::ELEMENT_ID == ElemId::FACE);
 
 /**
  * @brief Concept that checks whether a type T is an ElementContainer of Edges.
  */
 template<typename T>
 concept EdgeContainerConcept =
-    ElementContainerConcept<T> && (std::remove_cvref_t<T>::ELEMENT_ID == ElemId::EDGE);
+    ElementContainerConcept<T> &&
+    (std::remove_cvref_t<T>::ELEMENT_ID == ElemId::EDGE);
 
 } // namespace vcl::mesh
 

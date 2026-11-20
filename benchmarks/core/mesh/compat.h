@@ -79,7 +79,8 @@ template<typename Mesh>
 bool hasWedgeTexCoords(const Mesh& m)
 {
     if constexpr (vcl::HasFaceWedgeTexCoords<Mesh>) {
-        return m.template isFaceComponentAvailable<vcl::CompId::WEDGE_TEX_COORDS>();
+        return m
+            .template isFaceComponentAvailable<vcl::CompId::WEDGE_TEX_COORDS>();
     }
     return false;
 }

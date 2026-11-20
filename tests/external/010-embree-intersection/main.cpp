@@ -70,7 +70,7 @@ auto bruteForceRayIntersection(const MeshType& m, const RayType& ray)
     return std::make_pair(closestFace, closestPoint);
 }
 
-using Meshes        = std::tuple<vcl::TriMesh, vcl::PolyMesh>;
+using Meshes   = std::tuple<vcl::TriMesh, vcl::PolyMesh>;
 using Meshes64 = std::tuple<vcl::TriMesh64, vcl::PolyMesh64>;
 
 static const vcl::uint N_RAYS_TEST = 10000;
@@ -257,7 +257,8 @@ TEMPLATE_TEST_CASE(
                     auto tris = vcl::earCut(face);
 
                     vcl::Point3<ScalarType> embreePoint =
-                        face.vertex(tris[triID * 3]).position() * baryCoords.x() +
+                        face.vertex(tris[triID * 3]).position() *
+                            baryCoords.x() +
                         face.vertex(tris[triID * 3 + 1]).position() *
                             baryCoords.y() +
                         face.vertex(tris[triID * 3 + 2]).position() *

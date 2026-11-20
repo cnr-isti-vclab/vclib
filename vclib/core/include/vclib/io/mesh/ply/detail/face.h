@@ -21,12 +21,12 @@ namespace vcl::detail {
 
 template<FaceMeshConcept MeshType, FaceConcept FaceType>
 void writePlyFaceIndices(
-    std::ostream&            file,
-    PlyProperty              p,
-    const MeshType&          m,
+    std::ostream&                           file,
+    PlyProperty                             p,
+    const MeshType&                         m,
     const std::vector<IndexType<MeshType>>& vIndices,
-    const FaceType&          f,
-    FileType                 format)
+    const FaceType&                         f,
+    FileType                                format)
 {
     IndexType<MeshType> fsize = f.vertexCount();
     io::writeProperty(file, fsize, p.listSizeType, format);
@@ -36,7 +36,10 @@ void writePlyFaceIndices(
 }
 
 template<FaceMeshConcept MeshType, FaceConcept FaceType>
-void setPlyFaceIndices(FaceType& f, MeshType& m, const std::vector<IndexType<MeshType>>& vids)
+void setPlyFaceIndices(
+    FaceType&                               f,
+    MeshType&                               m,
+    const std::vector<IndexType<MeshType>>& vids)
 {
     bool splitFace = false;
     // we have a polygonal mesh
@@ -70,7 +73,7 @@ template<FaceMeshConcept MeshType, FaceConcept FaceType, typename Scalar>
 void setPlyFaceWedgeTexCoords(
     FaceType&                                     f,
     MeshType&                                     m,
-    const std::vector<IndexType<MeshType>>&      vids,
+    const std::vector<IndexType<MeshType>>&       vids,
     const std::vector<std::pair<Scalar, Scalar>>& wedges)
 {
     bool splitFace = false;
@@ -97,7 +100,7 @@ void setPlyFaceWedgeTexCoords(
                         "Bad vertex index for face " + std::to_string(ff));
                 }
                 // p is the position of the vertex in the polygon
-                uint p                          = it - vids.begin();
+                uint p                             = it - vids.begin();
                 m.face(ff).wedge(i).texCoord().u() = wedges[p].first;
                 m.face(ff).wedge(i).texCoord().v() = wedges[p].second;
             }
@@ -116,7 +119,7 @@ void readPlyFaceProperty(
     bool                              vcgGenerated = false,
     std::endian                       end          = std::endian::little)
 {
-    using IndexType = IndexType<MeshType>;
+    using IndexType  = IndexType<MeshType>;
     bool hasBeenRead = false;
     if (p.name == ply::vertex_indices) { // loading vertex indices
         uint fSize = io::readPrimitiveType<uint>(file, p.listSizeType, end);
@@ -278,7 +281,8 @@ void readPlyFaceBin(
 {
     std::vector<IndexType<MeshType>> vids;
     for (const PlyProperty& p : faceProperties) {
-        readPlyFaceProperty(file, mesh, f, p, vids, loadedInfo, vcgGenerated, end);
+        readPlyFaceProperty(
+            file, mesh, f, p, vids, loadedInfo, vcgGenerated, end);
     }
 }
 

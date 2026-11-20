@@ -46,7 +46,8 @@ void saveOff(
     fp << "#" << std::endl;
     fp << "####" << std::endl;
 
-    uint vn =  m.vertexCount();;
+    uint vn = m.vertexCount();
+    ;
     uint fn = 0;
     uint en = 0;
     if constexpr (HasFaces<MeshType>) {

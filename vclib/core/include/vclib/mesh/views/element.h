@@ -16,7 +16,7 @@
 namespace vcl {
 
 template<typename T>
-concept HasIndexMember = requires(T&& t) {
+concept HasIndexMember = requires (T&& t) {
     { t.index() } -> std::unsigned_integral;
 };
 
@@ -32,9 +32,7 @@ struct UnsupportedElementView
 {
 };
 
-inline constexpr auto index = [](auto&& p) {
-    return p.index();
-};
+inline constexpr auto index = [](auto&& p) { return p.index(); };
 
 struct IndicesView : std::ranges::range_adaptor_closure<IndicesView>
 {
@@ -59,7 +57,8 @@ template<ElemId ELEM_ID>
 inline constexpr auto elements = detail::UnsupportedElementView {};
 
 /**
- * @brief The indices view transforms a range of elements into a range of their indices.
+ * @brief The indices view transforms a range of elements into a range of their
+ * indices.
  *
  * Example:
  * @code{.cpp}

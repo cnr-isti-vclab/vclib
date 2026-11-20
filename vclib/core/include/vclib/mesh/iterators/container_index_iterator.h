@@ -18,12 +18,12 @@
 namespace vcl::mesh {
 
 /**
- * @brief Concept that checks whether a type T is an index-based container iterator
- * compatible with ContainerIndexIterator.
+ * @brief Concept that checks whether a type T is an index-based container
+ * iterator compatible with ContainerIndexIterator.
  */
 template<typename T>
 concept ContainerIndexIteratorConcept =
-    (!std::integral<T>) && requires(const T& it) {
+    (!std::integral<T>) && requires (const T& it) {
         it.index();
         it.parentContainer();
     };

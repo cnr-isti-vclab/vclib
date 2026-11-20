@@ -35,8 +35,7 @@ namespace vcl {
  *
  * @ingroup base
  */
-enum class ElemId : uint
-{
+enum class ElemId : uint {
     VERTEX = 0,
     FACE,
     EDGE,
@@ -49,10 +48,11 @@ enum class ElemId : uint
  *
  * @ingroup base
  */
-constexpr const char* ELEMENT_ENUM_STRINGS[static_cast<uint>(ElemId::ELEMENT_COUNT)] = {
-    "Vertex",
-    "Face",
-    "Edge",
+constexpr const char*
+    ELEMENT_ENUM_STRINGS[static_cast<uint>(ElemId::ELEMENT_COUNT)] = {
+        "Vertex",
+        "Face",
+        "Edge",
 };
 
 /**

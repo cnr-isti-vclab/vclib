@@ -52,28 +52,51 @@ class CustomComponentsVectorMap
 {
 public:
     void clear() {}
+
     void reserve(std::size_t) {}
+
     void resize(std::size_t) {}
+
     template<typename Index>
-    void compact(const std::vector<Index>&) {}
+    void compact(const std::vector<Index>&)
+    {
+    }
+
     void swapCustomComponents(std::size_t, std::size_t) {}
+
     void swap(CustomComponentsVectorMap&) noexcept {}
+
     friend void swap(
         CustomComponentsVectorMap&,
-        CustomComponentsVectorMap&) noexcept {}
+        CustomComponentsVectorMap&) noexcept
+    {
+    }
+
     template<typename Other>
-    void append(const Other&, std::size_t, std::size_t) {}
+    void append(const Other&, std::size_t, std::size_t)
+    {
+    }
+
     template<typename Other>
     void importSameCustomComponentFrom(
         std::size_t,
         std::size_t,
         const std::string&,
-        const Other&) {}
+        const Other&)
+    {
+    }
+
     std::vector<std::string> allComponentNames() const { return {}; }
+
     template<typename CompType>
-    void serializeCustomComponentsOfType(std::ostream&) const {}
+    void serializeCustomComponentsOfType(std::ostream&) const
+    {
+    }
+
     template<typename CompType>
-    void deserializeCustomComponentsOfType(std::istream&) {}
+    void deserializeCustomComponentsOfType(std::istream&)
+    {
+    }
 };
 
 template<>
@@ -164,8 +187,8 @@ public:
      *
      * All the indices of the newIndices vector with value `NULL_INDEX<Index>`
      * are considered as deleted, and the corresponding elements in the custom
-     * component vectors are removed. The remaining indices are compacted, and the
-     * custom component vectors are resized to the new size.
+     * component vectors are removed. The remaining indices are compacted, and
+     * the custom component vectors are resized to the new size.
      *
      * @param[in] newIndices: a vector that tells, for each element index, the
      * new index of the element, and `NULL_INDEX<Index>` if the element has been
@@ -395,10 +418,11 @@ public:
     void deserializeCustomComponentsOfType(std::istream& is)
     {
         constexpr uint32_t CCMP_TAG = 0x504D4343;
-        uint32_t tag = 0;
+        uint32_t           tag      = 0;
         vcl::deserialize(is, tag);
         if (tag != CCMP_TAG) {
-            throw std::runtime_error("Invalid custom component block magic header");
+            throw std::runtime_error(
+                "Invalid custom component block magic header");
         }
         uint32_t typeSize = 0;
         vcl::deserialize(is, typeSize);

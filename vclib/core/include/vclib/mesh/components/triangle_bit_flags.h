@@ -68,9 +68,9 @@ class TriangleBitFlags : public Component<CompId::BIT_FLAGS, BitSet<uint>>
         // Faux edges: when representing polygonal meshes on triangle meshes,
         // some triangle edges can be marked as "faux", meaning that they are
         // internal on the polygon
-        FAUX0    = 3, // bits [3, 5]
+        FAUX0 = 3, // bits [3, 5]
         // Edge border
-        BORDER0  = 6, // bits [6, 8]
+        BORDER0 = 6, // bits [6, 8]
         // Edge selection
         EDGESEL0 = 9,  // bits [9, 11]
         EDGEVIS0 = 12, // bits [12, 14]
@@ -312,7 +312,10 @@ private:
 /* Implementation of member functions */
 
 template<typename OtherElement>
-void TriangleBitFlags::importFrom(this auto&& self, const OtherElement& other, bool)
+void TriangleBitFlags::importFrom(
+    this auto&&         self,
+    const OtherElement& other,
+    bool)
 {
     if constexpr (HasBitFlags<OtherElement>) {
         const bool wasDeleted = self.deleted();

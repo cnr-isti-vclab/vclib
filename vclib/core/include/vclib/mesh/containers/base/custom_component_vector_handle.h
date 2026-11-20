@@ -45,27 +45,28 @@ class CustomComponentVectorHandle
 {
     std::vector<std::reference_wrapper<T>> mVec;
 
-    struct Unwrap {
+    struct Unwrap
+    {
         constexpr T& operator()(std::reference_wrapper<T> r) const noexcept
         {
             return r.get();
         }
     };
 
-    struct ConstUnwrap {
-        constexpr const T& operator()(std::reference_wrapper<T> r) const noexcept
+    struct ConstUnwrap
+    {
+        constexpr const T& operator()(
+            std::reference_wrapper<T> r) const noexcept
         {
             return r.get();
         }
     };
 
 public:
-    using ViewType = decltype(
-        std::declval<std::vector<std::reference_wrapper<T>>&>() |
-        std::views::transform(Unwrap{}));
-    using ConstViewType = decltype(
-        std::declval<const std::vector<std::reference_wrapper<T>>&>() |
-        std::views::transform(ConstUnwrap{}));
+    using ViewType =
+        decltype(std::declval<std::vector<std::reference_wrapper<T>>&>() | std::views::transform(Unwrap {}));
+    using ConstViewType =
+        decltype(std::declval<const std::vector<std::reference_wrapper<T>>&>() | std::views::transform(ConstUnwrap {}));
 
     using Iterator      = std::ranges::iterator_t<ViewType>;
     using ConstIterator = std::ranges::iterator_t<ConstViewType>;
@@ -120,18 +121,21 @@ public:
 
     const T& operator[](std::size_t i) const { return mVec[i].get(); }
 
-    Iterator begin() { return (mVec | std::views::transform(Unwrap{})).begin(); }
+    Iterator begin()
+    {
+        return (mVec | std::views::transform(Unwrap {})).begin();
+    }
 
-    Iterator end() { return (mVec | std::views::transform(Unwrap{})).end(); }
+    Iterator end() { return (mVec | std::views::transform(Unwrap {})).end(); }
 
     ConstIterator begin() const
     {
-        return (mVec | std::views::transform(ConstUnwrap{})).begin();
+        return (mVec | std::views::transform(ConstUnwrap {})).begin();
     }
 
     ConstIterator end() const
     {
-        return (mVec | std::views::transform(ConstUnwrap{})).end();
+        return (mVec | std::views::transform(ConstUnwrap {})).end();
     }
 
     ConstIterator cbegin() const { return begin(); }

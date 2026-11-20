@@ -28,21 +28,21 @@ struct LaplacianInfo
 
 template<typename MeshType>
 void accumulateLaplacianInfo(
-    const MeshType&                           m,
+    const MeshType&                                     m,
     std::vector<LaplacianInfo<PositionType<MeshType>>>& data,
-    bool                                      cotangentFlag = false)
+    bool                                                cotangentFlag = false)
 {
     using PositionType = PositionType<MeshType>;
-    using ScalarType = PositionType::ScalarType;
+    using ScalarType   = PositionType::ScalarType;
 
     ScalarType weight = 1.0f;
 
     for (auto&& f : m.faces()) {
         for (uint j = 0; j < f.vertexCount(); ++j) {
             if (!f.edgeOnBorder(j)) {
-                auto   v0 = f.vertex(j);
-                auto   v1 = f.vertexMod(j + 1);
-                auto   v2 = f.vertexMod(j + 2);
+                auto                v0 = f.vertex(j);
+                auto                v1 = f.vertexMod(j + 1);
+                auto                v2 = f.vertexMod(j + 2);
                 const PositionType& p0 = v0.position();
                 const PositionType& p1 = v1.position();
                 const PositionType& p2 = v2.position();
@@ -62,12 +62,12 @@ void accumulateLaplacianInfo(
     for (auto&& f : m.faces()) {
         for (uint j = 0; j < f.vertexCount(); ++j) {
             if (f.edgeOnBorder(j)) {
-                auto   v0 = f.vertex(j);
-                auto   v1 = f.vertexMod(j + 1);
-                data[v0.index()].sum  = v0.position();
-                data[v1.index()].sum  = v1.position();
-                data[v0.index()].cnt  = 1;
-                data[v1.index()].cnt  = 1;
+                auto v0              = f.vertex(j);
+                auto v1              = f.vertexMod(j + 1);
+                data[v0.index()].sum = v0.position();
+                data[v1.index()].sum = v1.position();
+                data[v0.index()].cnt = 1;
+                data[v1.index()].cnt = 1;
             }
         }
     }
@@ -76,8 +76,8 @@ void accumulateLaplacianInfo(
     for (auto&& f : m.faces()) {
         for (uint j = 0; j < f.vertexCount(); ++j) {
             if (f.edgeOnBorder(j)) {
-                auto   v0 = f.vertex(j);
-                auto   v1 = f.vertexMod(j + 1);
+                auto v0 = f.vertex(j);
+                auto v1 = f.vertexMod(j + 1);
                 data[v0.index()].sum += v1.position();
                 data[v1.index()].sum += v0.position();
                 ++data[v0.index()].cnt;

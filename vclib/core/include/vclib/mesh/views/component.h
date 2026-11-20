@@ -22,7 +22,8 @@ struct UnsupportedComponentView
 } // namespace detail
 
 /**
- * @brief Generic component view adaptor template variable for a given component ID.
+ * @brief Generic component view adaptor template variable for a given component
+ * ID.
  *
  * Specializations for supported component types:
  * - component<CompId::POSITION> = positions

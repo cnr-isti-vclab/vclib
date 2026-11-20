@@ -45,9 +45,9 @@ TEMPLATE_TEST_CASE(
     TriMesh m = vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bone.ply");
     vcl::KDTree tree(m);
 
-    typename PointType::Scalar dist = 0;
-    std::size_t nnIdx = tree.nearestNeighborIndex(p, dist);
-    PointType   nnPt  = tree.nearestNeighbor(p);
+    typename PointType::Scalar dist  = 0;
+    std::size_t                nnIdx = tree.nearestNeighborIndex(p, dist);
+    PointType                  nnPt  = tree.nearestNeighbor(p);
     REQUIRE(nnIdx == 1558);
     REQUIRE(nnPt == m.vertex(1558).position());
 
@@ -79,11 +79,11 @@ TEMPLATE_TEST_CASE(
     using Scalar    = typename PointType::Scalar;
 
     TriMesh m;
-    m.addVertex(PointType(0, 0, 0));     // index 0 (will delete)
-    m.addVertex(PointType(10, 0, 0));    // index 1
-    m.addVertex(PointType(0, 10, 0));    // index 2 (will delete)
-    m.addVertex(PointType(0, 0, 10));    // index 3
-    m.addVertex(PointType(20, 20, 20));  // index 4
+    m.addVertex(PointType(0, 0, 0));    // index 0 (will delete)
+    m.addVertex(PointType(10, 0, 0));   // index 1
+    m.addVertex(PointType(0, 10, 0));   // index 2 (will delete)
+    m.addVertex(PointType(0, 0, 10));   // index 3
+    m.addVertex(PointType(20, 20, 20)); // index 4
 
     m.deleteVertex(0);
     m.deleteVertex(2);
@@ -94,15 +94,15 @@ TEMPLATE_TEST_CASE(
 
     vcl::KDTree tree(m);
 
-    PointType q(9.9, 0.1, 0.0);
-    Scalar    dist  = 0;
-    std::size_t idx = tree.nearestNeighborIndex(q, dist);
+    PointType   q(9.9, 0.1, 0.0);
+    Scalar      dist = 0;
+    std::size_t idx  = tree.nearestNeighborIndex(q, dist);
     REQUIRE(idx == 1);
     PointType nearestP = tree.nearestNeighbor(q);
     REQUIRE(nearestP == PointType(10, 0, 0));
 
     auto knnIndices = tree.kNearestNeighborsIndices(q, 2);
-    auto knnPoints   = tree.kNearestNeighbors(q, 2);
+    auto knnPoints  = tree.kNearestNeighbors(q, 2);
     REQUIRE(knnIndices.size() == 2);
     REQUIRE(knnPoints.size() == 2);
     REQUIRE(knnIndices[0] == 1);

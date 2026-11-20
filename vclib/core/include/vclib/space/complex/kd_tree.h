@@ -364,13 +364,17 @@ private:
             }
         }
         distances.clear();
-        if (indices) indices->clear();
-        if (points) points->clear();
+        if (indices)
+            indices->clear();
+        if (points)
+            points->clear();
 
         uint i = 0;
         while (!neighborQueue.empty() && i < k) {
-            if (indices) indices->push_back(neighborQueue.top().i);
-            if (points) points->push_back(neighborQueue.top().p);
+            if (indices)
+                indices->push_back(neighborQueue.top().i);
+            if (points)
+                points->push_back(neighborQueue.top().p);
             distances.push_back(queryPoint.dist(neighborQueue.top().p));
             neighborQueue.pop();
             i++;
@@ -384,8 +388,10 @@ private:
         std::vector<PointType>*   points,
         std::vector<Scalar>&      distances) const
     {
-        if (indices) indices->clear();
-        if (points) points->clear();
+        if (indices)
+            indices->clear();
+        if (points)
+            points->clear();
         distances.clear();
         std::vector<QueryNode> mNodeStack(mDepth + 1);
         mNodeStack[0].nodeId = 0;
@@ -405,8 +411,10 @@ private:
                         Scalar pointSquareDist =
                             queryPoint.squaredDist(mPoints[i]);
                         if (pointSquareDist < squareDist) {
-                            if (indices) indices->push_back(mIndices[i]);
-                            if (points) points->push_back(mPoints[i]);
+                            if (indices)
+                                indices->push_back(mIndices[i]);
+                            if (points)
+                                points->push_back(mPoints[i]);
                             distances.push_back(queryPoint.dist(mPoints[i]));
                         }
                     }
@@ -434,6 +442,7 @@ private:
             }
         }
     }
+
     /**
      * @brief Rrecursively builds the kdtree
      *
@@ -570,8 +579,7 @@ private:
 /* Deduction guides */
 
 template<MeshConcept MeshType>
-KDTree(const MeshType& m)
-    -> KDTree<typename MeshType::Vertex::PositionType>;
+KDTree(const MeshType& m) -> KDTree<typename MeshType::Vertex::PositionType>;
 
 template<MeshConcept MeshType>
 KDTree(const MeshType& m, uint pointsPerCell)

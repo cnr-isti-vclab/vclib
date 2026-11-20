@@ -203,8 +203,7 @@ BENCH(
 BENCH(
     "import_export/export_matrix/face_colors_matrix",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (
-            !vcl::FaceMeshConcept<Mesh> || !vcl::HasFaceColor<Mesh>) {
+        if constexpr (!vcl::FaceMeshConcept<Mesh> || !vcl::HasFaceColor<Mesh>) {
             return s.skip("the mesh has no face colors");
         }
         else {
@@ -219,8 +218,7 @@ BENCH(
 BENCH(
     "import_export/export_matrix/face_colors_vector",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (
-            !vcl::FaceMeshConcept<Mesh> || !vcl::HasFaceColor<Mesh>) {
+        if constexpr (!vcl::FaceMeshConcept<Mesh> || !vcl::HasFaceColor<Mesh>) {
             return s.skip("the mesh has no face colors");
         }
         else {
@@ -238,8 +236,7 @@ BENCH(
 BENCH(
     "import_export/export_matrix/edge_colors_matrix",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (
-            !vcl::EdgeMeshConcept<Mesh> || !vcl::HasEdgeColor<Mesh>) {
+        if constexpr (!vcl::EdgeMeshConcept<Mesh> || !vcl::HasEdgeColor<Mesh>) {
             return s.skip("the mesh has no edge colors");
         }
         else {
@@ -254,8 +251,7 @@ BENCH(
 BENCH(
     "import_export/export_matrix/edge_colors_vector",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (
-            !vcl::EdgeMeshConcept<Mesh> || !vcl::HasEdgeColor<Mesh>) {
+        if constexpr (!vcl::EdgeMeshConcept<Mesh> || !vcl::HasEdgeColor<Mesh>) {
             return s.skip("the mesh has no edge colors");
         }
         else {

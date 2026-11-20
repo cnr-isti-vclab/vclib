@@ -18,7 +18,7 @@ TEMPLATE_TEST_CASE(
     vcl::TriMesh64,
     vcl::TriMesh64f)
 {
-    using TriMesh = TestType;
+    using TriMesh      = TestType;
     using TriMeshPoint = vcl::PositionType<vcl::VertexType<TriMesh>>;
 
     TriMesh m;

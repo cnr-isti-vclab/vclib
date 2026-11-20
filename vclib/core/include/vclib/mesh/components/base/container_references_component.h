@@ -547,7 +547,7 @@ protected:
      */
     static decltype(auto) refElements(auto&& self)
     {
-        auto& m = self.parentContainer().parentMesh();
+        auto& m     = self.parentContainer().parentMesh();
         using MeshT = std::remove_reference_t<decltype(m)>;
         using ContT = std::remove_reference_t<decltype(Base::container(self))>;
         return RefElementsView<MeshT, ContT, REF_ELEM_ID>(

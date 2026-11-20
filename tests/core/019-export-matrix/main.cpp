@@ -188,7 +188,7 @@ void testTriangulatedFaceMatrix(const auto& pm)
     for (vcl::uint i = 0; i < 3; ++i) {
         // polygon associated to ith triangle
         auto fIdx = indexMap.polygon(i);
-        auto      f    = pm.face(fIdx);
+        auto f    = pm.face(fIdx);
 
         for (vcl::uint j = 0; j < 3; ++j) {
             REQUIRE(f.containsVertex(tris(i, j)));
@@ -475,12 +475,11 @@ void testFaceAdjacentFacesMatrix(const auto& tm)
     }
 }
 
-using Meshes  = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
-using Meshesf = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
-using Meshes64 =
-    std::tuple<vcl::TriMesh64, vcl::PolyMesh64, vcl::EdgeMesh64>;
-using Meshes64f = std::
-    tuple<vcl::TriMesh64f, vcl::PolyMesh64f, vcl::EdgeMesh64f>;
+using Meshes   = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
+using Meshesf  = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
+using Meshes64 = std::tuple<vcl::TriMesh64, vcl::PolyMesh64, vcl::EdgeMesh64>;
+using Meshes64f =
+    std::tuple<vcl::TriMesh64f, vcl::PolyMesh64f, vcl::EdgeMesh64f>;
 
 TEMPLATE_TEST_CASE(
     "Export Mesh to Matrix",
@@ -995,7 +994,9 @@ TEMPLATE_TEST_CASE(
     }
 }
 
-TEST_CASE("Export Material Index and Adjacency Sentinels", "[export][sentinels]")
+TEST_CASE(
+    "Export Material Index and Adjacency Sentinels",
+    "[export][sentinels]")
 {
     using TriMesh = vcl::TriMesh;
     TriMesh mesh;
@@ -1041,7 +1042,8 @@ TEST_CASE("Export Material Index and Adjacency Sentinels", "[export][sentinels]"
         vcl::updateFaceAdjacentFaces(mesh);
 
         // Since it's a single triangle, all adjacent faces are NULL_INDEX
-        auto fAdj64 = vcl::faceAdjacentFacesMatrix<EigenRowMatrix<int64_t>>(mesh);
+        auto fAdj64 =
+            vcl::faceAdjacentFacesMatrix<EigenRowMatrix<int64_t>>(mesh);
         REQUIRE(fAdj64.rows() == 1);
         REQUIRE(fAdj64.cols() == 3);
         REQUIRE(fAdj64(0, 0) == -1);
@@ -1087,7 +1089,9 @@ TEST_CASE("TriPolyIndexBiMap - isMappingTrivial and exportBuffer cleanup")
         REQUIRE_FALSE(gapMap.isMappingTrivial());
     }
 
-    SECTION("triangulatedFaceVertexIndicesToBuffer clears detail::indexMap on TriMesh")
+    SECTION(
+        "triangulatedFaceVertexIndicesToBuffer clears detail::indexMap on "
+        "TriMesh")
     {
         vcl::TriMesh tm;
         tm.addVertices(3);
@@ -1105,4 +1109,3 @@ TEST_CASE("TriPolyIndexBiMap - isMappingTrivial and exportBuffer cleanup")
         REQUIRE(vcl::detail::indexMap.polygonCount() == 0);
     }
 }
-

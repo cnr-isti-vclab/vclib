@@ -152,8 +152,8 @@ inline void meshGridExamples()
               << std::endl;
 
     // Create intersection function for faces and bounding boxes
-    auto intersectionFunc =
-        vcl::intersectFunction<vcl::Box3<ScalarType>, vcl::TriMesh::ConstFace>();
+    auto intersectionFunc = vcl::
+        intersectFunction<vcl::Box3<ScalarType>, vcl::TriMesh::ConstFace>();
 
     // HashTableGrid storing face pointers
     vcl::HashTableGrid3<vcl::TriMesh::ConstFace, ScalarType> faceHashGrid(

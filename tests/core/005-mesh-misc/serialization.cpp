@@ -109,13 +109,14 @@ TEST_CASE("Serialization - Parallel Vectors Tuple Serialization")
         vcl::serialize(ss, pvt);
 
         // Verify serialized stream does not include struct padding:
-        // Size: 8 bytes (mSize) + 1 byte (array<bool, 1>) + 2 * (24 bytes for Point3d + 1 byte for bool) = 9 + 50 = 59 bytes.
-        // If raw memcpy had been used, sizeof(std::pair<Point3d, bool>) is 32 bytes (with 7 bytes padding),
-        // resulting in 9 + 64 = 73 bytes.
-        std::string       s            = ss.str();
-        const std::size_t expectedSize = sizeof(std::size_t) +
-                                         sizeof(bool) * 1 +
-                                         2 * (sizeof(double) * 3 + sizeof(bool));
+        // Size: 8 bytes (mSize) + 1 byte (array<bool, 1>) + 2 * (24 bytes for
+        // Point3d + 1 byte for bool) = 9 + 50 = 59 bytes. If raw memcpy had
+        // been used, sizeof(std::pair<Point3d, bool>) is 32 bytes (with 7 bytes
+        // padding), resulting in 9 + 64 = 73 bytes.
+        std::string       s = ss.str();
+        const std::size_t expectedSize =
+            sizeof(std::size_t) + sizeof(bool) * 1 +
+            2 * (sizeof(double) * 3 + sizeof(bool));
         REQUIRE(s.size() == expectedSize);
 
         TangentPVT pvtRead;
@@ -130,7 +131,8 @@ TEST_CASE("Serialization - Parallel Vectors Tuple Serialization")
         REQUIRE(
             pvtRead.get<std::pair<vcl::Point3d, bool>>()[1].first ==
             vcl::Point3d(4.0, 5.0, 6.0));
-        REQUIRE(pvtRead.get<std::pair<vcl::Point3d, bool>>()[1].second == false);
+        REQUIRE(
+            pvtRead.get<std::pair<vcl::Point3d, bool>>()[1].second == false);
     }
 }
 

@@ -741,7 +741,7 @@ TEMPLATE_TEST_CASE(
     vcl::TriMesh64,
     vcl::TriMesh64f)
 {
-    using TriMesh = TestType;
+    using TriMesh   = TestType;
     using IndexType = TriMesh::IndexType;
 
     TriMesh tm1 =
@@ -904,7 +904,8 @@ SCENARIO("Test updateFaceAdjacentFaces on mesh with boundary edges")
         tm.addFace(0, 1, 2);
 
         tm.enableFaceAdjacentFaces();
-        // Initialize with non-null values to verify they are all set to NULL_INDEX
+        // Initialize with non-null values to verify they are all set to
+        // NULL_INDEX
         tm.face(0).setAdjFace(0, 0);
         tm.face(0).setAdjFace(1, 0);
         tm.face(0).setAdjFace(2, 0);
@@ -931,11 +932,13 @@ SCENARIO("Test updateFaceAdjacentFaces on mesh with boundary edges")
         tm.enableFaceAdjacentFaces();
         vcl::updateFaceAdjacentFaces(tm);
 
-        // Edge (0, 2) is shared between face 0 (edge index 2) and face 1 (edge index 0)
+        // Edge (0, 2) is shared between face 0 (edge index 2) and face 1 (edge
+        // index 0)
         REQUIRE(tm.face(0).adjFaceIndex(2) == 1);
         REQUIRE(tm.face(1).adjFaceIndex(0) == 0);
 
-        // All boundary edges (including the last in the sorted list) must be NULL_INDEX
+        // All boundary edges (including the last in the sorted list) must be
+        // NULL_INDEX
         REQUIRE(tm.face(0).adjFaceIndex(0) == vcl::TriMesh::NULL_INDEX);
         REQUIRE(tm.face(0).adjFaceIndex(1) == vcl::TriMesh::NULL_INDEX);
         REQUIRE(tm.face(1).adjFaceIndex(1) == vcl::TriMesh::NULL_INDEX);

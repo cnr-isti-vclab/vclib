@@ -173,8 +173,8 @@ inline void meshTopology()
 
     // Navigate around a vertex using adjacency information
     if (mesh.vertexCount() > 0) {
-        vcl::uint   startVertex = 0;
-        auto        vertex      = mesh.vertex(startVertex);
+        vcl::uint startVertex = 0;
+        auto      vertex      = mesh.vertex(startVertex);
 
         std::cout << "Navigation example starting from vertex " << startVertex
                   << ":\n";
@@ -269,8 +269,7 @@ inline void meshTopology()
     std::cout << "   - Essential for graph-based algorithms\n\n";
 
     std::cout << "3. FACE-FACE ADJACENCY:\n";
-    std::cout
-        << "   - enableFaceAdjacentFaces() + updateFaceAdjacentFaces()\n";
+    std::cout << "   - enableFaceAdjacentFaces() + updateFaceAdjacentFaces()\n";
     std::cout << "   - Find faces sharing an edge\n";
     std::cout << "   - Identify border edges (null adjacencies)\n\n";
 

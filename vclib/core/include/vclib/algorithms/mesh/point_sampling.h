@@ -20,10 +20,10 @@
  * @brief List of functions that compute point samplings.
  *
  * These functions compute saplings using various simple and complex methods,
- * and return objects that satisfy the @ref vcl::PointSamplerConcept. A Sampler is an
- * object that allows to store points that can be results of some geometric
- * function (e.g. a point sample that is computed as the barycentric coordinate
- * of a triangle).
+ * and return objects that satisfy the @ref vcl::PointSamplerConcept. A Sampler
+ * is an object that allows to store points that can be results of some
+ * geometric function (e.g. a point sample that is computed as the barycentric
+ * coordinate of a triangle).
  *
  * You can access these algorithms by including
  * `#include <vclib/algorithms/mesh.h>`

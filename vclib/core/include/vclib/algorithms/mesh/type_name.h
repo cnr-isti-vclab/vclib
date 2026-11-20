@@ -44,7 +44,8 @@ constexpr std::string meshTypeName()
         name += "Mesh";
     }
 
-    if constexpr (std::same_as<typename MeshType::Vertex::IndexType, uint64_t>) {
+    if constexpr (std::
+                      same_as<typename MeshType::Vertex::IndexType, uint64_t>) {
         name += "64";
     }
 

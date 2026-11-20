@@ -68,8 +68,7 @@ double borderLength(const MeshType& m)
     for (auto&& f : m.faces()) {
         for (uint i = 0; i < f.vertexCount(); ++i) {
             if (f.adjFace(i) == nullptr) {
-                l += f.vertex(i).position().dist(
-                    f.vertexMod(i + 1).position());
+                l += f.vertex(i).position().dist(f.vertexMod(i + 1).position());
             }
         }
     }
@@ -202,9 +201,8 @@ auto vertexRadiusFromWeights(
 
     auto it = std::ranges::begin(weights);
     auto activeWeights =
-        m.vertices() | std::views::transform([&](const auto& v) {
-            return it[v.index()];
-        });
+        m.vertices() |
+        std::views::transform([&](const auto& v) { return it[v.index()]; });
     const auto [min, max] = std::ranges::minmax(activeWeights);
 
     double minRad   = diskRadius;
@@ -217,8 +215,8 @@ auto vertexRadiusFromWeights(
             radius[v.index()] = minRad;
         }
         else {
-            auto   w           = it[v.index()];
-            double num         = invert ? (max - w) : (w - min);
+            auto   w          = it[v.index()];
+            double num        = invert ? (max - w) : (w - min);
             radius[v.index()] = minRad + deltaRad * (num / deltaQ);
         }
     }

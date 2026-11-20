@@ -4,7 +4,6 @@
 // This Source Code Form is subject to the terms of the Mozilla Public License,
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
-//
 
 #ifndef VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
 #define VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
@@ -80,8 +79,8 @@ public:
         this const auto&   self,
         const std::string& compName)
     {
-        return self.parentContainer().template isElemCustomComponentOfType<CompType>(
-            compName);
+        return self.parentContainer()
+            .template isElemCustomComponentOfType<CompType>(compName);
     }
 
     /**
@@ -102,7 +101,8 @@ public:
      * @brief Returns a vector of strings containing the names of all the custom
      * components associated to the element.
      *
-     * @return A vector of strings containing the names of all custom components.
+     * @return A vector of strings containing the names of all custom
+     * components.
      */
     std::vector<std::string> customComponentNames(this const auto& self)
     {

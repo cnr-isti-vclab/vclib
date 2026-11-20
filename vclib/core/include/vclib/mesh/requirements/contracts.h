@@ -19,7 +19,8 @@
  * @ingroup mesh_requirements
  *
  * @brief Free functions for asserting container compactness, checking/asserting
- * mesh topology, and enabling/asserting component availability at compile-time and run-time.
+ * mesh topology, and enabling/asserting component availability at compile-time
+ * and run-time.
  */
 
 namespace vcl {
@@ -29,8 +30,8 @@ namespace vcl {
  * ========================================================================= */
 
 /**
- * @brief Asserts that the mesh is compact (all containers have no deleted elements).
- * Throws MissingCompactnessException if the mesh is not compact.
+ * @brief Asserts that the mesh is compact (all containers have no deleted
+ * elements). Throws MissingCompactnessException if the mesh is not compact.
  * @tparam MeshType: The mesh type to check.
  * @param[in] m: The mesh instance.
  * @throws MissingCompactnessException
@@ -59,7 +60,8 @@ void requireElementCompactness(const MeshType& m)
 {
     if (m.template deletedCount<ELEM_ID>() != 0) {
         throw MissingCompactnessException(
-            elementEnumString<ELEM_ID>() + " container of the Mesh is not compact.");
+            elementEnumString<ELEM_ID>() +
+            " container of the Mesh is not compact.");
     }
 }
 
@@ -88,9 +90,9 @@ void requireEdgeCompactness(const MeshType& m)
  * ========================================================================= */
 
 /**
- * @brief Checks at compile-time and run-time if the mesh is composed of triangles.
- * For static triangle meshes, returns true at compile time.
- * For general polygon meshes, checks at runtime if every face has 3 vertices.
+ * @brief Checks at compile-time and run-time if the mesh is composed of
+ * triangles. For static triangle meshes, returns true at compile time. For
+ * general polygon meshes, checks at runtime if every face has 3 vertices.
  * @tparam MeshType: The mesh type to check.
  * @param[in] m: The mesh instance.
  * @return true if every face has 3 vertices.
@@ -117,7 +119,8 @@ bool isTriangleMesh(const MeshType& m)
 
 /**
  * @brief Asserts that the mesh is composed of triangles.
- * Throws MissingTriangularRequirementException if any face has vertexCount != 3.
+ * Throws MissingTriangularRequirementException if any face has vertexCount
+ * != 3.
  * @tparam MeshType: The mesh type to check.
  * @param[in] m: The mesh instance.
  * @throws MissingTriangularRequirementException
@@ -180,10 +183,10 @@ void requireQuadMesh(const MeshType& m)
  * ========================================================================= */
 
 /**
- * @brief Enables the given optional Component COMP_ID in element ELEM_ID of mesh m,
- * and returns true if it is available after the call.
- * If the component is non-optional, returns true immediately.
- * If the mesh or element does not have the component, returns false.
+ * @brief Enables the given optional Component COMP_ID in element ELEM_ID of
+ * mesh m, and returns true if it is available after the call. If the component
+ * is non-optional, returns true immediately. If the mesh or element does not
+ * have the component, returns false.
  * @tparam ELEM_ID: The element ID.
  * @tparam COMP_ID: The component ID.
  * @tparam MeshType: The mesh type to check.
@@ -320,7 +323,8 @@ void requireEdgeColor(const MeshType& m)
 template<MeshConcept MeshType>
 bool enableIfVertexTexCoordOptional(MeshType& m)
 {
-    return enableIfElementComponentOptional<ElemId::VERTEX, CompId::TEX_COORD>(m);
+    return enableIfElementComponentOptional<ElemId::VERTEX, CompId::TEX_COORD>(
+        m);
 }
 
 template<MeshConcept MeshType>
@@ -335,7 +339,8 @@ void requireVertexTexCoord(const MeshType& m)
 template<MeshConcept MeshType>
 bool enableIfFaceWedgeColorsOptional(MeshType& m)
 {
-    return enableIfElementComponentOptional<ElemId::FACE, CompId::WEDGE_COLORS>(m);
+    return enableIfElementComponentOptional<ElemId::FACE, CompId::WEDGE_COLORS>(
+        m);
 }
 
 template<MeshConcept MeshType>
@@ -348,7 +353,9 @@ void requireFaceWedgeColors(const MeshType& m)
 template<MeshConcept MeshType>
 bool enableIfFaceWedgeTexCoordsOptional(MeshType& m)
 {
-    return enableIfElementComponentOptional<ElemId::FACE, CompId::WEDGE_TEX_COORDS>(m);
+    return enableIfElementComponentOptional<
+        ElemId::FACE,
+        CompId::WEDGE_TEX_COORDS>(m);
 }
 
 template<MeshConcept MeshType>
@@ -361,7 +368,9 @@ void requireFaceWedgeTexCoords(const MeshType& m)
 template<MeshConcept MeshType>
 bool enableIfFaceWedgeNormalsOptional(MeshType& m)
 {
-    return enableIfElementComponentOptional<ElemId::FACE, CompId::WEDGE_NORMALS>(m);
+    return enableIfElementComponentOptional<
+        ElemId::FACE,
+        CompId::WEDGE_NORMALS>(m);
 }
 
 template<MeshConcept MeshType>
@@ -412,7 +421,9 @@ void requireFaceWedges(const MeshType& m)
 template<MeshConcept MeshType>
 bool enableIfVertexAdjacentFacesOptional(MeshType& m)
 {
-    return enableIfElementComponentOptional<ElemId::VERTEX, CompId::ADJACENT_FACES>(m);
+    return enableIfElementComponentOptional<
+        ElemId::VERTEX,
+        CompId::ADJACENT_FACES>(m);
 }
 
 template<MeshConcept MeshType>
@@ -425,7 +436,9 @@ void requireVertexAdjacentFaces(const MeshType& m)
 template<MeshConcept MeshType>
 bool enableIfFaceAdjacentFacesOptional(MeshType& m)
 {
-    return enableIfElementComponentOptional<ElemId::FACE, CompId::ADJACENT_FACES>(m);
+    return enableIfElementComponentOptional<
+        ElemId::FACE,
+        CompId::ADJACENT_FACES>(m);
 }
 
 template<MeshConcept MeshType>
@@ -438,7 +451,9 @@ void requireFaceAdjacentFaces(const MeshType& m)
 template<MeshConcept MeshType>
 bool enableIfEdgeAdjacentFacesOptional(MeshType& m)
 {
-    return enableIfElementComponentOptional<ElemId::EDGE, CompId::ADJACENT_FACES>(m);
+    return enableIfElementComponentOptional<
+        ElemId::EDGE,
+        CompId::ADJACENT_FACES>(m);
 }
 
 template<MeshConcept MeshType>
@@ -453,7 +468,9 @@ void requireEdgeAdjacentFaces(const MeshType& m)
 template<MeshConcept MeshType>
 bool enableIfVertexAdjacentEdgesOptional(MeshType& m)
 {
-    return enableIfElementComponentOptional<ElemId::VERTEX, CompId::ADJACENT_EDGES>(m);
+    return enableIfElementComponentOptional<
+        ElemId::VERTEX,
+        CompId::ADJACENT_EDGES>(m);
 }
 
 template<MeshConcept MeshType>
@@ -466,7 +483,9 @@ void requireVertexAdjacentEdges(const MeshType& m)
 template<MeshConcept MeshType>
 bool enableIfFaceAdjacentEdgesOptional(MeshType& m)
 {
-    return enableIfElementComponentOptional<ElemId::FACE, CompId::ADJACENT_EDGES>(m);
+    return enableIfElementComponentOptional<
+        ElemId::FACE,
+        CompId::ADJACENT_EDGES>(m);
 }
 
 template<MeshConcept MeshType>
@@ -479,7 +498,9 @@ void requireFaceAdjacentEdges(const MeshType& m)
 template<MeshConcept MeshType>
 bool enableIfEdgeAdjacentEdgesOptional(MeshType& m)
 {
-    return enableIfElementComponentOptional<ElemId::EDGE, CompId::ADJACENT_EDGES>(m);
+    return enableIfElementComponentOptional<
+        ElemId::EDGE,
+        CompId::ADJACENT_EDGES>(m);
 }
 
 template<MeshConcept MeshType>
@@ -494,7 +515,9 @@ void requireEdgeAdjacentEdges(const MeshType& m)
 template<MeshConcept MeshType>
 bool enableIfVertexAdjacentVerticesOptional(MeshType& m)
 {
-    return enableIfElementComponentOptional<ElemId::VERTEX, CompId::ADJACENT_VERTICES>(m);
+    return enableIfElementComponentOptional<
+        ElemId::VERTEX,
+        CompId::ADJACENT_VERTICES>(m);
 }
 
 template<MeshConcept MeshType>
@@ -550,7 +573,9 @@ void requireEdgeQuality(const MeshType& m)
 template<MeshConcept MeshType>
 bool enableIfVertexPrincipalCurvatureOptional(MeshType& m)
 {
-    return enableIfElementComponentOptional<ElemId::VERTEX, CompId::PRINCIPAL_CURVATURE>(m);
+    return enableIfElementComponentOptional<
+        ElemId::VERTEX,
+        CompId::PRINCIPAL_CURVATURE>(m);
 }
 
 template<MeshConcept MeshType>
@@ -580,7 +605,9 @@ void requireVertexTangent(const MeshType& m)
 template<MeshConcept MeshType>
 bool enableIfVertexMaterialIndexOptional(MeshType& m)
 {
-    return enableIfElementComponentOptional<ElemId::VERTEX, CompId::MATERIAL_INDEX>(m);
+    return enableIfElementComponentOptional<
+        ElemId::VERTEX,
+        CompId::MATERIAL_INDEX>(m);
 }
 
 template<MeshConcept MeshType>
@@ -593,7 +620,9 @@ void requireVertexMaterialIndex(const MeshType& m)
 template<MeshConcept MeshType>
 bool enableIfFaceMaterialIndexOptional(MeshType& m)
 {
-    return enableIfElementComponentOptional<ElemId::FACE, CompId::MATERIAL_INDEX>(m);
+    return enableIfElementComponentOptional<
+        ElemId::FACE,
+        CompId::MATERIAL_INDEX>(m);
 }
 
 template<MeshConcept MeshType>

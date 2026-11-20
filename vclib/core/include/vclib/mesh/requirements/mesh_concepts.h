@@ -9,9 +9,9 @@
 #define VCL_MESH_REQUIREMENTS_MESH_CONCEPTS_H
 
 #include "mesh_concepts/base.h"
-#include "mesh_concepts/vertex.h"
-#include "mesh_concepts/face.h"
 #include "mesh_concepts/edge.h"
+#include "mesh_concepts/face.h"
 #include "mesh_concepts/mesh.h"
+#include "mesh_concepts/vertex.h"
 
 #endif // VCL_MESH_REQUIREMENTS_MESH_CONCEPTS_H

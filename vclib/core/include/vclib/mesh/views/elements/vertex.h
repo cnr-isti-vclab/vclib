@@ -35,15 +35,18 @@ struct VerticesView : std::ranges::range_adaptor_closure<VerticesView>
     constexpr VerticesView() = default;
 
     template<typename R>
-    requires requires (R&& r) { { r.vertices() } -> std::ranges::range; }
+    requires requires (R&& r) {
+        { r.vertices() } -> std::ranges::range;
+    }
     constexpr auto operator()(R&& r) const
     {
         return r.vertices();
     }
 
     template<typename R>
-    requires (!std::ranges::range<R>) &&
-             requires (R&& r) { { r.vertices() } -> std::ranges::range; }
+    requires (!std::ranges::range<R>) && requires (R&& r) {
+        { r.vertices() } -> std::ranges::range;
+    }
     friend constexpr auto operator|(R&& r, VerticesView)
     {
         return r.vertices();
@@ -53,7 +56,8 @@ struct VerticesView : std::ranges::range_adaptor_closure<VerticesView>
 } // namespace detail
 
 /**
- * @brief A view adaptor that allows to iterate over the Vertex elements of an object.
+ * @brief A view adaptor that allows to iterate over the Vertex elements of an
+ * object.
  *
  * Can be applied to:
  * - Meshes: `mesh | views::vertices`

@@ -100,7 +100,7 @@ std::vector<bool> nonManifoldVerticesVectorBool(const MeshType& m)
                 TD[vi]++;
                 if (!isFaceManifoldOnEdge(f, i)) {
                     nonManifoldInc[vi] = true;
-                    auto viNext = f.vertexIndexMod(i + 1);
+                    auto viNext        = f.vertexIndexMod(i + 1);
                     if (viNext != m.NULL_INDEX) {
                         nonManifoldInc[viNext] = true;
                     }
@@ -157,7 +157,6 @@ auto edgeCount(
     }
     return numEdges;
 }
-
 
 } // namespace detail
 
@@ -624,7 +623,7 @@ template<
     typename Container = std::vector<bool>,
     MeshConcept MeshType,
     typename Integer = typename MeshType::IndexType>
-    requires (!std::is_same_v<std::remove_cvref_t<Integer>, bool>)
+requires (!std::is_same_v<std::remove_cvref_t<Integer>, bool>)
 Container referencedVertices(
     const MeshType& mesh,
     Integer&        nUnref,
@@ -656,9 +655,7 @@ Container referencedVertices(
 }
 
 template<typename Container = std::vector<bool>, MeshConcept MeshType>
-Container referencedVertices(
-    const MeshType& mesh,
-    bool            onlyFaces = false)
+Container referencedVertices(const MeshType& mesh, bool onlyFaces = false)
 {
     typename MeshType::IndexType dummy = 0;
     return referencedVertices<Container>(mesh, dummy, onlyFaces);
@@ -685,7 +682,7 @@ template<MeshConcept MeshType>
 auto unreferencedVertexCount(const MeshType& m, bool onlyFaces = false)
 {
     using IndexType = typename MeshType::IndexType;
-    IndexType nV = 0;
+    IndexType nV    = 0;
     // store the number of unref vertices into nV
     referencedVertices<std::vector<bool>>(m, nV, onlyFaces);
 
@@ -770,7 +767,7 @@ auto holeCount(const MeshType& m) requires HasFaceAdjacentFaces<MeshType>
 {
     requireFaceAdjacentFaces(m);
 
-    using IndexType = typename MeshType::IndexType;
+    using IndexType   = typename MeshType::IndexType;
     IndexType loopNum = 0;
 
     // create a vector of bools to keep track of visited faces.

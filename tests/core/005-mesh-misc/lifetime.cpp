@@ -17,11 +17,12 @@ static_assert(std::is_nothrow_move_constructible_v<MyMesh>);
 static_assert(std::is_nothrow_move_assignable_v<MyMesh>);
 static_assert(std::is_nothrow_swappable_v<MyMesh>);
 static_assert(std::movable<MyMesh>);
-static_assert(
-    std::is_nothrow_move_constructible_v<MyMesh::ContainerType<ElemId::VERTEX>>);
+static_assert(std::is_nothrow_move_constructible_v<
+              MyMesh::ContainerType<ElemId::VERTEX>>);
 static_assert(
     std::is_nothrow_move_assignable_v<MyMesh::ContainerType<ElemId::VERTEX>>);
-static_assert(std::is_nothrow_swappable_v<MyMesh::ContainerType<ElemId::VERTEX>>);
+static_assert(
+    std::is_nothrow_swappable_v<MyMesh::ContainerType<ElemId::VERTEX>>);
 static_assert(std::movable<MyMesh::ContainerType<ElemId::VERTEX>>);
 
 inline void testElementValidity(MyMesh& mesh)

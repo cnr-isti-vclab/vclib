@@ -190,10 +190,11 @@ public:
         // number of polygons because deleted polygons have a triangle count of
         // 0. A mesh with deleted faces and quadrangles could coincidentally
         // have the same number of total triangles and total polygons.
-        // Furthermore, if faces are sorted or permuted (e.g. sorted by material),
-        // each polygon may map to 1 triangle but not with the identity index.
-        // Therefore, we must explicitly verify that every polygon maps to
-        // exactly one triangle and that polygon i maps to triangle i.
+        // Furthermore, if faces are sorted or permuted (e.g. sorted by
+        // material), each polygon may map to 1 triangle but not with the
+        // identity index. Therefore, we must explicitly verify that every
+        // polygon maps to exactly one triangle and that polygon i maps to
+        // triangle i.
         if (mPolyToTri.size() != mTriToPoly.size())
             return false;
 
