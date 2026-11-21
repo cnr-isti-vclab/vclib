@@ -14,11 +14,6 @@
 #include "viewer.h"
 #include "window_manager.h"
 
-#ifdef VCLIB_WITH_GLFW
-// Instantiate member functions, including shutdown, with no drawers.
-template class vcl::RenderApp<vcl::glfw::WindowManager, vcl::Canvas>;
-#endif
-
 int main()
 {
     canvasStaticAsserts();
