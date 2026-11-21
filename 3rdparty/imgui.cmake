@@ -8,7 +8,9 @@
 if(VCLIB_ALLOW_DOWNLOAD_IMGUI)
     message(STATUS "- ImGui - using downloaded source")
 
-    set(IMGUI_VERSION 1.92.5)
+    # set(IMGUI_VERSION 1.92.8)
+    # ImGui 1.92.8 WIP, matching the version bundled by bgfx.
+    set(IMGUI_REVISION 2dc64f99bcb7c16f5a314add49ec5db8905fa940)
 
     set(IMGUI_EXCLUDE_FROM_ALL_OPTION "")
     if(NOT VCLIB_ALLOW_INSTALL_IMGUI)
@@ -19,7 +21,8 @@ if(VCLIB_ALLOW_DOWNLOAD_IMGUI)
     FetchContent_Declare(
         imgui
         GIT_REPOSITORY https://github.com/ocornut/imgui.git
-        GIT_TAG v${IMGUI_VERSION}
+        # GIT_TAG ${IMGUI_VERSION}
+        GIT_TAG ${IMGUI_REVISION}
         SOURCE_DIR ${FETCHCONTENT_BASE_DIR}/imgui-src/imgui
         ${IMGUI_EXCLUDE_FROM_ALL_OPTION}
     )

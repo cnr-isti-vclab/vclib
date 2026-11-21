@@ -40,6 +40,15 @@ IMGUI_IMPL_API void     ImGui_ImplBgfx_RenderDrawData(ImDrawData* draw_data);
 // ImGui::Render();
 // ImGui_ImplBgfx_RenderDrawData(ImGui::GetDrawData());
 
+// Upstream output modes require its matching ImGui fragment shaders.
+// struct ImguiOutput
+// {
+// 	enum Enum { Srgb, Linear, Pq, Count };
+// };
+// void imguiSetOutput(ImguiOutput::Enum _output, float _white);
+// void imguiSetSwapChainFlags(uint32_t _flags);
+// bgfx::FrameBufferHandle imguiGetFrameBuffer(const ImGuiViewport* _viewport);
+
 
 // namespace entry { class AppI; }
 // void showExampleDialog(entry::AppI* _app, const char* _errorText = NULL);

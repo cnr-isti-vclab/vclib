@@ -72,6 +72,8 @@ inline bool checkAvailTransientBuffers(uint32_t _numVertices, const bgfx::Vertex
 // #include "robotomono_regular.ttf.h"
 // #include "icons_kenney.ttf.h"
 // #include "icons_font_awesome.ttf.h"
+// #include "icons_font_awesome_7_brands.ttf.h"
+// #include "icons_codicons.ttf.h"
 
 // #include <vclib/bgfx_imgui/vs_ocornut_imgui.bin.h>
 // #include <vclib/bgfx_imgui/fs_ocornut_imgui.bin.h>
@@ -104,14 +106,33 @@ inline bool checkAvailTransientBuffers(uint32_t _numVertices, const bgfx::Vertex
 // {
 // 	{ s_iconsKenneyTtf,      sizeof(s_iconsKenneyTtf),      { ICON_MIN_KI, ICON_MAX_KI, 0 } },
 // 	{ s_iconsFontAwesomeTtf, sizeof(s_iconsFontAwesomeTtf), { ICON_MIN_FA, ICON_MAX_FA, 0 } },
+// 	{ s_iconsFontAwesome7BrandsTtf, sizeof(s_iconsFontAwesome7BrandsTtf), { ICON_MIN_FAB, ICON_MAX_FAB, 0 } },
+// 	{ s_iconsCodiconsTtf, sizeof(s_iconsCodiconsTtf), { ICON_MIN_CI, ICON_MAX_CI, 0 } },
 // };
 
 // NO custom allocator
 // static void* memAlloc(size_t _size, void* _userData);
 // static void memFree(void* _ptr, void* _userData);
 
+// Current upstream viewport code requires docking ImGui, a platform backend,
+// and integration with VCLib's view-ID and framebuffer ownership.
+// static void rendererCreateWindow(ImGuiViewport* _viewport);
+// static void rendererDestroyWindow(ImGuiViewport* _viewport);
+// static void rendererSetWindowSize(ImGuiViewport* _viewport, ImVec2 _size);
+// static void rendererRenderWindow(ImGuiViewport* _viewport, void* _userData);
+//
+// constexpr uint32_t kMaxViewports = 16;
+//
+// struct ImguiViewport
+// {
+// 	bgfx::FrameBufferHandle fbh;
+// 	uint32_t                slot;
+// };
+
 struct OcornutImguiContext
 {
+	// Upstream passes a separate view ID for each viewport:
+	// void render(ImDrawData* _drawData, bgfx::ViewId _viewId)
 	void render(ImDrawData* _drawData)
 	{
 		if (NULL != _drawData->Textures)
@@ -169,6 +190,7 @@ struct OcornutImguiContext
 							bx::gather(pix->data, texData->GetPixelsAt(rect.x, rect.y), texData->GetPitch(), rect.w * bpp, rect.h);
 							bgfx::updateTexture2D(tex.handle, 0, 0, rect.x, rect.y, rect.w, rect.h, pix);
 						}
+						texData->SetStatus(ImTextureStatus_OK);
 					}
 					break;
 
@@ -179,8 +201,8 @@ struct OcornutImguiContext
 		}
 
 		// Avoid rendering when minimized, scale coordinates for retina displays (screen coordinates != framebuffer coordinates)
-		int32_t dispWidth  = _drawData->DisplaySize.x * _drawData->FramebufferScale.x;
-		int32_t dispHeight = _drawData->DisplaySize.y * _drawData->FramebufferScale.y;
+		int32_t dispWidth  = int32_t(_drawData->DisplaySize.x * _drawData->FramebufferScale.x);
+		int32_t dispHeight = int32_t(_drawData->DisplaySize.y * _drawData->FramebufferScale.y);
 		if (dispWidth  <= 0
 		||  dispHeight <= 0)
 		{
@@ -189,6 +211,13 @@ struct OcornutImguiContext
 
 		bgfx::setViewName(m_viewId, "ImGui");
 		bgfx::setViewMode(m_viewId, bgfx::ViewMode::Sequential);
+
+		constexpr uint64_t kBlendOver = BGFX_STATE_BLEND_FUNC_SEPARATE(
+			  BGFX_STATE_BLEND_SRC_ALPHA
+			, BGFX_STATE_BLEND_INV_SRC_ALPHA
+			, BGFX_STATE_BLEND_ONE
+			, BGFX_STATE_BLEND_INV_SRC_ALPHA
+			);
 
 		const bgfx::Caps* caps = bgfx::getCaps();
 		{
@@ -203,6 +232,8 @@ struct OcornutImguiContext
 			bgfx::setViewTransform(m_viewId, NULL, ortho);
 			// the viewport is set using scaled coordinates
 			bgfx::setViewRect(m_viewId, 0, 0, uint16_t(dispWidth), uint16_t(dispHeight) );
+			// Upstream's output modes require its corresponding fragment shaders:
+			// bgfx::setFrameUniform(u_imguiOutput, m_output);
 
 			// by doing this we use the projection space using non-scaled coordinates
 			// and the input should not be scaled, while the framebuffer space
@@ -213,7 +244,7 @@ struct OcornutImguiContext
 		const ImVec2 clipScale = _drawData->FramebufferScale; // (1,1) unless using retina display which are often (2,2)
 
 		// Render command lists
-		for (int32_t ii = 0, num = _drawData->CmdListsCount; ii < num; ++ii)
+		for (int32_t ii = 0, num = _drawData->CmdLists.Size; ii < num; ++ii)
 		{
 			bgfx::TransientVertexBuffer tvb;
 			bgfx::TransientIndexBuffer tib;
@@ -263,7 +294,7 @@ struct OcornutImguiContext
 						ImGui::TextureBgfx tex = bx::bitCast<ImGui::TextureBgfx>(texId);
 
 						state |= 0 != (IMGUI_FLAGS_ALPHA_BLEND & tex.flags)
-							? BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA)
+							? kBlendOver
 							: BGFX_STATE_NONE
 							;
 						th = tex.handle;
@@ -277,7 +308,7 @@ struct OcornutImguiContext
 					}
 					else
 					{
-						state |= BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA);
+						state |= kBlendOver;
 					}
 
 					// Project scissor/clipping rectangles into framebuffer space
@@ -330,6 +361,8 @@ struct OcornutImguiContext
 		// m_lastScroll = 0;
 		// m_last = bx::getHPCounter();
 
+		// setOutput(ImguiOutput::Srgb, 1.0f);
+
 		// ImGui::SetAllocatorFunctions(memAlloc, memFree, NULL);
 
 		// Lazy initialization of context
@@ -356,6 +389,24 @@ struct OcornutImguiContext
 			| ImGuiBackendFlags_RendererHasVtxOffset
 			| ImGuiBackendFlags_RendererHasTextures
 			;
+
+		// Multi-viewport rendering is intentionally disabled. To enable it later,
+		// provide a platform backend that creates native windows, set
+		// ImGuiBackendFlags_RendererHasViewports, and register the renderer
+		// PlatformIO callbacks. Each viewport needs its own bgfx swap chain and
+		// view; keep that path coordinated with render() and the platform backend.
+		// if (0 != (bgfx::getCaps()->supported & BGFX_CAPS_SWAP_CHAIN) )
+		// {
+		// 	io.BackendFlags |= ImGuiBackendFlags_RendererHasViewports;
+		// 	ImGuiPlatformIO& platformIo = ImGui::GetPlatformIO();
+		// 	platformIo.Renderer_CreateWindow  = rendererCreateWindow;
+		// 	platformIo.Renderer_DestroyWindow = rendererDestroyWindow;
+		// 	platformIo.Renderer_SetWindowSize = rendererSetWindowSize;
+		// 	platformIo.Renderer_RenderWindow  = rendererRenderWindow;
+		// }
+		// bx::memSet(m_viewportUsed, 0, sizeof(m_viewportUsed) );
+		// m_swapChainFlags = 0;
+		// io.ConfigDebugHighlightIdConflicts = !!BX_CONFIG_DEBUG;
 
 #if USE_ENTRY
 		for (int32_t ii = 0; ii < (int32_t)entry::Key::Count; ++ii)
@@ -450,6 +501,7 @@ struct OcornutImguiContext
 		m_keyMap[entry::Key::KeyZ]         = ImGuiKey_Z;
 
 		io.ConfigFlags |= 0
+			// | ImGuiConfigFlags_DockingEnable
 			| ImGuiConfigFlags_NavEnableGamepad
 			| ImGuiConfigFlags_NavEnableKeyboard
 			;
@@ -479,6 +531,7 @@ struct OcornutImguiContext
 			);*/
 
 		u_imageLodEnabled = bgfx::createUniform("u_imageLodEnabled", bgfx::UniformType::Vec4);
+		// u_imguiOutput = bgfx::createUniform("u_imguiOutput", bgfx::UniformFreq::Frame, bgfx::UniformType::Vec4);
 		m_imageProgram = pm.getProgram<vcl::VertFragProgram::IMGUI_IMAGE>();
 			/*bgfx::createProgram(
 			  bgfx::createEmbeddedShader(s_embeddedShaders, type, "vs_imgui_image")
@@ -521,12 +574,27 @@ struct OcornutImguiContext
 // 		}
 
 		// NO DOCKING
+		// ImGuizmo::Create();
 		// ImGui::InitDockContext();
 	}
 
 	void destroy()
 	{
+		// ImGuizmo::Destroy();
+
+		for (ImTextureData* texData : ImGui::GetPlatformIO().Textures)
+		{
+			if (1 == texData->RefCount && ImTextureID_Invalid != texData->GetTexID() )
+			{
+				ImGui::TextureBgfx tex = bx::bitCast<ImGui::TextureBgfx>(texData->GetTexID() );
+				bgfx::destroy(tex.handle);
+				texData->SetTexID(ImTextureID_Invalid);
+				texData->SetStatus(ImTextureStatus_Destroyed);
+			}
+		}
+
 		// NO DOCKING
+		// ImGui::DestroyPlatformWindows();
 		// ImGui::ShutdownDockContext();
 		// No destory context
 		// ImGui::DestroyContext(m_imgui);
@@ -534,6 +602,9 @@ struct OcornutImguiContext
 		bgfx::destroy(s_tex);
 
 		bgfx::destroy(u_imageLodEnabled);
+		// bgfx::destroy(u_imguiOutput);
+		// bgfx::destroy(m_imageProgram);
+		// bgfx::destroy(m_program);
 		// The programs are cached and owned by Context::ProgramManager.
 
 		// m_allocator = NULL;
@@ -584,6 +655,14 @@ struct OcornutImguiContext
 // 		const double freq = double(bx::getHPFrequency() );
 // 		io.DeltaTime = float(frameTime/freq);
 
+// #if USE_ENTRY
+// 		const bx::Ticks step = entry::getFixedTimeStep();
+// 		if (bx::Ticks(bx::InitZero) != step)
+// 		{
+// 			io.DeltaTime = bx::toSeconds<float>(step);
+// 		}
+// #endif // USE_ENTRY
+
 // 		io.AddMousePosEvent( (float)_mx, (float)_my);
 // 		io.AddMouseButtonEvent(ImGuiMouseButton_Left,   0 != (_button & IMGUI_MBUT_LEFT  ) );
 // 		io.AddMouseButtonEvent(ImGuiMouseButton_Right,  0 != (_button & IMGUI_MBUT_RIGHT ) );
@@ -602,6 +681,13 @@ struct OcornutImguiContext
 // 			io.AddKeyEvent(m_keyMap[ii], inputGetKeyState(entry::Key::Enum(ii) ) );
 // 			io.SetKeyEventNativeData(m_keyMap[ii], 0, 0, ii);
 // 		}
+//
+// 		for (const uint8_t* utf8 = inputGetChar(); NULL != utf8; utf8 = inputGetChar() )
+// 		{
+// 			uint32_t ch;
+// 			ImTextCharFromUtf8(&ch, (const char*)utf8, (const char*)utf8 + 4);
+// 			io.AddInputCharacter(ch);
+// 		}
 // #endif // USE_ENTRY
 
 // 		ImGui::NewFrame();
@@ -618,7 +704,93 @@ struct OcornutImguiContext
 	// void endFrame()
 	// {
 	// 	ImGui::Render();
-	// 	render(ImGui::GetDrawData() );
+	// 	render(ImGui::GetDrawData(), m_viewId);
+	// 	if (0 != (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable) )
+	// 	{
+	// 		ImGui::UpdatePlatformWindows();
+	// 		ImGui::RenderPlatformWindowsDefault();
+	// 	}
+	// }
+
+	// Upstream viewport methods are inactive until VCLib owns their views and
+	// swap chains and uses a docking-enabled ImGui platform backend.
+	// bgfx::SwapChain viewportSwapChain(ImGuiViewport* _viewport, ImVec2 _size) const
+	// {
+	// 	bgfx::SwapChain swapChain;
+	// 	swapChain.nwh = NULL != _viewport->PlatformHandleRaw
+	// 		? _viewport->PlatformHandleRaw
+	// 		: _viewport->PlatformHandle
+	// 		;
+	// 	swapChain.width = uint32_t(bx::max(_size.x * _viewport->FramebufferScale.x, 1.0f) );
+	// 	swapChain.height = uint32_t(bx::max(_size.y * _viewport->FramebufferScale.y, 1.0f) );
+	// 	swapChain.flags = m_swapChainFlags;
+	// 	return swapChain;
+	// }
+	//
+	// void viewportCreate(ImGuiViewport* _viewport)
+	// {
+	// 	for (uint32_t ii = 0; ii < kMaxViewports; ++ii)
+	// 	{
+	// 		if (!m_viewportUsed[ii])
+	// 		{
+	// 			m_viewportUsed[ii] = true;
+	// 			_viewport->RendererUserData = BX_NEW(m_allocator, ImguiViewport)
+	// 			{
+	// 				.fbh = bgfx::createFrameBuffer(viewportSwapChain(_viewport, _viewport->Size) ),
+	// 				.slot = ii,
+	// 			};
+	// 			return;
+	// 		}
+	// 	}
+	// }
+	//
+	// void viewportDestroy(ImGuiViewport* _viewport)
+	// {
+	// 	ImguiViewport* viewport = (ImguiViewport*)_viewport->RendererUserData;
+	// 	if (NULL != viewport)
+	// 	{
+	// 		if (bgfx::isValid(viewport->fbh) )
+	// 		{
+	// 			bgfx::destroy(viewport->fbh);
+	// 		}
+	// 		m_viewportUsed[viewport->slot] = false;
+	// 		bx::deleteObject(m_allocator, viewport);
+	// 	}
+	// 	_viewport->RendererUserData = NULL;
+	// }
+	//
+	// void viewportSetSize(ImGuiViewport* _viewport, ImVec2 _size)
+	// {
+	// 	ImguiViewport* viewport = (ImguiViewport*)_viewport->RendererUserData;
+	// 	if (NULL != viewport && bgfx::isValid(viewport->fbh) )
+	// 	{
+	// 		bgfx::updateSwapChain(viewport->fbh, viewportSwapChain(_viewport, _size) );
+	// 	}
+	// }
+	//
+	// void viewportRender(ImGuiViewport* _viewport)
+	// {
+	// 	const ImguiViewport* viewport = (const ImguiViewport*)_viewport->RendererUserData;
+	// 	if (NULL == viewport || !bgfx::isValid(viewport->fbh) || m_viewId <= viewport->slot)
+	// 	{
+	// 		return;
+	// 	}
+	// 	const bgfx::ViewId viewId = bgfx::ViewId(m_viewId - 1 - viewport->slot);
+	// 	bgfx::setViewFrameBuffer(viewId, viewport->fbh);
+	// 	bgfx::setViewClear(viewId
+	// 		, 0 != (_viewport->Flags & ImGuiViewportFlags_NoRendererClear) ? BGFX_CLEAR_NONE : BGFX_CLEAR_COLOR
+	// 		, 0x000000ff
+	// 		);
+	// 	bgfx::touch(viewId);
+	// 	render(_viewport->DrawData, viewId);
+	// }
+	//
+	// void setOutput(ImguiOutput::Enum _output, float _white)
+	// {
+	// 	m_output[0] = float(_output);
+	// 	m_output[1] = ImguiOutput::Pq == _output ? _white/10000.0f : _white;
+	// 	m_output[2] = 0.0f;
+	// 	m_output[3] = 0.0f;
 	// }
 
 	ImGuiContext*       m_imgui;
@@ -628,16 +800,41 @@ struct OcornutImguiContext
 	bgfx::ProgramHandle m_imageProgram;
 	bgfx::UniformHandle s_tex;
 	bgfx::UniformHandle u_imageLodEnabled;
+	// bgfx::UniformHandle u_imguiOutput;
+	// float m_output[4];
 	// ImFont* m_font[ImGui::Font::Count];
 	// int64_t m_last;
 	// int32_t m_lastScroll;
 	bgfx::ViewId m_viewId;
+	// bool m_viewportUsed[kMaxViewports];
+	// uint32_t m_swapChainFlags;
 #if USE_ENTRY
 	ImGuiKey m_keyMap[(int)entry::Key::Count];
 #endif // USE_ENTRY
 };
 
 static OcornutImguiContext s_ctx;
+
+// static void rendererCreateWindow(ImGuiViewport* _viewport)
+// {
+// 	s_ctx.viewportCreate(_viewport);
+// }
+//
+// static void rendererDestroyWindow(ImGuiViewport* _viewport)
+// {
+// 	s_ctx.viewportDestroy(_viewport);
+// }
+//
+// static void rendererSetWindowSize(ImGuiViewport* _viewport, ImVec2 _size)
+// {
+// 	s_ctx.viewportSetSize(_viewport, _size);
+// }
+//
+// static void rendererRenderWindow(ImGuiViewport* _viewport, void* _userData)
+// {
+// 	BX_UNUSED(_userData);
+// 	s_ctx.viewportRender(_viewport);
+// }
 
 // NO custom allocator
 // static void* memAlloc(size_t _size, void* _userData)
@@ -664,12 +861,28 @@ static OcornutImguiContext s_ctx;
 
 // void imguiBeginFrame(int32_t _mx, int32_t _my, uint8_t _button, int32_t _scroll, uint16_t _width, uint16_t _height, int _inputChar, bgfx::ViewId _viewId)
 // {
-// 	// s_ctx.beginFrame(_mx, _my, _button, _scroll, _width, _height, _inputChar, _viewId);
+// 	s_ctx.beginFrame(_mx, _my, _button, _scroll, _width, _height, _inputChar, bgfx::ViewId(bx::min<uint32_t>(_viewId, bgfx::getCaps()->limits.maxViews-1) ) );
 // }
 
 // void imguiEndFrame()
 // {
 // 	s_ctx.endFrame();
+// }
+
+// void imguiSetOutput(ImguiOutput::Enum _output, float _white)
+// {
+// 	s_ctx.setOutput(_output, _white);
+// }
+//
+// void imguiSetSwapChainFlags(uint32_t _flags)
+// {
+// 	s_ctx.m_swapChainFlags = _flags;
+// }
+//
+// bgfx::FrameBufferHandle imguiGetFrameBuffer(const ImGuiViewport* _viewport)
+// {
+// 	const ImguiViewport* viewport = (const ImguiViewport*)_viewport->RendererUserData;
+// 	return NULL != viewport ? viewport->fbh : bgfx::FrameBufferHandle(BGFX_INVALID_HANDLE);
 // }
 
 
@@ -700,9 +913,9 @@ void ImGui_ImplBgfx_RenderDrawData(ImDrawData* draw_data)
 // PERCHE QUESTE ROBE???
 // namespace ImGui
 // {
-	// void PushFont(Font::Enum _font)
+	// void PushFont(Font::Enum _font, float _fontSizeBaseUnscaled)
 	// {
-	// 	PushFont(s_ctx.m_font[_font], 0.0f);
+	// 	PushFont(s_ctx.m_font[_font], _fontSizeBaseUnscaled);
 	// }
 
 	// void PushEnabled(bool _enabled)
@@ -722,6 +935,7 @@ void ImGui_ImplBgfx_RenderDrawData(ImDrawData* draw_data)
 // } // namespace ImGui
 
 #if USE_LOCAL_STB
+BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4244); // error C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4505); // error C4505: '' : unreferenced local function has been removed
 BX_PRAGMA_DIAGNOSTIC_IGNORED_CLANG_GCC("-Wunused-function"); // warning: 'int rect_width_compare(const void*, const void*)' defined but not used
 BX_PRAGMA_DIAGNOSTIC_IGNORED_CLANG("-Wunknown-pragmas")
