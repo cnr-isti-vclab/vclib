@@ -183,7 +183,9 @@ private:
     {
         // release the resources of the drawers (in reverse order of
         // initialization), then the ones of the canvas
-        closeDrawers<Drawers...>();
+        if constexpr (sizeof...(Drawers) > 0) {
+            closeDrawers<Drawers...>();
+        }
         CanvasType::onClose();
     }
 
