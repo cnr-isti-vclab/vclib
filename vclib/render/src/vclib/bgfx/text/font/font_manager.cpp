@@ -517,6 +517,10 @@ bool FontManager::addGlyphBitmap(FontHandle _handle, CodePoint _codePoint, uint1
 		, m_buffer
 		, AtlasRegion::TYPE_BGRA8
 		);
+	if (glyphInfo.regionIndex == UINT16_MAX)
+	{
+		return false;
+	}
 
 	font.cachedGlyphs[_codePoint] = glyphInfo;
 	return true;
@@ -571,7 +575,7 @@ bool FontManager::addBitmap(GlyphInfo& _glyphInfo, const uint8_t* _data)
 		, _data
 		, AtlasRegion::TYPE_GRAY
 		);
-	return true;
+	return _glyphInfo.regionIndex != UINT16_MAX;
 }
 
 } // namespace bgfx

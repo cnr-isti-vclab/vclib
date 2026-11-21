@@ -8,3 +8,4 @@
 vec4 v_color           : COLOR0    = vec4(0.0, 0.0, 0.0, 0.0);
 vec3 v_normal          : NORMAL    = vec3(0.0, 0.0, 0.0);
 flat float v_selected  : TEXCOORD0 = 0.0;
+flat float v_lineIndex : TEXCOORD1 = 0.0;
