@@ -79,9 +79,10 @@ void populateEdgeMesh(MeshType& m)
     m.addEdge(3, 1);
 }
 
-using CleanMeshes   = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
-using CleanMeshesf  = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
-using CleanMeshes64 = std::tuple<vcl::TriMesh64, vcl::PolyMesh64, vcl::EdgeMesh64>;
+using CleanMeshes  = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
+using CleanMeshesf = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
+using CleanMeshes64 =
+    std::tuple<vcl::TriMesh64, vcl::PolyMesh64, vcl::EdgeMesh64>;
 using CleanMeshes64f =
     std::tuple<vcl::TriMesh64f, vcl::PolyMesh64f, vcl::EdgeMesh64f>;
 

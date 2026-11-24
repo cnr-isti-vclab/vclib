@@ -97,8 +97,5 @@ vclib_add_test(
 
 set_target_properties(
     vclib-core-test
-    PROPERTIES
-        UNITY_BUILD ON
-        UNITY_BUILD_MODE BATCH
-        UNITY_BUILD_BATCH_SIZE 8
+    PROPERTIES UNITY_BUILD ON UNITY_BUILD_MODE BATCH UNITY_BUILD_BATCH_SIZE 8
 )

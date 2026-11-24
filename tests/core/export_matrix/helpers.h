@@ -45,9 +45,12 @@ using EigenVector = Eigen::Vector<ScalarType, Eigen::Dynamic>;
 template<typename ScalarType, typename...>
 using VclVector = vcl::Vector<ScalarType, -1>;
 
-using ExportMatrixMeshes   = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
-using ExportMatrixMeshesf  = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
-using ExportMatrixMeshes64 = std::tuple<vcl::TriMesh64, vcl::PolyMesh64, vcl::EdgeMesh64>;
+using ExportMatrixMeshes =
+    std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
+using ExportMatrixMeshesf =
+    std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
+using ExportMatrixMeshes64 =
+    std::tuple<vcl::TriMesh64, vcl::PolyMesh64, vcl::EdgeMesh64>;
 using ExportMatrixMeshes64f =
     std::tuple<vcl::TriMesh64f, vcl::PolyMesh64f, vcl::EdgeMesh64f>;
 
