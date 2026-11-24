@@ -6,6 +6,10 @@ inputs:
     description: 'The tag or branch of bgfx.cmake to clone'
     required: false
     default: 'v1.172.9657-621'
+  build-type:
+    description: 'The CMAKE_BUILD_TYPE (e.g. Release, Debug)'
+    required: false
+    default: 'Release'
 
 runs:
   using: 'composite'
@@ -14,3 +18,4 @@ runs:
       uses: alemuntoni/install-bgfx-cmake@v1
       with:
         bgfx-version: ${{ inputs.bgfx-version }}
+        build-type: ${{ inputs.build-type }}
