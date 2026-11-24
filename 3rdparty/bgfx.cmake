@@ -5,7 +5,7 @@
 # v. 2.0. If a copy of the MPL was not distributed with this file, You can
 # obtain one at https://mozilla.org/MPL/2.0/.
 
-set(BGFX_VERSION 1.168.9624-612)
+set(BGFX_VERSION 1.172.9657-621)
 
 find_package(bgfx QUIET)
 
@@ -34,10 +34,6 @@ if(VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
     target_include_directories(
         vclib-3rd-bgfx
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/sdf/include>
-    )
-    target_include_directories(
-        vclib-3rd-bgfx
-        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/tinystl/include>
     )
 
     # make sure that the imported targets are global
