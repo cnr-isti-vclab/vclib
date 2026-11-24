@@ -44,7 +44,7 @@ void initUpdateNormalAlgorithms(pybind11::module& m)
                 [](MeshType&             m,
                    const vcl::Matrix33d& mat,
                    bool                  removeScalingFromMatrix = true,
-                   AbstractLogger&       log = vcl::nullLogger) {
+                   AbstractLogger& log = vcl::nullLogger) {
                     return multiplyVertexNormalsByMatrix(
                         m, mat, removeScalingFromMatrix, log);
                 },
@@ -58,7 +58,7 @@ void initUpdateNormalAlgorithms(pybind11::module& m)
                 [](MeshType&             m,
                    const vcl::Matrix44d& mat,
                    bool                  removeScalingFromMatrix = true,
-                   AbstractLogger&       log = vcl::nullLogger) {
+                   AbstractLogger& log = vcl::nullLogger) {
                     return multiplyVertexNormalsByMatrix(
                         m, mat, removeScalingFromMatrix, log);
                 },
@@ -87,7 +87,7 @@ void initUpdateNormalAlgorithms(pybind11::module& m)
             [](MeshType&             m,
                const vcl::Matrix33d& mat,
                bool                  removeScalingFromMatrix = true,
-               AbstractLogger&       log = vcl::nullLogger) {
+               AbstractLogger& log = vcl::nullLogger) {
                 return vcl::multiplyFaceNormalsByMatrix(
                     m, mat, removeScalingFromMatrix, log);
             },
@@ -101,7 +101,7 @@ void initUpdateNormalAlgorithms(pybind11::module& m)
             [](MeshType&             m,
                const vcl::Matrix44d& mat,
                bool                  removeScalingFromMatrix = true,
-               AbstractLogger&       log = vcl::nullLogger) {
+               AbstractLogger& log = vcl::nullLogger) {
                 return vcl::multiplyFaceNormalsByMatrix(
                     m, mat, removeScalingFromMatrix, log);
             },
@@ -112,9 +112,9 @@ void initUpdateNormalAlgorithms(pybind11::module& m)
 
         m.def(
             "update_face_normals",
-            [](MeshType&       m,
-               bool            normalize = true,
-               AbstractLogger& log       = vcl::nullLogger) {
+            [](MeshType& m,
+               bool      normalize = true,
+               AbstractLogger& log = vcl::nullLogger) {
                 return vcl::updateFaceNormals(m, normalize, log);
             },
             "mesh"_a,
@@ -123,9 +123,9 @@ void initUpdateNormalAlgorithms(pybind11::module& m)
 
         m.def(
             "update_vertex_normals",
-            [](MeshType&       m,
-               bool            normalize = true,
-               AbstractLogger& log       = vcl::nullLogger) {
+            [](MeshType& m,
+               bool      normalize = true,
+               AbstractLogger& log = vcl::nullLogger) {
                 return vcl::updateVertexNormals(m, normalize, log);
             },
             "mesh"_a,
@@ -134,9 +134,9 @@ void initUpdateNormalAlgorithms(pybind11::module& m)
 
         m.def(
             "update_vertex_normals_from_face_normals",
-            [](MeshType&       m,
-               bool            normalize = true,
-               AbstractLogger& log       = vcl::nullLogger) {
+            [](MeshType& m,
+               bool      normalize = true,
+               AbstractLogger& log = vcl::nullLogger) {
                 return vcl::updateVertexNormalsFromFaceNormals(
                     m, normalize, log);
             },
@@ -146,9 +146,9 @@ void initUpdateNormalAlgorithms(pybind11::module& m)
 
         m.def(
             "update_vertex_and_face_normals",
-            [](MeshType&       m,
-               bool            normalize = true,
-               AbstractLogger& log       = vcl::nullLogger) {
+            [](MeshType& m,
+               bool      normalize = true,
+               AbstractLogger& log = vcl::nullLogger) {
                 return vcl::updateVertexAndFaceNormals(m, normalize, log);
             },
             "mesh"_a,
@@ -157,9 +157,9 @@ void initUpdateNormalAlgorithms(pybind11::module& m)
 
         m.def(
             "update_vertex_normals_angle_weighted",
-            [](MeshType&       m,
-               bool            normalize = true,
-               AbstractLogger& log       = vcl::nullLogger) {
+            [](MeshType& m,
+               bool      normalize = true,
+               AbstractLogger& log = vcl::nullLogger) {
                 return vcl::updateVertexNormalsAngleWeighted(m, normalize, log);
             },
             "mesh"_a,
@@ -168,9 +168,9 @@ void initUpdateNormalAlgorithms(pybind11::module& m)
 
         m.def(
             "update_vertex_normals_nelson_max_weighted",
-            [](MeshType&       m,
-               bool            normalize = true,
-               AbstractLogger& log       = vcl::nullLogger) {
+            [](MeshType& m,
+               bool      normalize = true,
+               AbstractLogger& log = vcl::nullLogger) {
                 return vcl::updateVertexNormalsNelsonMaxWeighted(
                     m, normalize, log);
             },

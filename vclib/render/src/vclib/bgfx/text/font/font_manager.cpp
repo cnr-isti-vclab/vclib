@@ -25,15 +25,7 @@ BX_PRAGMA_DIAGNOSTIC_POP()
 
 #include <wchar.h> // wcslen
 
-#if __has_include(<bx/tinystl/allocator.h>)
-#include <bx/tinystl/allocator.h>
-#include <bx/tinystl/unordered_map.h>
-#else
-#include <tinystl/allocator.h>
-#include <tinystl/unordered_map.h>
-#endif
-
-namespace stl = tinystl;
+#include <bx/hashmap.h>
 
 namespace bgfx {
 
@@ -212,7 +204,7 @@ bool TrueTypeFont::bakeGlyphDistance(CodePoint _codePoint, GlyphInfo& _glyphInfo
 	return true;
 }
 
-typedef stl::unordered_map<CodePoint, GlyphInfo> GlyphHashMap;
+using GlyphHashMap = bx::BlockHashMapT<CodePoint, GlyphInfo>;
 
 // cache font data
 struct FontManager::CachedFont
@@ -403,8 +395,7 @@ bool FontManager::preloadGlyph(FontHandle _handle, CodePoint _codePoint)
 	CachedFont& font = m_cachedFonts[_handle.idx];
 	FontInfo& fontInfo = font.fontInfo;
 
-	GlyphHashMap::iterator iter = font.cachedGlyphs.find(_codePoint);
-	if (iter != font.cachedGlyphs.end() )
+	if (NULL != font.cachedGlyphs.find(_codePoint) )
 	{
 		return true;
 	}
@@ -451,7 +442,7 @@ bool FontManager::preloadGlyph(FontHandle _handle, CodePoint _codePoint)
 		glyphInfo.height = (glyphInfo.height * fontInfo.scale);
 		glyphInfo.width = (glyphInfo.width * fontInfo.scale);
 
-		font.cachedGlyphs[_codePoint] = glyphInfo;
+		font.cachedGlyphs.add(_codePoint, glyphInfo, true);
 		return true;
 	}
 
@@ -468,7 +459,7 @@ bool FontManager::preloadGlyph(FontHandle _handle, CodePoint _codePoint)
 		glyphInfo.height = (glyphInfo.height * fontInfo.scale);
 		glyphInfo.width = (glyphInfo.width * fontInfo.scale);
 
-		font.cachedGlyphs[_codePoint] = glyphInfo;
+		font.cachedGlyphs.add(_codePoint, glyphInfo, true);
 		return true;
 	}
 
@@ -480,8 +471,7 @@ bool FontManager::addGlyphBitmap(FontHandle _handle, CodePoint _codePoint, uint1
 	BX_ASSERT(isValid(_handle), "Invalid handle used");
 	CachedFont& font = m_cachedFonts[_handle.idx];
 
-	GlyphHashMap::iterator iter = font.cachedGlyphs.find(_codePoint);
-	if (iter != font.cachedGlyphs.end() )
+	if (NULL != font.cachedGlyphs.find(_codePoint) )
 	{
 		return true;
 	}
@@ -522,7 +512,7 @@ bool FontManager::addGlyphBitmap(FontHandle _handle, CodePoint _codePoint, uint1
 		return false;
 	}
 
-	font.cachedGlyphs[_codePoint] = glyphInfo;
+	font.cachedGlyphs.add(_codePoint, glyphInfo, true);
 	return true;
 }
 
@@ -551,20 +541,20 @@ float FontManager::getKerning(FontHandle _handle, CodePoint _prevCodePoint, Code
 const GlyphInfo* FontManager::getGlyphInfo(FontHandle _handle, CodePoint _codePoint)
 {
 	const GlyphHashMap& cachedGlyphs = m_cachedFonts[_handle.idx].cachedGlyphs;
-	GlyphHashMap::const_iterator it = cachedGlyphs.find(_codePoint);
+	const GlyphInfo* glyphInfo = cachedGlyphs.find(_codePoint);
 
-	if (it == cachedGlyphs.end() )
+	if (NULL == glyphInfo)
 	{
 		if (!preloadGlyph(_handle, _codePoint) )
 		{
 			return NULL;
 		}
 
-		it = cachedGlyphs.find(_codePoint);
+		glyphInfo = cachedGlyphs.find(_codePoint);
 	}
 
-	BX_ASSERT(it != cachedGlyphs.end(), "Failed to preload glyph.");
-	return &it->second;
+	BX_ASSERT(NULL != glyphInfo, "Failed to preload glyph.");
+	return glyphInfo;
 }
 
 bool FontManager::addBitmap(GlyphInfo& _glyphInfo, const uint8_t* _data)
