@@ -19,13 +19,7 @@ using GltfMeshes64  = std::tuple<vcl::TriMesh64, vcl::PolyMesh64>;
 using GltfMeshes64f = std::tuple<vcl::TriMesh64f, vcl::PolyMesh64f>;
 
 // Test to load obj from a istringstream
-TEMPLATE_TEST_CASE(
-    "Load gltf",
-    "",
-    GltfMeshes,
-    GltfMeshesf,
-    GltfMeshes64,
-    GltfMeshes64f)
+TEMPLATE_TEST_CASE("Load gltf", "", GltfMeshes, GltfMeshesf, GltfMeshes64, GltfMeshes64f)
 {
     using TriMesh  = std::tuple_element_t<0, TestType>;
     using PolyMesh = std::tuple_element_t<1, TestType>;

@@ -189,12 +189,9 @@ void testVertexSelectionVector(
     }
 }
 
-using AppendBufferMeshes =
-    std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
-using AppendBufferMeshesf =
-    std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
-using AppendBufferMeshes64 =
-    std::tuple<vcl::TriMesh64, vcl::PolyMesh64, vcl::EdgeMesh64>;
+using AppendBufferMeshes   = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
+using AppendBufferMeshesf  = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
+using AppendBufferMeshes64 = std::tuple<vcl::TriMesh64, vcl::PolyMesh64, vcl::EdgeMesh64>;
 using AppendBufferMeshes64f =
     std::tuple<vcl::TriMesh64f, vcl::PolyMesh64f, vcl::EdgeMesh64f>;
 

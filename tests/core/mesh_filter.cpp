@@ -133,12 +133,12 @@ TEMPLATE_TEST_CASE(
     }
 }
 
-using FilterMeshes    = std::pair<vcl::TriMesh, vcl::EdgeMesh>;
-using FilterMeshesf   = std::pair<vcl::TriMeshf, vcl::EdgeMeshf>;
-using FilterMeshes64  = std::pair<vcl::TriMesh64, vcl::EdgeMesh64>;
-using FilterMeshes64f = std::pair<vcl::TriMesh64f, vcl::EdgeMesh64f>;
-using MeshesMixed1    = std::pair<vcl::TriMesh, vcl::EdgeMesh64>;
-using MeshesMixed2    = std::pair<vcl::TriMesh64, vcl::EdgeMesh>;
+using FilterMeshes       = std::pair<vcl::TriMesh, vcl::EdgeMesh>;
+using FilterMeshesf      = std::pair<vcl::TriMeshf, vcl::EdgeMeshf>;
+using FilterMeshes64     = std::pair<vcl::TriMesh64, vcl::EdgeMesh64>;
+using FilterMeshes64f    = std::pair<vcl::TriMesh64f, vcl::EdgeMesh64f>;
+using MeshesMixed1 = std::pair<vcl::TriMesh, vcl::EdgeMesh64>;
+using MeshesMixed2 = std::pair<vcl::TriMesh64, vcl::EdgeMesh>;
 
 TEMPLATE_TEST_CASE(
     "TriMesh Filter Face Edges",
