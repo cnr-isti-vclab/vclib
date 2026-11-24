@@ -5,6 +5,8 @@
 # v. 2.0. If a copy of the MPL was not distributed with this file, You can
 # obtain one at https://mozilla.org/MPL/2.0/.
 
+include(FetchContent)
+
 set(BGFX_VERSION 1.172.9657-621)
 set(BGFX_PRECOMPILED_TAG v1.1.0)
 
@@ -41,7 +43,6 @@ function(_vclib_download_precompiled_bgfx OUT_DIR OUT_PLATFORM)
     set(_URL "https://github.com/alemuntoni/install-bgfx-cmake/releases/download/${BGFX_PRECOMPILED_TAG}/${_ARCHIVE_NAME}")
 
     message(STATUS "- bgfx - downloading precompiled binaries (${_PLATFORM}) from ${BGFX_PRECOMPILED_TAG}...")
-    include(FetchContent)
     FetchContent_Declare(
         vclib_bgfx_precompiled
         URL "${_URL}"
