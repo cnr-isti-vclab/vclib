@@ -104,7 +104,7 @@ void readPlyVertexProperty(
             using Scalar = VertexType::GaussianSplatType::ScalarType;
             if (isPerVertexGaussianSplatAvailable(mesh)) {
                 int a = p.name - ply::f_dc_0;
-                v.shCoeffAt(a) =
+                v.gaussianSplat().shCoeffAt(a) =
                     io::readPrimitiveType<Scalar>(file, p.type, end);
                 hasBeenRead = true;
             }
@@ -114,7 +114,7 @@ void readPlyVertexProperty(
         if constexpr (HasPerVertexGaussianSplat<MeshType>) {
             using Scalar = VertexType::GaussianSplatType::ScalarType;
             if (isPerVertexGaussianSplatAvailable(mesh)) {
-                v.opacity() =
+                v.gaussianSplat().opacity() =
                     io::readPrimitiveType<Scalar>(file, p.type, end);
                 hasBeenRead = true;
             }
@@ -125,7 +125,7 @@ void readPlyVertexProperty(
             using Scalar = VertexType::GaussianSplatType::ScalarType;
             if (isPerVertexGaussianSplatAvailable(mesh)) {
                 int a = p.name - ply::scale_0;
-                v.scale()[a] =
+                v.gaussianSplat().scale()[a] =
                     io::readPrimitiveType<Scalar>(file, p.type, end);
                 hasBeenRead = true;
             }
@@ -136,7 +136,7 @@ void readPlyVertexProperty(
             using Scalar = VertexType::GaussianSplatType::ScalarType;
             if (isPerVertexGaussianSplatAvailable(mesh)) {
                 int a = p.name - ply::rot_0;
-                v.rotation()[a] =
+                v.gaussianSplat().rotation().coeffs()[a] =
                     io::readPrimitiveType<Scalar>(file, p.type, end);
                 hasBeenRead = true;
             }
@@ -291,10 +291,10 @@ void readPlyVertices(
     for (uint vid = 0; vid < header.vertexCount(); ++vid) {
         auto& v = m.vertex(vid);
         // Find the count of the spherical harmonics coefficients
-        if constexpr (comp::HasOptionalGaussianSplat<MeshType>) {
+        if constexpr (HasPerVertexGaussianSplat<MeshType>) {
             uint shCoeffCount = header.gaussianSplatSHCoeffsCount();
             if (shCoeffCount > 0)
-                v.resizeSHCoeffs(shCoeffCount);
+                v.gaussianSplat().resizeSHCoeffs(shCoeffCount);
         }
         if (header.format() == ply::ASCII) {
             detail::readPlyVertexTxt(
@@ -304,7 +304,7 @@ void readPlyVertices(
             std::endian end = header.format() == ply::BINARY_BIG_ENDIAN ?
                                   std::endian::big :
                                   std::endian::little;
-            detail::readPlyVertexBin( //TODO complete gaussian property
+            detail::readPlyVertexBin(
                 file,
                 v,
                 m,

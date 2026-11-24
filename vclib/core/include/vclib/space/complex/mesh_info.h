@@ -89,6 +89,7 @@ public:
         QUALITY,
         TEXCOORD,
         MATERIAL_INDEX,
+        GAUSSIAN_SPLAT,
         WEDGE_TEXCOORDS,
         CUSTOM_COMPONENTS,
         MATERIALS,
@@ -130,6 +131,9 @@ private:
 
     // Mesh Type
     MeshType mType = MeshType::UNKNOWN;
+
+    // Gaussian Splat Spherical Harmonics Degree
+    uint mGaussianSplatSHDegree = 0;
 
 public:
     /**
@@ -195,6 +199,11 @@ public:
         if constexpr (HasPerVertexMaterialIndex<Mesh>) {
             if (isPerVertexMaterialIndexAvailable(m)) {
                 setPerVertexMaterialIndex(true, PrimitiveType::UINT);
+            }
+        }
+        if constexpr (HasPerVertexGaussianSplat<Mesh>) {
+            if (isPerVertexGaussianSplatAvailable(m)) {
+                setPerVertexGaussianSplat(true, getType<typename Mesh::VertexType::GaussianSplatType::ScalarType>());
             }
         }
         if constexpr (HasPerVertexCustomComponents<Mesh>) {
@@ -421,6 +430,15 @@ public:
     }
 
     /**
+     * @brief Returns true if the current object has Vertex Gaussian Splat.
+     * @return true if the current object has Vertex Gaussian Splat.
+     */
+    bool hasPerVertexGaussianSplat() const
+    {
+        return hasPerElementComponent(VERTEX, GAUSSIAN_SPLAT);
+    }
+
+    /**
      * @brief Returns true if the current object has Vertex Custom Components.
      * @return true if the current object has Vertex Custom Components.
      */
@@ -615,6 +633,20 @@ public:
         setPerElementComponent(VERTEX, MATERIAL_INDEX, b, t);
     }
 
+    void setPerVertexGaussianSplat(
+        bool     b = true,
+        DataType t = PrimitiveType::DOUBLE)
+    {
+        setPerElementComponent(VERTEX, GAUSSIAN_SPLAT, b, t);
+    }
+
+    uint getPerVertexGaussianSplatSHDegree() const { return mGaussianSplatSHDegree; }
+
+    void setPerVertexGaussianSplatSHDegree(uint degree)
+    {
+        mGaussianSplatSHDegree = degree;
+    }
+
     void setPerVertexCustomComponents(bool b = true)
     {
         setPerElementComponent(
@@ -799,6 +831,11 @@ public:
     DataType perVertexMaterialIndexType() const
     {
         return perElementComponentType(VERTEX, MATERIAL_INDEX);
+    }
+
+    DataType perVertexGaussianSplatType() const
+    {
+        return perElementComponentType(VERTEX, GAUSSIAN_SPLAT);
     }
 
     DataType perFaceBitFlagsType() const
@@ -1065,6 +1102,11 @@ void enableOptionalComponentsFromInfo(MeshInfo& info, MeshType& m)
         if (info.hasPerVertexMaterialIndex()) {
             if (!enableIfPerVertexMaterialIndexOptional(m)) {
                 info.setPerVertexMaterialIndex(false);
+            }
+        }
+        if (info.hasPerVertexGaussianSplat()) {
+            if (!enableIfPerVertexGaussianSplatOptional(m)) {
+                info.setPerVertexGaussianSplat(false);
             }
         }
         if (info.hasPerVertexCustomComponents()) {
