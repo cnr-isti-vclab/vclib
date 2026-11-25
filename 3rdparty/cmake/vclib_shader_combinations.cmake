@@ -67,7 +67,9 @@ function(
         get_property(VCLIB_RUN_ID GLOBAL PROPERTY VCLIB_RUN_ID)
 
         # Assign a 4-digit ID for this program combination (used for compact .cpp/.h filenames, e.g. drawable_mesh_surface_0000)
-        set(PROG_INDEX_KEY "VCLIB_R${VCLIB_RUN_ID}_PROG_INDEX_${BIN_CONFIG_DIR}_${ENUM_PREFIX}")
+        set(PROG_INDEX_KEY
+            "VCLIB_R${VCLIB_RUN_ID}_PROG_INDEX_${BIN_CONFIG_DIR}_${ENUM_PREFIX}"
+        )
         get_property(PROG_INDEX GLOBAL PROPERTY "${PROG_INDEX_KEY}")
         if("${PROG_INDEX}" STREQUAL "")
             set(PROG_INDEX 0)
@@ -96,17 +98,24 @@ function(
             )
         else()
             # Dynamic VS: reuse existing ID if this combination was already generated, otherwise assign the next 4-digit ID
-            set(VS_MAP_KEY "VCLIB_R${VCLIB_RUN_ID}_VS_ID_${BIN_CONFIG_DIR}_${ENUM_PREFIX}_${VS_PREFIX}_${VS_COMBINATION}")
+            set(VS_MAP_KEY
+                "VCLIB_R${VCLIB_RUN_ID}_VS_ID_${BIN_CONFIG_DIR}_${ENUM_PREFIX}_${VS_PREFIX}_${VS_COMBINATION}"
+            )
             get_property(VS_ID GLOBAL PROPERTY "${VS_MAP_KEY}")
             if("${VS_ID}" STREQUAL "")
-                set(VS_INDEX_KEY "VCLIB_R${VCLIB_RUN_ID}_VS_INDEX_${BIN_CONFIG_DIR}_${ENUM_PREFIX}_${VS_PREFIX}")
+                set(VS_INDEX_KEY
+                    "VCLIB_R${VCLIB_RUN_ID}_VS_INDEX_${BIN_CONFIG_DIR}_${ENUM_PREFIX}_${VS_PREFIX}"
+                )
                 get_property(VS_INDEX GLOBAL PROPERTY "${VS_INDEX_KEY}")
                 if("${VS_INDEX}" STREQUAL "")
                     set(VS_INDEX 0)
                 endif()
                 _vclib_format_4digit_id("${VS_INDEX}" VS_ID)
                 math(EXPR NEXT_VS_INDEX "${VS_INDEX} + 1")
-                set_property(GLOBAL PROPERTY "${VS_INDEX_KEY}" "${NEXT_VS_INDEX}")
+                set_property(
+                    GLOBAL
+                    PROPERTY "${VS_INDEX_KEY}" "${NEXT_VS_INDEX}"
+                )
                 set_property(GLOBAL PROPERTY "${VS_MAP_KEY}" "${VS_ID}")
             endif()
 
@@ -160,17 +169,24 @@ function(
             )
         else()
             # Dynamic FS: reuse existing ID if this combination was already generated, otherwise assign the next 4-digit ID
-            set(FS_MAP_KEY "VCLIB_R${VCLIB_RUN_ID}_FS_ID_${BIN_CONFIG_DIR}_${ENUM_PREFIX}_${FS_PREFIX}_${FS_COMBINATION}")
+            set(FS_MAP_KEY
+                "VCLIB_R${VCLIB_RUN_ID}_FS_ID_${BIN_CONFIG_DIR}_${ENUM_PREFIX}_${FS_PREFIX}_${FS_COMBINATION}"
+            )
             get_property(FS_ID GLOBAL PROPERTY "${FS_MAP_KEY}")
             if("${FS_ID}" STREQUAL "")
-                set(FS_INDEX_KEY "VCLIB_R${VCLIB_RUN_ID}_FS_INDEX_${BIN_CONFIG_DIR}_${ENUM_PREFIX}_${FS_PREFIX}")
+                set(FS_INDEX_KEY
+                    "VCLIB_R${VCLIB_RUN_ID}_FS_INDEX_${BIN_CONFIG_DIR}_${ENUM_PREFIX}_${FS_PREFIX}"
+                )
                 get_property(FS_INDEX GLOBAL PROPERTY "${FS_INDEX_KEY}")
                 if("${FS_INDEX}" STREQUAL "")
                     set(FS_INDEX 0)
                 endif()
                 _vclib_format_4digit_id("${FS_INDEX}" FS_ID)
                 math(EXPR NEXT_FS_INDEX "${FS_INDEX} + 1")
-                set_property(GLOBAL PROPERTY "${FS_INDEX_KEY}" "${NEXT_FS_INDEX}")
+                set_property(
+                    GLOBAL
+                    PROPERTY "${FS_INDEX_KEY}" "${NEXT_FS_INDEX}"
+                )
                 set_property(GLOBAL PROPERTY "${FS_MAP_KEY}" "${FS_ID}")
             endif()
 
@@ -410,26 +426,26 @@ function(vclib_generate_shaders_from_config CONFIG_FILE)
                     set(CURRENT_DIM "")
                 endif()
                 set(ENUM_PREFIX "${CMAKE_MATCH_1}")
-            # Directive: prefix for #define macros (e.g. SURFACE -> #define SURFACE_SHADING_FLAT 1)
+                # Directive: prefix for #define macros (e.g. SURFACE -> #define SURFACE_SHADING_FLAT 1)
             elseif("${STRIPPED_LINE}" MATCHES "^DEFINE_PREFIX (.+)")
                 set(DEFINE_PREFIX "${CMAKE_MATCH_1}")
-            # Directives: static vertex/fragment shader files
+                # Directives: static vertex/fragment shader files
             elseif("${STRIPPED_LINE}" MATCHES "^VS_FILE (.+)")
                 set(VS_FILE "${CMAKE_MATCH_1}")
-            # Directives: dynamic vertex shader template input and output prefix
+                # Directives: dynamic vertex shader template input and output prefix
             elseif("${STRIPPED_LINE}" MATCHES "^VS_IN (.+)")
                 set(VS_IN "${CMAKE_MATCH_1}")
             elseif("${STRIPPED_LINE}" MATCHES "^VS_PREFIX (.+)")
                 set(VS_PREFIX "${CMAKE_MATCH_1}")
-            # Directives: static fragment shader file
+                # Directives: static fragment shader file
             elseif("${STRIPPED_LINE}" MATCHES "^FS_FILE (.+)")
                 set(FS_FILE "${CMAKE_MATCH_1}")
-            # Directives: dynamic fragment shader template input and output prefix
+                # Directives: dynamic fragment shader template input and output prefix
             elseif("${STRIPPED_LINE}" MATCHES "^FS_IN (.+)")
                 set(FS_IN "${CMAKE_MATCH_1}")
             elseif("${STRIPPED_LINE}" MATCHES "^FS_PREFIX (.+)")
                 set(FS_PREFIX "${CMAKE_MATCH_1}")
-            # Directives: declare a dimension applying to VS only, FS only, or BOTH
+                # Directives: declare a dimension applying to VS only, FS only, or BOTH
             elseif("${STRIPPED_LINE}" MATCHES "^DIM_VS (.+)")
                 set(CURRENT_DIM "${CMAKE_MATCH_1}")
                 list(APPEND DIMS "${CURRENT_DIM}")

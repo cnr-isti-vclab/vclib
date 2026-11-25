@@ -24,8 +24,18 @@ function(_vclib_download_precompiled_bgfx OUT_DIR OUT_PLATFORM)
     elseif(APPLE)
         set(_PLATFORM "macos-universal")
     elseif(WIN32)
-        if(MSVC AND (CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|AMD64" OR CMAKE_SIZEOF_VOID_P EQUAL 8))
-            get_property(_IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+        if(
+            MSVC
+            AND (
+                CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|AMD64"
+                OR CMAKE_SIZEOF_VOID_P EQUAL 8
+            )
+        )
+            get_property(
+                _IS_MULTI_CONFIG
+                GLOBAL
+                PROPERTY GENERATOR_IS_MULTI_CONFIG
+            )
             if(NOT _IS_MULTI_CONFIG AND CMAKE_BUILD_TYPE STREQUAL "Debug")
                 set(_PLATFORM "windows-x64-Debug")
             else()
@@ -35,18 +45,23 @@ function(_vclib_download_precompiled_bgfx OUT_DIR OUT_PLATFORM)
     endif()
 
     if(NOT _PLATFORM)
-        message(STATUS "- bgfx - no precompiled binary available for this platform / configuration")
+        message(
+            STATUS
+            "- bgfx - no precompiled binary available for this platform / configuration"
+        )
         return()
     endif()
 
     set(_ARCHIVE_NAME "bgfx-install-${_PLATFORM}-v${BGFX_VERSION}.tar.gz")
-    set(_URL "https://github.com/alemuntoni/install-bgfx-cmake/releases/download/${BGFX_PRECOMPILED_TAG}/${_ARCHIVE_NAME}")
-
-    message(STATUS "- bgfx - downloading precompiled binaries (${_PLATFORM}) from ${BGFX_PRECOMPILED_TAG}...")
-    FetchContent_Declare(
-        vclib_bgfx_precompiled
-        URL "${_URL}"
+    set(_URL
+        "https://github.com/alemuntoni/install-bgfx-cmake/releases/download/${BGFX_PRECOMPILED_TAG}/${_ARCHIVE_NAME}"
     )
+
+    message(
+        STATUS
+        "- bgfx - downloading precompiled binaries (${_PLATFORM}) from ${BGFX_PRECOMPILED_TAG}..."
+    )
+    FetchContent_Declare(vclib_bgfx_precompiled URL "${_URL}")
     FetchContent_MakeAvailable(vclib_bgfx_precompiled)
 
     FetchContent_GetProperties(vclib_bgfx_precompiled SOURCE_DIR _SOURCE_DIR)
@@ -60,11 +75,16 @@ function(_vclib_download_precompiled_bgfx OUT_DIR OUT_PLATFORM)
         file(GLOB _BINS "${_SOURCE_DIR}/bin/*")
         foreach(_BIN IN LISTS _BINS)
             if(NOT IS_DIRECTORY "${_BIN}")
-                file(CHMOD "${_BIN}"
+                file(
+                    CHMOD "${_BIN}"
                     PERMISSIONS
-                        OWNER_READ OWNER_WRITE OWNER_EXECUTE
-                        GROUP_READ GROUP_EXECUTE
-                        WORLD_READ WORLD_EXECUTE
+                        OWNER_READ
+                        OWNER_WRITE
+                        OWNER_EXECUTE
+                        GROUP_READ
+                        GROUP_EXECUTE
+                        WORLD_READ
+                        WORLD_EXECUTE
                 )
             endif()
         endforeach()
@@ -88,11 +108,17 @@ function(_vclib_download_precompiled_bgfx OUT_DIR OUT_PLATFORM)
             TIMEOUT 10
         )
         if(NOT _SHADERC_RES EQUAL 0)
-            message(STATUS "- bgfx - precompiled shaderc failed sanity check: falling back to building from source")
+            message(
+                STATUS
+                "- bgfx - precompiled shaderc failed sanity check: falling back to building from source"
+            )
             set(_SANITY_OK FALSE)
         endif()
     else()
-        message(STATUS "- bgfx - shaderc binary not found in precompiled archive: falling back to building from source")
+        message(
+            STATUS
+            "- bgfx - shaderc binary not found in precompiled archive: falling back to building from source"
+        )
         set(_SANITY_OK FALSE)
     endif()
     unset(_TEST_SHADERC CACHE)
@@ -111,11 +137,24 @@ endif()
 if(NOT bgfx_FOUND AND VCLIB_ALLOW_PRECOMPILED_BGFX)
     _vclib_download_precompiled_bgfx(_BGFX_PRECOMPILED_DIR _BGFX_PLATFORM)
     if(_BGFX_PRECOMPILED_DIR)
-        find_package(bgfx CONFIG PATHS "${_BGFX_PRECOMPILED_DIR}" NO_DEFAULT_PATH)
+        find_package(
+            bgfx
+            CONFIG
+            PATHS "${_BGFX_PRECOMPILED_DIR}"
+            NO_DEFAULT_PATH
+        )
         if(bgfx_FOUND)
             set(VCLIB_DOWNLOADED_PRECOMPILED_BGFX ON)
-            if(NOT CMAKE_MAP_IMPORTED_CONFIG_DEBUG AND NOT _BGFX_PLATFORM MATCHES "Debug")
-                set(CMAKE_MAP_IMPORTED_CONFIG_DEBUG Release RelWithDebInfo MinSizeRel "")
+            if(
+                NOT CMAKE_MAP_IMPORTED_CONFIG_DEBUG
+                AND NOT _BGFX_PLATFORM MATCHES "Debug"
+            )
+                set(CMAKE_MAP_IMPORTED_CONFIG_DEBUG
+                    Release
+                    RelWithDebInfo
+                    MinSizeRel
+                    ""
+                )
             endif()
         endif()
     endif()
@@ -123,7 +162,10 @@ endif()
 
 if(bgfx_FOUND)
     if(VCLIB_DOWNLOADED_PRECOMPILED_BGFX)
-        message(STATUS "- bgfx - using downloaded precompiled library (${_BGFX_PLATFORM})")
+        message(
+            STATUS
+            "- bgfx - using downloaded precompiled library (${_BGFX_PLATFORM})"
+        )
     else()
         message(STATUS "- bgfx - using system-provided library")
     endif()

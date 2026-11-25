@@ -641,9 +641,19 @@ function(vclib_generate_embedded_programs_headers)
     endif()
 
     # Clean up old/orphaned generated embedded header and source files
-    get_property(GENERATED_EMBEDDED_FILES GLOBAL PROPERTY VCLIB_GENERATED_EMBEDDED_FILES)
-    file(GLOB_RECURSE EXISTING_H_FILES "${TARGET_BIN_DIR}/include/vclib/bgfx/programs/embedded_*_programs/*.h")
-    file(GLOB_RECURSE EXISTING_CPP_FILES "${TARGET_BIN_DIR}/src/vclib/bgfx/programs/embedded_*_programs/*.cpp")
+    get_property(
+        GENERATED_EMBEDDED_FILES
+        GLOBAL
+        PROPERTY VCLIB_GENERATED_EMBEDDED_FILES
+    )
+    file(
+        GLOB_RECURSE EXISTING_H_FILES
+        "${TARGET_BIN_DIR}/include/vclib/bgfx/programs/embedded_*_programs/*.h"
+    )
+    file(
+        GLOB_RECURSE EXISTING_CPP_FILES
+        "${TARGET_BIN_DIR}/src/vclib/bgfx/programs/embedded_*_programs/*.cpp"
+    )
     foreach(EXISTING_FILE ${EXISTING_H_FILES} ${EXISTING_CPP_FILES})
         if(NOT "${EXISTING_FILE}" IN_LIST GENERATED_EMBEDDED_FILES)
             file(REMOVE "${EXISTING_FILE}")
@@ -750,9 +760,8 @@ function(vclib_add_embedded_program)
     set_property(
         GLOBAL
         APPEND
-        PROPERTY VCLIB_GENERATED_EMBEDDED_FILES
-        "${HEADER_OUTPUT}"
-        "${SOURCE_OUTPUT}"
+        PROPERTY
+            VCLIB_GENERATED_EMBEDDED_FILES "${HEADER_OUTPUT}" "${SOURCE_OUTPUT}"
     )
 
     # Add generated files to vclib::render target
@@ -842,7 +851,11 @@ function(vclib_add_embedded_programs_from_file FILE_PATH TYPE)
                     FILES ${CURRENT_FILES_LIST}
                 )
             endif()
-            string(REGEX MATCH "^([^ \t]+)([ \t]+([^ \t]+))?" _MATCH "${STRIPPED_LINE}")
+            string(
+                REGEX MATCH "^([^ \t]+)([ \t]+([^ \t]+))?"
+                _MATCH
+                "${STRIPPED_LINE}"
+            )
             set(CURRENT_ENUM_NAME "${CMAKE_MATCH_1}")
             set(CURRENT_FILE_NAME "${CMAKE_MATCH_3}")
             set(CURRENT_FILES_LIST "")
