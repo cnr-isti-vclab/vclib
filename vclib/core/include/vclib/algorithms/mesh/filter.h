@@ -17,7 +17,7 @@ namespace vcl {
 namespace detail {
 
 template<MeshConcept OutMeshType, ElemId ELEM_ID, MeshConcept InMeshType>
-OutMeshType elementMeshFilter(
+OutMeshType elementMeshFilterWithoutVRefs(
     const InMeshType& m,
     Range auto&&      elemFilterRng,
     bool              saveBirthIndicesInCustomComponent = true)
@@ -55,20 +55,6 @@ OutMeshType elementMeshFilter(
     }
 
     return res;
-}
-
-template<MeshConcept OutMeshType, ElemId ELEM_ID, MeshConcept InMeshType>
-OutMeshType elementMeshFilter(
-    const InMeshType&                                              m,
-    const std::function<bool(
-        typename InMeshType::template ConstElementType<ELEM_ID>)>& elemFilter,
-    bool saveBirthIndicesInCustomComponent = true)
-{
-    auto view =
-        m.template elements<ELEM_ID>() | std::views::transform(elemFilter);
-
-    return elementMeshFilter<OutMeshType, ELEM_ID, InMeshType>(
-        m, view, saveBirthIndicesInCustomComponent);
 }
 
 template<MeshConcept OutMeshType, ElemId ELEM_ID, MeshConcept InMeshType>
@@ -165,21 +151,146 @@ OutMeshType elementMeshFilterWithVRefs(
     return res;
 }
 
-template<MeshConcept OutMeshType, ElemId ELEM_ID, MeshConcept InMeshType>
-OutMeshType elementMeshFilterWithVRefs(
-    const InMeshType&                                              m,
-    const std::function<bool(
-        typename InMeshType::template ConstElementType<ELEM_ID>)>& elemFilter,
+} // namespace detail
+
+/**
+ * @brief Generates and returns a new mesh that is composed of the elements
+ * identified by `ELEM_ID` of the input mesh `m` filtered using the
+ * `elemFilterRng` range.
+ *
+ * If the filtered element type has the `VertexReferences` component, only the
+ * vertices belonging to the imported elements will also be imported in the
+ * output mesh.
+ *
+ * By default, the type of the output mesh will be the same of the input mesh
+ * type.
+ *
+ * @tparam ELEM_ID: The element ID to filter (e.g., vertex, edge, face).
+ * @tparam InMeshType: type of the input mesh. It must satisfy the
+ * `MeshConcept`.
+ * @tparam OutMeshType: type of the output mesh. It must satisfy the
+ * `MeshConcept`. By default, it is the same of the input mesh type.
+ *
+ * @param[in] m: input mesh
+ * @param[in] elemFilterRng: range of values that are evaluated as booleans,
+ * one for each element of the input mesh. Its type must satisfy the `Range`
+ * concept.
+ * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
+ * output mesh type has the element (and vertex, when applicable)
+ * CustomComponents component, will set a custom component of type
+ * `InMeshType::IndexType` in the output mesh storing the birth element indices.
+ *
+ * @return A new Mesh created by filtering the elements of the input mesh `m`.
+ */
+template<
+    ElemId      ELEM_ID,
+    MeshConcept InMeshType,
+    MeshConcept OutMeshType = InMeshType>
+OutMeshType elementMeshFilter(
+    const InMeshType& m,
+    Range auto&&      elemFilterRng,
+    bool              saveBirthIndicesInCustomComponent = true)
+{
+    using OutElemType = OutMeshType::template ElementType<ELEM_ID>;
+
+    if constexpr (comp::HasVertexReferences<OutElemType>) {
+        return detail::
+            elementMeshFilterWithVRefs<OutMeshType, ELEM_ID, InMeshType>(
+                m, elemFilterRng, saveBirthIndicesInCustomComponent);
+    }
+    else {
+        return detail::
+            elementMeshFilterWithoutVRefs<OutMeshType, ELEM_ID, InMeshType>(
+                m, elemFilterRng, saveBirthIndicesInCustomComponent);
+    }
+}
+
+/**
+ * @brief Generates and returns a new mesh that is composed of the elements
+ * identified by `ELEM_ID` of the input mesh `m` filtered using the
+ * `elemFilter` function.
+ *
+ * If the filtered element type has the `VertexReferences` component, only the
+ * vertices belonging to the imported elements will also be imported in the
+ * output mesh.
+ *
+ * By default, the type of the output mesh will be the same of the input mesh
+ * type.
+ *
+ * @tparam ELEM_ID: The element ID to filter (e.g., vertex, edge, face).
+ * @tparam InMeshType: type of the input mesh. It must satisfy the
+ * `MeshConcept`.
+ * @tparam OutMeshType: type of the output mesh. It must satisfy the
+ * `MeshConcept`. By default, it is the same of the input mesh type.
+ *
+ * @param[in] m: input mesh
+ * @param[in] elemFilter: a function that takes an element as input and returns
+ * a boolean value that tells whether the element should be put in the output
+ * mesh.
+ * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
+ * output mesh type has the element (and vertex, when applicable)
+ * CustomComponents component, will set a custom component of type
+ * `InMeshType::IndexType` in the output mesh storing the birth element indices.
+ *
+ * @return A new Mesh created by filtering the elements of the input mesh `m`.
+ */
+template<
+    ElemId      ELEM_ID,
+    MeshConcept InMeshType,
+    MeshConcept OutMeshType = InMeshType>
+OutMeshType elementMeshFilter(
+    const InMeshType& m,
+    const std::function<
+        bool(typename InMeshType::template ConstElementType<ELEM_ID>)>&
+         elemFilter,
     bool saveBirthIndicesInCustomComponent = true)
 {
     auto view =
         m.template elements<ELEM_ID>() | std::views::transform(elemFilter);
 
-    return elementMeshFilterWithVRefs<OutMeshType, ELEM_ID, InMeshType>(
+    return elementMeshFilter<ELEM_ID, InMeshType, OutMeshType>(
         m, view, saveBirthIndicesInCustomComponent);
 }
 
-} // namespace detail
+/**
+ * @brief Generates and returns a new mesh that is composed of the selected
+ * elements identified by `ELEM_ID` of the input mesh `m`.
+ *
+ * If the filtered element type has the `VertexReferences` component, only the
+ * vertices belonging to the imported elements will also be imported in the
+ * output mesh.
+ *
+ * By default, the type of the output mesh will be the same of the input mesh
+ * type.
+ *
+ * @tparam ELEM_ID: The element ID to filter (e.g., vertex, edge, face).
+ * @tparam InMeshType: type of the input mesh. It must satisfy the
+ * `MeshConcept`.
+ * @tparam OutMeshType: type of the output mesh. It must satisfy the
+ * `MeshConcept`. By default, it is the same of the input mesh type.
+ *
+ * @param[in] m: input mesh
+ * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
+ * output mesh type has the element (and vertex, when applicable)
+ * CustomComponents component, will set a custom component of type
+ * `InMeshType::IndexType` in the output mesh storing the birth element indices.
+ *
+ * @return A new Mesh created by filtering by selection the elements of the
+ * input mesh `m`.
+ */
+template<
+    ElemId      ELEM_ID,
+    MeshConcept InMeshType,
+    MeshConcept OutMeshType = InMeshType>
+OutMeshType elementSelectionMeshFilter(
+    const InMeshType& m,
+    bool              saveBirthIndicesInCustomComponent = true)
+{
+    auto selView = m.template elements<ELEM_ID>() | views::selection;
+
+    return elementMeshFilter<ELEM_ID, InMeshType, OutMeshType>(
+        m, selView, saveBirthIndicesInCustomComponent);
+}
 
 /**
  * @brief Generates and returns a new mesh that is composed of the vertices of
@@ -214,7 +325,7 @@ OutMeshType vertexMeshFilter(
     const std::function<bool(typename InMeshType::ConstVertex)>& vertexFilter,
     bool saveBirthIndicesInCustomComponent = true)
 {
-    return detail::elementMeshFilter<OutMeshType, ElemId::VERTEX, InMeshType>(
+    return elementMeshFilter<ElemId::VERTEX, InMeshType, OutMeshType>(
         m, vertexFilter, saveBirthIndicesInCustomComponent);
 }
 
@@ -252,7 +363,7 @@ OutMeshType vertexMeshFilter(
     Range auto&&      vertexFilterRng,
     bool              saveBirthIndicesInCustomComponent = true)
 {
-    return detail::elementMeshFilter<OutMeshType, ElemId::VERTEX, InMeshType>(
+    return elementMeshFilter<ElemId::VERTEX, InMeshType, OutMeshType>(
         m, vertexFilterRng, saveBirthIndicesInCustomComponent);
 }
 
@@ -286,10 +397,8 @@ OutMeshType vertexSelectionMeshFilter(
     const InMeshType& m,
     bool              saveBirthIndicesInCustomComponent = true)
 {
-    auto selView = m.vertices() | views::selection;
-
-    return detail::elementMeshFilter<OutMeshType, ElemId::VERTEX, InMeshType>(
-        m, selView, saveBirthIndicesInCustomComponent);
+    return elementSelectionMeshFilter<ElemId::VERTEX, InMeshType, OutMeshType>(
+        m, saveBirthIndicesInCustomComponent);
 }
 
 /**
@@ -328,9 +437,8 @@ OutMeshType faceMeshFilter(
     const std::function<bool(typename InMeshType::ConstFace)>& faceFilter,
     bool saveBirthIndicesInCustomComponent = true)
 {
-    return detail::
-        elementMeshFilterWithVRefs<OutMeshType, ElemId::FACE, InMeshType>(
-            m, faceFilter, saveBirthIndicesInCustomComponent);
+    return elementMeshFilter<ElemId::FACE, InMeshType, OutMeshType>(
+        m, faceFilter, saveBirthIndicesInCustomComponent);
 }
 
 /**
@@ -369,9 +477,8 @@ OutMeshType faceMeshFilter(
     Range auto&&      faceFilterRng,
     bool              saveBirthIndicesInCustomComponent = true)
 {
-    return detail::
-        elementMeshFilterWithVRefs<OutMeshType, ElemId::FACE, InMeshType>(
-            m, faceFilterRng, saveBirthIndicesInCustomComponent);
+    return elementMeshFilter<ElemId::FACE, InMeshType, OutMeshType>(
+        m, faceFilterRng, saveBirthIndicesInCustomComponent);
 }
 
 /**
@@ -406,11 +513,8 @@ OutMeshType faceSelectionMeshFilter(
     const InMeshType& m,
     bool              saveBirthIndicesInCustomComponent = true)
 {
-    auto selView = m.faces() | views::selection;
-
-    return detail::
-        elementMeshFilterWithVRefs<OutMeshType, ElemId::FACE, InMeshType>(
-            m, selView, saveBirthIndicesInCustomComponent);
+    return elementSelectionMeshFilter<ElemId::FACE, InMeshType, OutMeshType>(
+        m, saveBirthIndicesInCustomComponent);
 }
 
 /**
@@ -449,9 +553,8 @@ OutMeshType edgeMeshFilter(
     const std::function<bool(typename InMeshType::ConstEdge)>& edgeFilter,
     bool saveBirthIndicesInCustomComponent = true)
 {
-    return detail::
-        elementMeshFilterWithVRefs<OutMeshType, ElemId::EDGE, InMeshType>(
-            m, edgeFilter, saveBirthIndicesInCustomComponent);
+    return elementMeshFilter<ElemId::EDGE, InMeshType, OutMeshType>(
+        m, edgeFilter, saveBirthIndicesInCustomComponent);
 }
 
 /**
@@ -490,9 +593,8 @@ OutMeshType edgeMeshFilter(
     Range auto&&      edgeFilterRng,
     bool              saveBirthIndicesInCustomComponent = true)
 {
-    return detail::
-        elementMeshFilterWithVRefs<OutMeshType, ElemId::EDGE, InMeshType>(
-            m, edgeFilterRng, saveBirthIndicesInCustomComponent);
+    return elementMeshFilter<ElemId::EDGE, InMeshType, OutMeshType>(
+        m, edgeFilterRng, saveBirthIndicesInCustomComponent);
 }
 
 /**
@@ -527,11 +629,8 @@ OutMeshType edgeSelectionMeshFilter(
     const InMeshType& m,
     bool              saveBirthIndicesInCustomComponent = true)
 {
-    auto selView = m.edges() | views::selection;
-
-    return detail::
-        elementMeshFilterWithVRefs<OutMeshType, ElemId::EDGE, InMeshType>(
-            m, selView, saveBirthIndicesInCustomComponent);
+    return elementSelectionMeshFilter<ElemId::EDGE, InMeshType, OutMeshType>(
+        m, saveBirthIndicesInCustomComponent);
 }
 
 /**
