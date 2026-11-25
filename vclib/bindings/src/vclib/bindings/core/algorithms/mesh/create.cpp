@@ -10,6 +10,8 @@
 
 #include <vclib/algorithms/mesh.h>
 
+#include <pybind11/stl.h>
+
 namespace vcl::bind {
 
 void initCreateAlgorithms(pybind11::module& m)
@@ -31,10 +33,41 @@ void initCreateAlgorithms(pybind11::module& m)
 
     auto functions = []<FaceMeshConcept MeshType>(
                          pybind11::module& m, MeshType = MeshType()) {
-        // cone.h
+        // axis.h
 
         std::string name =
-            "create_cone_" + camelCaseToSnakeCase(meshTypeName<MeshType>());
+            "create_axis_" + camelCaseToSnakeCase(meshTypeName<MeshType>());
+        m.def(
+            name.c_str(),
+            [](double unitLength, bool fromOrigin) {
+                return vcl::createAxis<MeshType>(unitLength, fromOrigin);
+            },
+            "unit_length"_a = 1.0,
+            "from_origin"_a = false);
+
+        m.def(
+            "create_axis",
+            [](MeshType& m, double unitLength, bool fromOrigin) {
+                m = vcl::createAxis<MeshType>(unitLength, fromOrigin);
+            },
+            "mesh"_a,
+            "unit_length"_a = 1.0,
+            "from_origin"_a = false);
+
+        name = "create_axis_disjoint_" +
+               camelCaseToSnakeCase(meshTypeName<MeshType>());
+        m.def(
+            name.c_str(),
+            [](double unitLength, bool fromOrigin) {
+                return vcl::createAxisDisjoint<MeshType>(
+                    unitLength, fromOrigin);
+            },
+            "unit_length"_a = 1.0,
+            "from_origin"_a = false);
+
+        // cone.h
+
+        name = "create_cone_" + camelCaseToSnakeCase(meshTypeName<MeshType>());
         m.def(
             name.c_str(),
             [](double rb, double rt, double h, uint s) {

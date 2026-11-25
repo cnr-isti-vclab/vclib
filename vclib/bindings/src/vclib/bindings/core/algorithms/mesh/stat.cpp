@@ -10,9 +10,33 @@
 
 #include <vclib/algorithms/mesh.h>
 
+#include <pybind11/eigen.h>
 #include <pybind11/stl.h>
 
 namespace vcl::bind {
+
+namespace detail {
+
+template<typename WeightsType, MeshConcept MeshType>
+void defWeightedBarycenter(pybind11::module& m)
+{
+    using namespace pybind11::literals;
+
+    m.def(
+        "weighted_barycenter",
+        [](const MeshType& m, const WeightsType& weights) {
+            if (static_cast<std::size_t>(weights.size()) != m.vertexCount()) {
+                throw WrongSizeException(
+                    "Weights size must match vertex count (" +
+                    std::to_string(m.vertexCount()) + ").");
+            }
+            return vcl::weightedBarycenter(m, weights);
+        },
+        "mesh"_a,
+        "weights"_a);
+}
+
+} // namespace detail
 
 void initStatAlgorithms(pybind11::module& m)
 {
@@ -24,6 +48,9 @@ void initStatAlgorithms(pybind11::module& m)
 
         m.def(
             "barycenter", [](const MeshType& m) { return vcl::barycenter(m); });
+
+        detail::defWeightedBarycenter<Eigen::VectorXd, MeshType>(m);
+        detail::defWeightedBarycenter<std::vector<double>, MeshType>(m);
 
         m.def("quality_weighted_barycenter", [](const MeshType& m) {
             return vcl::qualityWeightedBarycenter(m);
@@ -75,6 +102,20 @@ void initStatAlgorithms(pybind11::module& m)
             py::arg("mesh"),
             py::arg("selection_only") = false,
             py::arg("hist_size")      = 10000u);
+
+        m.def(
+            "vertex_radius_from_quality",
+            [](const MeshType& m,
+               double          diskRadius,
+               double          radiusVariance,
+               bool            invert) {
+                return vcl::vertexRadiusFromQuality(
+                    m, diskRadius, radiusVariance, invert);
+            },
+            py::arg("mesh"),
+            py::arg("disk_radius"),
+            py::arg("radius_variance"),
+            py::arg("invert") = false);
 
         // selection.h
 
@@ -207,6 +248,18 @@ void initStatAlgorithms(pybind11::module& m)
     };
 
     defForAllMeshTypes(m, fFaceMeshes);
+
+    auto fEdgeMeshes = []<EdgeMeshConcept MeshType>(
+                           pybind11::module& m, MeshType = MeshType()) {
+        // selection.h
+
+        m.def(
+            "edge_selection_count",
+            [](const MeshType& m) { return vcl::edgeSelectionCount(m); },
+            py::arg("mesh"));
+    };
+
+    defForAllMeshTypes(m, fEdgeMeshes);
 }
 
 } // namespace vcl::bind
