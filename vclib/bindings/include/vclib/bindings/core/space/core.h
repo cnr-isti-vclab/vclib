@@ -15,6 +15,7 @@
 #include "core/image.h"
 #include "core/material.h"
 #include "core/matrix.h"
+#include "core/plane.h"
 #include "core/point.h"
 #include "core/principal_curvature.h"
 #include "core/sphere.h"
@@ -39,6 +40,7 @@ inline void initCore(pybind11::module& m)
     initImage(m);
     initMaterial(m);
     initMatrix(m);
+    initPlane(m);
     initPrincipalCurvature(m);
     initSphere(m);
     initTexCoord(m);

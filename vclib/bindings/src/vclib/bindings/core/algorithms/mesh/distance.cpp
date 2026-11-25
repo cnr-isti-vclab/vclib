@@ -14,6 +14,45 @@
 
 namespace vcl::bind {
 
+namespace detail {
+
+template<MeshConcept MeshType1, MeshConcept MeshType2>
+void defHausdorffDistance(pybind11::module& m)
+{
+    using namespace pybind11::literals;
+
+    m.def(
+        "hausdorff_distance",
+        [](const MeshType1&        m1,
+           const MeshType2&        m2,
+           HausdorffSamplingMethod sampMethod,
+           uint                    nSamples,
+           std::optional<uint>     seed,
+           AbstractLogger&         log) -> HausdorffDistResult {
+            return hausdorffDistance(
+                m1, m2, log, sampMethod, nSamples, toRConfig(seed));
+        },
+        "mesh1"_a,
+        "mesh2"_a,
+        "samp_method"_a = HAUSDORFF_VERTEX_UNIFORM,
+        "n_samples"_a   = 0,
+        "seed"_a        = pybind11::none(),
+        "log"_a         = pybind11::cast(&vcl::nullLogger));
+}
+
+template<MeshConcept MeshType1>
+void defAllHausdorffDistances(pybind11::module& m)
+{
+    auto fMesh2 = []<MeshConcept MeshType2>(
+                      pybind11::module& m, MeshType2 = MeshType2()) {
+        defHausdorffDistance<MeshType1, MeshType2>(m);
+    };
+
+    defForAllMeshTypes(m, fMesh2);
+}
+
+} // namespace detail
+
 void initDistanceAlgorithms(pybind11::module& m)
 {
     namespace py = pybind11;
@@ -42,23 +81,7 @@ void initDistanceAlgorithms(pybind11::module& m)
 
     auto fAllMeshes = []<MeshConcept MeshType>(
                           pybind11::module& m, MeshType = MeshType()) {
-        // TODO: bind between different types of meshes
-
-        m.def(
-            "hausdorff_distance",
-            [](const MeshType&         m1,
-               const MeshType&         m2,
-               HausdorffSamplingMethod sampMethod,
-               uint                    nSamples,
-               std::optional<uint>     seed) -> HausdorffDistResult {
-                return hausdorffDistance(
-                    m1, m2, nullLogger, sampMethod, nSamples, toRConfig(seed));
-            },
-            "mesh1"_a,
-            "mesh2"_a,
-            "samp_method"_a = HAUSDORFF_VERTEX_UNIFORM,
-            "n_samples"_a   = 0,
-            "seed"_a        = py::none());
+        detail::defAllHausdorffDistances<MeshType>(m);
     };
 
     defForAllMeshTypes(m, fAllMeshes);

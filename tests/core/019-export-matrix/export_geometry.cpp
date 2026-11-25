@@ -99,14 +99,16 @@ void testFaceMatrix(const auto& pm)
 template<typename MatrixType>
 void testTriangulatedFaceMatrix(const auto& pm)
 {
-    vcl::TriPolyIndexBiMap indexMap;
-    auto                   tris =
-        vcl::triangulatedFaceVertexIndicesMatrix<MatrixType>(pm, indexMap);
+    auto [tris, indexMap] =
+        vcl::triangulatedFaceVertexIndicesMatrixWithIndexMap<MatrixType>(pm);
+    auto trisOnly = vcl::triangulatedFaceVertexIndicesMatrix<MatrixType>(pm);
 
     auto tCount = triangulatedFaceCount(pm);
 
     REQUIRE(tris.rows() == tCount);
     REQUIRE(tris.cols() == 3);
+    REQUIRE(trisOnly.rows() == tCount);
+    REQUIRE(trisOnly.cols() == 3);
 
     for (vcl::uint i = 0; i < 3; ++i) {
         // polygon associated to ith triangle

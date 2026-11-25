@@ -303,6 +303,22 @@ void initImportExportAlgorithms(pybind11::module& m)
             "mesh"_a);
 
         m.def(
+            "triangulated_face_vertex_indices_matrix",
+            [](const MeshType& m) {
+                return vcl::triangulatedFaceVertexIndicesMatrix<Eigen::MatrixXi>(
+                    m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "triangulated_face_vertex_indices_matrix_with_index_map",
+            [](const MeshType& m) {
+                return vcl::triangulatedFaceVertexIndicesMatrixWithIndexMap<
+                    Eigen::MatrixXi>(m);
+            },
+            "mesh"_a);
+
+        m.def(
             "face_selection_array",
             [](const MeshType& m) {
                 return vcl::faceSelectionVector<Eigen::VectorXi>(m);
