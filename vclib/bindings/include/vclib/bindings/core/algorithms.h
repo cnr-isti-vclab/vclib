@@ -11,6 +11,7 @@
 #include "algorithms/mesh/clean.h"
 #include "algorithms/mesh/convex_hull.h"
 #include "algorithms/mesh/create.h"
+#include "algorithms/mesh/delete.h"
 #include "algorithms/mesh/distance.h"
 #include "algorithms/mesh/face_topology.h"
 #include "algorithms/mesh/filter.h"
@@ -28,6 +29,7 @@ inline void initAlgorithms(pybind11::module& m)
     initCleanAlgorithms(m);
     initConvexHullAlgorithms(m);
     initCreateAlgorithms(m);
+    initDeleteAlgorithms(m);
     initDistanceAlgorithms(m);
     initFaceTopologyAlgorithms(m);
     initFilterAlgorithms(m);
