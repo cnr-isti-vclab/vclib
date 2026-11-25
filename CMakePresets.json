@@ -380,7 +380,8 @@
                 "VCLIB_EXTERNAL_BUILD_TESTS": "OFF",
                 "VCLIB_RENDER_BUILD_EXAMPLES": "OFF",
                 "VCLIB_RENDER_BUILD_TESTS": "OFF",
-                "VCLIB_REQUIRES_QT": "ON"
+                "VCLIB_REQUIRES_QT": "ON",
+                "VCLIB_ALLOW_PRECOMPILED_BGFX": "OFF"
             }
         }
     ]

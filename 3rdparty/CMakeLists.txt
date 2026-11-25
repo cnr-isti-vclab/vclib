@@ -250,6 +250,11 @@ if(VCLIB_BUILD_MODULE_RENDER)
         # bgfx
         option(VCLIB_ALLOW_SYSTEM_BGFX "Allow use of system-provided bgfx" ON)
         option(
+            VCLIB_ALLOW_PRECOMPILED_BGFX
+            "Allow use of precompiled bgfx binaries"
+            ON
+        )
+        option(
             VCLIB_ALLOW_DOWNLOAD_BGFX
             "Allow use of downloaded BGFX source"
             ON
