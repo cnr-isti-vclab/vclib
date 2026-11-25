@@ -19,25 +19,34 @@ int main()
 
     vcl::LoadSettings lS;
     lS.loadTextureImages = true;
+    vcl::MeshInfo info;
 
     std::cout << "Loading Bonsai Gaussian Splat Point Cloud..." << std::endl;
 
     auto pointCloud = vcl::loadMesh<vcl::PointCloud>(
-        VCLIB_EXAMPLE_MESHES_PATH "/bonsai_gaussian_splat.ply", lS);
+        VCLIB_EXAMPLE_MESHES_PATH "/splat/cactus_142k.ply", info,lS);
+
+    std::cout << "has gs: " << info.hasPerVertexGaussianSplat() << "\n"
+              << std::endl;
 
     std::cout << "Loaded Bonsai Gaussian Splat Point Cloud" << std::endl;
 
     vcl::pointcloud::Vertex<double>& v0 = pointCloud.vertex(0);
-    vcl::MeshInfo info = vcl::MeshInfo(pointCloud);
 
-    std::cout << "has gs: " << info.hasPerVertexGaussianSplat() << "\n" << std::endl;
+    
     std::cout << "is gs available: " << vcl::comp::isGaussianSplatAvailableOn(v0) << "\n" << std::endl;
 
     auto& gs0 = v0.gaussianSplat();
 
-    //gs0.serialize(std::cout);
+    std::cout << "Gaussian Splat of vertex 0: \n" << std::endl;
 
-    //std::cout << ... << std::endl;
+    std::cerr << "\t rotation: " << gs0.rotation() << "\n";
+    std::cerr << "\t scale: " << gs0.scale() << "\n";
+    std::cerr << "\t opacity: " << gs0.opacity() << "\n";
+    std::cerr << "\t degree: " << gs0.shDegree() << "\n";
+    std::cerr << "\t coeffs: \n";
+    for (int i = 0; i < gs0.shCoeffs().size(); ++i)
+        std::cerr << "\t\t" << gs0.shCoeffs()[i] << "\n";
 
     return 0;
 }

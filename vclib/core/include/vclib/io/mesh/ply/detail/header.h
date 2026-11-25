@@ -899,7 +899,6 @@ private:
 
     static ply::PropertyName stringToName(const std::string& name)
     {
-        //TODO add Gaussian Splat properties
         ply::PropertyName pn = ply::unknown;
         if (name == "x")
             pn = ply::x;
@@ -971,6 +970,35 @@ private:
             pn = ply::occlusion_texture;
         if (name == "emissive_texture")
             pn = ply::emissive_texture;
+        // gaussian splat properties
+        if (name == "f_dc_0")
+            pn = ply::f_dc_0;
+        if (name == "f_dc_1")
+            pn = ply::f_dc_1;
+        if (name == "f_dc_2")
+            pn = ply::f_dc_2;
+        if (name == "opacity")
+            pn = ply::opacity;
+        if (name == "scale_0")
+            pn = ply::scale_0;
+        if (name == "scale_1")
+            pn = ply::scale_1;
+        if (name == "scale_2")
+            pn = ply::scale_2;
+        if (name == "rot_0")
+            pn = ply::rot_0;
+        if (name == "rot_1")
+            pn = ply::rot_1;
+        if (name == "rot_2")
+            pn = ply::rot_2;
+        if (name == "rot_3")
+            pn = ply::rot_3;
+        auto it = name.find("f_rest_");
+        if (it != std::string::npos) {
+            int index = std::stoi(name.substr(it + 7));
+            assert(index >= 0 && index < 45);
+            pn = static_cast<ply::PropertyName>(ply::f_rest_0 + index);
+        }
 
         return pn;
     }
@@ -1001,7 +1029,9 @@ private:
         ply::PropertyName n,
         bool              meshlabCompatibility = false)
     {
-        //TODO add Gaussian Splat properties
+        // manage f_rest_ properties in a generic way...
+        if (n >= ply::f_rest_0 && n <= ply::f_rest_44)
+            return "f_rest_" + std::to_string(n - ply::f_rest_0);
         switch (n) {
         case ply::x: return "x";
         case ply::y: return "y";
@@ -1040,6 +1070,17 @@ private:
         case ply::normal_texture: return "normal_texture";
         case ply::occlusion_texture: return "occlusion_texture";
         case ply::emissive_texture: return "emissive_texture";
+        case ply::f_dc_0: return "f_dc_0";
+        case ply::f_dc_1: return "f_dc_1";
+        case ply::f_dc_2: return "f_dc_2";
+        case ply::opacity: return "opacity";
+        case ply::scale_0: return "scale_0";
+        case ply::scale_1: return "scale_1";
+        case ply::scale_2: return "scale_2";
+        case ply::rot_0: return "rot_0";
+        case ply::rot_1: return "rot_1";
+        case ply::rot_2: return "rot_2";
+        case ply::rot_3: return "rot_3";
         default: return "unknown";
         }
     }
