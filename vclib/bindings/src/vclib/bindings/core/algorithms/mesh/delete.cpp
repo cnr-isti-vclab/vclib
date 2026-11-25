@@ -19,20 +19,6 @@ namespace vcl::bind {
 namespace detail {
 
 template<ElemId ELEM_ID, MeshConcept MeshType>
-auto callDeleteElementsIf(MeshType& m, auto&& filter)
-{
-    if constexpr (ELEM_ID == ElemId::VERTEX) {
-        return vcl::deleteVerticesIf(m, filter);
-    }
-    else if constexpr (ELEM_ID == ElemId::FACE) {
-        return vcl::deleteFacesIf(m, filter);
-    }
-    else if constexpr (ELEM_ID == ElemId::EDGE) {
-        return vcl::deleteEdgesIf(m, filter);
-    }
-}
-
-template<ElemId ELEM_ID, MeshConcept MeshType>
 void defDeleteElementIf(
     pybind11::module&  m,
     const std::string& name,
@@ -49,7 +35,7 @@ void defDeleteElementIf(
                 return elemFilter(m.template element<ELEM_ID>(e.index()))
                     .template cast<bool>();
             };
-            return callDeleteElementsIf<ELEM_ID>(m, cppFilter);
+            return vcl::deleteElementsIf<ELEM_ID>(m, cppFilter);
         },
         "mesh"_a,
         pybind11::arg(filterArgName.c_str()));
@@ -57,7 +43,7 @@ void defDeleteElementIf(
     m.def(
         name.c_str(),
         [](MeshType& m, const Eigen::VectorXi& elemFilter) -> uint {
-            return callDeleteElementsIf<ELEM_ID>(m, elemFilter);
+            return vcl::deleteElementsIf<ELEM_ID>(m, elemFilter);
         },
         "mesh"_a,
         pybind11::arg(filterArgName.c_str()));
@@ -65,7 +51,7 @@ void defDeleteElementIf(
     m.def(
         name.c_str(),
         [](MeshType& m, const std::vector<int>& elemFilter) -> uint {
-            return callDeleteElementsIf<ELEM_ID>(m, elemFilter);
+            return vcl::deleteElementsIf<ELEM_ID>(m, elemFilter);
         },
         "mesh"_a,
         pybind11::arg(filterArgName.c_str()));

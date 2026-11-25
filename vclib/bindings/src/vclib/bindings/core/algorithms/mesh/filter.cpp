@@ -18,10 +18,74 @@ namespace vcl::bind {
 
 namespace detail {
 
+template<ElemId ELEM_ID, MeshConcept MeshType>
+void defElementMeshFilter(
+    pybind11::module&  m,
+    const std::string& name,
+    const std::string& selectionName,
+    const std::string& filterArgName)
+{
+    using namespace pybind11::literals;
+    using ConstElemType = typename MeshType::template ConstElementType<ELEM_ID>;
+
+    m.def(
+        name.c_str(),
+        [](const MeshType&    m,
+           pybind11::function elemFilter,
+           bool               saveBirthIndicesInCustomComponent) {
+            std::function<bool(ConstElemType)> cppFilter =
+                [&m, &elemFilter](ConstElemType e) -> bool {
+                return elemFilter(
+                           const_cast<MeshType&>(m).template element<ELEM_ID>(
+                               e.index()))
+                    .template cast<bool>();
+            };
+            return vcl::elementMeshFilter<ELEM_ID>(
+                m, cppFilter, saveBirthIndicesInCustomComponent);
+        },
+        "mesh"_a,
+        pybind11::arg(filterArgName.c_str()),
+        "save_birth_indices_in_custom_component"_a = true);
+
+    m.def(
+        name.c_str(),
+        [](const MeshType&        m,
+           const Eigen::VectorXi& elemFilter,
+           bool                   saveBirthIndicesInCustomComponent) {
+            return vcl::elementMeshFilter<ELEM_ID>(
+                m, elemFilter, saveBirthIndicesInCustomComponent);
+        },
+        "mesh"_a,
+        pybind11::arg(filterArgName.c_str()),
+        "save_birth_indices_in_custom_component"_a = true);
+
+    m.def(
+        name.c_str(),
+        [](const MeshType&         m,
+           const std::vector<int>& elemFilter,
+           bool                    saveBirthIndicesInCustomComponent) {
+            return vcl::elementMeshFilter<ELEM_ID>(
+                m, elemFilter, saveBirthIndicesInCustomComponent);
+        },
+        "mesh"_a,
+        pybind11::arg(filterArgName.c_str()),
+        "save_birth_indices_in_custom_component"_a = true);
+
+    m.def(
+        selectionName.c_str(),
+        [](const MeshType& m, bool saveBirthIndicesInCustomComponent) {
+            return vcl::elementSelectionMeshFilter<ELEM_ID>(
+                m, saveBirthIndicesInCustomComponent);
+        },
+        "mesh"_a,
+        "save_birth_indices_in_custom_component"_a = true);
+}
+
 template<FaceMeshConcept InMeshType, EdgeMeshConcept OutMeshType>
 void defFaceEdgeFilters(pybind11::module& m, const std::string& suffix = "")
 {
     using namespace pybind11::literals;
+    using ConstFaceType = typename InMeshType::ConstFace;
 
     std::string feName  = "face_edge_mesh_filter" + suffix;
     std::string fesName = "face_edge_selection_mesh_filter" + suffix;
@@ -32,10 +96,8 @@ void defFaceEdgeFilters(pybind11::module& m, const std::string& suffix = "")
            pybind11::function faceEdgeFilter,
            bool               dontDuplicateEdges,
            bool               saveBirthIndicesInCustomComponent) {
-            std::function<bool(typename InMeshType::ConstFace, uint)>
-                cppFilter = [&m, &faceEdgeFilter](
-                                typename InMeshType::ConstFace f,
-                                uint                           ei) -> bool {
+            std::function<bool(ConstFaceType, uint)> cppFilter =
+                [&m, &faceEdgeFilter](ConstFaceType f, uint ei) -> bool {
                 return faceEdgeFilter(
                            const_cast<InMeshType&>(m).face(f.index()), ei)
                     .template cast<bool>();
@@ -64,190 +126,53 @@ void defFaceEdgeFilters(pybind11::module& m, const std::string& suffix = "")
         "save_birth_indices_in_custom_component"_a = true);
 }
 
+template<FaceMeshConcept InMeshType>
+void defAllFaceEdgeFilters(pybind11::module& m)
+{
+    // default OutMeshType = EdgeMesh
+    defFaceEdgeFilters<InMeshType, vcl::EdgeMesh>(m);
+
+    // typed variants for all EdgeMeshConcept output types
+    auto fOutEdgeMeshes = []<EdgeMeshConcept OutMeshType>(
+                              pybind11::module& m,
+                              OutMeshType = OutMeshType()) {
+        std::string suffix =
+            "_" + camelCaseToSnakeCase(meshTypeName<OutMeshType>());
+        defFaceEdgeFilters<InMeshType, OutMeshType>(m, suffix);
+    };
+
+    defForAllMeshTypes(m, fOutEdgeMeshes);
+}
+
 } // namespace detail
 
 void initFilterAlgorithms(pybind11::module& m)
 {
-    namespace py = pybind11;
-    using namespace py::literals;
-
     auto fAllMeshes = []<MeshConcept MeshType>(
                           pybind11::module& m, MeshType = MeshType()) {
-        m.def(
+        detail::defElementMeshFilter<ElemId::VERTEX, MeshType>(
+            m,
             "vertex_mesh_filter",
-            [](const MeshType& m,
-               py::function    vertexFilter,
-               bool            saveBirthIndicesInCustomComponent) {
-                std::function<bool(typename MeshType::ConstVertex)> cppFilter =
-                    [&m,
-                     &vertexFilter](typename MeshType::ConstVertex v) -> bool {
-                    return vertexFilter(
-                               const_cast<MeshType&>(m).vertex(v.index()))
-                        .template cast<bool>();
-                };
-                return vcl::vertexMeshFilter<MeshType>(
-                    m, cppFilter, saveBirthIndicesInCustomComponent);
-            },
-            "mesh"_a,
-            "vertex_filter"_a,
-            "save_birth_indices_in_custom_component"_a = true);
-
-        m.def(
-            "vertex_mesh_filter",
-            [](const MeshType&        m,
-               const Eigen::VectorXi& vertexFilter,
-               bool                   saveBirthIndicesInCustomComponent) {
-                return vcl::vertexMeshFilter<MeshType>(
-                    m, vertexFilter, saveBirthIndicesInCustomComponent);
-            },
-            "mesh"_a,
-            "vertex_filter"_a,
-            "save_birth_indices_in_custom_component"_a = true);
-
-        m.def(
-            "vertex_mesh_filter",
-            [](const MeshType&         m,
-               const std::vector<int>& vertexFilter,
-               bool                    saveBirthIndicesInCustomComponent) {
-                return vcl::vertexMeshFilter<MeshType>(
-                    m, vertexFilter, saveBirthIndicesInCustomComponent);
-            },
-            "mesh"_a,
-            "vertex_filter"_a,
-            "save_birth_indices_in_custom_component"_a = true);
-
-        m.def(
             "vertex_selection_mesh_filter",
-            [](const MeshType& m, bool saveBirthIndicesInCustomComponent) {
-                return vcl::vertexSelectionMeshFilter<MeshType>(
-                    m, saveBirthIndicesInCustomComponent);
-            },
-            "mesh"_a,
-            "save_birth_indices_in_custom_component"_a = true);
+            "vertex_filter");
     };
 
     defForAllMeshTypes(m, fAllMeshes);
 
     auto fFaceMeshes = []<FaceMeshConcept MeshType>(
                            pybind11::module& m, MeshType = MeshType()) {
-        m.def(
-            "face_mesh_filter",
-            [](const MeshType& m,
-               py::function    faceFilter,
-               bool            saveBirthIndicesInCustomComponent) {
-                std::function<bool(typename MeshType::ConstFace)> cppFilter =
-                    [&m, &faceFilter](typename MeshType::ConstFace f) -> bool {
-                    return faceFilter(const_cast<MeshType&>(m).face(f.index()))
-                        .template cast<bool>();
-                };
-                return vcl::faceMeshFilter<MeshType>(
-                    m, cppFilter, saveBirthIndicesInCustomComponent);
-            },
-            "mesh"_a,
-            "face_filter"_a,
-            "save_birth_indices_in_custom_component"_a = true);
+        detail::defElementMeshFilter<ElemId::FACE, MeshType>(
+            m, "face_mesh_filter", "face_selection_mesh_filter", "face_filter");
 
-        m.def(
-            "face_mesh_filter",
-            [](const MeshType&        m,
-               const Eigen::VectorXi& faceFilter,
-               bool                   saveBirthIndicesInCustomComponent) {
-                return vcl::faceMeshFilter<MeshType>(
-                    m, faceFilter, saveBirthIndicesInCustomComponent);
-            },
-            "mesh"_a,
-            "face_filter"_a,
-            "save_birth_indices_in_custom_component"_a = true);
-
-        m.def(
-            "face_mesh_filter",
-            [](const MeshType&         m,
-               const std::vector<int>& faceFilter,
-               bool                    saveBirthIndicesInCustomComponent) {
-                return vcl::faceMeshFilter<MeshType>(
-                    m, faceFilter, saveBirthIndicesInCustomComponent);
-            },
-            "mesh"_a,
-            "face_filter"_a,
-            "save_birth_indices_in_custom_component"_a = true);
-
-        m.def(
-            "face_selection_mesh_filter",
-            [](const MeshType& m, bool saveBirthIndicesInCustomComponent) {
-                return vcl::faceSelectionMeshFilter<MeshType>(
-                    m, saveBirthIndicesInCustomComponent);
-            },
-            "mesh"_a,
-            "save_birth_indices_in_custom_component"_a = true);
-
-        // default OutMeshType = EdgeMesh
-        detail::defFaceEdgeFilters<MeshType, vcl::EdgeMesh>(m);
-
-        // typed variants for all EdgeMeshConcept output types
-        auto fOutEdgeMeshes = []<EdgeMeshConcept OutMeshType>(
-                                  pybind11::module& m,
-                                  OutMeshType = OutMeshType()) {
-            std::string suffix =
-                "_" + camelCaseToSnakeCase(meshTypeName<OutMeshType>());
-            detail::defFaceEdgeFilters<MeshType, OutMeshType>(m, suffix);
-        };
-
-        defForAllMeshTypes(m, fOutEdgeMeshes);
+        detail::defAllFaceEdgeFilters<MeshType>(m);
     };
 
     defForAllMeshTypes(m, fFaceMeshes);
 
     auto fEdgeMeshes = []<EdgeMeshConcept MeshType>(
                            pybind11::module& m, MeshType = MeshType()) {
-        m.def(
-            "edge_mesh_filter",
-            [](const MeshType& m,
-               py::function    edgeFilter,
-               bool            saveBirthIndicesInCustomComponent) {
-                std::function<bool(typename MeshType::ConstEdge)> cppFilter =
-                    [&m, &edgeFilter](typename MeshType::ConstEdge e) -> bool {
-                    return edgeFilter(const_cast<MeshType&>(m).edge(e.index()))
-                        .template cast<bool>();
-                };
-                return vcl::edgeMeshFilter<MeshType>(
-                    m, cppFilter, saveBirthIndicesInCustomComponent);
-            },
-            "mesh"_a,
-            "edge_filter"_a,
-            "save_birth_indices_in_custom_component"_a = true);
-
-        m.def(
-            "edge_mesh_filter",
-            [](const MeshType&        m,
-               const Eigen::VectorXi& edgeFilter,
-               bool                   saveBirthIndicesInCustomComponent) {
-                return vcl::edgeMeshFilter<MeshType>(
-                    m, edgeFilter, saveBirthIndicesInCustomComponent);
-            },
-            "mesh"_a,
-            "edge_filter"_a,
-            "save_birth_indices_in_custom_component"_a = true);
-
-        m.def(
-            "edge_mesh_filter",
-            [](const MeshType&         m,
-               const std::vector<int>& edgeFilter,
-               bool                    saveBirthIndicesInCustomComponent) {
-                return vcl::edgeMeshFilter<MeshType>(
-                    m, edgeFilter, saveBirthIndicesInCustomComponent);
-            },
-            "mesh"_a,
-            "edge_filter"_a,
-            "save_birth_indices_in_custom_component"_a = true);
-
-        m.def(
-            "edge_selection_mesh_filter",
-            [](const MeshType& m, bool saveBirthIndicesInCustomComponent) {
-                return vcl::edgeSelectionMeshFilter<MeshType>(
-                    m, saveBirthIndicesInCustomComponent);
-            },
-            "mesh"_a,
-            "save_birth_indices_in_custom_component"_a = true);
+        detail::defElementMeshFilter<ElemId::EDGE, MeshType>(
+            m, "edge_mesh_filter", "edge_selection_mesh_filter", "edge_filter");
     };
 
     defForAllMeshTypes(m, fEdgeMeshes);
