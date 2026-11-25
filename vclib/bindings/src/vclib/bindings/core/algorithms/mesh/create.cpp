@@ -185,7 +185,9 @@ void initCreateAlgorithms(pybind11::module& m)
                camelCaseToSnakeCase(meshTypeName<MeshType>());
         m.def(
             name.c_str(),
-            [](bool nv = false) { return vcl::createIcosahedron<MeshType>(); },
+            [](bool nv = false) {
+                return vcl::createIcosahedron<MeshType>(nv);
+            },
             "normalize_vertices"_a = false);
 
         m.def(

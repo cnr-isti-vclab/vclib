@@ -42,7 +42,7 @@ void initStatAlgorithms(pybind11::module& m)
         });
 
         m.def(
-            "vertex_radius_from_wheights",
+            "vertex_radius_from_weights",
             [](const MeshType&            m,
                const std::vector<double>& weights,
                double                     diskRadius,
