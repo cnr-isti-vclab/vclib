@@ -19,7 +19,7 @@
 // 4. Creating meshes with custom parameters
 // 5. Saving created meshes to files
 
-auto meshCreation()
+inline auto meshCreation()
 {
     std::cout << "=== VCLib Example 003: Mesh Creation ===" << std::endl;
 
@@ -86,10 +86,10 @@ auto meshCreation()
 
     // 5. Sphere with PolyMesh (quad faces)
     std::cout << "Creating sphere (PolyMesh - quads)..." << std::endl;
-    vcl::Sphere<vcl::TriMesh::ScalarType> sphere(
-        vcl::Point3<vcl::TriMesh::ScalarType>(0, 0, 0), 1.0);
-    vcl::Sphere<vcl::PolyMesh::ScalarType> spherePoly =
-        sphere.cast<vcl::PolyMesh::ScalarType>();
+    vcl::Sphere<vcl::ScalarType<vcl::TriMesh>> sphere(
+        vcl::Point3<vcl::ScalarType<vcl::TriMesh>>(0, 0, 0), 1.0);
+    vcl::Sphere<vcl::ScalarType<vcl::PolyMesh>> spherePoly =
+        sphere.cast<vcl::ScalarType<vcl::PolyMesh>>();
     vcl::PolyMesh sphereQuads =
         vcl::createSphereSpherifiedCube<vcl::PolyMesh>(spherePoly, 20);
     std::cout << "  Sphere (quads) - Vertices: " << sphereQuads.vertexCount()

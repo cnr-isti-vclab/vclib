@@ -8,6 +8,8 @@
 #include "get_drawable_mesh.h"
 #include "run_render_test.h"
 
+#include <vclib/render/drawable/mesh/mesh_render_data.h>
+
 static const std::string TEST_NAME = "002-mesh-surface-headless";
 
 TEST_CASE("Mesh Surface Shading Modes")
@@ -112,10 +114,10 @@ TEST_CASE("Mesh Surface Color Modes")
             TEST_NAME, "color_vertex", [](vcl::HeadlessMeshViewer& mv) {
                 auto mesh = getDrawableMesh<vcl::TriMesh>("bimba.obj");
 
-                mesh.enablePerVertexColor(); // Enable per vertex color
+                mesh.enableVertexColor(); // Enable per vertex color
                 mesh.updateRenderSettingsCapabilities();
                 // Deterministically assign colors to vertices
-                for (auto& v : mesh.vertices()) {
+                for (auto v : mesh.vertices()) {
                     if (v.index() % 3 == 0)
                         v.color() = vcl::Color::Red;
                     else if (v.index() % 3 == 1)
@@ -138,11 +140,11 @@ TEST_CASE("Mesh Surface Color Modes")
         runRenderTest(TEST_NAME, "color_face", [](vcl::HeadlessMeshViewer& mv) {
             auto mesh = getDrawableMesh<vcl::TriMesh>("bunny_simplified.obj");
 
-            mesh.enablePerFaceColor();
+            mesh.enableFaceColor();
             mesh.updateRenderSettingsCapabilities();
 
             // Deterministically assign colors to faces
-            for (auto& f : mesh.faces()) {
+            for (auto f : mesh.faces()) {
                 if (f.index() % 3 == 0)
                     f.color() = vcl::Color::Cyan;
                 else if (f.index() % 3 == 1)
@@ -206,7 +208,7 @@ TEST_CASE("Mesh Surface Selection")
                 mesh.updateRenderSettingsCapabilities();
 
                 // Deterministically assign selection to faces
-                for (auto& f : mesh.faces()) {
+                for (auto f : mesh.faces()) {
                     if (f.index() % 5 == 0)
                         f.selected() = true;
                 }
@@ -232,7 +234,7 @@ TEST_CASE("Mesh Surface Selection")
                 mesh.updateRenderSettingsCapabilities();
 
                 // Deterministically assign selection to faces
-                for (auto& f : mesh.faces()) {
+                for (auto f : mesh.faces()) {
                     if (f.index() % 3 == 0)
                         f.selected() = true;
                 }
@@ -246,5 +248,69 @@ TEST_CASE("Mesh Surface Selection")
                 mv.pushDrawableObject(std::move(mesh));
             },
             1.57079632679f);
+    }
+}
+
+TEST_CASE("DrawableMesh and MeshRenderData - Copy, Provider and Swap")
+{
+    SECTION("MeshRenderData Swap")
+    {
+        struct TestRenderData : public vcl::MeshRenderData
+        {
+            using vcl::MeshRenderData::numWireframeLines;
+            using vcl::MeshRenderData::swap;
+            using vcl::MeshRenderData::update;
+        };
+
+        vcl::TriEdgeMesh tem1;
+        tem1.addVertices(3);
+        tem1.addFace(0, 1, 2);
+        tem1.addEdge(0, 1);
+
+        vcl::TriEdgeMesh tem2;
+        tem2.addVertices(4);
+        tem2.addFace(0, 1, 2);
+        tem2.addFace(0, 2, 3);
+
+        TestRenderData d1;
+        d1.update(tem1);
+        REQUIRE(d1.numEdges() == 1);
+        REQUIRE(d1.numWireframeLines() == 3);
+
+        TestRenderData d2;
+        d2.update(tem2);
+        REQUIRE(d2.numEdges() == 0);
+        REQUIRE(d2.numWireframeLines() == 6);
+
+        d1.swap(d2);
+        REQUIRE(d1.numEdges() == 0);
+        REQUIRE(d1.numWireframeLines() == 6);
+        REQUIRE(d2.numEdges() == 1);
+        REQUIRE(d2.numWireframeLines() == 3);
+    }
+
+    SECTION("DrawableMesh Copy and Provider")
+    {
+        // Must run in an environment with initialized headless viewer/bgfx
+        // context
+        runRenderTest(
+            TEST_NAME,
+            "shading_none", // reuse existing gt
+            [](vcl::HeadlessMeshViewer& mv) {
+                auto mesh = getDrawableMesh<vcl::TriMesh>("bimba.obj");
+                auto copy =
+                    mesh; // Test copy constructor and provider independence
+
+                REQUIRE(&copy.meshProvider() != &mesh.meshProvider());
+                REQUIRE(
+                    copy.meshProvider().vertexCount() ==
+                    mesh.meshProvider().vertexCount());
+
+                auto settings = copy.renderSettings();
+                settings.setSurface(vcl::MeshRenderInfo::Surface::SHADING_NONE);
+                copy.setRenderSettings(settings);
+
+                mv.pushDrawableObject(std::move(copy));
+            });
     }
 }

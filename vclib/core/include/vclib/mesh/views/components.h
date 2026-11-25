@@ -8,6 +8,7 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_H
 #define VCL_MESH_VIEWS_COMPONENTS_H
 
+#include "component.h"
 #include "components/adj_edges.h"
 #include "components/adj_faces.h"
 #include "components/adj_vertices.h"

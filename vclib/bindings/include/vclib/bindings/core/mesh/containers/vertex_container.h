@@ -21,7 +21,7 @@ void initVertexContainer(pybind11::class_<MeshType, Options...>& ct)
 {
     namespace py = pybind11;
 
-    using VertexType = MeshType::VertexType;
+    using VertexType = vcl::VertexType<MeshType>;
 
     initContainer<VertexType>(ct, "vertex", "vertices");
 

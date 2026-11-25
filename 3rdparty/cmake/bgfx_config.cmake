@@ -86,6 +86,7 @@ endfunction()
 #   SHADER <shader_file>
 #   OUT_DIR <output_directory>
 #   [VARYING_DEF <varying_def_file>]
+#   [DEPENDS <dep1> <dep2> ...]
 #   [AS_HEADER]
 #   [OUT_FILES_VAR <variable_name>]
 # )
@@ -94,7 +95,7 @@ function(vclib_build_shader)
     # options: AS_HEADER
     set(options AS_HEADER)
     set(oneValueArgs SHADER OUT_DIR VARYING_DEF OUT_FILES_VAR)
-    set(multiValueArgs INCLUDE_DIRS)
+    set(multiValueArgs INCLUDE_DIRS DEPENDS)
     cmake_parse_arguments(
         ARG
         "${options}"
@@ -108,6 +109,11 @@ function(vclib_build_shader)
     endif()
     if(NOT ARG_OUT_DIR)
         message(FATAL_ERROR "vclib_build_shader: missing OUT_DIR argument")
+    endif()
+
+    get_filename_component(FILE_EXT "${ARG_SHADER}" EXT)
+    if(NOT "${FILE_EXT}" STREQUAL ".sc")
+        return()
     endif()
 
     set(BGFX_VF_PROFILES
@@ -134,10 +140,12 @@ function(vclib_build_shader)
         list(
             APPEND BGFX_VF_PROFILES
             s_5_0 # dxbc, dx11
+            s_6_0 # dxil, dx12
         )
         list(
             APPEND BGFX_COMPUTE_PROFILES
             s_5_0 # dxbc, dx11
+            s_6_0 # dxil, dx12
         )
     endif()
 
@@ -193,7 +201,10 @@ function(vclib_build_shader)
             TARGET ${BGFX_TARGET}
             PROPERTY BGFX_SHADER_INCLUDE_PATH
         )
-        if(NOT BGFX_SHADER_INCLUDE_PATH)
+        if(
+            NOT BGFX_SHADER_INCLUDE_PATH
+            OR NOT EXISTS "${BGFX_SHADER_INCLUDE_PATH}/bgfx_shader.sh"
+        )
             # When consuming VCLib from an installation, the bgfx_shader.sh path
             # might not be explicitly exposed via target properties. We search for it
             # using paths relative to the vclib package directory or install prefix.
@@ -248,6 +259,12 @@ function(vclib_build_shader)
             set(OUT_FILES_ARG "")
         endif()
 
+        if(ARG_DEPENDS)
+            set(DEPENDS_ARG DEPENDS ${ARG_DEPENDS})
+        else()
+            set(DEPENDS_ARG "")
+        endif()
+
         bgfx_compile_shaders(
             TYPE ${TYPE}
             SHADERS ${ARG_SHADER}
@@ -257,6 +274,7 @@ function(vclib_build_shader)
             ${PROFILES_ARGUMENT}
             ${AS_HEADER_OPTION}
             NO_SOURCE_GROUP
+            ${DEPENDS_ARG}
             ${OUT_FILES_ARG}
         )
 
@@ -292,6 +310,12 @@ function(vclib_build_shaders_to_headers)
             set(VARYING_DEF_FILE
                 "${VCLIB_RENDER_SHADER_DIR}/vclib/bgfx/${DIR_PATH}/varying.def.sc"
             )
+            file(
+                GLOB DIR_DEPS
+                "${VCLIB_RENDER_SHADER_DIR}/vclib/bgfx/${DIR_PATH}/*.config"
+                "${VCLIB_RENDER_SHADER_DIR}/vclib/bgfx/${DIR_PATH}/*.sh"
+                "${VCLIB_RENDER_SHADER_DIR}/vclib/bgfx/${DIR_PATH}/*.sc"
+            )
         else()
             file(
                 RELATIVE_PATH
@@ -301,6 +325,7 @@ function(vclib_build_shaders_to_headers)
             )
             get_filename_component(DIR_PATH ${SHADER_REL} DIRECTORY)
             set(VARYING_DEF_FILE "")
+            set(DIR_DEPS "")
         endif()
         set(OUT_DIR ${BGFX_SHADERS_OUTPUT_DIR}/${DIR_PATH})
 
@@ -310,12 +335,14 @@ function(vclib_build_shaders_to_headers)
                 OUT_DIR ${OUT_DIR}
                 VARYING_DEF "${VARYING_DEF_FILE}"
                 INCLUDE_DIRS "${VCLIB_RENDER_SHADER_DIR}/vclib/bgfx/${DIR_PATH}"
+                DEPENDS ${DIR_DEPS}
                 AS_HEADER
             )
         else()
             vclib_build_shader(
                 SHADER ${SHADER}
                 OUT_DIR ${OUT_DIR}
+                DEPENDS ${DIR_DEPS}
                 AS_HEADER
             )
         endif()
@@ -526,7 +553,7 @@ function(
     PROGRAM_TYPE
     PROGRAM_TYPE_LC
     TARGET_BIN_DIR
-    ENUM_NAME_LC
+    FILE_NAME_LC
 )
     if(PROGRAM_TYPE STREQUAL "VF")
         set(PROP_NAME "VCLIB_VF_INCLUDES")
@@ -536,7 +563,7 @@ function(
 
     get_property(INCLUDES GLOBAL PROPERTY ${PROP_NAME})
     set(NEW_INCLUDE
-        "#include \"embedded_${PROGRAM_TYPE_LC}_programs/${ENUM_NAME_LC}.h\""
+        "#include \"embedded_${PROGRAM_TYPE_LC}_programs/${FILE_NAME_LC}.h\""
     )
     list(FIND INCLUDES "${NEW_INCLUDE}" NEW_INC_INDEX)
     if(NEW_INC_INDEX EQUAL -1)
@@ -612,10 +639,31 @@ function(vclib_generate_embedded_programs_headers)
             @ONLY
         )
     endif()
+
+    # Clean up old/orphaned generated embedded header and source files
+    get_property(
+        GENERATED_EMBEDDED_FILES
+        GLOBAL
+        PROPERTY VCLIB_GENERATED_EMBEDDED_FILES
+    )
+    file(
+        GLOB_RECURSE EXISTING_H_FILES
+        "${TARGET_BIN_DIR}/include/vclib/bgfx/programs/embedded_*_programs/*.h"
+    )
+    file(
+        GLOB_RECURSE EXISTING_CPP_FILES
+        "${TARGET_BIN_DIR}/src/vclib/bgfx/programs/embedded_*_programs/*.cpp"
+    )
+    foreach(EXISTING_FILE ${EXISTING_H_FILES} ${EXISTING_CPP_FILES})
+        if(NOT "${EXISTING_FILE}" IN_LIST GENERATED_EMBEDDED_FILES)
+            file(REMOVE "${EXISTING_FILE}")
+        endif()
+    endforeach()
 endfunction()
 
 # vclib_add_embedded_program(
 #   ENUM_NAME <enum_name>
+#   [FILE_NAME <file_name>]
 #   TYPE [VERT_FRAG|COMPUTE]
 #   FILES <file1> [<file2> ...]
 # )
@@ -624,7 +672,7 @@ endfunction()
 function(vclib_add_embedded_program)
     # Parse arguments
     set(options)
-    set(oneValueArgs ENUM_NAME TYPE)
+    set(oneValueArgs ENUM_NAME FILE_NAME TYPE)
     set(multiValueArgs FILES)
     cmake_parse_arguments(
         ARG
@@ -643,8 +691,12 @@ function(vclib_add_embedded_program)
         GENERATED_SOURCE_DIR
     )
 
-    # Get the lowercase enum name for naming files
-    string(TOLOWER ${ARG_ENUM_NAME} ENUM_NAME_LC)
+    # Get the lowercase file name for naming files
+    if(ARG_FILE_NAME)
+        string(TOLOWER "${ARG_FILE_NAME}" FILE_NAME_LC)
+    else()
+        string(TOLOWER ${ARG_ENUM_NAME} FILE_NAME_LC)
+    endif()
 
     _vclib_embedded_program_collect_shader_info(
         "${PROGRAM_TYPE}"
@@ -659,13 +711,14 @@ function(vclib_add_embedded_program)
     set(HEADER_TEMPLATE
         "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/embedded_${PROGRAM_TYPE_LC}_programs/header.h.in"
     )
-    set(HEADER_OUTPUT "${GENERATED_HEADER_DIR}/${ENUM_NAME_LC}.h")
+    set(HEADER_OUTPUT "${GENERATED_HEADER_DIR}/${FILE_NAME_LC}.h")
 
     _vclib_embedded_program_ensure_template_exists(${HEADER_TEMPLATE})
 
     # Set variables for configure_file(@ONLY) - must use @VAR@ syntax in templates
     set(PR_NAME_UC ${ARG_ENUM_NAME})
-    set(PR_NAME_LC ${ENUM_NAME_LC})
+    set(PR_NAME_LC ${FILE_NAME_LC})
+    string(TOUPPER "${FILE_NAME_LC}" PR_HEADER_GUARD)
     set(PR_PATH ${SHADER_PATH})
 
     if(PROGRAM_TYPE STREQUAL "VF")
@@ -684,7 +737,7 @@ function(vclib_add_embedded_program)
     set(SOURCE_TEMPLATE
         "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/embedded_${PROGRAM_TYPE_LC}_programs/source.cpp.in"
     )
-    set(SOURCE_OUTPUT "${GENERATED_SOURCE_DIR}/${ENUM_NAME_LC}.cpp")
+    set(SOURCE_OUTPUT "${GENERATED_SOURCE_DIR}/${FILE_NAME_LC}.cpp")
 
     _vclib_embedded_program_ensure_template_exists(${SOURCE_TEMPLATE})
 
@@ -694,13 +747,21 @@ function(vclib_add_embedded_program)
         "${PROGRAM_TYPE}"
         "${PROGRAM_TYPE_LC}"
         "${TARGET_BIN_DIR}"
-        "${ENUM_NAME_LC}"
+        "${FILE_NAME_LC}"
     )
 
     _vclib_embedded_program_update_enum_header(
         "${PROGRAM_TYPE}"
         "${TARGET_BIN_DIR}"
         "${ARG_ENUM_NAME}"
+    )
+
+    # Track generated files for cleanup
+    set_property(
+        GLOBAL
+        APPEND
+        PROPERTY
+            VCLIB_GENERATED_EMBEDDED_FILES "${HEADER_OUTPUT}" "${SOURCE_OUTPUT}"
     )
 
     # Add generated files to vclib::render target
@@ -710,7 +771,7 @@ endfunction()
 # vclib_add_embedded_programs_from_file(<file_path> <TYPE>)
 # Reads a .config file and adds all embedded programs listed in it.
 # The config file format is:
-#   ENUM_NAME
+#   ENUM_NAME [FILE_NAME]
 #       <shader_path1>
 #       <shader_path2>
 #
@@ -742,6 +803,7 @@ function(vclib_add_embedded_programs_from_file FILE_PATH TYPE)
     file(STRINGS ${FILE_PATH} FILE_LINES)
 
     set(CURRENT_ENUM_NAME "")
+    set(CURRENT_FILE_NAME "")
     set(CURRENT_FILES_LIST "")
     set(FILE_COUNT 0)
 
@@ -753,11 +815,13 @@ function(vclib_add_embedded_programs_from_file FILE_PATH TYPE)
             if(NOT CURRENT_ENUM_NAME STREQUAL "" AND FILE_COUNT GREATER 0)
                 vclib_add_embedded_program(
                     ENUM_NAME ${CURRENT_ENUM_NAME}
+                    FILE_NAME ${CURRENT_FILE_NAME}
                     TYPE ${TYPE}
                     FILES ${CURRENT_FILES_LIST}
                 )
                 # Reset for next entry
                 set(CURRENT_ENUM_NAME "")
+                set(CURRENT_FILE_NAME "")
                 set(CURRENT_FILES_LIST "")
                 set(FILE_COUNT 0)
             endif()
@@ -778,15 +842,22 @@ function(vclib_add_embedded_programs_from_file FILE_PATH TYPE)
             list(APPEND CURRENT_FILES_LIST "${STRIPPED_LINE}")
             list(LENGTH CURRENT_FILES_LIST FILE_COUNT)
         else()
-            # This is an ENUM_NAME - finalize current entry if any
+            # This is an ENUM_NAME (and optional FILE_NAME) - finalize current entry if any
             if(NOT CURRENT_ENUM_NAME STREQUAL "" AND FILE_COUNT GREATER 0)
                 vclib_add_embedded_program(
                     ENUM_NAME ${CURRENT_ENUM_NAME}
+                    FILE_NAME ${CURRENT_FILE_NAME}
                     TYPE ${TYPE}
                     FILES ${CURRENT_FILES_LIST}
                 )
             endif()
-            set(CURRENT_ENUM_NAME "${STRIPPED_LINE}")
+            string(
+                REGEX MATCH "^([^ \t]+)([ \t]+([^ \t]+))?"
+                _MATCH
+                "${STRIPPED_LINE}"
+            )
+            set(CURRENT_ENUM_NAME "${CMAKE_MATCH_1}")
+            set(CURRENT_FILE_NAME "${CMAKE_MATCH_3}")
             set(CURRENT_FILES_LIST "")
             set(FILE_COUNT 0)
         endif()
@@ -796,6 +867,7 @@ function(vclib_add_embedded_programs_from_file FILE_PATH TYPE)
     if(NOT CURRENT_ENUM_NAME STREQUAL "" AND FILE_COUNT GREATER 0)
         vclib_add_embedded_program(
             ENUM_NAME ${CURRENT_ENUM_NAME}
+            FILE_NAME ${CURRENT_FILE_NAME}
             TYPE ${TYPE}
             FILES ${CURRENT_FILES_LIST}
         )

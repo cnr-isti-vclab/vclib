@@ -15,7 +15,7 @@
 template<vcl::FaceMeshConcept MeshType>
 void populateTriMesh(MeshType& tm)
 {
-    using Point = MeshType::VertexType::PositionType;
+    using Point = vcl::VertexType<MeshType>::PositionType;
 
     // note: p3 and p4 have same position
     const Point p0(0, 0, 0);
@@ -42,7 +42,7 @@ void populateTriMesh(MeshType& tm)
 template<vcl::FaceMeshConcept MeshType>
 void populatePolyMesh(MeshType& pm)
 {
-    using Point = MeshType::VertexType::PositionType;
+    using Point = vcl::VertexType<MeshType>::PositionType;
 
     // note: p3 and p4 have same position
     const Point p0(0, 0, 0);
@@ -64,7 +64,7 @@ void populatePolyMesh(MeshType& pm)
 template<vcl::EdgeMeshConcept MeshType>
 void populateEdgeMesh(MeshType& m)
 {
-    using Point = MeshType::VertexType::PositionType;
+    using Point = vcl::VertexType<MeshType>::PositionType;
 
     const Point p0(0, 0, 0);
     const Point p1(1, 0, 0);
@@ -79,20 +79,19 @@ void populateEdgeMesh(MeshType& m)
     m.addEdge(3, 1);
 }
 
-using Meshes  = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
-using Meshesf = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
-using MeshesIndexed =
-    std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed, vcl::EdgeMeshIndexed>;
-using MeshesIndexedf = std::
-    tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf, vcl::EdgeMeshIndexedf>;
+using Meshes   = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
+using Meshesf  = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
+using Meshes64 = std::tuple<vcl::TriMesh64, vcl::PolyMesh64, vcl::EdgeMesh64>;
+using Meshes64f =
+    std::tuple<vcl::TriMesh64f, vcl::PolyMesh64f, vcl::EdgeMesh64f>;
 
 TEMPLATE_TEST_CASE(
     "Clean Duplicated Faces",
     "",
     Meshes,
     Meshesf,
-    MeshesIndexed,
-    MeshesIndexedf)
+    Meshes64,
+    Meshes64f)
 {
     using TriMesh  = std::tuple_element_t<0, TestType>;
     using PolyMesh = std::tuple_element_t<1, TestType>;
@@ -149,8 +148,8 @@ TEMPLATE_TEST_CASE(
     "",
     vcl::TriMesh,
     vcl::TriMeshf,
-    vcl::TriMeshIndexed,
-    vcl::TriMeshIndexedf)
+    vcl::TriMesh64,
+    vcl::TriMesh64f)
 {
     using TriMesh = TestType;
 
@@ -182,8 +181,8 @@ TEMPLATE_TEST_CASE(
     "",
     vcl::TriMesh,
     vcl::TriMeshf,
-    vcl::TriMeshIndexed,
-    vcl::TriMeshIndexedf)
+    vcl::TriMesh64,
+    vcl::TriMesh64f)
 {
     using TriMesh = TestType;
 
@@ -191,13 +190,13 @@ TEMPLATE_TEST_CASE(
 
     populateTriMesh(tm);
 
-    REQUIRE(tm.face(5).vertex(1) == &tm.vertex(4));
+    REQUIRE(tm.face(5).vertex(1) == tm.vertex(4));
 
     unsigned int nv = vcl::removeDuplicateVertices(tm);
 
     REQUIRE(nv == 1);
 
-    REQUIRE(tm.face(5).vertex(1) == &tm.vertex(3));
+    REQUIRE(tm.face(5).vertex(1) == tm.vertex(3));
 }
 
 TEMPLATE_TEST_CASE("Unreferenced Vertices", "", Meshes, Meshesf)
@@ -233,8 +232,8 @@ TEMPLATE_TEST_CASE(
     "",
     vcl::TriMesh,
     vcl::TriMeshf,
-    vcl::TriMeshIndexed,
-    vcl::TriMeshIndexedf)
+    vcl::TriMesh64,
+    vcl::TriMesh64f)
 {
     using TriMesh = TestType;
 
@@ -258,5 +257,86 @@ TEMPLATE_TEST_CASE(
 
         REQUIRE(t.vertexCount() == t.vertexContainerSize());
         REQUIRE(t.vertexCount() == 18844 - nv);
+    }
+}
+
+TEST_CASE("Check Mesh References")
+{
+    using namespace vcl;
+
+    SECTION("Valid TriMesh")
+    {
+        TriMesh tm;
+        populateTriMesh(tm);
+        REQUIRE(checkMeshReferences(tm));
+    }
+
+    SECTION("TriMesh with Out-of-Range Vertex Reference")
+    {
+        TriMesh tm;
+        populateTriMesh(tm);
+        tm.face(0).setVertexIndex(0, 9999);
+        REQUIRE_THROWS_AS(checkMeshReferences(tm), InconsistentMeshException);
+    }
+
+    SECTION("TriMesh with NULL_INDEX Vertex Reference")
+    {
+        TriMesh tm;
+        populateTriMesh(tm);
+        tm.face(0).setVertexIndex(0, TriMesh::NULL_INDEX);
+        REQUIRE_THROWS_AS(checkMeshReferences(tm), InconsistentMeshException);
+    }
+
+    SECTION("TriMesh with Reference to Deleted Vertex")
+    {
+        TriMesh tm;
+        populateTriMesh(tm);
+        // vertex 1 is referenced by face 0
+        tm.deleteVertex(1);
+        REQUIRE_THROWS_AS(checkMeshReferences(tm), InconsistentMeshException);
+    }
+
+    SECTION("TriMesh with Face Adjacencies")
+    {
+        TriMesh tm;
+        tm.enableFaceAdjacentFaces();
+        populateTriMesh(tm);
+        updateFaceAdjacentFaces(tm);
+        REQUIRE(checkMeshReferences(tm));
+
+        // Corrupt adjacency: out of range
+        tm.face(0).setAdjFace(0, 9999);
+        REQUIRE_THROWS_AS(checkMeshReferences(tm), InconsistentMeshException);
+
+        // Corrupt adjacency: pointing to deleted face
+        tm.face(0).setAdjFace(0, 1);
+        tm.deleteFace(1);
+        REQUIRE_THROWS_AS(checkMeshReferences(tm), InconsistentMeshException);
+    }
+
+    SECTION("EdgeMesh with Edge References")
+    {
+        EdgeMesh em;
+        populateEdgeMesh(em);
+        REQUIRE(checkMeshReferences(em));
+
+        // Out of range vertex in edge
+        em.edge(0).setVertexIndex(0, 9999);
+        REQUIRE_THROWS_AS(checkMeshReferences(em), InconsistentMeshException);
+
+        // Deleted vertex referenced in edge
+        em.edge(0).setVertexIndex(0, 0);
+        em.deleteVertex(0);
+        REQUIRE_THROWS_AS(checkMeshReferences(em), InconsistentMeshException);
+    }
+
+    SECTION("PolyMesh References")
+    {
+        PolyMesh pm;
+        populatePolyMesh(pm);
+        REQUIRE(checkMeshReferences(pm));
+
+        pm.face(0).setVertexIndex(0, 9999);
+        REQUIRE_THROWS_AS(checkMeshReferences(pm), InconsistentMeshException);
     }
 }

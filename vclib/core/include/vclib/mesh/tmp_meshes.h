@@ -12,55 +12,75 @@
 
 namespace vcl::detail {
 
-class TMPSimpleTriMesh;
-class TMPSimplePolyMesh;
-
 namespace tmpMesh {
 
-class TriVertex :
-        public Vertex<TMPSimpleTriMesh, vert::BitFlags, vert::Position3d>
-{
-};
+/**
+ * @brief The VertexComponents type used by the TMPSimple*MeshT classes.
+ *
+ * @tparam Scalar: The scalar type used for vertex positions (default: double).
+ * @tparam Index: The unsigned integral type used for indexing elements
+ * (default: uint).
+ */
+template<typename Scalar = double, std::unsigned_integral Index = uint>
+using TmpVertexComponents =
+    VertexComponents<vert::BitFlags, vert::Position3<Scalar>>;
 
-class PolyVertex :
-        public Vertex<TMPSimplePolyMesh, vert::BitFlags, vert::Position3d>
-{
-};
+/**
+ * @brief The FaceComponents type used by the TMPSimpleTriMeshT class.
+ *
+ * @tparam Index: The unsigned integral type used for indexing elements
+ * (default: uint).
+ */
+template<std::unsigned_integral Index = uint>
+using TriFaceComponents = FaceComponents<
+    face::TriangleBitFlags,
+    face::TriangleVertexReferences<Index>>;
 
-class TriFace;
-class PolyFace;
-
-class TriFace :
-        public Face<
-            TMPSimpleTriMesh,
-            face::TriangleBitFlags,
-            face::TriangleVertexPtrs<TriVertex, TriFace>>
-{
-};
-
-class PolyFace :
-        public Face<
-            TMPSimplePolyMesh,
-            face::PolygonBitFlags,
-            face::PolygonVertexPtrs<PolyVertex, PolyFace>>
-{
-};
+/**
+ * @brief The FaceComponents type used by the TMPSimplePolyMeshT class.
+ *
+ * @tparam Index: The unsigned integral type used for indexing elements
+ * (default: uint).
+ */
+template<std::unsigned_integral Index = uint>
+using PolyFaceComponents =
+    FaceComponents<face::PolygonBitFlags, face::PolygonVertexReferences<Index>>;
 
 } // namespace tmpMesh
 
-class TMPSimpleTriMesh :
-        public Mesh<
-            mesh::VertexContainer<tmpMesh::TriVertex>,
-            mesh::FaceContainer<tmpMesh::TriFace>>
-{
-};
+/**
+ * @brief A minimal triangle mesh template used for temporary computations.
+ *
+ * @tparam Scalar: The scalar type used for vertex positions (default: double).
+ * @tparam Index: The unsigned integral type used for indexing elements
+ * (default: uint).
+ */
+template<typename Scalar = double, std::unsigned_integral Index = uint>
+using TMPSimpleTriMeshT = Mesh<
+    mesh::VertexContainer<tmpMesh::TmpVertexComponents<Scalar, Index>, Index>,
+    mesh::FaceContainer<tmpMesh::TriFaceComponents<Index>, Index>>;
 
-class TMPSimplePolyMesh :
-        public Mesh<
-            mesh::VertexContainer<tmpMesh::PolyVertex>,
-            mesh::FaceContainer<tmpMesh::PolyFace>>
-{
-};
+/**
+ * @brief A minimal polygon mesh template used for temporary computations.
+ *
+ * @tparam Scalar: The scalar type used for vertex positions (default: double).
+ * @tparam Index: The unsigned integral type used for indexing elements
+ * (default: uint).
+ */
+template<typename Scalar = double, std::unsigned_integral Index = uint>
+using TMPSimplePolyMeshT = Mesh<
+    mesh::VertexContainer<tmpMesh::TmpVertexComponents<Scalar, Index>, Index>,
+    mesh::FaceContainer<tmpMesh::PolyFaceComponents<Index>, Index>>;
+
+/**
+ * @brief A minimal triangle mesh using double as scalar and uint for indexing.
+ */
+using TMPSimpleTriMesh = TMPSimpleTriMeshT<double, uint>;
+
+/**
+ * @brief A minimal polygon mesh using double as scalar and uint for indexing.
+ */
+using TMPSimplePolyMesh = TMPSimplePolyMeshT<double, uint>;
 
 } // namespace vcl::detail
 

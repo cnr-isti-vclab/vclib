@@ -1,0 +1,19 @@
+//@concepts
+template<typename T>
+concept HasTangent = comp::HasTangent<T>;
+template<typename T>
+concept HasOptionalTangent = comp::HasOptionalTangent<T>;
+//@aliases
+/* Port Tangent classes into %EL_NS% namespace */
+template<typename ScalarType, int N, bool OPT = false>
+using Tangent = comp::Tangent<Point<ScalarType, N>, OPT>;
+
+template<typename ScalarType, bool OPT = false>
+using Tangent3 = comp::Tangent3<ScalarType, OPT>;
+
+using Tangent3f         = comp::Tangent3f;
+using Tangent3d         = comp::Tangent3d;
+template<typename ScalarType>
+using OptionalTangent3  = comp::OptionalTangent3<ScalarType>;
+using OptionalTangent3f = comp::OptionalTangent3f;
+using OptionalTangent3d = comp::OptionalTangent3d;

@@ -19,28 +19,60 @@ void initTriangleBitFlags(pybind11::class_<ElementType, Options...>& c)
 
     detail::initCommonFlags(c);
 
-    c.def(
-        "edge_on_border",
-        py::overload_cast<uint>(&ElementType::edgeOnBorder, py::const_));
+    c.def("edge_on_border", [](const ElementType& e, uint i) {
+        detail::checkBitFlags(e);
+        if (i >= 3) {
+            throw py::index_error();
+        }
+        return e.edgeOnBorder(i);
+    });
     c.def("set_edge_on_border", [](ElementType& e, uint i, bool b) {
+        detail::checkBitFlags(e);
+        if (i >= 3) {
+            throw py::index_error();
+        }
         e.edgeOnBorder(i) = b;
     });
-    c.def(
-        "edge_selected",
-        py::overload_cast<uint>(&ElementType::edgeSelected, py::const_));
+    c.def("edge_selected", [](const ElementType& e, uint i) {
+        detail::checkBitFlags(e);
+        if (i >= 3) {
+            throw py::index_error();
+        }
+        return e.edgeSelected(i);
+    });
     c.def("set_edge_selected", [](ElementType& e, uint i, bool b) {
+        detail::checkBitFlags(e);
+        if (i >= 3) {
+            throw py::index_error();
+        }
         e.edgeSelected(i) = b;
     });
-    c.def(
-        "edge_visited",
-        py::overload_cast<uint>(&ElementType::edgeVisited, py::const_));
+    c.def("edge_visited", [](const ElementType& e, uint i) {
+        detail::checkBitFlags(e);
+        if (i >= 3) {
+            throw py::index_error();
+        }
+        return e.edgeVisited(i);
+    });
     c.def("set_edge_visited", [](ElementType& e, uint i, bool b) {
+        detail::checkBitFlags(e);
+        if (i >= 3) {
+            throw py::index_error();
+        }
         e.edgeVisited(i) = b;
     });
-    c.def(
-        "edge_faux",
-        py::overload_cast<uint>(&ElementType::edgeFaux, py::const_));
+    c.def("edge_faux", [](const ElementType& e, uint i) {
+        detail::checkBitFlags(e);
+        if (i >= 3) {
+            throw py::index_error();
+        }
+        return e.edgeFaux(i);
+    });
     c.def("set_edge_faux", [](ElementType& e, uint i, bool b) {
+        detail::checkBitFlags(e);
+        if (i >= 3) {
+            throw py::index_error();
+        }
         e.edgeFaux(i) = b;
     });
 }

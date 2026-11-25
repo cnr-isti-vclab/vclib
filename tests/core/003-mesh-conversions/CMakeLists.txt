@@ -8,10 +8,18 @@
 get_filename_component(TEST_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(vclib-core-test-${TEST_NAME})
 
-set(SOURCES main.cpp)
+set(HEADERS helpers.h)
+
+set(SOURCES
+    cube_poly_32.cpp
+    cube_poly_64.cpp
+    cube_poly_on_trimesh.cpp
+    texture_double_32.cpp
+    texture_double_64.cpp
+)
 
 vclib_add_test(
     ${TEST_NAME}
-    SOURCES ${SOURCES}
+    SOURCES ${HEADERS} ${SOURCES}
     ${HEADER_ONLY_OPTION}
 )

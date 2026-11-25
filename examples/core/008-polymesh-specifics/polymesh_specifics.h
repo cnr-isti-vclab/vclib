@@ -17,7 +17,7 @@
 // 2. Work with polygonal faces of variable size
 // 3. Use PolyMesh-specific operations and features
 
-auto polymeshSpecifics()
+inline auto polymeshSpecifics()
 {
     std::cout << "=== VCLib Example 008: PolyMesh Specifics ===\n\n";
 
@@ -46,7 +46,7 @@ auto polymeshSpecifics()
 
     // Create a hexagonal face
     vcl::uint fid     = polyMesh.addFace();
-    auto&     hexFace = polyMesh.face(fid);
+    auto      hexFace = polyMesh.face(fid);
 
     // Add vertices to the face one by one
     for (vcl::uint i = 0; i < 6; ++i) {
@@ -141,7 +141,7 @@ auto polymeshSpecifics()
 
     // Create a square face
     vcl::uint sfi        = dynamicMesh.addFace();
-    auto&     squareFace = dynamicMesh.face(sfi);
+    auto      squareFace = dynamicMesh.face(sfi);
     std::cout << "Created empty face, vertices: " << squareFace.vertexCount()
               << "\n";
 
@@ -174,8 +174,8 @@ auto polymeshSpecifics()
     std::cout << "-----------------------------\n";
 
     // Enable face-face adjacency
-    polyMeshLoaded.enablePerFaceAdjacentFaces();
-    vcl::updatePerFaceAdjacentFaces(polyMeshLoaded);
+    polyMeshLoaded.enableFaceAdjacentFaces();
+    vcl::updateFaceAdjacentFaces(polyMeshLoaded);
 
     std::cout << "Face-face adjacency enabled for PolyMesh\n";
 
@@ -187,9 +187,9 @@ auto polymeshSpecifics()
 
         std::cout << "Adjacent faces: ";
         for (int i = 0; i < face.adjFaceCount(); ++i) {
-            const auto* adjFace = face.adjFace(i);
+            auto adjFace = face.adjFace(i);
             if (adjFace != nullptr) {
-                std::cout << adjFace->index() << " ";
+                std::cout << adjFace.index() << " ";
             }
             else {
                 std::cout << "border ";
@@ -200,11 +200,11 @@ auto polymeshSpecifics()
         // Show how adjacency corresponds to edges
         std::cout << "Adjacency per edge:\n";
         for (int i = 0; i < face.vertexCount(); ++i) {
-            const auto* adjFace = face.adjFace(i);
+            auto adjFace = face.adjFace(i);
             std::cout << "  Edge " << i << " (v" << face.vertexIndex(i) << "-v"
                       << face.vertexIndexMod(i + 1) << "): ";
             if (adjFace != nullptr) {
-                std::cout << "face " << adjFace->index() << "\n";
+                std::cout << "face " << adjFace.index() << "\n";
             }
             else {
                 std::cout << "border\n";
@@ -227,7 +227,7 @@ auto polymeshSpecifics()
         std::cout << "  Vertex count: " << face.vertexCount() << "\n";
         std::cout << "  Vertices: ";
         for (int i = 0; i < face.vertexCount(); ++i) {
-            std::cout << face.vertex(i)->index() << " ";
+            std::cout << face.vertex(i).index() << " ";
         }
         std::cout << "\n";
 
@@ -236,7 +236,7 @@ auto polymeshSpecifics()
         // vcl::faceBarycenter(face);
         vcl::Point3d centroid(0, 0, 0);
         for (int i = 0; i < face.vertexCount(); ++i) {
-            centroid += face.vertex(i)->position();
+            centroid += face.vertex(i).position();
         }
         centroid /= face.vertexCount();
         std::cout << "  Centroid: (" << centroid.x() << ", " << centroid.y()
@@ -247,9 +247,9 @@ auto polymeshSpecifics()
         // vcl::faceArea(face);
         double area = 0.0;
         for (int i = 1; i < face.vertexCount() - 1; ++i) {
-            auto v0 = face.vertex(0)->position();
-            auto v1 = face.vertex(i)->position();
-            auto v2 = face.vertex(i + 1)->position();
+            auto v0 = face.vertex(0).position();
+            auto v1 = face.vertex(i).position();
+            auto v2 = face.vertex(i + 1).position();
 
             auto edge1 = v1 - v0;
             auto edge2 = v2 - v0;

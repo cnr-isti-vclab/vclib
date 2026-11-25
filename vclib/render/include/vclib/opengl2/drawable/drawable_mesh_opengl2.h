@@ -22,6 +22,9 @@
 #endif
 
 #ifdef __APPLE__
+#ifndef GL_SILENCE_DEPRECATION
+#define GL_SILENCE_DEPRECATION
+#endif
 #include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
@@ -93,7 +96,30 @@ public:
         mMRS.setDefaultSettingsFromCapability();
     }
 
+    DrawableMeshOpenGL2(const DrawableMeshOpenGL2& drawableMesh) :
+            AbstractDrawableMesh(
+                static_cast<const AbstractDrawableMesh&>(drawableMesh)),
+            MeshType(drawableMesh)
+    {
+        if constexpr (HasName<MeshType>) {
+            AbstractDrawableMesh::name() = drawableMesh.name();
+        }
+        updateBuffers();
+        mMRS.setDefaultSettingsFromCapability();
+    }
+
+    DrawableMeshOpenGL2(DrawableMeshOpenGL2&& drawableMesh)
+    {
+        swap(drawableMesh);
+    }
+
     ~DrawableMeshOpenGL2() = default;
+
+    DrawableMeshOpenGL2& operator=(DrawableMeshOpenGL2 drawableMesh)
+    {
+        swap(drawableMesh);
+        return *this;
+    }
 
     void swap(DrawableMeshOpenGL2& other)
     {
@@ -391,15 +417,18 @@ private:
                 glShadeModel(GL_SMOOTH);
                 int n_tris = nt;
                 for (int tid = 0; tid < n_tris; ++tid) {
-                    int   tid_ptr  = 3 * tid;
-                    int   vid0     = triangles[tid_ptr + 0];
-                    int   vid1     = triangles[tid_ptr + 1];
-                    int   vid2     = triangles[tid_ptr + 2];
-                    int   vid0_ptr = 3 * vid0;
-                    int   vid1_ptr = 3 * vid1;
-                    int   vid2_ptr = 3 * vid2;
-                    short texture =
-                        mTextID[mMRD.vertexTextureIDsBufferData()[tid]];
+                    int  tid_ptr  = 3 * tid;
+                    int  vid0     = triangles[tid_ptr + 0];
+                    int  vid1     = triangles[tid_ptr + 1];
+                    int  vid2     = triangles[tid_ptr + 2];
+                    int  vid0_ptr = 3 * vid0;
+                    int  vid1_ptr = 3 * vid1;
+                    int  vid2_ptr = 3 * vid2;
+                    auto texIdx   = mMRD.vertexTextureIDsBufferData()[tid];
+                    uint texture =
+                        (texIdx != USHORT_NULL && texIdx < mTextID.size()) ?
+                            mTextID[texIdx] :
+                            0;
                     glBindTexture(GL_TEXTURE_2D, texture);
                     glBegin(GL_TRIANGLES);
                     glColor4f(1, 1, 1, 1);
@@ -425,15 +454,18 @@ private:
             else if (mMRS.isSurface(MRI::Surface::COLOR_WEDGE_TEX)) {
                 int n_tris = nt;
                 for (int tid = 0; tid < n_tris; ++tid) {
-                    int   tid_ptr  = 3 * tid;
-                    int   vid0     = triangles[tid_ptr + 0];
-                    int   vid1     = triangles[tid_ptr + 1];
-                    int   vid2     = triangles[tid_ptr + 2];
-                    int   vid0_ptr = 3 * vid0;
-                    int   vid1_ptr = 3 * vid1;
-                    int   vid2_ptr = 3 * vid2;
-                    short texture =
-                        mTextID[mMRD.wedgeTextureIDsBufferData()[tid]];
+                    int  tid_ptr  = 3 * tid;
+                    int  vid0     = triangles[tid_ptr + 0];
+                    int  vid1     = triangles[tid_ptr + 1];
+                    int  vid2     = triangles[tid_ptr + 2];
+                    int  vid0_ptr = 3 * vid0;
+                    int  vid1_ptr = 3 * vid1;
+                    int  vid2_ptr = 3 * vid2;
+                    auto texIdx   = mMRD.wedgeTextureIDsBufferData()[tid];
+                    uint texture =
+                        (texIdx != USHORT_NULL && texIdx < mTextID.size()) ?
+                            mTextID[texIdx] :
+                            0;
                     glBindTexture(GL_TEXTURE_2D, texture);
                     glBegin(GL_TRIANGLES);
                     glColor4f(1, 1, 1, 1);

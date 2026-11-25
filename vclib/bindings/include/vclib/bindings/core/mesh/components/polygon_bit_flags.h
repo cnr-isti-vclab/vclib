@@ -19,12 +19,24 @@ void initPolygonBitFlags(pybind11::class_<ElementType, Options...>& c)
 
     initTriangleBitFlags(c);
 
-    // c.def(
-    //     "edge_user_bit",
-    //     py::overload_cast<uint>(&ElementType::edgeUserBit, py::const_));
-    // c.def("set_edge_user_bit", [](ElementType& e, uint i, bool b) {
-    //     e.edgeUserBit(i) = b;
-    // });
+    c.def("edge_count", [](const ElementType& e) {
+        detail::checkBitFlags(e);
+        return e.edgeCount();
+    });
+    c.def("edge_user_bit", [](const ElementType& e, uint i, uint bit) {
+        detail::checkBitFlags(e);
+        if (i >= e.edgeCount()) {
+            throw py::index_error();
+        }
+        return e.edgeUserBit(i, bit);
+    });
+    c.def("set_edge_user_bit", [](ElementType& e, uint i, uint bit, bool b) {
+        detail::checkBitFlags(e);
+        if (i >= e.edgeCount()) {
+            throw py::index_error();
+        }
+        e.edgeUserBit(i, bit) = b;
+    });
 }
 
 } // namespace vcl::bind

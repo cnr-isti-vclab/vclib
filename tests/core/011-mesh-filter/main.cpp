@@ -17,10 +17,11 @@ TEMPLATE_TEST_CASE(
     "",
     vcl::TriMesh,
     vcl::TriMeshf,
-    vcl::TriMeshIndexed,
-    vcl::TriMeshIndexedf)
+    vcl::TriMesh64,
+    vcl::TriMesh64f)
 {
-    using TriMesh = TestType;
+    using TriMesh   = TestType;
+    using IndexType = TriMesh::IndexType;
 
     TriMesh tm =
         vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
@@ -36,25 +37,25 @@ TEMPLATE_TEST_CASE(
         std::vector<bool> filter = {
             true, false, false, true, false, false, true, true};
 
-        TriMesh anotherMesh = vcl::perVertexMeshFilter(tm, filter);
+        TriMesh anotherMesh = vcl::vertexMeshFilter(tm, filter);
 
         THEN("The mesh has been filtered")
         {
             REQUIRE(anotherMesh.vertexCount() == 4);
             REQUIRE(anotherMesh.faceCount() == 0);
 
-            REQUIRE(anotherMesh.hasPerVertexCustomComponent("birthVertex"));
+            REQUIRE(anotherMesh.hasVertexCustomComponent("birthVertex"));
             REQUIRE(
-                anotherMesh.vertex(0).template customComponent<unsigned int>(
+                anotherMesh.vertex(0).template customComponent<IndexType>(
                     "birthVertex") == 0);
             REQUIRE(
-                anotherMesh.vertex(1).template customComponent<unsigned int>(
+                anotherMesh.vertex(1).template customComponent<IndexType>(
                     "birthVertex") == 3);
             REQUIRE(
-                anotherMesh.vertex(2).template customComponent<unsigned int>(
+                anotherMesh.vertex(2).template customComponent<IndexType>(
                     "birthVertex") == 6);
             REQUIRE(
-                anotherMesh.vertex(3).template customComponent<unsigned int>(
+                anotherMesh.vertex(3).template customComponent<IndexType>(
                     "birthVertex") == 7);
         }
     }
@@ -75,7 +76,7 @@ TEMPLATE_TEST_CASE(
             true,
             false};
 
-        TriMesh anotherMesh = vcl::perFaceMeshFilter(tm, filter);
+        TriMesh anotherMesh = vcl::faceMeshFilter(tm, filter);
 
         // order of vertices:
         // pos:   0 1 2 3 4 5 6 7
@@ -86,81 +87,92 @@ TEMPLATE_TEST_CASE(
             REQUIRE(anotherMesh.vertexCount() == 8);
             REQUIRE(anotherMesh.faceCount() == 5);
 
-            REQUIRE(anotherMesh.hasPerVertexCustomComponent("birthVertex"));
+            REQUIRE(anotherMesh.hasVertexCustomComponent("birthVertex"));
             REQUIRE(
-                anotherMesh.vertex(0).template customComponent<unsigned int>(
+                anotherMesh.vertex(0).template customComponent<IndexType>(
                     "birthVertex") == 2);
             REQUIRE(
-                anotherMesh.vertex(1).template customComponent<unsigned int>(
+                anotherMesh.vertex(1).template customComponent<IndexType>(
                     "birthVertex") == 1);
             REQUIRE(
-                anotherMesh.vertex(2).template customComponent<unsigned int>(
+                anotherMesh.vertex(2).template customComponent<IndexType>(
                     "birthVertex") == 0);
             REQUIRE(
-                anotherMesh.vertex(3).template customComponent<unsigned int>(
+                anotherMesh.vertex(3).template customComponent<IndexType>(
                     "birthVertex") == 4);
             REQUIRE(
-                anotherMesh.vertex(4).template customComponent<unsigned int>(
+                anotherMesh.vertex(4).template customComponent<IndexType>(
                     "birthVertex") == 6);
             REQUIRE(
-                anotherMesh.vertex(5).template customComponent<unsigned int>(
+                anotherMesh.vertex(5).template customComponent<IndexType>(
                     "birthVertex") == 5);
             REQUIRE(
-                anotherMesh.vertex(6).template customComponent<unsigned int>(
+                anotherMesh.vertex(6).template customComponent<IndexType>(
                     "birthVertex") == 7);
             REQUIRE(
-                anotherMesh.vertex(7).template customComponent<unsigned int>(
+                anotherMesh.vertex(7).template customComponent<IndexType>(
                     "birthVertex") == 3);
 
-            REQUIRE(anotherMesh.hasPerFaceCustomComponent("birthFace"));
+            REQUIRE(anotherMesh.hasFaceCustomComponent("birthFace"));
             REQUIRE(
-                anotherMesh.face(0).template customComponent<unsigned int>(
+                anotherMesh.face(0).template customComponent<IndexType>(
                     "birthFace") == 0);
             REQUIRE(
-                anotherMesh.face(1).template customComponent<unsigned int>(
+                anotherMesh.face(1).template customComponent<IndexType>(
                     "birthFace") == 3);
             REQUIRE(
-                anotherMesh.face(2).template customComponent<unsigned int>(
+                anotherMesh.face(2).template customComponent<IndexType>(
                     "birthFace") == 6);
             REQUIRE(
-                anotherMesh.face(3).template customComponent<unsigned int>(
+                anotherMesh.face(3).template customComponent<IndexType>(
                     "birthFace") == 7);
             REQUIRE(
-                anotherMesh.face(4).template customComponent<unsigned int>(
+                anotherMesh.face(4).template customComponent<IndexType>(
                     "birthFace") == 10);
         }
     }
 }
 
-using Meshes         = std::pair<vcl::TriMesh, vcl::EdgeMesh>;
-using Meshesf        = std::pair<vcl::TriMeshf, vcl::EdgeMeshf>;
-using MeshesIndexed  = std::pair<vcl::TriMeshIndexed, vcl::EdgeMeshIndexed>;
-using MeshesIndexedf = std::pair<vcl::TriMeshIndexedf, vcl::EdgeMeshIndexedf>;
+using Meshes       = std::pair<vcl::TriMesh, vcl::EdgeMesh>;
+using Meshesf      = std::pair<vcl::TriMeshf, vcl::EdgeMeshf>;
+using Meshes64     = std::pair<vcl::TriMesh64, vcl::EdgeMesh64>;
+using Meshes64f    = std::pair<vcl::TriMesh64f, vcl::EdgeMesh64f>;
+using MeshesMixed1 = std::pair<vcl::TriMesh, vcl::EdgeMesh64>;
+using MeshesMixed2 = std::pair<vcl::TriMesh64, vcl::EdgeMesh>;
 
 TEMPLATE_TEST_CASE(
     "TriMesh Filter Face Edges",
     "",
     Meshes,
     Meshesf,
-    MeshesIndexed,
-    MeshesIndexedf)
+    Meshes64,
+    Meshes64f,
+    MeshesMixed1,
+    MeshesMixed2)
 {
     using TriMesh  = typename TestType::first_type;
     using EdgeMesh = typename TestType::second_type;
 
     TriMesh cylinder = vcl::createCylinder<TriMesh>(1, 1, 36);
-    cylinder.enablePerFaceAdjacentFaces();
+    cylinder.enableFaceAdjacentFaces();
 
-    vcl::updatePerFaceAdjacentFaces(cylinder);
+    vcl::updateFaceAdjacentFaces(cylinder);
 
     // select crease edges
     vcl::selectCreaseFaceEdges(cylinder, -vcl::toRad(30.f), vcl::toRad(30.f));
 
-    EdgeMesh creaseEdges =
-        vcl::perFaceEdgeSelectionMeshFilter<EdgeMesh>(cylinder);
+    EdgeMesh creaseEdges = vcl::faceEdgeSelectionMeshFilter<EdgeMesh>(cylinder);
 
     THEN("The mesh has 36 * 2 crease edges")
     {
         REQUIRE(creaseEdges.edgeCount() == 36 * 2);
+        REQUIRE(creaseEdges.hasVertexCustomComponent("birthVertex"));
+        for (std::size_t i = 0; i < creaseEdges.vertexCount(); ++i) {
+            auto birthV =
+                creaseEdges.vertex(i)
+                    .template customComponent<typename TriMesh::IndexType>(
+                        "birthVertex");
+            REQUIRE(birthV < cylinder.vertexCount());
+        }
     }
 }

@@ -12,6 +12,8 @@
 #include <vclib/render/concepts/drawable_object.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 
+#include <type_traits>
+
 void drawableObjectStaticAsserts()
 {
     using namespace vcl;
@@ -31,6 +33,11 @@ void drawableObjectStaticAsserts()
     static_assert(
         DrawableObjectConcept<DrawableMesh<TriMesh>&&>,
         "DrawableMesh&& does not satisfy the DrawableObjectConcept");
+
+    static_assert(std::is_copy_constructible_v<DrawableMesh<TriMesh>>);
+    static_assert(std::is_move_constructible_v<DrawableMesh<TriMesh>>);
+    static_assert(std::is_copy_assignable_v<DrawableMesh<TriMesh>>);
+    static_assert(std::is_move_assignable_v<DrawableMesh<TriMesh>>);
 }
 
 #endif // DRAWABLE_OBJECT_H

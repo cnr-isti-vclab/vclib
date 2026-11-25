@@ -8,42 +8,79 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_GAUSSIAN_SPLATS_H
 #define VCL_MESH_VIEWS_COMPONENTS_GAUSSIAN_SPLATS_H
 
-#include <vclib/mesh/components/gaussian_splat.h>
-#include <vclib/mesh/views/component.h>
+#include "../component.h"
 
 #include <vclib/base.h>
 
 #include <ranges>
 
-namespace vcl::views {
+namespace vcl {
+
+template<typename T>
+concept HasGaussianSplatMember = requires(T&& t) {
+    { t.gaussianSplat() };
+};
+
+template<typename R>
+concept GaussianSplatsRangeConcept =
+    std::ranges::range<R> && (requires(R&& r) {
+        { std::forward<R>(r).gaussianSplats() } -> std::ranges::range;
+    } || HasGaussianSplatMember<std::ranges::range_reference_t<R>>);
+
+template<typename R>
+concept GaussianSplatRangeConcept = GaussianSplatsRangeConcept<R>;
+
+namespace views {
 
 namespace detail {
 
-inline constexpr auto guassianSplat = [](auto&& p) -> decltype(auto) {
-    if constexpr (IsPointer<decltype(p)>)
-        return p->gaussianSplat();
-    else
-        return p.gaussianSplat();
+inline constexpr auto getGaussianSplat = [](auto&& p) -> decltype(auto) {
+    return p.gaussianSplat();
 };
 
-struct GaussianSplatsView
+struct GaussianSplatsView :
+        std::ranges::range_adaptor_closure<GaussianSplatsView>
 {
-    constexpr GaussianSplatsView() = default;
-
-    template<std::ranges::range R>
-    friend constexpr auto operator|(R&& r, GaussianSplatsView)
+    template<GaussianSplatsRangeConcept R>
+    constexpr auto operator()(R&& r) const
     {
-        return std::forward<R>(r) | std::views::transform(guassianSplat);
+        if constexpr (requires {
+                          {
+                              std::forward<R>(r).gaussianSplats()
+                          } -> std::ranges::range;
+                      }) {
+            return std::forward<R>(r).gaussianSplats();
+        }
+        else {
+            return std::forward<R>(r) |
+                   std::views::transform(getGaussianSplat);
+        }
     }
 };
 
 } // namespace detail
 
+/**
+ * @brief View adaptor that transforms a range of elements into a range of their
+ * gaussian splats.
+ *
+ * When applied directly to an ElementContainerProxy (e.g. `mesh.vertices() |
+ * views::gaussianSplats`), it directly returns a contiguous ComponentView over
+ * the SoA buffer without proxy overhead.
+ *
+ * When applied to a filtered or transformed range (e.g. `mesh.vertices() |
+ * views::selected | views::gaussianSplats`), it transforms each element to its
+ * gaussian splat reference.
+ *
+ * @ingroup views
+ */
 inline constexpr detail::GaussianSplatsView gaussianSplats;
+inline constexpr auto                      gaussianSplat = gaussianSplats;
 
 template<>
 inline constexpr auto component<CompId::GAUSSIAN_SPLAT> = gaussianSplats;
 
-} // namespace vcl::views
+} // namespace views
+} // namespace vcl
 
 #endif // VCL_MESH_VIEWS_COMPONENTS_GAUSSIAN_SPLATS_H

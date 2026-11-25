@@ -25,8 +25,8 @@ namespace vcl {
  *
  * Render capabilities store what can be actually rendered of a vcl::Mesh (e.g.
  * it will be possible to render the surface of the mesh if the Mesh has Faces,
- * or it will be possible to render per Face colors only if the Mesh has
- * **enabled** per face colors).
+ * or it will be possible to render Face colors only if the Mesh has
+ * **enabled** face colors).
  *
  * The render status of this class is **guaranteed to be consistent** to the
  * render capabilities.
@@ -60,8 +60,8 @@ class MeshRenderSettings
     MeshRenderInfo mCapability; // capabilities of the mesh
     MeshRenderInfo mDrawMode;   // current rendering settings
 
-    bool mHasPerVertexColor   = false;
-    bool mHasPerVertexTangent = false;
+    bool mHasVertexColor   = false;
+    bool mHasVertexTangent = false;
 
     float mPointWidth          = 3;
     float mPointUserColor[4]   = {1, 1, 0, 1}; // TODO: change to uint?
@@ -107,9 +107,9 @@ public:
      */
     MeshRenderInfo drawMode() const { return mDrawMode; }
 
-    bool hasPerVertexColor() const { return mHasPerVertexColor; }
+    bool hasVertexColor() const { return mHasVertexColor; }
 
-    bool hasPerVertexTangent() const { return mHasPerVertexTangent; }
+    bool hasVertexTangent() const { return mHasVertexTangent; }
 
     bool operator==(const MeshRenderSettings&) const = default;
 
@@ -371,10 +371,10 @@ public:
      * If the capability does not allow to set the given option, the function
      * does nothing and it returns `false`. Otherwise, it returns `true`.
      *
-     * If the option does not have a range (e.g. VISIBLE), the @param b
+     * If the option does not have a range (e.g. VISIBLE), the @p b
      * parameter will be used to set the option to the primitive.
      *
-     * If the option has a range (e.g. the range SHADING_*), the @param b is not
+     * If the option has a range (e.g. the range SHADING_*), the @p b is not
      * considered. The given option is set to `true`, and all the other options
      * of the range are automatically set to `false`.
      *
@@ -416,10 +416,10 @@ public:
      * If the capability does not allow to set the given option, the function
      * does nothing and it returns `false`. Otherwise, it returns `true`.
      *
-     * If the option does not have a range (e.g. VISIBLE), the @param b
+     * If the option does not have a range (e.g. VISIBLE), the @p b
      * parameter will be used to set the option to the points.
      *
-     * If the option has a range (e.g. the range SHADING_*), the @param b is not
+     * If the option has a range (e.g. the range SHADING_*), the @p b is not
      * considered. The given option is set to `true`, and all the other options
      * of the range are automatically set to `false`.
      *
@@ -494,10 +494,10 @@ public:
      * If the capability does not allow to set the given option, the function
      * does nothing and it returns `false`. Otherwise, it returns `true`.
      *
-     * If the option does not have a range (e.g. VISIBLE), the @param b
+     * If the option does not have a range (e.g. VISIBLE), the @p b
      * parameter will be used to set the option to the surface.
      *
-     * If the option has a range (e.g. the range SHADING_*), the @param b is not
+     * If the option has a range (e.g. the range SHADING_*), the @p b is not
      * considered. The given option is set to `true`, and all the other options
      * of the range are automatically set to `false`.
      *
@@ -560,10 +560,10 @@ public:
      * If the capability does not allow to set the given option, the function
      * does nothing and it returns `false`. Otherwise, it returns `true`.
      *
-     * If the option does not have a range (e.g. VISIBLE), the @param b
+     * If the option does not have a range (e.g. VISIBLE), the @p b
      * parameter will be used to set the option to the wireframe.
      *
-     * If the option has a range (e.g. the range SHADING_*), the @param b is not
+     * If the option has a range (e.g. the range SHADING_*), the @p b is not
      * considered. The given option is set to `true`, and all the other options
      * of the range are automatically set to `false`.
      *
@@ -621,10 +621,10 @@ public:
      * If the capability does not allow to set the given option, the function
      * does nothing and it returns `false`. Otherwise, it returns `true`.
      *
-     * If the option does not have a range (e.g. VISIBLE), the @param b
+     * If the option does not have a range (e.g. VISIBLE), the @p b
      * parameter will be used to set the option to the edges.
      *
-     * If the option has a range (e.g. the range SHADING_*), the @param b is not
+     * If the option has a range (e.g. the range SHADING_*), the @p b is not
      * considered. The given option is set to `true`, and all the other options
      * of the range are automatically set to `false`.
      *
@@ -800,20 +800,20 @@ public:
             setPointsCapability(MRI::Points::COLOR_USER);
             setPointsCapability(MRI::Points::SELECTION);
 
-            if constexpr (vcl::HasPerVertexNormal<MeshType>) {
-                if (vcl::isPerVertexNormalAvailable(m)) {
+            if constexpr (vcl::HasVertexNormal<MeshType>) {
+                if (m.isVertexNormalAvailable()) {
                     setPointsCapability(MRI::Points::SHADING_VERT);
                 }
             }
 
-            if constexpr (vcl::HasPerVertexColor<MeshType>) {
-                mHasPerVertexColor = vcl::isPerVertexColorAvailable(m);
-                if (mHasPerVertexColor) {
+            if constexpr (vcl::HasVertexColor<MeshType>) {
+                mHasVertexColor = m.isVertexColorAvailable();
+                if (mHasVertexColor) {
                     setPointsCapability(MRI::Points::COLOR_VERTEX);
                 }
             }
 
-            if constexpr (vcl::HasColor<MeshType>) {
+            if constexpr (vcl::HasMeshColor<MeshType>) {
                 setPointsCapability(MRI::Points::COLOR_MESH);
             }
 
@@ -832,19 +832,19 @@ public:
                     setWireframeCapability(MRI::Wireframe::SHADING_NONE);
                     setWireframeCapability(MRI::Wireframe::COLOR_USER);
 
-                    if constexpr (vcl::HasColor<MeshType>) {
+                    if constexpr (vcl::HasMeshColor<MeshType>) {
                         setSurfaceCapability(MRI::Surface::COLOR_MESH);
                         setWireframeCapability(MRI::Wireframe::COLOR_MESH);
                     }
 
-                    if constexpr (vcl::HasPerFaceNormal<MeshType>) {
-                        if (vcl::isPerFaceNormalAvailable(m)) {
+                    if constexpr (vcl::HasFaceNormal<MeshType>) {
+                        if (m.isFaceNormalAvailable()) {
                             setSurfaceCapability(MRI::Surface::SHADING_FLAT);
                         }
                     }
 
-                    if constexpr (vcl::HasPerVertexNormal<MeshType>) {
-                        if (vcl::isPerVertexNormalAvailable(m)) {
+                    if constexpr (vcl::HasVertexNormal<MeshType>) {
+                        if (m.isVertexNormalAvailable()) {
                             setSurfaceCapability(MRI::Surface::SHADING_SMOOTH);
                             setWireframeCapability(
                                 MRI::Wireframe::SHADING_VERT);
@@ -853,17 +853,17 @@ public:
 
                     // shading normal map check
                     if constexpr (
-                        vcl::HasPerVertexNormal<MeshType> &&
-                        vcl::HasPerVertexTangent<MeshType> &&
+                        vcl::HasVertexNormal<MeshType> &&
+                        vcl::HasVertexTangent<MeshType> &&
                         vcl::HasMaterials<MeshType>) {
                         bool hasTexCoords = false;
-                        if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
-                            if (vcl::isPerVertexTexCoordAvailable(m)) {
+                        if constexpr (vcl::HasVertexTexCoord<MeshType>) {
+                            if (m.isVertexTexCoordAvailable()) {
                                 hasTexCoords = true;
                             }
                         }
-                        if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
-                            if (vcl::isPerFaceWedgeTexCoordsAvailable(m)) {
+                        if constexpr (vcl::HasFaceWedgeTexCoords<MeshType>) {
+                            if (m.isFaceWedgeTexCoordsAvailable()) {
                                 hasTexCoords = true;
                             }
                         }
@@ -872,24 +872,23 @@ public:
                         // texture coordinates, and materials (which may contain
                         // the normal map texture).
                         if (hasTexCoords && m.materialCount() > 0 &&
-                            vcl::isPerVertexNormalAvailable(m)) {
-                            mHasPerVertexTangent =
-                                vcl::isPerVertexTangentAvailable(m);
+                            m.isVertexNormalAvailable()) {
+                            mHasVertexTangent = m.isVertexTangentAvailable();
 
-                            if (mHasPerVertexTangent) {
+                            if (mHasVertexTangent) {
                                 setSurfaceCapability(
                                     MRI::Surface::SHADING_NORMAL_MAP);
                             }
                         }
                     }
 
-                    if constexpr (vcl::HasPerFaceColor<MeshType>) {
-                        if (vcl::isPerFaceColorAvailable(m))
+                    if constexpr (vcl::HasFaceColor<MeshType>) {
+                        if (m.isFaceColorAvailable())
                             setSurfaceCapability(MRI::Surface::COLOR_FACE);
                     }
 
-                    if constexpr (vcl::HasPerVertexColor<MeshType>) {
-                        if (vcl::isPerVertexColorAvailable(m)) {
+                    if constexpr (vcl::HasVertexColor<MeshType>) {
+                        if (m.isVertexColorAvailable()) {
                             setSurfaceCapability(MRI::Surface::COLOR_VERTEX);
                             setWireframeCapability(
                                 MRI::Wireframe::COLOR_VERTEX);
@@ -897,15 +896,15 @@ public:
                     }
 
                     if constexpr (vcl::HasMaterials<MeshType>) {
-                        if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
-                            if (vcl::isPerVertexTexCoordAvailable(m) &&
+                        if constexpr (vcl::HasVertexTexCoord<MeshType>) {
+                            if (m.isVertexTexCoordAvailable() &&
                                 m.materialCount() > 0)
                                 setSurfaceCapability(
                                     MRI::Surface::COLOR_VERTEX_TEX);
                         }
 
-                        if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
-                            if (vcl::isPerFaceWedgeTexCoordsAvailable(m) &&
+                        if constexpr (vcl::HasFaceWedgeTexCoords<MeshType>) {
+                            if (m.isFaceWedgeTexCoordsAvailable() &&
                                 m.materialCount() > 0) {
                                 setSurfaceCapability(
                                     MRI::Surface::COLOR_WEDGE_TEX);
@@ -923,29 +922,29 @@ public:
                     setEdgesCapability(MRI::Edges::COLOR_USER);
                     setEdgesCapability(MRI::Edges::SELECTION);
 
-                    if constexpr (vcl::HasColor<MeshType>) {
+                    if constexpr (vcl::HasMeshColor<MeshType>) {
                         setEdgesCapability(MRI::Edges::COLOR_MESH);
                     }
 
-                    if constexpr (vcl::HasPerVertexNormal<MeshType>) {
-                        if (vcl::isPerVertexNormalAvailable(m)) {
+                    if constexpr (vcl::HasVertexNormal<MeshType>) {
+                        if (m.isVertexNormalAvailable()) {
                             setEdgesCapability(MRI::Edges::SHADING_SMOOTH);
                         }
                     }
 
-                    if constexpr (vcl::HasPerEdgeNormal<MeshType>) {
-                        if (vcl::isPerEdgeNormalAvailable(m)) {
+                    if constexpr (vcl::HasEdgeNormal<MeshType>) {
+                        if (m.isEdgeNormalAvailable()) {
                             setEdgesCapability(MRI::Edges::SHADING_FLAT);
                         }
                     }
 
-                    if constexpr (vcl::HasPerEdgeColor<MeshType>) {
-                        if (vcl::isPerEdgeColorAvailable(m))
+                    if constexpr (vcl::HasEdgeColor<MeshType>) {
+                        if (m.isEdgeColorAvailable())
                             setEdgesCapability(MRI::Edges::COLOR_EDGE);
                     }
 
-                    if constexpr (vcl::HasPerVertexColor<MeshType>) {
-                        if (vcl::isPerVertexColorAvailable(m)) {
+                    if constexpr (vcl::HasVertexColor<MeshType>) {
+                        if (m.isVertexColorAvailable()) {
                             setEdgesCapability(MRI::Edges::COLOR_VERTEX);
                         }
                     }
@@ -1122,8 +1121,8 @@ inline void to_json(nlohmann::json& j, const MeshRenderSettings& mrs)
 {
     j = nlohmann::json {
         {"drawMode",            mrs.mDrawMode              },
-        {"hasPerVertexColor",   mrs.mHasPerVertexColor     },
-        {"hasPerVertexTangent", mrs.mHasPerVertexTangent   },
+        {"hasVertexColor",      mrs.mHasVertexColor        },
+        {"hasVertexTangent",    mrs.mHasVertexTangent      },
         {"pointWidth",          mrs.mPointWidth            },
         {"pointUserColor",      mrs.pointUserColor()       },
         {"surfUserColor",       mrs.surfaceUserColor()     },
@@ -1141,10 +1140,10 @@ inline void from_json(const nlohmann::json& j, MeshRenderSettings& mrs)
 {
     if (j.contains("drawMode"))
         j.at("drawMode").get_to(mrs.mDrawMode);
-    if (j.contains("hasPerVertexColor"))
-        j.at("hasPerVertexColor").get_to(mrs.mHasPerVertexColor);
-    if (j.contains("hasPerVertexTangent"))
-        j.at("hasPerVertexTangent").get_to(mrs.mHasPerVertexTangent);
+    if (j.contains("hasVertexColor"))
+        j.at("hasVertexColor").get_to(mrs.mHasVertexColor);
+    if (j.contains("hasVertexTangent"))
+        j.at("hasVertexTangent").get_to(mrs.mHasVertexTangent);
     if (j.contains("pointWidth"))
         j.at("pointWidth").get_to(mrs.mPointWidth);
     if (j.contains("pointUserColor")) {

@@ -29,11 +29,10 @@ namespace vcl {
 template<MeshConcept MeshType>
 auto boundingBox(const MeshType& m)
 {
-    using VertexType = MeshType::VertexType;
-    Box<typename VertexType::PositionType> b;
+    Box<typename MeshType::Vertex::PositionType> b;
 
-    for (const VertexType& v : m.vertices()) {
-        b.add(v.position());
+    for (const auto& p : m.vertices().positions()) {
+        b.add(p);
     }
 
     return b;

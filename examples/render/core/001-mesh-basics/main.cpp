@@ -13,8 +13,8 @@ int main(int argc, char** argv)
 {
     auto [mesh0, mesh1] = meshBasics();
 
-    vcl::updatePerVertexAndFaceNormals(mesh0);
-    vcl::updatePerVertexAndFaceNormals(mesh1);
+    vcl::updateVertexAndFaceNormals(mesh0);
+    vcl::updateVertexAndFaceNormals(mesh1);
 
     return vcl::showOnMeshViewer(
         argc, argv, std::move(mesh0), std::move(mesh1));

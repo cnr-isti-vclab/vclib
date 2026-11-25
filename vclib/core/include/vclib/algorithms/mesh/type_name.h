@@ -21,7 +21,7 @@ namespace vcl {
 template<MeshConcept MeshType>
 constexpr std::string meshTypeName()
 {
-    using ScalarType = MeshType::VertexType::PositionType::ScalarType;
+    using ScalarType = ScalarType<MeshType>;
 
     std::string name;
 
@@ -42,22 +42,11 @@ constexpr std::string meshTypeName()
             name += "Edge";
 
         name += "Mesh";
+    }
 
-        bool isIndexed = false;
-        if constexpr (HasFaces<MeshType>) {
-            if constexpr (MeshType::FaceType::INDEXED) {
-                isIndexed = true;
-            }
-        }
-        if constexpr (HasEdges<MeshType>) {
-            if constexpr (MeshType::EdgeType::INDEXED) {
-                isIndexed = true;
-            }
-        }
-
-        if (isIndexed) {
-            name += "Indexed";
-        }
+    if constexpr (std::
+                      same_as<typename MeshType::Vertex::IndexType, uint64_t>) {
+        name += "64";
     }
 
     if constexpr (std::same_as<ScalarType, float>)

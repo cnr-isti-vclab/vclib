@@ -8,103 +8,146 @@
 #ifndef VCL_MESH_ELEMENTS_EDGE_H
 #define VCL_MESH_ELEMENTS_EDGE_H
 
-#include "base/element.h"
 #include "edge_components.h"
+
+#include <vclib/mesh/components/bit_flags.h>
+#include <vclib/mesh/components/vertex_references.h>
+#include <vclib/mesh/elements/base/base.h>
+#include <vclib/mesh/elements/base/element_proxy.h>
+
+#include <ranges>
 
 namespace vcl {
 
 /**
- * @brief The Edge class represents an Edge element of the
- * vcl::Mesh class.
+ * @brief The Edge class represents the runtime proxy (view) of an
+ * Edge element in a mesh container.
  *
- * Using the EdgeContainer class, it is possible to add a vector of
- * Edge elements to a mesh, and manage them with the member functions
- * exposed by the EdgeContainer. Each Edge element exposes
- * all the member functions of its Component types.
+ * It inherits from ElementProxy and provides object-oriented access to
+ * the per-edge components stored in the container's Structure of Arrays.
  *
- * @tparam MeshType The type of the parent mesh.
- * @tparam Comps The types of the components of the element.
+ * @tparam ContainerType: The type of the container (mutable or const).
  *
  * @ingroup elements
  */
-template<typename MeshType, comp::ComponentConcept... Comps>
-class Edge : public Element<ElemId::EDGE, MeshType, Comps...>
+template<typename ContainerType>
+class Edge : public ElementProxy<ElemId::EDGE, ContainerType>
 {
-    // VertexPointers or VertexIndices component of the Edge
-    using VRefs = typename Edge::VertexReferences;
+    using Base = ElementProxy<ElemId::EDGE, ContainerType>;
 
 public:
-    using VertexType = VRefs::VertexType;
-    using VRefs::setVertices;
+    using Base::NULL_INDEX;
+    using typename Base::Components;
+    using typename Base::IndexType;
+    using typename Base::ParentMeshType;
 
-    /**
-     * @brief Empty constructor.
-     *
-     * Calls automatically all the empty constructors of all the components
-     * available in the Edge (for all the components non-available, their empty
-     * constructor is called only when they become available).
-     */
+    static constexpr int VERTEX_COUNT = comp::
+        ComponentTypeT<CompId::VERTEX_REFERENCES, Components>::VERTEX_COUNT;
+
+    static_assert(
+        comp::HasVertexReferences<Components>,
+        "An Edge must have the VertexReferences component (e.g. "
+        "EdgeVertexReferences).");
+    static_assert(VERTEX_COUNT == 2, "An Edge must have exactly 2 vertices.");
+    static_assert(
+        comp::HasBitFlags<Components>,
+        "An Edge must have the BitFlags component "
+        "(vcl::comp::BitFlags).");
+
     Edge() = default;
 
-    /**
-     * @brief Swap function that delegates to the base Element swap.
-     *
-     * This friend function enables ADL (Argument Dependent Lookup) to find
-     * the correct swap function when swapping Edge objects.
-     */
-    friend void swap(Edge& a, Edge& b) { a.swap(b); }
-
-    /**
-     * @brief Sets the vertices of the edge.
-     *
-     * @param [in] v0: the first vertex of the edge.
-     * @param [in] v1: the second vertex of the edge.
-     */
-    void setVertices(VertexType* v0, VertexType* v1)
+    // Implicit conversion constructor from mutable Edge to const Edge
+    template<typename OtherContainerType>
+    requires std::is_same_v<ContainerType, const OtherContainerType>
+    Edge(const Edge<OtherContainerType>& other) : Base(other)
     {
-        VRefs::setVertex(0u, v0);
-        VRefs::setVertex(1u, v1);
     }
 
     /**
-     * @brief Sets the vertices of the edge.
-     *
-     * @param [in] vi0: the index first vertex of the edge.
-     * @param [in] vi1: the index second vertex of the edge.
+     * @brief Swaps this Edge proxy handle with another one.
      */
-    void setVertices(uint vi0, uint vi1)
-    {
-        VRefs::setVertex(0u, vi0);
-        VRefs::setVertex(1u, vi1);
-    }
+    void swap(Edge& other) noexcept { Base::swap(other); }
+
+    /**
+     * @brief Swaps two Edge proxy handles.
+     */
+    friend void swap(Edge& a, Edge& b) noexcept { a.swap(b); }
+
+protected:
+    Edge(ContainerType& container, IndexType index) : Base(container, index) {}
+
+private:
+    /// friend classes declarations
+
+    template<
+        typename,
+        typename,
+        std::unsigned_integral,
+        template<typename...> class>
+    friend class mesh::ElementContainer;
+
+    template<typename>
+    friend class mesh::ElementIterator;
+
+    template<typename>
+    friend class Edge;
 };
 
-template<typename MeshType, comp::ComponentConcept... Comps>
-class Edge<MeshType, TypeWrapper<Comps...>> : public Edge<MeshType, Comps...>
+/**
+ * @brief The EdgeComponents struct defines a type-wrapper for the components
+ * of an Edge, checking at compile-time that the required components (BitFlags,
+ * VertexReferences with VERTEX_COUNT == 2) are present.
+ *
+ * @tparam Comps: The components that compose the Edge.
+ *
+ * @ingroup elements
+ */
+template<typename... Comps>
+struct EdgeComponents : vcl::TypeWrapper<Comps...>
+{
+    static_assert(
+        comp::HasVertexReferences<vcl::TypeWrapper<Comps...>>,
+        "Edge components must include VertexReferences (e.g. "
+        "EdgeVertexReferences).");
+    static_assert(
+        comp::ComponentTypeT<
+            CompId::VERTEX_REFERENCES,
+            vcl::TypeWrapper<Comps...>>::VERTEX_COUNT == 2,
+        "An Edge must have exactly 2 vertices.");
+    static_assert(
+        comp::HasBitFlags<vcl::TypeWrapper<Comps...>>,
+        "Edge components must include BitFlags (vcl::comp::BitFlags).");
+};
+
+template<typename... Comps>
+struct EdgeComponents<vcl::TypeWrapper<Comps...>> : EdgeComponents<Comps...>
 {
 };
 
 /* Concepts */
 
 /**
- * @brief A concept that checks whether a class has (inherits from) an
- * Edge class.
+ * @brief Concept that checks whether a type T is an Edge element.
  *
- * The concept is satisfied when `T` is a class that instantiates or derives
- * from a Edge class having any ParentMesh type and any Component types.
- * The concept checks also that the Edge has a BitFlags component,
- * VertexPointers or VertexIndices components, and that the number of vertices
- * is 2.
- *
- * @tparam T: The type to be tested for conformity to the EdgeConcept.
- *
- * @ingroup edge_concepts
+ * @ingroup element_concepts
  */
 template<typename T>
 concept EdgeConcept =
-    IsDerivedFromSpecializationOfV<T, Edge> &&
-    RemoveRef<T>::ELEMENT_ID == ElemId::EDGE && edge::HasBitFlags<T> &&
-    edge::HasVertexReferences<T> && RemoveRef<T>::VERTEX_COUNT == 2;
+    ElementConcept<T> && (std::remove_cvref_t<T>::ELEMENT_ID == ElemId::EDGE) &&
+    comp::HasBitFlags<typename std::remove_cvref_t<T>::Components> &&
+    comp::HasVertexReferences<typename std::remove_cvref_t<T>::Components> &&
+    (std::remove_cvref_t<T>::VERTEX_COUNT == 2);
+
+/**
+ * @brief Concept that checks whether a type T is a valid component list for an
+ * Edge.
+ *
+ * @ingroup element_concepts
+ */
+template<typename T>
+concept HasRequiredEdgeComponents =
+    comp::HasBitFlags<T> && comp::HasVertexReferences<T> &&
+    (comp::ComponentTypeT<CompId::VERTEX_REFERENCES, T>::VERTEX_COUNT == 2);
 
 } // namespace vcl
 

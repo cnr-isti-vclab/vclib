@@ -1,0 +1,9 @@
+//@concepts
+template<typename T>
+concept HasColor = comp::HasColor<T>;
+template<typename T>
+concept HasOptionalColor = comp::HasOptionalColor<T>;
+//@aliases
+/* Port Color class into %EL_NS% namespace */
+using Color         = comp::Color<false>;
+using OptionalColor = comp::OptionalColor;

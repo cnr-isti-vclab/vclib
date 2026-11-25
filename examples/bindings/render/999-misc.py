@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
     viewer.push_drawable_object(dm)
 
-    vcl.update_per_vertex_and_face_normals(dm)
+    vcl.update_vertex_and_face_normals(dm)
 
     settings = dm.render_settings
 

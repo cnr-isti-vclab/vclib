@@ -18,7 +18,7 @@
 // 3. Taubin smoothing (low-pass filter)
 // 4. Per-vertex normal smoothing for point clouds
 
-auto meshSmoothing()
+inline auto meshSmoothing()
 {
     std::cout << "=== VCLib Example 014: Mesh Smoothing ===\n\n";
 
@@ -34,7 +34,7 @@ auto meshSmoothing()
     std::cout << "  Vertices: " << originalMesh.vertexCount() << std::endl;
     std::cout << "  Faces: " << originalMesh.faceCount() << std::endl;
 
-    vcl::updatePerVertexAndFaceNormals(originalMesh);
+    vcl::updateVertexAndFaceNormals(originalMesh);
 
     /****** Laplacian Smoothing with Uniform Weights ******/
 
@@ -51,7 +51,7 @@ auto meshSmoothing()
 
     std::cout << "Laplacian smoothing (10 iterations) completed." << std::endl;
 
-    vcl::updatePerVertexAndFaceNormals(laplacianMesh);
+    vcl::updateVertexAndFaceNormals(laplacianMesh);
 
     /****** Laplacian Smoothing with Cotangent Weights ******/
 
@@ -70,7 +70,7 @@ auto meshSmoothing()
     std::cout << "Cotangent Laplacian smoothing (10 iterations) completed."
               << std::endl;
 
-    vcl::updatePerVertexAndFaceNormals(cotangentMesh);
+    vcl::updateVertexAndFaceNormals(cotangentMesh);
 
     /****** Taubin Smoothing ******/
 
@@ -88,7 +88,7 @@ auto meshSmoothing()
     std::cout << "Taubin smoothing (50 iterations, λ=0.5, μ=-0.53) completed."
               << std::endl;
 
-    vcl::updatePerVertexAndFaceNormals(taubinMesh);
+    vcl::updateVertexAndFaceNormals(taubinMesh);
 
     /****** Normal Smoothing for Point Cloud ******/
 
@@ -99,7 +99,7 @@ auto meshSmoothing()
 
     {
         vcl::Timer timer("Normal smoothing");
-        vcl::smoothPerVertexNormalsPointCloud(normalMesh, 10, 3);
+        vcl::smoothVertexNormalsPointCloud(normalMesh, 10, 3);
         timer.stopAndPrint();
     }
 

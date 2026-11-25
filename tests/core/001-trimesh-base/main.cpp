@@ -15,12 +15,12 @@ TEMPLATE_TEST_CASE(
     "",
     vcl::TriMesh,
     vcl::TriMeshf,
-    vcl::TriMeshIndexed,
-    vcl::TriMeshIndexedf)
+    vcl::TriMesh64,
+    vcl::TriMesh64f)
 {
-    using TriMesh = TestType;
+    using TriMesh      = TestType;
+    using TriMeshPoint = vcl::PositionType<vcl::VertexType<TriMesh>>;
 
-    using TriMeshPoint = TriMesh::VertexType::PositionType;
     TriMesh m;
 
     THEN("The size for each container start at 0")
@@ -31,43 +31,39 @@ TEMPLATE_TEST_CASE(
 
     THEN("The optional components are all disabled")
     {
-        REQUIRE(m.isPerVertexQualityEnabled() == false);
-        REQUIRE(m.isPerVertexColorEnabled() == false);
-        REQUIRE(m.isPerVertexAdjacentFacesEnabled() == false);
-        REQUIRE(m.isPerVertexAdjacentVerticesEnabled() == false);
-        REQUIRE(m.isPerVertexPrincipalCurvatureEnabled() == false);
-        REQUIRE(m.isPerVertexTexCoordEnabled() == false);
-        REQUIRE(m.isPerVertexMarkEnabled() == false);
-        REQUIRE(m.perVertexCustomComponentNames().size() == 0);
-        REQUIRE(m.isPerFaceQualityEnabled() == false);
-        REQUIRE(m.isPerFaceColorEnabled() == false);
-        REQUIRE(m.isPerFaceAdjacentFacesEnabled() == false);
-        REQUIRE(m.isPerFaceWedgeTexCoordsEnabled() == false);
-        REQUIRE(m.isPerFaceMarkEnabled() == false);
-        REQUIRE(m.perFaceCustomComponentNames().size() == 0);
+        REQUIRE(m.isVertexQualityAvailable() == false);
+        REQUIRE(m.isVertexColorAvailable() == false);
+        REQUIRE(m.isVertexAdjacentFacesAvailable() == false);
+        REQUIRE(m.isVertexAdjacentVerticesAvailable() == false);
+        REQUIRE(m.isVertexPrincipalCurvatureAvailable() == false);
+        REQUIRE(m.isVertexTexCoordAvailable() == false);
+        REQUIRE(m.vertexCustomComponentNames().size() == 0);
+        REQUIRE(m.isFaceQualityAvailable() == false);
+        REQUIRE(m.isFaceColorAvailable() == false);
+        REQUIRE(m.isFaceAdjacentFacesAvailable() == false);
+        REQUIRE(m.isFaceWedgeTexCoordsAvailable() == false);
+        REQUIRE(m.faceCustomComponentNames().size() == 0);
     }
 
     WHEN("Enabling and disabling all the per vertex optional components")
     {
-        m.enableAllPerVertexOptionalComponents();
+        m.enableAllVertexOptionalComponents();
 
-        REQUIRE(m.isPerVertexQualityEnabled() == true);
-        REQUIRE(m.isPerVertexColorEnabled() == true);
-        REQUIRE(m.isPerVertexAdjacentFacesEnabled() == true);
-        REQUIRE(m.isPerVertexAdjacentVerticesEnabled() == true);
-        REQUIRE(m.isPerVertexPrincipalCurvatureEnabled() == true);
-        REQUIRE(m.isPerVertexTexCoordEnabled() == true);
-        REQUIRE(m.isPerVertexMarkEnabled() == true);
+        REQUIRE(m.isVertexQualityAvailable() == true);
+        REQUIRE(m.isVertexColorAvailable() == true);
+        REQUIRE(m.isVertexAdjacentFacesAvailable() == true);
+        REQUIRE(m.isVertexAdjacentVerticesAvailable() == true);
+        REQUIRE(m.isVertexPrincipalCurvatureAvailable() == true);
+        REQUIRE(m.isVertexTexCoordAvailable() == true);
 
-        m.disableAllPerVertexOptionalComponents();
+        m.disableAllVertexOptionalComponents();
 
-        REQUIRE(m.isPerVertexQualityEnabled() == false);
-        REQUIRE(m.isPerVertexColorEnabled() == false);
-        REQUIRE(m.isPerVertexAdjacentFacesEnabled() == false);
-        REQUIRE(m.isPerVertexAdjacentVerticesEnabled() == false);
-        REQUIRE(m.isPerVertexPrincipalCurvatureEnabled() == false);
-        REQUIRE(m.isPerVertexTexCoordEnabled() == false);
-        REQUIRE(m.isPerVertexMarkEnabled() == false);
+        REQUIRE(m.isVertexQualityAvailable() == false);
+        REQUIRE(m.isVertexColorAvailable() == false);
+        REQUIRE(m.isVertexAdjacentFacesAvailable() == false);
+        REQUIRE(m.isVertexAdjacentVerticesAvailable() == false);
+        REQUIRE(m.isVertexPrincipalCurvatureAvailable() == false);
+        REQUIRE(m.isVertexTexCoordAvailable() == false);
     }
 
     WHEN("Adding and removing vertices")
@@ -77,20 +73,20 @@ TEMPLATE_TEST_CASE(
         REQUIRE(m.vertexCount() == 1);
         REQUIRE(m.faceCount() == 0);
         REQUIRE(m.vertex(0).position() == TriMeshPoint(0, 0, 0));
-        REQUIRE(&m.vertex(vi0) == &m.vertex(0));
+        REQUIRE(m.vertex(vi0) == m.vertex(0));
 
         unsigned int vi1 = m.addVertex();
 
         REQUIRE(m.vertexCount() == 2);
         REQUIRE(m.vertex(1).position() == TriMeshPoint(0, 0, 0));
-        REQUIRE(&m.vertex(vi0) == &m.vertex(0));
-        REQUIRE(&m.vertex(vi1) == &m.vertex(1));
+        REQUIRE(m.vertex(vi0) == m.vertex(0));
+        REQUIRE(m.vertex(vi1) == m.vertex(1));
 
         unsigned int vi2 = m.addVertices(5);
         REQUIRE(m.vertexCount() == 7);
-        REQUIRE(&m.vertex(vi0) == &m.vertex(0));
-        REQUIRE(&m.vertex(vi1) == &m.vertex(1));
-        REQUIRE(&m.vertex(vi2) == &m.vertex(2));
+        REQUIRE(m.vertex(vi0) == m.vertex(0));
+        REQUIRE(m.vertex(vi1) == m.vertex(1));
+        REQUIRE(m.vertex(vi2) == m.vertex(2));
     }
 
     WHEN("Adding and removing vertices and faces")
@@ -101,19 +97,19 @@ TEMPLATE_TEST_CASE(
         REQUIRE(m.vertexCount() == 3);
         unsigned int fi0 = m.addFace();
         REQUIRE(m.faceCount() == 1);
-        REQUIRE(&m.face(fi0) == &m.face(0));
+        REQUIRE(m.face(fi0) == m.face(0));
         m.addFace(0, 1, 2);
         REQUIRE(m.faceCount() == 2);
         REQUIRE(m.face(1).vertexIndex(0) == 0);
         REQUIRE(m.face(1).vertexIndex(1) == 1);
         REQUIRE(m.face(1).vertexIndex(2) == 2);
-        REQUIRE(m.face(1).vertex(0) == &m.vertex(0));
-        REQUIRE(m.face(1).vertex(1) == &m.vertex(1));
-        REQUIRE(m.face(1).vertex(2) == &m.vertex(2));
-        REQUIRE(m.face(1).vertexMod(0) == &m.vertex(0));
-        REQUIRE(m.face(1).vertexMod(-1) == &m.vertex(2));
-        REQUIRE(m.face(1).vertexMod(5) == &m.vertex(2));
-        REQUIRE(m.face(1).vertexMod(-5) == &m.vertex(1));
+        REQUIRE(m.face(1).vertex(0) == m.vertex(0));
+        REQUIRE(m.face(1).vertex(1) == m.vertex(1));
+        REQUIRE(m.face(1).vertex(2) == m.vertex(2));
+        REQUIRE(m.face(1).vertexMod(0) == m.vertex(0));
+        REQUIRE(m.face(1).vertexMod(-1) == m.vertex(2));
+        REQUIRE(m.face(1).vertexMod(5) == m.vertex(2));
+        REQUIRE(m.face(1).vertexMod(-5) == m.vertex(1));
         REQUIRE(m.face(1).vertexIndexMod(0) == 0);
         REQUIRE(m.face(1).vertexIndexMod(-1) == 2);
         REQUIRE(m.face(1).vertexIndexMod(5) == 2);
@@ -121,8 +117,8 @@ TEMPLATE_TEST_CASE(
 
         // test also iterators
         unsigned int vi = 0;
-        for (auto* v : m.face(1).vertices()) {
-            REQUIRE(v == &m.vertex(vi++));
+        for (auto v : m.face(1).vertices()) {
+            REQUIRE(v == m.vertex(vi++));
         }
 
         vi = 0;
@@ -142,9 +138,9 @@ TEMPLATE_TEST_CASE(
         REQUIRE(m.face(1).vertexIndex(0) == 0);
         REQUIRE(m.face(1).vertexIndex(1) == 1);
         REQUIRE(m.face(1).vertexIndex(2) == 2);
-        REQUIRE(m.face(1).vertex(0) == &m.vertex(0));
-        REQUIRE(m.face(1).vertex(1) == &m.vertex(1));
-        REQUIRE(m.face(1).vertex(2) == &m.vertex(2));
+        REQUIRE(m.face(1).vertex(0) == m.vertex(0));
+        REQUIRE(m.face(1).vertex(1) == m.vertex(1));
+        REQUIRE(m.face(1).vertex(2) == m.vertex(2));
 
         m.face(1).setVertex(2, 3);
         m.deleteVertex(2);
@@ -153,18 +149,18 @@ TEMPLATE_TEST_CASE(
         REQUIRE(m.face(1).vertexIndex(0) == 0);
         REQUIRE(m.face(1).vertexIndex(1) == 1);
         REQUIRE(m.face(1).vertexIndex(2) == 3);
-        REQUIRE(m.face(1).vertex(0) == &m.vertex(0));
-        REQUIRE(m.face(1).vertex(1) == &m.vertex(1));
-        REQUIRE(m.face(1).vertex(2) == &m.vertex(3));
+        REQUIRE(m.face(1).vertex(0) == m.vertex(0));
+        REQUIRE(m.face(1).vertex(1) == m.vertex(1));
+        REQUIRE(m.face(1).vertex(2) == m.vertex(3));
         m.compactVertices();
         REQUIRE(m.vertexCount() == 102);
         REQUIRE(m.vertexContainerSize() == 102);
         REQUIRE(m.face(1).vertexIndex(0) == 0);
         REQUIRE(m.face(1).vertexIndex(1) == 1);
         REQUIRE(m.face(1).vertexIndex(2) == 2);
-        REQUIRE(m.face(1).vertex(0) == &m.vertex(0));
-        REQUIRE(m.face(1).vertex(1) == &m.vertex(1));
-        REQUIRE(m.face(1).vertex(2) == &m.vertex(2));
+        REQUIRE(m.face(1).vertex(0) == m.vertex(0));
+        REQUIRE(m.face(1).vertex(1) == m.vertex(1));
+        REQUIRE(m.face(1).vertex(2) == m.vertex(2));
     }
 
     WHEN("Adding Faces with setVertices")
@@ -176,36 +172,36 @@ TEMPLATE_TEST_CASE(
         REQUIRE(m.face(0).vertexIndex(0) == 0);
         REQUIRE(m.face(0).vertexIndex(1) == 1);
         REQUIRE(m.face(0).vertexIndex(2) == 2);
-        REQUIRE(m.face(0).vertex(0) == &m.vertex(0));
-        REQUIRE(m.face(0).vertex(1) == &m.vertex(1));
-        REQUIRE(m.face(0).vertex(2) == &m.vertex(2));
+        REQUIRE(m.face(0).vertex(0) == m.vertex(0));
+        REQUIRE(m.face(0).vertex(1) == m.vertex(1));
+        REQUIRE(m.face(0).vertex(2) == m.vertex(2));
 
-        m.face(1).setVertices(&m.vertex(2), &m.vertex(0), &m.vertex(1));
+        m.face(1).setVertices(m.vertex(2), m.vertex(0), m.vertex(1));
         REQUIRE(m.face(1).vertexIndex(0) == 2);
         REQUIRE(m.face(1).vertexIndex(1) == 0);
         REQUIRE(m.face(1).vertexIndex(2) == 1);
-        REQUIRE(m.face(1).vertex(0) == &m.vertex(2));
-        REQUIRE(m.face(1).vertex(1) == &m.vertex(0));
-        REQUIRE(m.face(1).vertex(2) == &m.vertex(1));
+        REQUIRE(m.face(1).vertex(0) == m.vertex(2));
+        REQUIRE(m.face(1).vertex(1) == m.vertex(0));
+        REQUIRE(m.face(1).vertex(2) == m.vertex(1));
 
         std::list<unsigned int> l1 = {4, 3, 1};
         m.face(2).setVertices(l1);
         REQUIRE(m.face(2).vertexIndex(0) == 4);
         REQUIRE(m.face(2).vertexIndex(1) == 3);
         REQUIRE(m.face(2).vertexIndex(2) == 1);
-        REQUIRE(m.face(2).vertex(0) == &m.vertex(4));
-        REQUIRE(m.face(2).vertex(1) == &m.vertex(3));
-        REQUIRE(m.face(2).vertex(2) == &m.vertex(1));
+        REQUIRE(m.face(2).vertex(0) == m.vertex(4));
+        REQUIRE(m.face(2).vertex(1) == m.vertex(3));
+        REQUIRE(m.face(2).vertex(2) == m.vertex(1));
 
-        std::list<typename TriMesh::Vertex*> l2 = {
-            &m.vertex(2), &m.vertex(4), &m.vertex(3)};
+        std::list<vcl::VertexType<TriMesh>> l2 = {
+            m.vertex(2), m.vertex(4), m.vertex(3)};
         m.face(3).setVertices(l2);
         REQUIRE(m.face(3).vertexIndex(0) == 2);
         REQUIRE(m.face(3).vertexIndex(1) == 4);
         REQUIRE(m.face(3).vertexIndex(2) == 3);
-        REQUIRE(m.face(3).vertex(0) == &m.vertex(2));
-        REQUIRE(m.face(3).vertex(1) == &m.vertex(4));
-        REQUIRE(m.face(3).vertex(2) == &m.vertex(3));
+        REQUIRE(m.face(3).vertex(0) == m.vertex(2));
+        REQUIRE(m.face(3).vertex(1) == m.vertex(4));
+        REQUIRE(m.face(3).vertex(2) == m.vertex(3));
     }
 }
 
@@ -214,13 +210,13 @@ TEMPLATE_TEST_CASE(
     "",
     vcl::TriMesh,
     vcl::TriMeshf,
-    vcl::TriMeshIndexed,
-    vcl::TriMeshIndexedf)
+    vcl::TriMesh64,
+    vcl::TriMesh64f)
 {
     using TriMesh = TestType;
 
     TriMesh m;
-    using PointT = TriMesh::VertexType::PositionType;
+    using PointT = vcl::PositionType<vcl::VertexType<TriMesh>>;
 
     m.addVertices(
         PointT(-0.5, -0.5, 0.5),
@@ -250,40 +246,40 @@ TEMPLATE_TEST_CASE(
 
     THEN("Test Vertex References queries")
     {
-        REQUIRE(m.face(0).containsVertex(&m.vertex(0)) == true);
-        REQUIRE(m.face(0).containsVertex(&m.vertex(1)) == true);
-        REQUIRE(m.face(0).containsVertex(&m.vertex(2)) == true);
-        REQUIRE(m.face(0).containsVertex(&m.vertex(3)) == false);
+        REQUIRE(m.face(0).containsVertex(m.vertex(0)) == true);
+        REQUIRE(m.face(0).containsVertex(m.vertex(1)) == true);
+        REQUIRE(m.face(0).containsVertex(m.vertex(2)) == true);
+        REQUIRE(m.face(0).containsVertex(m.vertex(3)) == false);
 
         REQUIRE(m.face(0).containsVertex((unsigned int) 0) == true);
         REQUIRE(m.face(0).containsVertex(1) == true);
         REQUIRE(m.face(0).containsVertex(2) == true);
         REQUIRE(m.face(0).containsVertex(3) == false);
 
-        REQUIRE(m.face(1).containsVertex(&m.vertex(1)) == true);
-        REQUIRE(m.face(1).containsVertex(&m.vertex(4)) == false);
+        REQUIRE(m.face(1).containsVertex(m.vertex(1)) == true);
+        REQUIRE(m.face(1).containsVertex(m.vertex(4)) == false);
         REQUIRE(m.face(1).containsVertex(1) == true);
         REQUIRE(m.face(1).containsVertex(4) == false);
 
-        REQUIRE(m.face(2).indexOfVertex(&m.vertex(0)) == vcl::UINT_NULL);
-        REQUIRE(m.face(2).indexOfVertex(&m.vertex(3)) == 1);
+        REQUIRE(m.face(2).indexOfVertex(m.vertex(0)) == vcl::UINT_NULL);
+        REQUIRE(m.face(2).indexOfVertex(m.vertex(3)) == 1);
         REQUIRE(m.face(2).indexOfVertex((unsigned int) 0) == vcl::UINT_NULL);
         REQUIRE(m.face(2).indexOfVertex(4) == 2);
 
-        REQUIRE(m.face(3).indexOfEdge(&m.vertex(5), &m.vertex(4)) == 1);
-        REQUIRE(m.face(3).indexOfEdge(&m.vertex(4), &m.vertex(5)) == 1);
+        REQUIRE(m.face(3).indexOfEdge(m.vertex(5), m.vertex(4)) == 1);
+        REQUIRE(m.face(3).indexOfEdge(m.vertex(4), m.vertex(5)) == 1);
         REQUIRE(m.face(3).indexOfEdge(4, 3) == 2);
         REQUIRE(m.face(3).indexOfEdge(3, 4) == 2);
     }
 
     WHEN("Enable per Vertex Colors")
     {
-        m.enablePerVertexColor();
+        m.enableVertexColor();
 
-        REQUIRE(m.isPerVertexColorEnabled() == true);
+        REQUIRE(m.isVertexColorAvailable() == true);
 
         // colors are initialized to black
-        for (auto& v : m.vertices()) {
+        for (const auto& v : m.vertices()) {
             REQUIRE(v.color() == vcl::Color::Black);
         }
 
@@ -300,16 +296,20 @@ TEMPLATE_TEST_CASE(
         PointT p0 = m.vertex(0).position();
         PointT p1 = m.vertex(1).position();
 
-        // swap vertices
+        // 1. Swapping ElementProxy handles only rebinds handles, without
+        //    modifying the underlying SoA data in the container
+        auto v0 = m.vertex(0);
+        auto v1 = m.vertex(1);
         using std::swap;
-        swap(m.vertex(0), m.vertex(1));
+        swap(v0, v1);
 
-        // check that positions are swapped
-        REQUIRE(m.vertex(0).position() == p1);
-        REQUIRE(m.vertex(1).position() == p0);
-
-        // check that colors are swapped too
-        REQUIRE(m.vertex(0).color() == vcl::Color::Green);
-        REQUIRE(m.vertex(1).color() == vcl::Color::Red);
+        REQUIRE(v0.index() == 1);
+        REQUIRE(v1.index() == 0);
+        REQUIRE(v0.position() == p1);
+        REQUIRE(v1.position() == p0);
+        REQUIRE(m.vertex(0).position() == p0);
+        REQUIRE(m.vertex(1).position() == p1);
+        REQUIRE(m.vertex(0).color() == vcl::Color::Red);
+        REQUIRE(m.vertex(1).color() == vcl::Color::Green);
     }
 }

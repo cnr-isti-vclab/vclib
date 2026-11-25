@@ -26,17 +26,16 @@ int main()
     auto pointCloud = vcl::loadMesh<vcl::PointCloud>(
         VCLIB_EXAMPLE_MESHES_PATH "/splat/cactus_142k.ply", info,lS);
 
-    std::cout << "has gs: " << info.hasPerVertexGaussianSplat() << "\n"
+    std::cout << "has gs: " << info.hasVertexGaussianSplat() << "\n"
               << std::endl;
+
+    std::cout << "is gs available: " << pointCloud.isVertexGaussianSplatAvailable() << std::endl;
 
     std::cout << "Loaded Bonsai Gaussian Splat Point Cloud" << std::endl;
 
-    vcl::pointcloud::Vertex<double>& v0 = pointCloud.vertex(0);
+    auto v0 = pointCloud.vertex(0);
 
-    
-    std::cout << "is gs available: " << vcl::comp::isGaussianSplatAvailableOn(v0) << "\n" << std::endl;
-
-    auto& gs0 = v0.gaussianSplat();
+    const auto& gs0 = v0.gaussianSplat();
 
     std::cout << "Gaussian Splat of vertex 0: \n" << std::endl;
 

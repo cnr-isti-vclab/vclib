@@ -12,26 +12,62 @@
 
 #include <pybind11/pybind11.h>
 
+#include <stdexcept>
+
 namespace vcl::bind {
 
 namespace detail {
+
+template<typename ElementType>
+void checkBitFlags(const ElementType& e)
+{
+    if (!e.isValid()) {
+        throw std::runtime_error(
+            "Cannot access bit flags on an invalid or null element proxy.");
+    }
+}
 
 template<ElementConcept ElementType, typename... Options>
 void initCommonFlags(pybind11::class_<ElementType, Options...>& c)
 {
     namespace py = pybind11;
 
-    c.def("deleted", &ElementType::deleted);
-    c.def("selected", py::overload_cast<>(&ElementType::selected, py::const_));
-    c.def("set_selected", [](ElementType& e, bool s) { e.selected() = s; });
-    c.def("on_border", py::overload_cast<>(&ElementType::onBorder, py::const_));
-    c.def("visited", py::overload_cast<>(&ElementType::visited, py::const_));
-    c.def("set_visited", [](ElementType& e, bool v) { e.visited() = v; });
-    c.def("user_bit", [](ElementType& e, uint i) { return e.userBit(i); });
+    c.def("deleted", [](const ElementType& e) {
+        checkBitFlags(e);
+        return e.deleted();
+    });
+    c.def("selected", [](const ElementType& e) {
+        checkBitFlags(e);
+        return e.selected();
+    });
+    c.def("set_selected", [](ElementType& e, bool s) {
+        checkBitFlags(e);
+        e.selected() = s;
+    });
+    c.def("on_border", [](const ElementType& e) {
+        checkBitFlags(e);
+        return e.onBorder();
+    });
+    c.def("visited", [](const ElementType& e) {
+        checkBitFlags(e);
+        return e.visited();
+    });
+    c.def("set_visited", [](ElementType& e, bool v) {
+        checkBitFlags(e);
+        e.visited() = v;
+    });
+    c.def("user_bit", [](const ElementType& e, uint i) {
+        checkBitFlags(e);
+        return e.userBit(i);
+    });
     c.def("set_user_bit", [](ElementType& e, uint i, bool b) {
+        checkBitFlags(e);
         e.userBit(i) = b;
     });
-    c.def("reset_bit_flags", &ElementType::resetBitFlags);
+    c.def("reset_bit_flags", [](ElementType& e) {
+        checkBitFlags(e);
+        e.resetBitFlags();
+    });
 }
 
 } // namespace detail
@@ -41,7 +77,12 @@ void initBitFlags(pybind11::class_<ElementType, Options...>& c)
 {
     namespace py = pybind11;
 
-    c.def("set_on_border", [](ElementType& e, bool b) { e.onBorder() = b; });
+    detail::initCommonFlags(c);
+
+    c.def("set_on_border", [](ElementType& e, bool b) {
+        detail::checkBitFlags(e);
+        e.onBorder() = b;
+    });
 }
 
 } // namespace vcl::bind

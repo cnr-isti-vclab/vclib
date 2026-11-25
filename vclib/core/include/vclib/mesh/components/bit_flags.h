@@ -8,10 +8,11 @@
 #ifndef VCL_MESH_COMPONENTS_BIT_FLAGS_H
 #define VCL_MESH_COMPONENTS_BIT_FLAGS_H
 
-#include "base/component.h"
-#include "concepts/bit_flags.h"
+#include "base/bit_flags_concepts.h"
 
 #include <vclib/space/core.h>
+
+#include <cassert>
 
 namespace vcl::comp {
 
@@ -43,32 +44,11 @@ namespace vcl::comp {
  * bool isD = v.deleted();
  * @endcode
  *
- * @tparam ParentElemType: This template argument must be `void` if the
- * component needs to be stored horizontally, or the type of the parent element
- * that will contain this component if the component needs to be stored
- * vertically.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
- *
  * @ingroup components
  */
-template<typename ParentElemType = void, bool OPT = false>
-class BitFlags :
-        public Component<
-            BitFlags<ParentElemType, OPT>,
-            CompId::BIT_FLAGS,
-            BitSet<uint>,
-            ParentElemType,
-            !std::is_same_v<ParentElemType, void>,
-            OPT>
+class BitFlags : public Component<CompId::BIT_FLAGS, BitSet<uint>>
 {
-    using Base = Component<
-        BitFlags<ParentElemType, OPT>,
-        CompId::BIT_FLAGS,
-        BitSet<uint>,
-        ParentElemType,
-        !std::is_same_v<ParentElemType, void>,
-        OPT>;
+    using Base = Component<CompId::BIT_FLAGS, BitSet<uint>>;
 
     // indices of the bits
     enum {
@@ -78,7 +58,7 @@ class BitFlags :
         VISITED  = 3  // bit 3
     };
 
-    static const uint FIRST_USER_BIT = 4;
+    static constexpr uint FIRST_USER_BIT = 4;
 
 public:
     /**
@@ -89,32 +69,7 @@ public:
     /**
      * @brief Static number of bits that can have custom meanings to the user
      */
-    inline static const uint USER_BIT_COUNT =
-        sizeof(FlagsType) * 8 - FIRST_USER_BIT;
-
-    /* Constructors */
-
-    /**
-     * @brief Initializes the bits to `false`.
-     */
-    BitFlags()
-    {
-        if constexpr (!Base::IS_VERTICAL) {
-            init();
-        }
-    }
-
-    /**
-     * @private
-     * @brief Initializes the bits to false.
-     *
-     * It is made in the init function since the component could be not
-     * available during construction (e.g. if the component is optional and not
-     * enabled).
-     *
-     * This member function is hidden by the element that inherits this class.
-     */
-    void init() { flags().reset(); }
+    static constexpr uint USER_BIT_COUNT = sizeof(uint) * 8 - FIRST_USER_BIT;
 
     /* Member functions */
 
@@ -122,92 +77,67 @@ public:
      * @brief Returns whether the current Element is deleted or not.
      * @return true if the Element is deleted, false otherwise.
      */
-    bool deleted() const { return flags()[DELETED]; }
-
-    /**
-     * @brief Accesses the 'selected' bit of this Element, returning a reference
-     * to it.
-     * @return a reference to the 'selected' bit of this Element.
-     */
-    BitProxy<FlagsType> selected() { return flags()[SELECTED]; }
-
-    /**
-     * @brief Returns whether the current Element is selected or not.
-     * @return true if the Element is selected, false otherwise.
-     */
-    bool selected() const { return flags()[SELECTED]; }
-
-    /**
-     * @brief Accesses the 'onBorder' bit of this Element, returning a reference
-     * to it.
-     * @return a reference to the 'onBorder' bit of this Element.
-     */
-    BitProxy<FlagsType> onBorder() { return flags()[BORDER]; }
-
-    /**
-     * @brief Returns whether the current Element is on border or not.
-     * @return true if the Element is on border, false otherwise.
-     */
-    bool onBorder() const { return flags()[BORDER]; }
-
-    /**
-     * @brief Accesses the 'visited' bit of this Element, returning a reference
-     * to it.
-     * @return a reference to the 'visited' bit of this Element.
-     */
-    BitProxy<FlagsType> visited() { return flags()[VISITED]; }
-
-    /**
-     * @brief Returns whether the current Element has been visited or not.
-     * @return true if the Element has been visited, false otherwise.
-     */
-    bool visited() const { return flags()[VISITED]; }
-
-    /**
-     * @brief Returns a reference to the value of the user bit of this Element
-     * given in input. The bit is checked to be less than the total number of
-     * assigned user bits, which in this class is 28.
-     *
-     * @param[in] bit: the position of the bit, in the interval [0 - 27].
-     * @return a reference to the desired user bit.
-     */
-    bool userBit(uint bit) const
+    bool deleted(this auto&& self)
     {
-        assert(bit < USER_BIT_COUNT);
-        return flags()[bit + FIRST_USER_BIT];
+        if (!self.isValid())
+            return false;
+        return self.flags()[DELETED];
     }
 
     /**
-     * @brief Returns the boolean value of the user bit of this Element given in
+     * @brief Returns a reference of the bit that tells whether the current
+     * Element is selected or not.
+     * @return true if the Element is selected, false otherwise.
+     */
+    decltype(auto) selected(this auto&& self) { return self.flags()[SELECTED]; }
+
+    /**
+     * @brief Returns a reference of the bit that tells whether the current
+     * Element is on border or not.
+     * @return true if the Element is on border, false otherwise.
+     */
+    decltype(auto) onBorder(this auto&& self) { return self.flags()[BORDER]; }
+
+    /**
+     * @brief Returns a reference of the bit that tells whether the current
+     * Element has been visited or not.
+     * @return true if the Element has been visited, false otherwise.
+     */
+    decltype(auto) visited(this auto&& self) { return self.flags()[VISITED]; }
+
+    /**
+     * @brief Returns a reference to the user bit of this Element given in
      * input. The bit is checked to be less than the total number of assigned
      * user bits, which in this class is 28.
      *
-     * @param[in] bit: the position of the bit, in the interval [0 - 27], that
-     * will be returned by reference.
-     * @return `true` if the required bit is enabled, `false` otherwise.
+     * @param[in] bit: the position of the bit, in the interval [0 - 27].
+     * @return true if the required bit is enabled, `false` otherwise.
      */
-    BitProxy<FlagsType> userBit(uint bit)
+    decltype(auto) userBit(this auto&& self, uint bit)
     {
         assert(bit < USER_BIT_COUNT);
-        return flags()[bit + FIRST_USER_BIT];
+        return self.flags()[bit + FIRST_USER_BIT];
     }
 
     /**
      * @brief Unsets all the flags of this Element and sets them to `false`,
      * **except the deleted flag**, which needs to be manually reset.
      */
-    void resetBitFlags()
+    void resetBitFlags(this auto&& self)
     {
-        bool isD = deleted();
-        flags().reset();
-        deletedBit() = isD;
+        bool isD = self.deleted();
+        self.flags().reset();
+        self.flags()[DELETED] = isD;
     }
 
     /**
      * @brief Returns the underlying integral value of the BitFlags.
      * @return the underlying integral value of the BitFlags.
      */
-    FlagsType underlyingBitFlags() const { return flags().underlying(); }
+    FlagsType underlyingBitFlags(this auto&& self)
+    {
+        return self.flags().underlying();
+    }
 
     /**
      * @brief Sets the underlying integral value of the BitFlags.
@@ -218,11 +148,11 @@ public:
      * @param[in] bits: the integral value to set as the underlying value of the
      * BitFlags
      */
-    void setUnderlyingBitFlags(FlagsType bits)
+    void setUnderlyingBitFlags(this auto&& self, FlagsType bits)
     {
-        bool isD = deleted();
-        flags().setUnderlying(bits);
-        deletedBit() = isD;
+        bool isD = self.deleted();
+        self.flags().setUnderlying(bits);
+        self.flags()[DELETED] = isD;
     }
 
     /**
@@ -231,15 +161,15 @@ public:
      * library.
      * @param[in] f: bit flags in the format of the VCG library.
      */
-    void importFlagsFromVCGFormat(int f)
+    void importFlagsFromVCGFormat(this auto&& self, int f)
     {
-        resetBitFlags();
+        self.resetBitFlags();
         if (f & 0x0010)
-            visited() = true;
+            self.visited() = true;
         if (f & 0x0020)
-            selected() = true;
+            self.selected() = true;
         if (f & 0x0100)
-            onBorder() = true;
+            self.onBorder() = true;
     }
 
     /**
@@ -249,54 +179,64 @@ public:
      * @return an integer representing the bit flags of this element in the
      * format of the VCG library.
      */
-    int exportFlagsToVCGFormat() const
+    int exportFlagsToVCGFormat(this auto&& self)
     {
         int f = 0;
-        if (visited())
+        if (self.visited())
             f |= 0x0010;
-        if (selected())
+        if (self.selected())
             f |= 0x0020;
-        if (onBorder())
+        if (self.onBorder())
             f |= 0x0100;
         return f;
     }
 
 protected:
-    BitProxy<FlagsType> deletedBit() { return flags()[DELETED]; }
+    template<typename OtherElement>
+    void importFrom(this auto&& self, const OtherElement& other, bool = true);
 
-    // Component interface functions
-    template<typename Element>
-    void importFrom(const Element& e, bool = true)
+    void setDeleted(this auto&& self, bool b = true)
     {
-        if constexpr (HasBitFlags<Element>) {
-            resetBitFlags();
-            if constexpr (
-                HasPolygonBitFlags<Element> || HasTriangleBitFlags<Element>) {
-                deletedBit()  = e.deleted();
-                selected()    = e.selected();
-                visited()     = e.visited();
-                onBorder()    = e.onBorder();
-                const uint UM = std::min(USER_BIT_COUNT, e.USER_BIT_COUNT);
-                for (uint i = 0; i < UM; ++i)
-                    userBit(i) = e.userBit(i);
+        self.flags()[DELETED] = b;
+    }
+
+private:
+    decltype(auto) flags(this auto&& self) { return Base::compData(self); }
+};
+
+/* Implementation of member functions */
+
+template<typename OtherElement>
+void BitFlags::importFrom(this auto&& self, const OtherElement& other, bool)
+{
+    if constexpr (HasBitFlags<OtherElement>) {
+        const bool wasDeleted = self.deleted();
+        const bool isDeleted  = other.deleted();
+        self.resetBitFlags();
+        if constexpr (HasFaceBitFlags<OtherElement>) {
+            self.setDeleted(isDeleted);
+            self.selected() = other.selected();
+            self.visited()  = other.visited();
+            self.onBorder() = other.onBorder();
+
+            const uint um =
+                std::min(USER_BIT_COUNT, (uint) OtherElement::USER_BIT_COUNT);
+            for (uint i = 0; i < um; ++i) {
+                self.userBit(i) = other.userBit(i);
             }
-            else {
-                flags() = e.flags();
+        }
+        else {
+            self.setUnderlyingBitFlags(other.underlyingBitFlags());
+            self.setDeleted(isDeleted);
+        }
+        if constexpr (CanAdjustContainerElemCount<decltype(self)>) {
+            if (self.isValid()) {
+                self.parentContainer().adjustElemCountOnDeletedChange(
+                    wasDeleted, isDeleted);
             }
         }
     }
-
-    void serialize(std::ostream& os) const { flags().serialize(os); }
-
-    void deserialize(std::istream& is) { flags().deserialize(is); }
-
-private:
-    // members that allow to access the flags, trough data (horizontal) or
-    // trough parent (vertical)
-    BitSet<FlagsType>& flags() { return Base::data(); }
-
-    BitSet<FlagsType> flags() const { return Base::data(); }
-};
+}
 
 } // namespace vcl::comp
 

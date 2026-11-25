@@ -1,0 +1,12 @@
+//@concepts
+template<typename T>
+concept HasAdjacentFaces = comp::HasAdjacentFaces<T>;
+template<typename T>
+concept HasOptionalAdjacentFaces = comp::HasOptionalAdjacentFaces<T>;
+//@aliases
+/* Port AdjacentFaces class into %EL_NS% namespace */
+template<std::unsigned_integral Index = uint>
+using AdjacentFaces = comp::AdjacentFaces<-1, Index>;
+
+template<std::unsigned_integral Index = uint>
+using OptionalAdjacentFaces = comp::AdjacentFaces<-1, Index, false, true>;

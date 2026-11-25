@@ -26,13 +26,13 @@ TEMPLATE_TEST_CASE(
     vcl::TriMeshf,
     vcl::PolyMesh,
     vcl::PolyMeshf,
-    vcl::TriMeshIndexed,
-    vcl::TriMeshIndexedf,
-    vcl::PolyMeshIndexed,
-    vcl::PolyMeshIndexedf)
+    vcl::TriMesh64,
+    vcl::TriMesh64f,
+    vcl::PolyMesh64,
+    vcl::PolyMesh64f)
 {
     using TestMesh   = TestType;
-    using ScalarType = typename TestMesh::ScalarType;
+    using ScalarType = vcl::ScalarType<TestMesh>;
 
     using namespace vcl;
 
@@ -42,7 +42,7 @@ TEMPLATE_TEST_CASE(
         TestMesh m = loadMesh<TestMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
         scale(m, 100.0);
-        updatePerVertexAndFaceNormals(m);
+        updateVertexAndFaceNormals(m);
 
         Point3<ScalarType> bestNormal =
             embree::findBestOrientationByHeightfieldExteriorVolume(

@@ -148,7 +148,7 @@ public:
      *
      * @return The degree of the GaussianSplat object.
      */
-    const uint shDegree() { return mSHDegree; }
+    uint shDegree() const { return mSHDegree; }
 
     /**
      * @brief Resizes the spherical harmonics vector.
@@ -304,11 +304,11 @@ public:
         vcl::deserialize(is, mOpacity);
         mScale.deserialize(is);
         vcl::deserializeN(is, mRotation.coeffs().data(), 4);
-        vcl::deserializeN(is, mSHCoeffs.begin(), mSHCoeffs.size());
+        vcl::deserializeN(is, mSHCoeffs.data(), mSHCoeffs.size());
     }
 
 private:
-    int getDegreeFromSize(int size) {
+    int getDegreeFromSize(int size) const {
         double intPart;
         double fracPart = std::modf(std::sqrt(size / static_cast<float>(SH_COLOR)), &intPart);
 

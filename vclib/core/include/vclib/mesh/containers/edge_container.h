@@ -8,463 +8,384 @@
 #ifndef VCL_MESH_CONTAINERS_EDGE_CONTAINER_H
 #define VCL_MESH_CONTAINERS_EDGE_CONTAINER_H
 
-#include "base/element_container.h"
-
+#include <vclib/mesh/components/base/component_predicates.h>
+#include <vclib/mesh/containers/base/element_container.h>
+#include <vclib/mesh/containers/base/macros.h>
 #include <vclib/mesh/elements/edge.h>
 #include <vclib/mesh/elements/edge_components.h>
 
-namespace vcl {
-namespace mesh {
+#include <vclib/base.h>
+
+namespace vcl::mesh {
 
 /**
- * @brief The EdgeContainer class represents a container of Edge
- * elements that can be used in a Mesh class.
+ * @brief EdgeContainer stores the per-edge data in a Structure of Arrays (SoA),
+ * and it is meant to be used as a template parameter of the Mesh class.
  *
- * This class adds a container (vector) of Edges to the Mesh, making
- * available the accessors members to them and their components.
+ * It accepts the Edge component list (satisfying HasRequiredEdgeComponents),
+ * instantiates the underlying storage and exposes the Edge element view.
  *
- * It provides all the add, delete, reserve, compact and other functions to
- * manage the Edges, plus the iterators and views to iterate over them.
- * It also provides the functions to enable and disable the optional components
- * of the Edges.
- *
- * @tparam T: The type of the Edge elements. It must satisfy the
- * EdgeConcept.
+ * @tparam CompList: The edge components type (e.g. EdgeComponents<BitFlags,
+ * EdgeVertexReferences<uint>>).
+ * @tparam Index: The index type (default uint).
+ * @tparam ParentMesh: The parent mesh type. On Mesh instantiation, this is
+ * automatically set to the Mesh type. Default is void.
  *
  * @ingroup containers
  */
-template<EdgeConcept T>
-class EdgeContainer : public ElementContainer<T>
+template<
+    HasRequiredEdgeComponents CompList,
+    std::unsigned_integral    Index = uint,
+    typename ParentMesh             = void>
+class EdgeContainer :
+        public ElementContainer<
+            typename comp::detail::ComponentListHelper<CompList>::type,
+            ParentMesh,
+            Index,
+            Edge>
 {
-    template<EdgeConcept U>
-    friend class EdgeContainer;
-
-    using EdgeContainerType = EdgeContainer<T>;
-    using Base              = ElementContainer<T>;
+    using Base = ElementContainer<
+        typename comp::detail::ComponentListHelper<CompList>::type,
+        ParentMesh,
+        Index,
+        Edge>;
 
 public:
-    using Edge              = T;
-    using EdgeType          = T;
-    using EdgeIterator      = Base::ElementIterator;
-    using ConstEdgeIterator = Base::ConstElementIterator;
+    using Edge           = typename Base::ElementType;
+    using ConstEdge      = typename Base::ConstElementType;
+    using EdgeComponents = typename Base::Components;
+    using Components     = EdgeComponents;
+    using Base::NULL_INDEX;
+
+    // Rebind idiom to allow changing the ParentMesh type while keeping the same
+    // component list and index type.
+    template<typename NewParent>
+    using Rebind = EdgeContainer<CompList, Index, NewParent>;
 
     /**
      * @brief Empty constructor that creates an empty container of Edges.
      */
     EdgeContainer() = default;
 
+    friend void swap(EdgeContainer& a, EdgeContainer& b) noexcept { a.swap(b); }
+
     /**
-     * @brief Returns a const reference of the Edge at the i-th position
-     * in the Edge Container of the Mesh, which will be the Edge having
-     * index = i.
+     * @brief Returns the Edge at the i-th position in the Edge Container of
+     * the Mesh, which will be the edge having index = i.
      *
      * This function does not perform any sanity check: if i is less than
      * edgeContainerSize(), this function will return a valid Edge
-     * reference (note that the Edge may have been flagged as deleted).
+     * (note that the Edge may have been flagged as deleted).
      *
-     * @param[in] i: the index of the Edge that will be returned.
+     * @param[in] i: the index of the edge that will be returned.
+     *
+     * @return The i-th Edge of the Edge Container.
      */
-    const EdgeType& edge(uint i) const { return Base::element(i); }
+    Edge edge(Index i) { return Base::element(i); }
 
     /**
-     * @brief Returns a reference of the Edge at the i-th position in the
-     * Edge Container of the Mesh, which will be the Edge having
-     * index = i.
+     * @brief Returns the const Edge at the i-th position in the Edge
+     * Container of the Mesh, which will be the edge having index = i.
      *
      * This function does not perform any sanity check: if i is less than
-     * edgeContainerSize(), this function will return a valid Edge
-     * reference (note that the Edge may have been flagged as deleted).
+     * edgeContainerSize(), this function will return a valid ConstEdge
+     * (note that the Edge may have been flagged as deleted).
      *
-     * @param[in] i: the index of the Edge that will be returned.
+     * @param[in] i: the index of the edge that will be returned.
+     *
+     * @return The i-th const Edge of the Edge Container.
      */
-    EdgeType& edge(uint i) { return Base::element(i); }
+    ConstEdge edge(Index i) const { return Base::element(i); }
 
     /**
-     * @brief Returns the number of **non-deleted** Edges contained in the
+     * @brief Returns the number of **non-deleted** edges contained in the
      * Edge container of the Mesh.
      *
      * If edgeCount() != edgeContainerSize(), it means that there are some
-     * Edges that are flagged as deleted.
+     * edges that are flagged as deleted.
      *
-     * @return the number of non-deleted Edges of the Mesh.
+     * @return The number of non-deleted edges of the Mesh.
      */
-    uint edgeCount() const { return Base::elementCount(); }
+    std::size_t edgeCount() const { return Base::elementCount(); }
 
     /**
-     * @brief Returns the number of Edges (also deleted) contained in the
+     * @brief Returns the number of edges (also deleted) contained in the
      * Edge container of the Mesh.
      *
      * If edgeCount() != edgeContainerSize(), it means that there are some
-     * Edges that are flagged as deleted.
+     * edges that are flagged as deleted.
      *
-     * @return the number of all the Edges contained in the Mesh.
+     * @return The number of all the edges contained in the Mesh.
      */
-    uint edgeContainerSize() const { return Base::elementContainerSize(); }
+    std::size_t edgeContainerSize() const
+    {
+        return Base::elementContainerSize();
+    }
 
     /**
-     * @brief Returns the number of deleted Edges in the Edge container,
+     * @brief Returns the number of deleted edges in the Edge container,
      * that is edgeContainerSize() - edgeCount().
      *
-     * @return The number of deleted Edges in the container.
+     * @return The number of deleted edges in the container.
      */
-    uint deletedEdgeCount() const { return Base::deletedElementCount(); }
+    std::size_t deletedEdgeCount() const { return Base::deletedElementCount(); }
 
     /**
-     * @brief Add an Edge to the container, returning its index.
+     * @brief Adds a new edge into the Edge container, returning the index of
+     * the added edge.
      *
-     * If the call of this function will cause a reallocation of the
-     * EdgeContainer, the function will automatically take care of updating
-     * all the Edge pointers contained in the Mesh.
-     *
-     * @return the id of the newly added Edge.
+     * @return The index of the new edge.
      */
-    uint addEdge() { return Base::addElement(); }
+    Index addEdge() { return Base::addElement(); }
 
     /**
-     * @brief Add an Edge having the two given vertices to the container,
-     * returning its index.
+     * @brief Adds a new edge with the given vertices or vertex indices into the
+     * Edge container, returning the index of the added edge.
      *
-     * If the call of this function will cause a reallocation of the
-     * EdgeContainer, the function will automatically take care of updating
-     * all the Edge pointers contained in the Mesh.
-     *
-     * @param[in] v0: the index of the first vertex of the edge.
-     * @param[in] v1: the index of the second vertex of the edge.
-     * @return the id of the newly added Edge.
+     * @tparam Args: The types of the vertex arguments (references or indices).
+     * @param[in] args: The vertices or vertex indices of the new edge.
+     * @return The index of the new edge.
      */
-    uint addEdge(uint v0, uint v1)
+    template<typename... Args>
+    Index addEdge(const Args&... args) requires (sizeof...(Args) == 2)
     {
-        uint eid = addEdge();
-        edge(eid).setVertex(0U, v0);
-        edge(eid).setVertex(1U, v1);
+        Index eid = addEdge();
+        edge(eid).setVertices(args...);
         return eid;
     }
 
     /**
-     * @brief Add an Edge having the two given vertices to the container,
-     * returning its index.
+     * @brief Adds a new edge with the vertices or vertex indices contained in
+     * the given range, returning the index of the added edge.
      *
-     * If the call of this function will cause a reallocation of the
-     * EdgeContainer, the function will automatically take care of updating
-     * all the Edge pointers contained in the Mesh.
-     *
-     * @param[in] v0: the pointer to the first vertex of the edge.
-     * @param[in] v1: the pointer to the second vertex of the edge.
-     * @return the id of the newly added Edge.
+     * @tparam Rng: An input range type containing vertices or vertex indices.
+     * @param[in] rng: The range of vertices or vertex indices of the new edge.
+     * @return The index of the new edge.
      */
-    uint addEdge(typename T::VertexType* v0, typename T::VertexType* v1)
+    template<std::ranges::input_range Rng>
+    Index addEdge(Rng&& rng)
     {
-        uint eid = addEdge();
-        edge(eid).setVertex(0U, v0);
-        edge(eid).setVertex(1U, v1);
+        Index eid = addEdge();
+        edge(eid).setVertices(std::forward<Rng>(rng));
         return eid;
     }
 
     /**
-     * @brief Add an arbitrary number of n Edges, returning the id of the
-     * first added Edge.
+     * @brief Adds an arbitrary number of n edges, returning the index of the
+     * first added edge.
      *
-     * This means that, if you want to add 5 Edges and this member function
-     * returns 4, the added Edges will have id from 4 to id 8 included.
-     *
-     * If the call of this function will cause a reallocation of the
-     * EdgeContainer, the function will automatically take care of updating
-     * all the Edge pointers contained in the Mesh.
-     *
-     * @param n: the number of Edges to add to the mesh.
-     * @return the id of the first added Edge.
+     * @param[in] n: the number of edges to add to the mesh.
+     * @return The index of the first added edge.
      */
-    uint addEdges(uint n) { return Base::addElements(n); }
+    Index addEdges(std::size_t n) { return Base::addElements(n); }
+
+    /**
+     * @brief Adds an arbitrary number of edges with the vertices or vertex
+     * indices contained in the given range of ranges, returning the index of
+     * the first added edge.
+     *
+     * @tparam Rng: A range of ranges containing vertices or vertex indices.
+     * @param[in] rng: A range of ranges containing the vertices or vertex
+     * indices for each edge.
+     * @return The index of the first added edge.
+     */
+    template<std::ranges::input_range Rng>
+    requires std::ranges::input_range<std::ranges::range_value_t<Rng>>
+    Index addEdges(Rng&& rng)
+    {
+        Index baseId = edgeContainerSize();
+        if constexpr (std::ranges::sized_range<Rng>) {
+            reserveEdges(baseId + std::ranges::size(rng));
+        }
+        for (auto&& e : rng) {
+            addEdge(e);
+        }
+        return baseId;
+    }
 
     /**
      * @brief Clears the Edge container of the Mesh, deleting all the
-     * Edges.
+     * edges.
      *
-     * The contained edges are actually removed from the container, not only
-     * marked as deleted. Therefore, the container will have size 0
+     * The contained edge components are actually removed from the container,
+     * not only marked as deleted. Therefore, the container will have size 0
      * (`edgeContainerSize() == 0`) after the call of this function.
      *
-     * @note This function does not cause a reallocation of the Edge
-     * container.
-     *
-     * @warning Any pointer to Edges in the Mesh will be left unchanged, and
-     * therefore will point to invalid Edges. This means that, if you have a
-     * pointer to a Edge and you call this function, you will have a dangling
-     * pointer.
+     * @warning Any index or reference to edges in the Mesh will be left
+     * unchanged, and therefore will point to invalid edges.
      */
     void clearEdges() { Base::clearElements(); }
 
     /**
-     * @brief Resizes the Edge container to contain `n` Edges.
+     * @brief Resizes the Edge container to contain `n` edges.
      *
-     * If the new size is greater than the old one, new Edges are added to the
-     * container, and a reallocation may happen. If the new size is smaller than
-     * the old one, the container will keep its first non-deleted `n` Edges, and
-     * the remaining Edges are marked as deleted.
+     * If the new size is greater than the old one, new edges are added to
+     * the container. If the new size is smaller than the old one, the container
+     * is truncated to `n` edges (edges beyond `n` are removed).
      *
-     * If the call of this function will cause a reallocation of the Edge
-     * container, the function will automatically take care of updating all the
-     * Edge pointers contained in the Mesh.
-     *
-     * @warning The given size `n` is relative to the number of non-deleted
-     * Edges, not to the size of the Edge container. For example, if you
-     * have a mesh with 10 Edges and edgeContainerSize() == 20, calling
-     * resizeEdges(5) will not cause a reallocation of the container, but will
-     * mark as deleted the least 5 non-deleted Edges of the container. In the
-     * same scenario, calling resizeEdges(15) will result in a Edge
-     * container having 15 Edges and edgeContainerSize() == 25.
-     * The latest 5 Edges will be the newly added.
-     *
-     * @warning Any pointer to deleted Edges in the Mesh will be left
-     * unchanged, and therefore will point to invalid Edges. This means that
-     * if you call this member function with a lower number of Edges, you'll
-     * need to manually manage the pointers to the deleted Edges.
+     * @warning Any index to removed edges in the Mesh will be left
+     * unchanged, and therefore will point to invalid edges.
      *
      * @param[in] n: the new size of the Edge container.
      */
-    void resizeEdges(uint n) { Base::resizeElements(n); }
+    void resizeEdges(std::size_t n) { Base::resizeElements(n); }
 
     /**
-     * @brief Reserve a number of Edges in the container of Edges. This
-     * is useful when you know (or you have an idea) of how much Edges are
-     * going to add into a newly of existing mesh. Calling this function before
-     * any addEdge() call will avoid unuseful reallocations of the container,
+     * @brief Reserves a number of edges in the container of Edges. This is
+     * useful when you know (or you have an idea) of how many edges will be
+     * added to a new or existing mesh. Calling this function before any
+     * addEdge() call will avoid unnecessary reallocations of the container,
      * saving execution time.
      *
-     * The filosofy of this function is similar to the one of the
+     * The philosophy of this function is similar to the one of the
      * [reserve()](https://en.cppreference.com/w/cpp/container/vector/reserve)
-     * function of the
-     * [std::vector class](https://en.cppreference.com/w/cpp/container/vector).
+     * function of the [std::vector
+     * class](https://en.cppreference.com/w/cpp/container/vector).
      *
-     * If the call of this function will cause a reallocation of the Edge
-     * container, the function will automatically take care of updating all the
-     * Edge pointers contained in the Mesh.
-     *
-     * @param n: the new capacity of the Edge container.
+     * @param[in] n: the new capacity of the edge container.
      */
-    void reserveEdges(uint n) { Base::reserveElements(n); }
+    void reserveEdges(std::size_t n) { Base::reserveElements(n); }
 
     /**
-     * @brief Compacts the EdgeContainer, removing all the Edges marked
-     * as deleted. Edges indices will change accordingly. The function will
-     * automatically take care of updating all the Edge pointers contained
-     * in the Mesh.
+     * @brief Compacts the Edge Container, removing all the edges marked as
+     * deleted. Edge references will automatically change accordingly in all
+     * the containers of the Mesh.
+     *
+     * @return A vector that maps each old edge index to its new index in the
+     * compacted container (or NULL_INDEX if it was deleted).
      */
-    void compactEdges() { Base::compactElements(); }
+    std::vector<Index> compactEdges() { return Base::compactElements(); }
 
     /**
-     * @brief Marks as deleted the Edge with the given id.
+     * @brief Marks as deleted the edge with the given id.
      *
-     * This member function does not perform any reallocation of the Edges:
-     * the deleted Edges will stay in the Edge Container, but will be
+     * This member function does not perform any reallocation of the edges:
+     * the deleted edges will stay in the Edge Container, but will be
      * marked as deleted.
      *
-     * Deleted Edges are automatically jumped by the iterators provided by
+     * Deleted edges are automatically jumped by the iterators provided by
      * the Edge Container.
      *
-     * @param[in] i: the id of the Edge that will be marked as deleted.
+     * @param[in] i: the index of the edge that will be marked as deleted.
      */
-    void deleteEdge(uint i) { Base::deleteElement(i); }
+    void deleteEdge(Index i) { Base::deleteElement(i); }
 
     /**
-     * @brief Marks as deleted the given Edge, before asserting that the
-     * Edge belongs to this container.
+     * @brief Marks as deleted the given edge.
      *
-     * This member function does not perform any reallocation of the Edges:
-     * the deleted Edges will stay in the Edge Container, but will be
+     * This member function does not perform any reallocation of the edges:
+     * the deleted edges will stay in the Edge Container, but will be
      * marked as deleted.
      *
-     * Deleted Edges are automatically jumped by the iterators provided by
+     * Deleted edges are automatically jumped by the iterators provided by
      * the Edge Container.
      *
-     * @param[in] e: the pointer of the Edge that will be marked as deleted.
+     * @param[in] e: the edge that will be marked as deleted.
      */
-    void deleteEdge(const EdgeType* e) { Base::deleteElement(e); }
+    void deleteEdge(const Edge& e) { Base::deleteElement(e.index()); }
 
     /**
-     * @brief This is an utility member function that returns the index of an
-     * element if the container would be compact, that is the number of
-     * non-deleted elements before the Edge with the given index.
+     * @brief This is a utility member function that returns the index of an
+     * element if the container were compact, that is the number of
+     * non-deleted elements before the edge with the given index.
      *
-     * Complexity: O(n), with n the number of Edges in the container.
+     * Complexity: O(n), with n the number of edges in the container.
      *
      * This function does not perform any sanity check on the given index.
      *
-     * @param[in] i: the index of a Edge of the container.
-     * @return The index that the Edge with index i would have if this
-     * container would be compact.
+     * @param[in] i: the index of an edge of the container.
+     * @return The index that the edge with index i would have if this
+     * container were compact.
      */
-    uint edgeIndexIfCompact(uint i) const
+    Index edgeIndexIfCompact(Index i) const
     {
         return Base::elementIndexIfCompact(i);
     }
 
     /**
-     * @brief Returns a vector that tells, for each actual Edge index, the
-     * new index that the Edge would have in a compacted container. For each
-     * deleted Edge index, the value of the vector will be UINT_NULL.
+     * @brief Returns a vector that tells, for each actual edge index, the new
+     * index that the edge would have in a compacted container. For each
+     * deleted edge index, the value of the vector will be NULL_INDEX.
      *
-     * This is useful if you need to know the indices of the Edges that they
+     * This is useful if you need to know the indices of the edges that they
      * would have in a compact container, without considering the deleted ones.
      *
-     * @return A vector containing, for each Edge index, its index if the
-     * container would be compact.
+     * @return A vector containing, for each edge index, its index if the
+     * container were compact.
      */
-    std::vector<uint> edgeCompactIndices() const
+    std::vector<Index> edgeCompactIndices() const
     {
         return Base::elementCompactIndices();
     }
 
     /**
-     * @brief Updates all the indices and pointers of the Edges of this
-     * container that are stored in any container of the mesh, according to
-     * the mapping stored in the newIndices vector, that tells for each old
-     * Edge index, the new Edge index.
+     * @brief Updates references to the edges of this mesh according to the
+     * mapping stored in the newIndices vector.
      *
-     * This function is useful when delete some Edges, and you want to update
-     * the indices/pointers stored in all the containers of the mesh
-     * accordingly.
+     * This function is useful when edges are deleted, compacted, or
+     * permuted, and you want to update all references stored across the
+     * mesh containers to point to their new indices.
      *
-     * E.g. Supposing you deleted a set of Edges, you can give to this
-     * function the vector telling, for each one of the old Edge indices,
-     * the new Edge index (or UINT_NULL if you want to leave it unreferenced).
-     * This function will update all the pointers stored in the mesh containers
-     * accordingly (if they store adjacencies to the Edges).
+     * @note This function does not change the position of the edges in this
+     * container. It updates edge references stored in this and other
+     * containers of the mesh.
      *
-     * @note This function *does not change the position of the Edges in
-     * this container*. It just updates the indices/pointers of the Edges
-     * stored in this or other containers.
-     *
-     * @param[in] newIndices: a vector that tells, for each old Edge index,
-     * the new Edge index. If the old Edge must be left as unreferenced
-     * (setting `nullptr` to the pointers), the value of the vector must be
-     * UINT_NULL.
+     * @param[in] newIndices: A vector mapping old edge indices to new ones.
+     * If an edge was deleted or should become unreferenced, its mapping entry
+     * must be NULL_INDEX.
      */
-    void updateEdgeReferences(const std::vector<uint>& newIndices)
+    void updateEdgeReferences(const std::vector<Index>& newIndices)
     {
         Base::updateElementReferences(newIndices);
     }
 
     /**
-     * @brief Returns an iterator to the beginning of the container.
-     *
-     * The iterator is automatically initialized to jump deleted Edges of
-     * the container. You can change this option by calling this function with
-     * `jumpDeleted=false`.
-     *
-     * @param[in] jumpDeleted: boolean that tells if the iterator
-     * should jump deleted Edges.
-     * @return An iterator the the first Edge of the container.
-     */
-    EdgeIterator edgeBegin(bool jumpDeleted = true)
-    {
-        return Base::elementBegin(jumpDeleted);
-    }
-
-    /**
-     * @brief Returns an iterator to the end of the container.
-     * @return An iterator to the end of the container.
-     */
-    EdgeIterator edgeEnd() { return Base::elementEnd(); }
-
-    /**
-     * @brief Returns a const iterator to the beginning of the container.
-     *
-     * The iterator is automatically initialized to jump deleted Edges of
-     * the container. You can change this option by calling this function with
-     * `jumpDeleted=false`.
-     *
-     * @param[in] jumpDeleted: boolean that tells if the iterator should jump
-     * deleted Edges.
-     * @return A const iterator the the first Edge of the container.
-     */
-    ConstEdgeIterator edgeBegin(bool jumpDeleted = true) const
-    {
-        return Base::elementBegin(jumpDeleted);
-    }
-
-    /**
-     * @brief Returns a const iterator to the end of the container.
-     * @return A const iterator to the end of the container.
-     */
-    ConstEdgeIterator edgeEnd() const { return Base::elementEnd(); }
-
-    /**
-     * @brief Returns a small view object that allows to iterate over the
-     * Edges of the containers, providing two member functions begin()
-     * and end().
+     * @brief Returns an ElementContainerProxy object that allows to iterate
+     * over the edges of the container, providing begin() and end() member
+     * functions.
      *
      * This member function is very useful when you want to iterate over the
-     * Edges using the C++ foreach syntax:
+     * edges using the C++ range-based for loop syntax:
      *
      * @code{.cpp}
-     * for (Edge& e : m.edges()){
-     *     // do something with this Edge
+     * for (Edge e : m.edges()) {
+     *     // do something with this edge
      * }
      * @endcode
      *
-     * The iterator used to iterate over Edges is automatically initialized
-     * to jump deleted Edges of the container. You can change this option by
-     * calling this function with `jumpDeleted=false`.
+     * The iterator used to iterate over edges is automatically initialized
+     * to jump deleted edges of the container. You can change this option by
+     * calling this function with jumpDeleted = false.
      *
-     * @param[in] jumpDeleted: boolean that tells if the iterator should jump
-     * deleted Edges.
-     * @return An object having begin() and end() function, allowing to iterate
-     * over the container.
+     * @param[in] jumpDeleted (default: true): boolean that tells if the
+     * iterator should jump deleted edges.
+     * @return An object having begin() and end() functions, allowing to
+     * iterate over the container.
      */
     auto edges(bool jumpDeleted = true) { return Base::elements(jumpDeleted); }
 
     /**
-     * @brief Returns a view object that allows to iterate over the Edges
-     * of the container in the given range:
-     *
-     * @code{.cpp}
-     * for (Edge& e : m.edges(3, 10)){
-     *     // iterate over the Edges from index 3 to 10
-     *     // do something with e
-     * }
-     * @endcode
-     *
-     * @note Unlike the edges() function, this member function does not
-     * automatically jump deleted edges, but it iterates over the
-     * edges in the given range, regardless of whether they are deleted or
-     * not.
-     *
-     * @param[in] begin: the index of the first edge to be included in the
-     * range. It must be less or equal to edgeContainerSize() and less or
-     * equal to the end index.
-     * @param[in] end: the index of the last edge to be included in the
-     * range.
-     * @return An object having begin() and end() function, allowing to iterate
-     * over the given range of the container.
-     */
-    auto edges(uint begin, uint end = UINT_NULL)
-    {
-        return Base::elements(begin, end);
-    }
-
-    /**
-     * @brief Returns a small view object that allows to iterate over the
-     * Edges of the containers, providing two member functions begin()
-     * and end().
+     * @brief Returns an ElementContainerProxy object that allows to iterate
+     * over the edges of the container, providing begin() and end() member
+     * functions.
      *
      * This member function is very useful when you want to iterate over the
-     * Edges using the C++ foreach syntax:
+     * edges using the C++ range-based for loop syntax:
      *
      * @code{.cpp}
-     * for (const Edge& e : m.edges()){
-     *     // do something with this Edge
+     * for (ConstEdge e : m.edges()) {
+     *     // do something with this edge
      * }
      * @endcode
      *
-     * The iterator used to iterate over Edges is automatically initialized
-     * to jump deleted Edges of the container. You can change this option by
-     * calling this function with `jumpDeleted=false`.
+     * The iterator used to iterate over edges is automatically initialized
+     * to jump deleted edges of the container. You can change this option by
+     * calling this function with jumpDeleted = false.
      *
-     * @param[in] jumpDeleted: boolean that tells if the iterator should jump
-     * deleted Edges.
-     * @return An object having begin() and end() function, allowing to iterate
-     * over the container.
+     * @param[in] jumpDeleted (default: true): boolean that tells if the
+     * iterator should jump deleted edges.
+     * @return An object having begin() and end() functions, allowing to
+     * iterate over the container.
      */
     auto edges(bool jumpDeleted = true) const
     {
@@ -472,15 +393,9 @@ public:
     }
 
     /**
-     * @brief Returns a view object that allows to iterate over the Edges
-     * of the container in the given range:
-     *
-     * @code{.cpp}
-     * for (const Edge& e : m.edges(3, 10)){
-     *     // iterate over the Edges from index 3 to 10
-     *     // do something with e
-     * }
-     * @endcode
+     * @brief Returns a view object that allows to iterate over the edges of
+     * the container in the range [begin, end), providing begin() and end()
+     * member functions.
      *
      * @note Unlike the edges() function, this member function does not
      * automatically jump deleted edges, but it iterates over the
@@ -488,228 +403,119 @@ public:
      * not.
      *
      * @param[in] begin: the index of the first edge to be included in the
-     * range. It must be less or equal to edgeContainerSize() and less or
-     * equal to the end index.
+     * range. It must be less than or equal to edgeContainerSize() and less than
+     * or equal to the end index.
      * @param[in] end: the index of the last edge to be included in the
-     * range.
-     * @return An object having begin() and end() function, allowing to iterate
-     * over the given range of the container.
+     * range (exclusive). If NULL_INDEX (default) or greater than
+     * edgeContainerSize(), it will be set to edgeContainerSize().
+     * @return A View object allowing to iterate over the given range of the
+     * container.
      */
-    auto edges(uint begin, uint end = UINT_NULL) const
+    auto edges(Index begin, Index end = NULL_INDEX)
     {
         return Base::elements(begin, end);
     }
 
     /**
-     * @brief Enables all the optional components associated to the Edge
-     * type contained in the EdgeContainer.
+     * @brief Returns a view object that allows to iterate over the edges of
+     * the container in the range [begin, end), providing begin() and end()
+     * member functions.
+     *
+     * @note Unlike the edges() function, this member function does not
+     * automatically jump deleted edges, but it iterates over the
+     * edges in the given range, regardless of whether they are deleted or
+     * not.
+     *
+     * @param[in] begin: the index of the first edge to be included in the
+     * range. It must be less than or equal to edgeContainerSize() and less than
+     * or equal to the end index.
+     * @param[in] end: the index of the last edge to be included in the
+     * range (exclusive). If NULL_INDEX (default) or greater than
+     * edgeContainerSize(), it will be set to edgeContainerSize().
+     * @return A View object allowing to iterate over the given range of the
+     * container.
      */
-    void enableAllPerEdgeOptionalComponents()
+    auto edges(Index begin, Index end = NULL_INDEX) const
+    {
+        return Base::elements(begin, end);
+    }
+
+    // --- Components ---
+
+    /**
+     * @brief Checks if the edge component with the given COMP_ID is
+     * available (present at compile time and enabled at run time).
+     *
+     * Non-optional components are always available (true).
+     * Optional components return true if currently enabled, false otherwise.
+     *
+     * @tparam COMP_ID: The ID of the component to check.
+     * @return `true` if currently available, `false` otherwise.
+     */
+    template<CompId COMP_ID>
+    bool isEdgeComponentAvailable() const
+    {
+        return Base::template isComponentAvailable<COMP_ID>();
+    }
+
+    /**
+     * @brief Enables the optional edge component with the given COMP_ID.
+     *
+     * @tparam COMP_ID: The ID of the component to enable.
+     */
+    template<CompId COMP_ID>
+    void enableEdgeComponent()
+        requires comp::HasOptionalComponent<COMP_ID, EdgeComponents>
+    {
+        Base::template enableOptionalComponent<COMP_ID>();
+    }
+
+    /**
+     * @brief Disables the optional edge component with the given COMP_ID.
+     * Note: Non-optional components cannot be disabled.
+     *
+     * @tparam COMP_ID: The ID of the component to disable.
+     */
+    template<CompId COMP_ID>
+    void disableEdgeComponent()
+        requires comp::HasOptionalComponent<COMP_ID, EdgeComponents>
+    {
+        Base::template disableOptionalComponent<COMP_ID>();
+    }
+
+    /**
+     * @brief Enables all optional edge components in the container.
+     */
+    void enableAllEdgeOptionalComponents()
     {
         Base::enableAllOptionalComponents();
     }
 
     /**
-     * @brief Disables all the optional components associated to the Edge
-     * type contained in the EdgeContainer.
+     * @brief Disables all optional edge components in the container.
      */
-    void disableAllPerEdgeOptionalComponents()
+    void disableAllEdgeOptionalComponents()
     {
         Base::disableAllOptionalComponents();
     }
 
-    // AdjacentEdges
+    /**
+     * @brief Enables all optional edge components in the container.
+     * Alias for enableAllEdgeOptionalComponents().
+     */
+    void enableAllEdgeComponents() { Base::enableAllOptionalComponents(); }
 
     /**
-     * @brief Checks if the Edge Optional AdjacentEdges is enabled.
-     *
-     * @note This function is available only if the Edge Element has
-     * the OptionalAdjacentEdges Component.
-     *
-     * @return true if the Optional AdjacentEdges is enabled, false otherwise.
+     * @brief Disables all optional edge components in the container.
+     * Alias for disableAllEdgeOptionalComponents().
      */
-    bool isPerEdgeAdjacentEdgesEnabled() const
-        requires edge::HasOptionalAdjacentEdges<T>
-    {
-        return Base::template isOptionalComponentEnabled<
-            typename T::AdjacentEdges>();
-    }
+    void disableAllEdgeComponents() { Base::disableAllOptionalComponents(); }
 
-    /**
-     * @brief Enable the Optional AdjacentEdges of the Edge.
-     *
-     * @note This function is available only if the Edge Element has
-     * the OptionalAdjacentEdges Component.
-     */
-    void enablePerEdgeAdjacentEdges() requires edge::HasOptionalAdjacentEdges<T>
-    {
-        Base::template enableOptionalComponent<typename T::AdjacentEdges>();
-    }
+    VCL_COMMON_CONTAINER_COMPONENT_METHODS(Edge)
+    VCL_CONTAINER_COMPONENT_METHODS(Edge, AdjacentEdges, ADJACENT_EDGES)
+    VCL_CONTAINER_COMPONENT_METHODS(Edge, AdjacentFaces, ADJACENT_FACES)
 
-    /**
-     * @brief Disables the Optional AdjacentEdges of the Edge.
-     *
-     * @note This function is available only if the Edge Element has
-     * the OptionalAdjacentEdges Component.
-     */
-    void disablePerEdgeAdjacentEdges()
-        requires edge::HasOptionalAdjacentEdges<T>
-    {
-        Base::template disableOptionalComponent<typename T::AdjacentEdges>();
-    }
-
-    // AdjacentFaces
-
-    /**
-     * @brief Checks if the Edge Optional AdjacentFaces is enabled.
-     *
-     * @note This function is available only if the Edge Element has
-     * the OptionalAdjacentFaces Component.
-     *
-     * @return true if the Optional AdjacentFaces is enabled, false otherwise.
-     */
-    bool isPerEdgeAdjacentFacesEnabled() const
-        requires edge::HasOptionalAdjacentFaces<T>
-    {
-        return Base::template isOptionalComponentEnabled<
-            typename T::AdjacentFaces>();
-    }
-
-    /**
-     * @brief Enable the Optional AdjacentFaces of the Edge.
-     *
-     * @note This function is available only if the Edge Element has
-     * the OptionalAdjacentFaces Component.
-     */
-    void enablePerEdgeAdjacentFaces() requires edge::HasOptionalAdjacentFaces<T>
-    {
-        Base::template enableOptionalComponent<typename T::AdjacentFaces>();
-    }
-
-    /**
-     * @brief Disables the Optional AdjacentFaces of the Edge.
-     *
-     * @note This function is available only if the Edge Element has
-     * the OptionalAdjacentFaces Component.
-     */
-    void disablePerEdgeAdjacentFaces()
-        requires edge::HasOptionalAdjacentFaces<T>
-    {
-        Base::template disableOptionalComponent<typename T::AdjacentFaces>();
-    }
-
-    // Color
-
-    /**
-     * @brief Checks if the Edge Optional Color is enabled.
-     *
-     * @note This function is available only if the Edge Element has
-     * the OptionalColor Component.
-     *
-     * @return true if the Optional Color is enabled, false otherwise.
-     */
-    bool isPerEdgeColorEnabled() const requires edge::HasOptionalColor<T>
-    {
-        return Base::template isOptionalComponentEnabled<typename T::Color>();
-    }
-
-    /**
-     * @brief Enable the Optional Color of the Edge.
-     *
-     * @note This function is available only if the Edge Element has
-     * the OptionalColor Component.
-     */
-    void enablePerEdgeColor() requires edge::HasOptionalColor<T>
-    {
-        Base::template enableOptionalComponent<typename T::Color>();
-    }
-
-    /**
-     * @brief Disables the Optional Color of the Edge.
-     *
-     * @note This function is available only if the Edge Element has
-     * the OptionalColor Component.
-     */
-    void disablePerEdgeColor() requires edge::HasOptionalColor<T>
-    {
-        Base::template disableOptionalComponent<typename T::Color>();
-    }
-
-    // Mark
-
-    /**
-     * @brief Checks if the Edge Optional Mark is enabled.
-     *
-     * @note This function is available only if the Edge Element has
-     * the OptionalMark Component.
-     *
-     * @return true if the Optional Mark is enabled, false otherwise.
-     */
-    bool isPerEdgeMarkEnabled() const requires edge::HasOptionalMark<T>
-    {
-        return Base::template isOptionalComponentEnabled<typename T::Mark>();
-    }
-
-    /**
-     * @brief Enable the Optional Mark of the Edge.
-     *
-     * @note This function is available only if the Edge Element has
-     * the OptionalMark Component.
-     */
-    void enablePerEdgeMark() requires edge::HasOptionalMark<T>
-    {
-        Base::template enableOptionalComponent<typename T::Mark>();
-    }
-
-    /**
-     * @brief Disables the Optional Mark of the Edge.
-     *
-     * @note This function is available only if the Edge Element has
-     * the OptionalMark Component.
-     */
-    void disablePerEdgeMark() requires edge::HasOptionalMark<T>
-    {
-        Base::template disableOptionalComponent<typename T::Mark>();
-    }
-
-    // Quality
-
-    /**
-     * @brief Checks if the Edge Optional Quality is enabled.
-     *
-     * @note This function is available only if the Edge Element has
-     * the OptionalQuality Component.
-     *
-     * @return true if the Optional Quality is enabled, false otherwise.
-     */
-    bool isPerEdgeQualityEnabled() const requires edge::HasOptionalQuality<T>
-    {
-        return Base::template isOptionalComponentEnabled<typename T::Quality>();
-    }
-
-    /**
-     * @brief Enable the Optional Quality of the Edge.
-     *
-     * @note This function is available only if the Edge Element has
-     * the OptionalQuality Component.
-     */
-    void enablePerEdgeQuality() requires edge::HasOptionalQuality<T>
-    {
-        Base::template enableOptionalComponent<typename T::Quality>();
-    }
-
-    /**
-     * @brief Disables the Optional Quality of the Edge.
-     *
-     * @note This function is available only if the Edge Element has
-     * the OptionalQuality Component.
-     */
-    void disablePerEdgeQuality() requires edge::HasOptionalQuality<T>
-    {
-        Base::template disableOptionalComponent<typename T::Quality>();
-    }
-
-    // Custom Components
+    // --- Custom Components ---
 
     /**
      * @brief Checks if Edges have a custom component with the given name.
@@ -720,11 +526,12 @@ public:
      * @note This function is available only if the Edge Element has the
      * CustomComponents Component.
      *
-     * @return `true` if the Edge Element has a custom component with the
-     * given name.
+     * @param[in] name: The name of the custom component to check.
+     * @return `true` if the Edge Element has a custom component with the given
+     * name.
      */
-    bool hasPerEdgeCustomComponent(const std::string& name) const
-        requires edge::HasCustomComponents<T>
+    bool hasEdgeCustomComponent(const std::string& name) const
+        requires edge::HasCustomComponents<EdgeComponents>
     {
         return Base::hasElemCustomComponent(name);
     }
@@ -739,8 +546,8 @@ public:
      * @return A vector of strings representing all the names of the custom
      * components.
      */
-    std::vector<std::string> perEdgeCustomComponentNames() const
-        requires edge::HasCustomComponents<T>
+    std::vector<std::string> edgeCustomComponentNames() const
+        requires edge::HasCustomComponents<EdgeComponents>
     {
         return Base::elemCustomComponentNames();
     }
@@ -750,52 +557,41 @@ public:
      * given name has the same type of the given template argument type of this
      * function.
      *
-     * For example, the following code checks if the component called `cc` is of
-     * type `double`:
-     * @code{.cpp}
-     * if (m.isPerEdgeCustomComponentOfType<double>("cc")) {
-     *   ...
-     * }
-     * @endcode
-     *
      * @note This function is available only if the Edge Element has the
      * CustomComponents Component.
      *
-     * @tparam K: the type of the custom component to check.
-     *
-     * @param[in] name: the name of the custom component to check.
+     * @tparam K: The type of the custom component to check.
+     * @param[in] name: The name of the custom component to check.
      * @throws std::out_of_range if no custom component of the given name was
      * found.
-     *
      * @return `true` if the custom component is of the same type of the
      * template argument.
      */
     template<typename K>
-    bool isPerEdgeCustomComponentOfType(const std::string& name) const
-        requires edge::HasCustomComponents<T>
+    bool isEdgeCustomComponentOfType(const std::string& name) const
+        requires edge::HasCustomComponents<EdgeComponents>
     {
         return Base::template isElemCustomComponentOfType<K>(name);
     }
 
     /**
-     * @brief Returns the std::type_index of the custom component of the
-     * Edge Element having the given input name.
+     * @brief Returns the std::type_index of the custom component of the Edge
+     * Element having the given input name.
      *
      * @note This function is available only if the Edge Element has the
      * CustomComponents Component.
      *
-     * @param[in] name: the name of the custom component to get the
+     * @param[in] name: The name of the custom component to get the
      * std::type_index from.
      * @throws std::out_of_range if no custom component of the given name was
      * found.
-     *
      * @return The std::type_index of the custom component having the given
      * input name.
      */
-    std::type_index perEdgeCustomComponentType(const std::string& name) const
-        requires edge::HasCustomComponents<T>
+    std::type_index edgeCustomComponentType(const std::string& name) const
+        requires edge::HasCustomComponents<EdgeComponents>
     {
-        return Base::elemComponentType(name);
+        return Base::elemCustomComponentType(name);
     }
 
     /**
@@ -803,58 +599,51 @@ public:
      * associated to the Edge Element having the same type of the given
      * template argument type of this function.
      *
-     * For example, the following code gets a vector containing all the custom
-     * components of type `double`:
-     * @code{.cpp}
-     * std::vector<std::string> cdouble =
-     *     m.perEdgeCustomComponentNamesOfType<double>();
-     * @endcode
-     *
      * @note This function is available only if the Edge Element has the
      * CustomComponents Component.
      *
-     * @tparam K: the type of the custom component names.
+     * @tparam K: The type of the custom component names.
      * @return A vector of strings representing the names of the custom
      * components of a given type.
      */
     template<typename K>
-    std::vector<std::string> perEdgeCustomComponentNamesOfType() const
-        requires edge::HasCustomComponents<T>
+    std::vector<std::string> edgeCustomComponentNamesOfType() const
+        requires edge::HasCustomComponents<EdgeComponents>
     {
         return Base::template elemCustomComponentNamesOfType<K>();
     }
 
     /**
-     * @brief Adds a custom component of type K to the Edge, having the
-     * given name.
+     * @brief Adds a custom component of type K to the Edge, having the given
+     * name.
      *
      * @note This function is available only if the Edge Element has the
      * CustomComponents Component.
      *
-     * @tparam K: the type of the custom component added to the Edge.
-     * @param[in] name: the name of the custom component added to the Edge.
+     * @tparam K: The type of the custom component added to the Edge.
+     * @param[in] name: The name of the custom component added to the Edge.
      */
     template<typename K>
-    void addPerEdgeCustomComponent(const std::string& name)
-        requires edge::HasCustomComponents<T>
+    void addEdgeCustomComponent(const std::string& name)
+        requires edge::HasCustomComponents<EdgeComponents>
     {
         Base::template addElemCustomComponent<K>(name);
     }
 
     /**
-     * @brief Deletes the custom component of the given name from the
-     * Edge Element.
+     * @brief Deletes the custom component of the given name from the Edge
+     * Element.
      *
-     * The function does nothing if the custom component does not exists.
+     * The function does nothing if the custom component does not exist.
      *
      * @note This function is available only if the Edge Element has the
      * CustomComponents Component.
      *
-     * @param[in] name: the name of the custom component that will be removed
+     * @param[in] name: The name of the custom component that will be removed
      * from the Edge.
      */
-    void deletePerEdgeCustomComponent(const std::string& name)
-        requires edge::HasCustomComponents<T>
+    void deleteEdgeCustomComponent(const std::string& name)
+        requires edge::HasCustomComponents<EdgeComponents>
     {
         Base::deleteElemCustomComponent(name);
     }
@@ -863,46 +652,19 @@ public:
      * @brief Returns a vector handle to the custom component having the type K
      * and the given name.
      *
-     * The handle can be used like a normal std::vector, but does not have
-     * access to the modifiers member functions (resize, push_back...). The
-     * handle contains **references** to the custom component, therefore you can
-     * modify the custom component by modifying the element of the handle vector
-     * normally. Since the handle stores references, there are no copies
-     * performed when calling this function.
-     *
-     * For example, assuming that the mesh has a Edge custom component named
-     * `cc` of type int:
-     *
-     * @code{.cpp}
-     * auto handle = m.getPerEdgeCustomComponentVectorHandle<int>("cc");
-     * for (Edge& e : m.edges() {
-     *    handle[m.index(e)] = 5; // e.customComponent<int>("cc") == 5
-     *    assert(e.customComponent<int>("cc") == 5);
-     * }
-     * @endcode
-     *
-     * Using handles allows to access more efficiently to custom components
-     * rather accessing from an element object. However, note that references
-     * are binded to the container of the mesh.
-     *
      * @note This function is available only if the Edge Element has the
      * CustomComponents Component.
      *
-     * @note Since the handle contains references, any operation that changes
-     * the size of the container could be destructive and invalidate the
-     * references contained in the handle.
-     *
-     * @tparam K: the type of the custom component on which return the handle.
-     *
-     * @param[in] name: name of the custom component on which return the handle.
-     * @throws std::out_of_range if no custom component of the given name was
-     * found.
-     *
-     * @return a vector handle that allows to access to the custom component.
+     * @tparam K: The type of the custom component for which to return the
+     * handle.
+     * @param[in] name: Name of the custom component for which to return the
+     * handle.
+     * @return A vector handle that allows access to the custom component.
      */
     template<typename K>
-    CustomComponentVectorHandle<K> perEdgeCustomComponentVectorHandle(
-        const std::string& name) requires edge::HasCustomComponents<T>
+    CustomComponentVectorHandle<K> edgeCustomComponentVectorHandle(
+        const std::string& name)
+        requires edge::HasCustomComponents<EdgeComponents>
     {
         return Base::template customComponentVectorHandle<K>(name);
     }
@@ -911,143 +673,66 @@ public:
      * @brief Returns a const vector handle to the custom component having type
      * K and the given name.
      *
-     *
-     * The handle can be used like a normal std::vector, but does not have
-     * access to the modifiers member functions (resize, push_back...). The
-     * handle contains **const references** to the custom component, therefore
-     * you can access to the custom component by accessing the element of the
-     * handle vector normally. Since the handle stores references, there are no
-     * copies performed when calling this function.
-     *
-     * For example, assuming that the mesh has a Edge custom component named
-     * `cc` of type int:
-     *
-     * @code{.cpp}
-     * // access to the const handle by making const the template parameter:
-     * auto handle = m.perEdgeCustomComponentVectorHandle<const int>("cc");
-     * int sum = 0;
-     * for (const Edge& e : m.edges() {
-     *    sum += handle[m.index(e)];
-     *    // handle[m.index(e)] = 5; // not allowed, because the handle is const
-     * }
-     * @endcode
-     *
-     * Using handles allows to access more efficiently to custom components
-     * rather accessing from an element object. However, note that references
-     * are binded to the container of the mesh.
-     *
      * @note This function is available only if the Edge Element has the
      * CustomComponents Component.
      *
-     * @note Since the handle contains references, any operation that changes
-     * the size of the container could be destructive and invalidate the
-     * references contained in the handle.
-     *
-     * @tparam K: the type of the custom component on which return the handle.
-     * @param[in] name: name of the custom component on which return the handle.
-     *
-     * @return a const vector handle that allows to access to the custom
+     * @tparam K: The type of the custom component for which to return the
+     * handle.
+     * @param[in] name: Name of the custom component for which to return the
+     * handle.
+     * @return A const vector handle that allows access to the custom
      * component.
      */
     template<typename K>
-    ConstCustomComponentVectorHandle<K> perEdgeCustomComponentVectorHandle(
-        const std::string& name) const requires edge::HasCustomComponents<T>
+    ConstCustomComponentVectorHandle<K> edgeCustomComponentVectorHandle(
+        const std::string& name) const
+        requires edge::HasCustomComponents<EdgeComponents>
     {
         return Base::template customComponentVectorHandle<K>(name);
     }
 
     /**
-     * @brief Serializes in the given output stream all the custom components of
-     * the Edge Element of type K.
+     * @brief Serializes all per-edge custom components of type K stored in
+     * this container to the given output stream.
      *
-     * @note This function is available only if the Edge Element has the
-     * CustomComponents Component.
-     *
-     * @param[in] os: the output stream where the custom components will be
-     * serialized.
+     * @tparam K: The type of the custom components to serialize.
+     * @param os: The output stream to write to.
      */
     template<typename K>
-    void serializePerEdgeCustomComponentsOfType(std::ostream& os) const
-        requires edge::HasCustomComponents<T>
+    void serializeEdgeCustomComponentsOfType(std::ostream& os) const
+        requires edge::HasCustomComponents<EdgeComponents>
     {
-        Base::template serializePerElementCustomComponentsOfType<K>(os);
+        Base::template serializeElemCustomComponentsOfType<K>(os);
     }
 
     /**
-     * @brief Deserializes in the given input stream all the custom components
-     * of the Edge Element of type K.
+     * @brief Deserializes all per-edge custom components of type K from the
+     * given input stream and stores them into this container.
      *
-     * @note This function is available only if the Edge Element has the
-     * CustomComponents Component.
-     *
-     * @param[in] is: the input stream where the custom components will be
-     * deserialized.
+     * @tparam K: The type of the custom components to deserialize.
+     * @param is: The input stream to read from.
      */
     template<typename K>
-    void deserializePerEdgeCustomComponentsOfType(std::istream& is)
-        requires edge::HasCustomComponents<T>
+    void deserializeEdgeCustomComponentsOfType(std::istream& is)
+        requires edge::HasCustomComponents<EdgeComponents>
     {
-        Base::template deserializePerElementCustomComponentsOfType<K>(is);
+        Base::template deserializeElemCustomComponentsOfType<K>(is);
+    }
+
+protected:
+    /**
+     * @brief Imports all edges from the corresponding container of the
+     * other mesh into this container.
+     *
+     * @param[in] m: The other mesh to import from.
+     */
+    template<typename OtherMesh>
+    void importFrom(const OtherMesh& m)
+    {
+        Base::importFrom(m);
     }
 };
 
-/* Concepts */
-
-/**
- * @brief A concept that checks whether a class has (inherits from) an
- * EdgeContainer class.
- *
- * The concept is satisfied when `T` is a class that instantiates or derives
- * from a EdgeContainer class having any Edge element type.
- *
- * @tparam T: The type to be tested for conformity to the HasEdgeContainer.
- *
- * @ingroup containers
- * @ingroup containers_concepts
- */
-template<typename T>
-concept HasEdgeContainer = std::derived_from< // same type or derived type
-    std::remove_cvref_t<T>,
-    EdgeContainer<typename RemoveRef<T>::EdgeType>>;
-
-} // namespace mesh
-
-/**
- * @brief HasEdges concepts is satisfied when at least one of its
- * template types is (or inherits from) a @ref vcl::mesh::EdgeContainer. It can
- * be used both to check if a Mesh has edges, or if in a list of types there is
- * a EdgeContainer.
- *
- * In the following example, a MyMesh type can be instantiated only if one of
- * its template Args is a EdgeContainer:
- * @code{.cpp}
- * template <typename... Args> requires HasEdges<Args...>
- * class MyMesh {
- *     // ...
- * };
- *
- * // ...
- *
- * MyMesh<vcl::VertexContainer<MyVertex>> m1; // not ok
- * MyMesh<vcl::EdgeContainer<MyEdge>> m2; // ok
- * MyMesh<vcl::VertexContainer<MyVertex>, vcl::EdgeContainer<MyEdge>> m3; // ok
- * @endcode
- *
- * To check if a type has (inherits from) EdgeContainer:
- * @code{.cpp}
- * if constexpr (vcl::HasEdges<MyMeshType>) {
- *     // ...
- * }
- * @endcode
- *
- * @note This concept does not check if a Mesh is a valid EdgeMesh.
- * To do that, use the @ref vcl::EdgeMeshConcept.
- *
- * @ingroup containers_concepts
- */
-template<typename... Args>
-concept HasEdges = (mesh::HasEdgeContainer<Args> || ...);
-
-} // namespace vcl
+} // namespace vcl::mesh
 
 #endif // VCL_MESH_CONTAINERS_EDGE_CONTAINER_H

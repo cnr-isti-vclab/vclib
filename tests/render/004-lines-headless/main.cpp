@@ -18,26 +18,26 @@ vcl::DrawableMesh<vcl::EdgeMesh> getDrawableEdgeMesh()
     vcl::TriMesh icosahedron = vcl::createIcosahedron<vcl::TriMesh>();
 
     // 2. Compute normals on faces and vertices
-    vcl::updatePerFaceNormals(icosahedron);
-    vcl::updatePerVertexNormalsFromFaceNormals(icosahedron);
+    vcl::updateFaceNormals(icosahedron);
+    vcl::updateVertexNormalsFromFaceNormals(icosahedron);
 
     // 3. Compute adjacency
-    icosahedron.enablePerFaceAdjacentFaces();
-    vcl::updatePerFaceAdjacentFaces(icosahedron);
+    icosahedron.enableFaceAdjacentFaces();
+    vcl::updateFaceAdjacentFaces(icosahedron);
 
     // 4. Select crease edges (all edges of icosahedron since it's angular)
     vcl::selectCreaseFaceEdges(icosahedron, -vcl::toRad(1.f), vcl::toRad(1.f));
 
     // 5. Extract edge mesh
     vcl::EdgeMesh em =
-        vcl::perFaceEdgeSelectionMeshFilter<vcl::EdgeMesh>(icosahedron);
+        vcl::faceEdgeSelectionMeshFilter<vcl::EdgeMesh>(icosahedron);
 
     // Ensure the edge mesh has the required components
-    em.enablePerVertexColor();
-    em.enablePerEdgeColor();
+    em.enableVertexColor();
+    em.enableEdgeColor();
 
     // Deterministically assign colors
-    for (auto& v : em.vertices()) {
+    for (auto v : em.vertices()) {
         if (v.index() % 3 == 0)
             v.color() = vcl::Color::Red;
         else if (v.index() % 3 == 1)
@@ -46,7 +46,7 @@ vcl::DrawableMesh<vcl::EdgeMesh> getDrawableEdgeMesh()
             v.color() = vcl::Color::Blue;
     }
 
-    for (auto& e : em.edges()) {
+    for (auto e : em.edges()) {
         if (e.index() % 3 == 0)
             e.color() = vcl::Color::Yellow;
         else if (e.index() % 3 == 1)
@@ -204,7 +204,7 @@ TEST_CASE("Lines Selection")
                 mesh.updateRenderSettingsCapabilities();
 
                 // Deterministically assign selection to edges
-                for (auto& e : mesh.edges()) {
+                for (auto e : mesh.edges()) {
                     if (e.index() % 2 == 0)
                         e.selected() = true;
                 }

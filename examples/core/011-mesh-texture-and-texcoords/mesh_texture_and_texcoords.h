@@ -19,7 +19,7 @@
 // 4. Working with texture images and paths
 // 5. Enabling texture coordinate components dynamically
 
-auto meshTextureAndTexCoords()
+inline auto meshTextureAndTexCoords()
 {
     std::cout << "=== VCLib - Texture and TexCoords Example ===" << std::endl;
 
@@ -42,18 +42,18 @@ auto meshTextureAndTexCoords()
               << std::endl;
 
     // Check if mesh has vertex texture coordinates
-    if (meshVertexTexCoords.isPerVertexTexCoordEnabled()) {
+    if (meshVertexTexCoords.isVertexTexCoordAvailable()) {
         std::cout << "   ✓ Mesh has vertex texture coordinates" << std::endl;
 
         // Access first few vertex texture coordinates
         std::cout << "   First 3 vertex texture coordinates:" << std::endl;
         for (vcl::uint i = 0;
-             i < std::min(3u, meshVertexTexCoords.vertexCount());
+             i < std::min(3uz, meshVertexTexCoords.vertexCount());
              ++i) {
             auto& texCoord = meshVertexTexCoords.vertex(i).texCoord();
             std::cout << "     Vertex " << i << ": (" << texCoord.u() << ", "
                       << texCoord.v() << ") ";
-            if (meshVertexTexCoords.isPerVertexMaterialIndexEnabled()) {
+            if (meshVertexTexCoords.isVertexMaterialIndexAvailable()) {
                 std::cout << "material_id "
                           << meshVertexTexCoords.vertex(i).materialIndex();
             }
@@ -81,18 +81,18 @@ auto meshTextureAndTexCoords()
               << std::endl;
 
     // Check if mesh has wedge texture coordinates
-    if (meshWedgeTexCoords.isPerFaceWedgeTexCoordsEnabled()) {
+    if (meshWedgeTexCoords.isFaceWedgeTexCoordsAvailable()) {
         std::cout << "   ✓ Mesh has wedge texture coordinates" << std::endl;
 
         // Access first few face wedge texture coordinates
         std::cout << "   First face wedge texture coordinates:" << std::endl;
         if (meshWedgeTexCoords.faceCount() > 0) {
-            auto& face = meshWedgeTexCoords.face(0);
-            if (meshWedgeTexCoords.isPerFaceMaterialIndexEnabled()) {
+            auto face = meshWedgeTexCoords.face(0);
+            if (meshWedgeTexCoords.isFaceMaterialIndexAvailable()) {
                 std::cout << "     material_id " << face.materialIndex();
             }
             for (vcl::uint i = 0; i < face.vertexCount(); ++i) {
-                auto& texCoord = face.wedgeTexCoord(i);
+                auto& texCoord = face.wedge(i).texCoord();
                 std::cout << "     Wedge " << i << ": (" << texCoord.u() << ", "
                           << texCoord.v() << ") ";
                 std::cout << std::endl;
@@ -110,7 +110,7 @@ auto meshTextureAndTexCoords()
     std::cout << "   ✓ Mesh has " << meshWedgeTexCoords.materialCount()
               << " materials" << std::endl;
 
-    for (vcl::uint i = 0; i < meshWedgeTexCoords.materialCount(); ++i) {
+    for (vcl::ushort i = 0; i < meshWedgeTexCoords.materialCount(); ++i) {
         // access to the baseColor texture descriptor
         const auto& texture =
             meshWedgeTexCoords.material(i).baseColorTextureDescriptor();
@@ -129,8 +129,8 @@ auto meshTextureAndTexCoords()
     customMesh.name() = "Custom Textured Mesh";
 
     // Enable texture coordinate components
-    customMesh.enablePerVertexTexCoord();
-    customMesh.enablePerFaceWedgeTexCoords();
+    customMesh.enableVertexTexCoord();
+    customMesh.enableFaceWedgeTexCoords();
 
     // Add vertices with texture coordinates
     customMesh.addVertices(4);
@@ -146,14 +146,14 @@ auto meshTextureAndTexCoords()
     // Add faces with wedge texture coordinates
     customMesh.addFaces(2);
     customMesh.face(0).setVertices(0, 1, 2);
-    customMesh.face(0).wedgeTexCoord(0) = vcl::Point2d(0, 0);
-    customMesh.face(0).wedgeTexCoord(1) = vcl::Point2d(1, 0);
-    customMesh.face(0).wedgeTexCoord(2) = vcl::Point2d(1, 1);
+    customMesh.face(0).wedge(0).texCoord() = vcl::Point2d(0, 0);
+    customMesh.face(0).wedge(1).texCoord() = vcl::Point2d(1, 0);
+    customMesh.face(0).wedge(2).texCoord() = vcl::Point2d(1, 1);
 
     customMesh.face(1).setVertices(0, 2, 3);
-    customMesh.face(1).wedgeTexCoord(0) = vcl::Point2d(0, 0);
-    customMesh.face(1).wedgeTexCoord(1) = vcl::Point2d(1, 1);
-    customMesh.face(1).wedgeTexCoord(2) = vcl::Point2d(0, 1);
+    customMesh.face(1).wedge(0).texCoord() = vcl::Point2d(0, 0);
+    customMesh.face(1).wedge(1).texCoord() = vcl::Point2d(1, 1);
+    customMesh.face(1).wedge(2).texCoord() = vcl::Point2d(0, 1);
 
     // Add material from the previously loaded mesh
     customMesh.pushMaterial(meshWedgeTexCoords.material(0));
@@ -173,13 +173,13 @@ auto meshTextureAndTexCoords()
               << " vertices and " << customMesh.faceCount() << " faces"
               << std::endl;
     std::cout << "   ✓ Has vertex texture coordinates: "
-              << customMesh.isPerVertexTexCoordEnabled() << std::endl;
+              << customMesh.isVertexTexCoordAvailable() << std::endl;
     std::cout << "   ✓ Has wedge texture coordinates: "
-              << customMesh.isPerFaceWedgeTexCoordsEnabled() << std::endl;
+              << customMesh.isFaceWedgeTexCoordsAvailable() << std::endl;
 
     // Example 5: Iterating through texture coordinates using views
     std::cout << "\n5. Iterating through texture coordinates..." << std::endl;
-    if (meshVertexTexCoords.isPerVertexTexCoordEnabled()) {
+    if (meshVertexTexCoords.isVertexTexCoordAvailable()) {
         std::cout << "   Vertex texture coordinates range:" << std::endl;
         vcl::Point2d minTexCoord(
             std::numeric_limits<double>::max(),

@@ -20,8 +20,9 @@ void initFaceTopologyAlgorithms(pybind11::module& m)
     namespace py = pybind11;
     using namespace py::literals;
 
-    auto fAllFaces =
-        []<FaceConcept FaceType>(pybind11::module& m, FaceType = FaceType()) {
+    auto fAllFaces = []<FaceConcept FaceType>(
+                         pybind11::module& m, FaceType = FaceType()) {
+        if constexpr (comp::HasAdjacentFaces<FaceType>) {
             m.def(
                 "is_face_manifold_on_edge",
                 [](const FaceType& f, uint edge) -> bool {
@@ -38,24 +39,59 @@ void initFaceTopologyAlgorithms(pybind11::module& m)
                 "face"_a,
                 "edge"_a);
 
-            // TODO: add other functions from face_topology.h
+            m.def(
+                "check_flip_edge",
+                [](const FaceType& f, uint edge) -> bool {
+                    return checkFlipEdge(f, edge);
+                },
+                "face"_a,
+                "edge"_a);
+
+            m.def(
+                "edge_adjacent_face_count",
+                [](const FaceType& f, uint edge) -> uint {
+                    return edgeAdjacentFaceCount(f, edge);
+                },
+                "face"_a,
+                "edge"_a);
+
+            m.def(
+                "face_on_border_edge_count",
+                [](const FaceType& f) -> uint {
+                    return faceOnBorderEdgeCount(f);
+                },
+                "face"_a);
+
+            m.def(
+                "face_dihedral_angle_on_edge",
+                [](const FaceType& f, uint edge) {
+                    return faceDihedralAngleOnEdge(f, edge);
+                },
+                "face"_a,
+                "edge"_a);
+
+            m.def(
+                "detach_adjacent_faces_on_edge",
+                [](FaceType f, uint edge) {
+                    detachAdjacentFacesOnEdge(f, edge);
+                },
+                "face"_a,
+                "edge"_a);
+
+            m.def("detach_face", [](FaceType f) { detachFace(f); }, "face"_a);
 
             m.def(
                 "flood_face_patch",
                 [](const FaceType& seed, pybind11::function selector) {
-                    // We pass a pointer to the python callback instead of a
-                    // reference. This forces pybind11 to use the 'reference'
-                    // policy by default, avoiding the copy of the non-copyable
-                    // Element object.
                     auto cppSelector = [selector](const FaceType& f) -> bool {
-                        return selector(&f).template cast<bool>();
+                        return selector(f).template cast<bool>();
                     };
                     return floodFacePatch(seed, cppSelector);
                 },
                 "seed"_a,
-                "face_selector"_a,
-                py::return_value_policy::reference);
-        };
+                "face_selector"_a);
+        }
+    };
 
     defForAllFaceTypes(m, fAllFaces);
 }

@@ -41,41 +41,41 @@ using Eigen4ColMatrix =
 
 // utility functions
 
-template<vcl::uint ELEM_ID>
+template<vcl::ElemId ELEM_ID>
 void randomSelection(auto& tm)
 {
     std::random_device              rd;
     std::mt19937                    gen(rd());
     std::uniform_int_distribution<> dis(0, 1);
 
-    for (auto& el : tm.template elements<ELEM_ID>()) {
+    for (auto el : tm.template elements<ELEM_ID>()) {
         bool sel      = dis(gen);
         el.selected() = sel;
     }
 }
 
-template<vcl::uint ELEM_ID>
+template<vcl::ElemId ELEM_ID>
 void randomColor(auto& tm)
 {
     std::random_device              rd;
     std::mt19937                    gen(rd());
     std::uniform_int_distribution<> dis(0, 255);
 
-    tm.template enablePerElementComponent<ELEM_ID, vcl::CompId::COLOR>();
+    tm.template enableElementComponent<ELEM_ID, vcl::CompId::COLOR>();
 
     for (auto& el : tm.template elements<ELEM_ID>()) {
         el.color() = vcl::Color(dis(gen), dis(gen), dis(gen), dis(gen));
     }
 }
 
-template<vcl::uint ELEM_ID>
+template<vcl::ElemId ELEM_ID>
 void randomQuality(auto& tm)
 {
     std::random_device               rd;
     std::mt19937                     gen(rd());
     std::uniform_real_distribution<> dis(-100, 100);
 
-    tm.template enablePerElementComponent<ELEM_ID, vcl::CompId::QUALITY>();
+    tm.template enableElementComponent<ELEM_ID, vcl::CompId::QUALITY>();
 
     for (auto& el : tm.template elements<ELEM_ID>()) {
         double qual  = dis(gen);
@@ -92,7 +92,10 @@ void testPositionsMatrix(
     const auto& vtd,
     const auto& ftr)
 {
-    vcl::uint  nRows = tm.vertexCount() + vtd.size();
+    using MeshType  = vcl::RemoveRef<decltype(tm)>;
+    using IndexType = typename MeshType::IndexType;
+
+    IndexType  nRows = tm.vertexCount() + vtd.size();
     MatrixType verts(nRows, 3);
 
     auto stg = vcl::matrixStorageType<MatrixType>();
@@ -100,7 +103,7 @@ void testPositionsMatrix(
     vcl::vertexPositionsToBuffer(tm, verts.data(), stg, nRows);
     vcl::appendDuplicateVertexPositionsToBuffer(tm, vtd, verts.data(), stg);
 
-    vcl::uint i = 0;
+    IndexType i = 0;
     // first vertices corresponds
     for (const auto& c : tm.vertices() | vcl::views::positions) {
         REQUIRE(verts(i, 0) == c.x());
@@ -110,7 +113,7 @@ void testPositionsMatrix(
     }
 
     // following vertices are duplicates (same as the vtd indices)
-    for (vcl::uint vd : vtd) {
+    for (auto vd : vtd) {
         const auto& c = tm.vertex(vd).position();
         REQUIRE(verts(i, 0) == c.x());
         REQUIRE(verts(i, 1) == c.y());
@@ -127,9 +130,10 @@ void testTriangleMatrix(
     const auto& ftr)
 {
     using MeshType   = vcl::RemoveRef<decltype(tm)>;
-    using ScalarType = MeshType::VertexType::PositionType::ScalarType;
+    using ScalarType = vcl::ScalarType<MeshType>;
+    using IndexType  = typename MeshType::IndexType;
 
-    vcl::uint               nVerts = tm.vertexCount() + vtd.size();
+    IndexType               nVerts = tm.vertexCount() + vtd.size();
     vcl::Array2<ScalarType> verts(nVerts, 3);
     vcl::vertexPositionsToBuffer(tm, verts.data());
     vcl::appendDuplicateVertexPositionsToBuffer(tm, vtd, verts.data());
@@ -143,13 +147,13 @@ void testTriangleMatrix(
     REQUIRE(tris.rows() == tm.faceCount());
     REQUIRE(tris.cols() == 3);
 
-    for (vcl::uint i = 0; const auto& f : tm.faces()) {
+    for (IndexType i = 0; const auto& f : tm.faces()) {
         for (vcl::uint j = 0; j < 3; ++j) {
             // original positions should correspond to the duplicated ones
             // that are stored in verts matrix and indexed by tris matrix
-            REQUIRE(f.vertex(j)->position().x() == verts(tris(i, j), 0));
-            REQUIRE(f.vertex(j)->position().y() == verts(tris(i, j), 1));
-            REQUIRE(f.vertex(j)->position().z() == verts(tris(i, j), 2));
+            REQUIRE(f.vertex(j).position().x() == verts(tris(i, j), 0));
+            REQUIRE(f.vertex(j).position().y() == verts(tris(i, j), 1));
+            REQUIRE(f.vertex(j).position().z() == verts(tris(i, j), 2));
         }
         ++i;
     }
@@ -162,13 +166,16 @@ void testVertexSelectionVector(
     const auto& vtd,
     const auto& ftr)
 {
-    vcl::uint  nRows = tm.vertexCount() + vtd.size();
+    using MeshType  = vcl::RemoveRef<decltype(tm)>;
+    using IndexType = typename MeshType::IndexType;
+
+    IndexType  nRows = tm.vertexCount() + vtd.size();
     VectorType sel(nRows);
 
     vcl::vertexSelectionToBuffer(tm, sel.data());
     vcl::appendDuplicateVertexSelectionToBuffer(tm, vtd, sel.data());
 
-    vcl::uint i = 0;
+    IndexType i = 0;
     // first vertices corresponds
     for (const auto& v : tm.vertices()) {
         REQUIRE((bool) sel[i] == v.selected());
@@ -176,43 +183,42 @@ void testVertexSelectionVector(
     }
 
     // following vertices are duplicates (same as the vtd indices)
-    for (vcl::uint vd : vtd) {
+    for (auto vd : vtd) {
         REQUIRE((bool) sel[i] == tm.vertex(vd).selected());
         ++i;
     }
 }
 
-using Meshes  = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
-using Meshesf = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
-using MeshesIndexed =
-    std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed, vcl::EdgeMeshIndexed>;
-using MeshesIndexedf = std::
-    tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf, vcl::EdgeMeshIndexedf>;
+using Meshes   = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
+using Meshesf  = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
+using Meshes64 = std::tuple<vcl::TriMesh64, vcl::PolyMesh64, vcl::EdgeMesh64>;
+using Meshes64f =
+    std::tuple<vcl::TriMesh64f, vcl::PolyMesh64f, vcl::EdgeMesh64f>;
 
 TEMPLATE_TEST_CASE(
     "Wedge driven duplication...",
     "",
     Meshes,
     Meshesf,
-    MeshesIndexed,
-    MeshesIndexedf)
+    Meshes64,
+    Meshes64f)
 {
-    using TriMesh  = std::tuple_element_t<0, TestType>;
-    using PolyMesh = std::tuple_element_t<1, TestType>;
+    using TriMesh = std::tuple_element_t<0, TestType>;
 
     TriMesh tm =
         vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_textured.ply");
 
-    std::vector<std::pair<vcl::uint, vcl::uint>>          vertWedgeMap;
-    std::list<vcl::uint>                                  vertsToDuplicate;
-    std::list<std::list<std::pair<vcl::uint, vcl::uint>>> facesToReassign;
-    vcl::uint nV = vcl::verticesToDuplicateByWedgeTexCoordsCount(
+    using IndexType = TriMesh::IndexType;
+
+    std::vector<std::pair<IndexType, vcl::uint>>          vertWedgeMap;
+    std::list<IndexType>                                  vertsToDuplicate;
+    std::list<std::list<std::pair<IndexType, vcl::uint>>> facesToReassign;
+    [[maybe_unused]] auto nV = vcl::verticesToDuplicateByWedgeTexCoordsCount(
         tm, vertWedgeMap, vertsToDuplicate, facesToReassign);
 
     SECTION("Append duplicated vertex positions...")
     {
-        using ScalarType =
-            typename TriMesh::VertexType::PositionType::ScalarType;
+        using ScalarType = vcl::ScalarType<TriMesh>;
 
         SECTION("Eigen Row Major")
         {
@@ -245,27 +251,27 @@ TEMPLATE_TEST_CASE(
     {
         SECTION("Eigen Row Major")
         {
-            testTriangleMatrix<EigenRowMatrix<vcl::uint>>(
+            testTriangleMatrix<EigenRowMatrix<IndexType>>(
                 tm, vertWedgeMap, vertsToDuplicate, facesToReassign);
         }
         SECTION("Eigen 3 Row Major")
         {
-            testTriangleMatrix<Eigen3RowMatrix<vcl::uint>>(
+            testTriangleMatrix<Eigen3RowMatrix<IndexType>>(
                 tm, vertWedgeMap, vertsToDuplicate, facesToReassign);
         }
         SECTION("Eigen Col Major")
         {
-            testTriangleMatrix<EigenColMatrix<vcl::uint>>(
+            testTriangleMatrix<EigenColMatrix<IndexType>>(
                 tm, vertWedgeMap, vertsToDuplicate, facesToReassign);
         }
         SECTION("Eigen 3 Col Major")
         {
-            testTriangleMatrix<Eigen3ColMatrix<vcl::uint>>(
+            testTriangleMatrix<Eigen3ColMatrix<IndexType>>(
                 tm, vertWedgeMap, vertsToDuplicate, facesToReassign);
         }
         SECTION("vcl::Array2")
         {
-            testTriangleMatrix<vcl::Array2<vcl::uint>>(
+            testTriangleMatrix<vcl::Array2<IndexType>>(
                 tm, vertWedgeMap, vertsToDuplicate, facesToReassign);
         }
     }
@@ -310,4 +316,61 @@ TEMPLATE_TEST_CASE(
                 tm, vertWedgeMap, vertsToDuplicate, facesToReassign);
         }
     }
+}
+
+TEMPLATE_TEST_CASE(
+    "Wedge driven duplication on non-compact mesh...",
+    "",
+    vcl::TriMesh,
+    vcl::TriMesh64)
+{
+    using TriMesh   = TestType;
+    using IndexType = typename TriMesh::IndexType;
+
+    TriMesh tm =
+        vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_textured.ply");
+
+    // Add an isolated vertex (unreferenced), then delete face 0
+    auto extraV =
+        tm.addVertex(typename TriMesh::Vertex::PositionType(10, 10, 10));
+    tm.deleteFace(0);
+
+    REQUIRE(!tm.isCompact());
+
+    std::vector<std::pair<IndexType, vcl::uint>>          vertWedgeMap;
+    std::list<IndexType>                                  vertsToDuplicate;
+    std::list<std::list<std::pair<IndexType, vcl::uint>>> facesToReassign;
+    auto nV = vcl::verticesToDuplicateByWedgeTexCoordsCount(
+        tm, vertWedgeMap, vertsToDuplicate, facesToReassign);
+
+    REQUIRE(vertWedgeMap.size() == tm.vertexContainerSize());
+
+    // 1. TexCoords buffer
+    std::vector<double> texCoordBuffer((tm.vertexCount() + nV) * 2, 0.0);
+    vcl::wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
+        tm, vertWedgeMap, facesToReassign, texCoordBuffer.data());
+
+    // 2. Face Material Indices as Duplicated Vertex Material Indices
+    // (extraV is unreferenced, so vertWedgeMap[extraV].first == NULL_INDEX)
+    std::vector<int> matBuffer(tm.vertexCount() + nV, 0);
+    vcl::faceMaterialIndicesAsDuplicatedVertexMaterialIndicesToBuffer(
+        tm, vertWedgeMap, facesToReassign, matBuffer.data());
+    // The unreferenced vertex row should be SENTINEL (-1)
+    auto      vertCompIndices = vcl::detail::vertCompactIndices(tm, true);
+    IndexType extraVRow =
+        vertCompIndices.empty() ? extraV : vertCompIndices[extraV];
+    REQUIRE(matBuffer[extraVRow] == -1);
+
+    // 3. Replace Triangulated Face Vertex Indices
+    vcl::TriPolyIndexBiMap indexMap;
+    std::vector<IndexType> triBuffer(tm.faceCount() * 3);
+    vcl::triangulatedFaceVertexIndicesToBuffer(tm, triBuffer.data(), indexMap);
+    vcl::replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
+        tm, vertsToDuplicate, facesToReassign, indexMap, triBuffer.data());
+
+    // 4. Replace Face Vertex Indices
+    std::vector<IndexType> faceBuffer(tm.faceCount() * 3);
+    vcl::faceVertexIndicesToBuffer(tm, faceBuffer.data());
+    vcl::replaceFaceVertexIndicesByVertexDuplicationToBuffer(
+        tm, vertsToDuplicate, facesToReassign, faceBuffer.data(), 3);
 }

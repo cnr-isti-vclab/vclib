@@ -141,6 +141,23 @@ public:
     uint indexCount() const { return mIndexCount; }
 
     /**
+     * @brief Returns the number of line segments in the set.
+     *
+     * @return The number of line segments in the set.
+     */
+    uint linesCount() const
+    {
+        uint nv = mIndices.isValid() ? mIndexCount : mVerPosCount;
+        if (mTopology == Topology::LINES) {
+            return nv / 2;
+        }
+        else if (mTopology == Topology::LINE_STRIP) {
+            return nv > 1 ? nv - 1 : 0;
+        }
+        return 0;
+    }
+
+    /**
      * @brief Sets line coordinates from a range of 2D points.
      *
      * If no indices are set, the interpretation depends on the topology:

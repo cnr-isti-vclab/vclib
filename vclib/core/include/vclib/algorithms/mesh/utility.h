@@ -15,10 +15,12 @@ namespace vcl::detail {
 
 // returns a non-empty vector if the ELEM_ID container is not compact and the
 // user wants compact indices
-template<uint ELEM_ID>
-std::vector<uint> elemCompactIndices(const auto& mesh, bool wantCompact)
+template<ElemId ELEM_ID, MeshConcept MeshType>
+auto elemCompactIndices(const MeshType& mesh, bool wantCompact)
 {
-    std::vector<uint> elemCompIndices;
+    using IndexType = IndexType<MeshType>;
+
+    std::vector<IndexType> elemCompIndices;
 
     bool isCompact = mesh.template count<ELEM_ID>() ==
                      mesh.template containerSize<ELEM_ID>();
@@ -30,16 +32,16 @@ std::vector<uint> elemCompactIndices(const auto& mesh, bool wantCompact)
 
 // returns a non-empty vector if the vertex container is not compact and the
 // user wants compact indices
-std::vector<uint> vertCompactIndices(const auto& mesh, bool wantCompact)
+auto vertCompactIndices(const auto& mesh, bool wantCompact)
 {
     return elemCompactIndices<ElemId::VERTEX>(mesh, wantCompact);
 }
 
 // lambda to get the vertex index of a face (considering compact vertex indices)
-auto vIndexLambda(const auto& mesh, const std::vector<uint>& vertCompIndices)
+auto vIndexLambda(const auto& mesh, const auto& vertCompIndices)
 {
     // lambda to get the vertex index of a face (considering compact indices)
-    auto vIndex = [&vertCompIndices](const auto& f, uint i) {
+    auto vIndex = [&vertCompIndices](auto f, uint i) {
         if (vertCompIndices.size() > 0)
             return vertCompIndices[f.vertexIndex(i)];
         else
@@ -51,7 +53,7 @@ auto vIndexLambda(const auto& mesh, const std::vector<uint>& vertCompIndices)
 
 // returns a non-empty vector if the face container is not compact and the
 // user wants compact indices
-std::vector<uint> faceCompactIndices(const auto& mesh, bool wantCompact)
+auto faceCompactIndices(const auto& mesh, bool wantCompact)
 {
     return elemCompactIndices<ElemId::FACE>(mesh, wantCompact);
 }

@@ -19,7 +19,7 @@
 // 4. Working with optional components
 // 5. Basic mesh information and iteration
 
-auto meshBasics()
+inline auto meshBasics()
 {
     std::println("=== VCLib Example 001: Mesh Basics ===\n");
 
@@ -57,8 +57,8 @@ auto meshBasics()
     // Access faces and their vertices
     std::print("Face 0 vertices: ");
     for (int i = 0; i < 3; ++i) {
-        std::print("{} ", mesh.face(0).vertex(i)->index());
-        // or mesh.face(0).vertexIndex(i)
+        std::print("{} ", mesh.face(0).vertexIndex(i));
+        // or mesh.face(0).vertex(i).index()
     }
     std::println();
 
@@ -93,14 +93,12 @@ auto meshBasics()
     std::println("\n=== Optional Components ===");
 
     // Check if color component is available
-    std::println(
-        "Per-vertex color enabled: {}", mesh.isPerVertexColorEnabled());
+    std::println("Vertex color available: {}", mesh.isVertexColorAvailable());
 
-    // Enable per-vertex color component
-    mesh.enablePerVertexColor();
-    std::println("Enabled per-vertex color");
-    std::println(
-        "Per-vertex color enabled: {}", mesh.isPerVertexColorEnabled());
+    // Enable vertex color component
+    mesh.enableVertexColor();
+    std::println("Enabled vertex color");
+    std::println("Vertex color available: {}", mesh.isVertexColorAvailable());
 
     // Set vertex colors
     mesh.vertex(0).color() = vcl::Color::Red;
@@ -111,7 +109,7 @@ auto meshBasics()
     std::println("Set colors for all vertices");
 
     // Enable and set face colors
-    mesh.enablePerFaceColor();
+    mesh.enableFaceColor();
     mesh.face(0).color() = vcl::Color::Cyan;
     mesh.face(1).color() = vcl::Color::Magenta;
 
@@ -139,13 +137,13 @@ auto meshBasics()
 
     // Add a quadrilateral face
     polyMesh.addFace();
-    auto& face = polyMesh.face(0);
+    auto face = polyMesh.face(0);
 
     // Polygon faces can have variable number of vertices
-    face.pushVertex(&polyMesh.vertex(0)); // with the pointer of the vertex
-    face.pushVertex(1u);                  // or with the index of the vertex
-    face.pushVertex(&polyMesh.vertex(2));
-    face.pushVertex(&polyMesh.vertex(3));
+    face.pushVertex(polyMesh.vertex(0)); // with the pointer of the vertex
+    face.pushVertex(1u);                 // or with the index of the vertex
+    face.pushVertex(polyMesh.vertex(2));
+    face.pushVertex(polyMesh.vertex(3));
 
     std::println("Created polygon with {} vertices", face.vertexCount());
 

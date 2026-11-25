@@ -75,12 +75,11 @@ std::istringstream objTriCube()
     return ss;
 }
 
-using Meshes  = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
-using Meshesf = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
-using MeshesIndexed =
-    std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed, vcl::EdgeMeshIndexed>;
-using MeshesIndexedf = std::
-    tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf, vcl::EdgeMeshIndexedf>;
+using Meshes   = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
+using Meshesf  = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
+using Meshes64 = std::tuple<vcl::TriMesh64, vcl::PolyMesh64, vcl::EdgeMesh64>;
+using Meshes64f =
+    std::tuple<vcl::TriMesh64f, vcl::PolyMesh64f, vcl::EdgeMesh64f>;
 
 // Test to load obj from a istringstream
 TEMPLATE_TEST_CASE(
@@ -88,8 +87,8 @@ TEMPLATE_TEST_CASE(
     "",
     Meshes,
     Meshesf,
-    MeshesIndexed,
-    MeshesIndexedf)
+    Meshes64,
+    Meshes64f)
 {
     using TriMesh  = std::tuple_element_t<0, TestType>;
     using PolyMesh = std::tuple_element_t<1, TestType>;
@@ -141,8 +140,8 @@ TEMPLATE_TEST_CASE(
         REQUIRE(tm.vertexCount() == 8);
         REQUIRE(tm.faceCount() == 4);
         REQUIRE(tm.materialCount() == 2);
-        REQUIRE(tm.isPerFaceMaterialIndexEnabled());
-        REQUIRE(tm.isPerFaceWedgeTexCoordsEnabled());
+        REQUIRE(tm.isFaceMaterialIndexAvailable());
+        REQUIRE(tm.isFaceWedgeTexCoordsAvailable());
         for (const auto& f : tm.faces()) {
             // first two faces have material index 0, the other two have index 1
             REQUIRE(f.materialIndex() == f.index() % 2);
@@ -154,7 +153,7 @@ TEMPLATE_TEST_CASE(
 
         REQUIRE(info.isTriangleMesh());
 
-        REQUIRE(info.hasPerFaceWedgeTexCoords());
+        REQUIRE(info.hasFaceWedgeTexCoords());
         REQUIRE(info.hasMaterials());
     }
 
@@ -255,4 +254,46 @@ TEMPLATE_TEST_CASE(
         REQUIRE(info.hasFaces());
         REQUIRE(info.hasEdges());
     }
+
+    SECTION("Face 0 without usemtl followed by usemtl")
+    {
+        info.clear();
+        TriMesh     tm;
+        std::string objStr =
+            "v 0 0 0\nv 1 0 0\nv 0 1 0\n"
+            "v 0 0 1\nv 1 0 1\nv 0 1 1\n"
+            "f 1 2 3\n"
+            "usemtl mat1\n"
+            "f 4 5 6\n";
+        std::string mtlStr =
+            "newmtl mat1\n"
+            "Kd 1.0 0.5 0.2\n";
+        std::istringstream         objStream(objStr);
+        std::istringstream         mtlStream(mtlStr);
+        std::vector<std::istream*> mtlStreams = {&mtlStream};
+        vcl::loadObj(tm, objStream, mtlStreams, info);
+        REQUIRE(tm.vertexCount() == 6);
+        REQUIRE(tm.faceCount() == 2);
+        REQUIRE(tm.isFaceMaterialIndexAvailable());
+        REQUIRE(tm.face(0).materialIndex() == vcl::USHORT_NULL);
+        REQUIRE(tm.face(1).materialIndex() == 0);
+    }
+}
+
+TEST_CASE("ObjMaterial serialization with map_Ke", "[io][obj]")
+{
+    vcl::detail::ObjMaterial mat;
+    mat.matName = "test_material";
+    mat.map_Ke  = "emissive.png";
+    std::ostringstream ss;
+    ss << mat;
+    std::string s = ss.str();
+    REQUIRE(s.find("map_Ke emissive.png") != std::string::npos);
+
+    vcl::detail::ObjMaterial matEmpty;
+    matEmpty.matName = "test_empty";
+    std::ostringstream ssEmpty;
+    ssEmpty << matEmpty;
+    std::string sEmpty = ssEmpty.str();
+    REQUIRE(sEmpty.find("map_Ke") == std::string::npos);
 }

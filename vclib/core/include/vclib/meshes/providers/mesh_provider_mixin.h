@@ -55,16 +55,23 @@ public:
 
     Point3d vertexPosition(uint vertId) const override
     {
-        return getMesh().vertex(vertId).position().template cast<double>();
+        if (vertId < getMesh().vertexContainerSize() &&
+            !getMesh().vertex(vertId).deleted()) {
+            return getMesh().vertex(vertId).position().template cast<double>();
+        }
+        return Point3d();
     }
 
     std::vector<Point3d> facePositions(uint faceId) const override
     {
         std::vector<Point3d> pos;
         if constexpr (HasFaces<MeshType>) {
-            const auto& f = getMesh().face(faceId);
-            for (auto* v : f.vertices()) {
-                pos.push_back(v->position().template cast<double>());
+            if (faceId < getMesh().faceContainerSize() &&
+                !getMesh().face(faceId).deleted()) {
+                auto f = getMesh().face(faceId);
+                for (auto&& v : f.vertices()) {
+                    pos.push_back(v.position().template cast<double>());
+                }
             }
         }
         return pos;
@@ -73,19 +80,25 @@ public:
     Point3d faceBarycenter(uint faceId) const override
     {
         if constexpr (HasFaces<MeshType>) {
-            return vcl::faceBarycenter(getMesh().face(faceId))
-                .template cast<double>();
+            if (faceId < getMesh().faceContainerSize() &&
+                !getMesh().face(faceId).deleted()) {
+                return vcl::faceBarycenter(getMesh().face(faceId))
+                    .template cast<double>();
+            }
         }
         return Point3d();
     }
 
     std::pair<Point3d, Point3d> edgePositions(uint edgeId) const override
     {
-        if constexpr (HasEdges<MeshType> && HasVertices<MeshType>) {
-            const auto& e = getMesh().edge(edgeId);
-            return {
-                e.vertex(0)->position().template cast<double>(),
-                e.vertex(1)->position().template cast<double>()};
+        if constexpr (HasEdges<MeshType>) {
+            if (edgeId < getMesh().edgeContainerSize() &&
+                !getMesh().edge(edgeId).deleted()) {
+                auto e = getMesh().edge(edgeId);
+                return {
+                    e.vertex(0).position().template cast<double>(),
+                    e.vertex(1).position().template cast<double>()};
+            }
         }
         return {Point3d(), Point3d()};
     }
@@ -124,6 +137,10 @@ public:
     void queryVertexPosition(uint vertId, VertexPositionCallback cb)
         const override
     {
+        if (vertId >= getMesh().vertexContainerSize() ||
+            getMesh().vertex(vertId).deleted()) {
+            return;
+        }
         using PosType =
             std::decay_t<decltype(getMesh().vertex(vertId).position())>;
         if constexpr (std::is_same_v<PosType, Point3d>) {
@@ -138,32 +155,43 @@ public:
 
     bool hasVertexNormals() const override
     {
-        if constexpr (HasPerVertexNormal<MeshType>) {
-            return isPerVertexNormalAvailable(getMesh());
+        if constexpr (HasVertexNormal<MeshType>) {
+            return getMesh().isVertexNormalAvailable();
         }
         return false;
     }
 
     bool hasFaceNormals() const override
     {
-        if constexpr (HasPerFaceNormal<MeshType>) {
-            return isPerFaceNormalAvailable(getMesh());
+        if constexpr (HasFaceNormal<MeshType>) {
+            return getMesh().isFaceNormalAvailable();
         }
         return false;
     }
 
     Point3d vertexNormal(uint vertId) const override
     {
-        if constexpr (HasPerVertexNormal<MeshType>) {
-            return getMesh().vertex(vertId).normal().template cast<double>();
+        if constexpr (HasVertexNormal<MeshType>) {
+            if (getMesh().isVertexNormalAvailable() &&
+                vertId < getMesh().vertexContainerSize() &&
+                !getMesh().vertex(vertId).deleted()) {
+                return getMesh()
+                    .vertex(vertId)
+                    .normal()
+                    .template cast<double>();
+            }
         }
         return Point3d();
     }
 
     Point3d faceNormal(uint faceId) const override
     {
-        if constexpr (HasPerFaceNormal<MeshType>) {
-            return getMesh().face(faceId).normal().template cast<double>();
+        if constexpr (HasFaceNormal<MeshType>) {
+            if (getMesh().isFaceNormalAvailable() &&
+                faceId < getMesh().faceContainerSize() &&
+                !getMesh().face(faceId).deleted()) {
+                return getMesh().face(faceId).normal().template cast<double>();
+            }
         }
         return Point3d();
     }
@@ -188,13 +216,65 @@ public:
         return 0;
     }
 
+    uint vertexContainerSize() const override
+    {
+        return getMesh().vertexContainerSize();
+    }
+
+    uint faceContainerSize() const override
+    {
+        if constexpr (HasFaces<MeshType>) {
+            return getMesh().faceContainerSize();
+        }
+        return 0;
+    }
+
+    uint edgeContainerSize() const override
+    {
+        if constexpr (HasEdges<MeshType>) {
+            return getMesh().edgeContainerSize();
+        }
+        return 0;
+    }
+
+    bool isVertexDeleted(uint vertId) const override
+    {
+        if (vertId < getMesh().vertexContainerSize()) {
+            return getMesh().vertex(vertId).deleted();
+        }
+        return true;
+    }
+
+    bool isFaceDeleted(uint faceId) const override
+    {
+        if constexpr (HasFaces<MeshType>) {
+            if (faceId < getMesh().faceContainerSize()) {
+                return getMesh().face(faceId).deleted();
+            }
+        }
+        return true;
+    }
+
+    bool isEdgeDeleted(uint edgeId) const override
+    {
+        if constexpr (HasEdges<MeshType>) {
+            if (edgeId < getMesh().edgeContainerSize()) {
+                return getMesh().edge(edgeId).deleted();
+            }
+        }
+        return true;
+    }
+
     std::vector<uint> faceVertices(uint faceId) const override
     {
         std::vector<uint> ids;
         if constexpr (HasFaces<MeshType>) {
-            const auto& f = getMesh().face(faceId);
-            for (auto* v : f.vertices()) {
-                ids.push_back(v->index());
+            if (faceId < getMesh().faceContainerSize() &&
+                !getMesh().face(faceId).deleted()) {
+                auto f = getMesh().face(faceId);
+                for (auto vi : f.vertexIndices()) {
+                    ids.push_back(vi);
+                }
             }
         }
         return ids;
@@ -203,21 +283,24 @@ public:
     std::pair<uint, uint> edgeVertices(uint edgeId) const override
     {
         if constexpr (HasEdges<MeshType>) {
-            const auto& e = getMesh().edge(edgeId);
-            return {e.vertex(0)->index(), e.vertex(1)->index()};
+            if (edgeId < getMesh().edgeContainerSize() &&
+                !getMesh().edge(edgeId).deleted()) {
+                auto e = getMesh().edge(edgeId);
+                return {e.vertexIndex(0), e.vertexIndex(1)};
+            }
         }
         return {0, 0};
     }
 
     uint selectedVertexCount() const override
     {
-        return vertexSelectionCount(getMesh());
+        return static_cast<uint>(vertexSelectionCount(getMesh()));
     }
 
     uint selectedFaceCount() const override
     {
         if constexpr (HasFaces<MeshType>) {
-            return faceSelectionCount(getMesh());
+            return static_cast<uint>(faceSelectionCount(getMesh()));
         }
         return 0;
     }
@@ -225,7 +308,7 @@ public:
     uint selectedEdgeCount() const override
     {
         if constexpr (HasEdges<MeshType>) {
-            return edgeSelectionCount(getMesh());
+            return static_cast<uint>(edgeSelectionCount(getMesh()));
         }
         return 0;
     }

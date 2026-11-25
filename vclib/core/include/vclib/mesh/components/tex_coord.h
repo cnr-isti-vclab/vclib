@@ -8,8 +8,7 @@
 #ifndef VCL_MESH_COMPONENTS_TEX_COORD_H
 #define VCL_MESH_COMPONENTS_TEX_COORD_H
 
-#include "base/component.h"
-#include "base/predicates.h"
+#include "base/component_predicates.h"
 
 #include <vclib/space/core.h>
 
@@ -29,32 +28,14 @@ namespace vcl::comp {
  * @endcode
  *
  * @tparam Scalar: The scalar type of the texture coordinate values.
- * @tparam ParentElemType: This template argument must be `void` if the
- * component needs to be stored horizontally, or the type of the parent element
- * that will contain this component if the component needs to be stored
- * vertically.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
+ * @tparam OPT: If true, the component will be optional.
  *
  * @ingroup components
  */
-template<typename Scalar, typename ParentElemType = void, bool OPT = false>
-class TexCoord :
-        public Component<
-            TexCoord<Scalar, ParentElemType, OPT>,
-            CompId::TEX_COORD,
-            vcl::TexCoord<Scalar>,
-            ParentElemType,
-            !std::is_same_v<ParentElemType, void>,
-            OPT>
+template<typename Scalar, bool OPT = false>
+class TexCoord : public Component<CompId::TEX_COORD, vcl::TexCoord<Scalar>, OPT>
 {
-    using Base = Component<
-        TexCoord<Scalar, ParentElemType, OPT>,
-        CompId::TEX_COORD,
-        vcl::TexCoord<Scalar>,
-        ParentElemType,
-        !std::is_same_v<ParentElemType, void>,
-        OPT>;
+    using Base = Component<CompId::TEX_COORD, vcl::TexCoord<Scalar>, OPT>;
 
 public:
     /**
@@ -72,93 +53,59 @@ public:
     /* Member functions */
 
     /**
-     * @brief Returns a const reference of the tex coord of the element.
-     * @return a const reference of the tex coord of the element.
-     */
-    const TexCoordType& texCoord() const { return Base::data(); }
-
-    /**
      * @brief Returns a reference of the tex coord of the element.
      * @return a reference of the tex coord of the element.
      */
-    TexCoordType& texCoord() { return Base::data(); }
+    decltype(auto) texCoord(this auto&& self) { return Base::compData(self); }
 
 protected:
     // Component interface functions
-    template<typename Element>
-    void importFrom(const Element& e, bool = true);
-
-    void serialize(std::ostream& os) const { texCoord().serialize(os); }
-
-    void deserialize(std::istream& is) { texCoord().deserialize(is); }
+    template<typename OtherElement>
+    void importFrom(this auto&& self, const OtherElement& other, bool = true);
 };
 
 /* concepts */
 
 /**
- * @brief A concept that checks whether a type T (that should be a Element) has
- * the TexCoord component (inherits from it).
+ * @brief A concept that checks whether a type T (which can be a TypeWrapper of
+ * components, an ElementProxy, an ElementContainer, or a Mesh) has the TexCoord
+ * component (COMP_ID = CompId::TEX_COORD).
  *
- * The concept is satisfied if T is a class that inherits from
- * vcl::comp::TexCoord, with any template arguments.
- *
- * Note that this concept does not discriminate between the Horizontal
- * TexCoord component and the vertical OptionalTexCoord component,
- * therefore it does not guarantee that a template Element type that satisfies
- * this concept provides TexCoord component at runtime (it is guaranteed
- * only that the proper member functions are available at compile time).
- *
- * @tparam T: The type to be tested for conformity to the HasTexCoord.
+ * @tparam T: The type to be tested for conformity to HasTexCoord.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasTexCoord = TTB::IsDerivedFromSpecializationOfV<T, TexCoord>;
+concept HasTexCoord = HasComponent<CompId::TEX_COORD, T>;
 
 /**
- * @brief A concept that checks whether a type T (that should be a Element) has
- * the TexCoord component (inherits from it), and that the component is
- * optional.
+ * @brief A concept that checks whether a type T has the TexCoord component and
+ * it is optional.
  *
- * @tparam T: The type to be tested for conformity to the
- * HasOptionalTexCoord.
+ * @tparam T: The type to be tested for conformity to HasOptionalTexCoord.
  *
  * @ingroup components_concepts
  */
 template<typename T>
 concept HasOptionalTexCoord =
-    HasTexCoord<T> && IsOptionalComponent<typename RemoveRef<T>::TexCoord>;
-
-/* importFrom function */
-
-template<typename Scalar, typename ParentElemType, bool OPT>
-template<typename Element>
-void TexCoord<Scalar, ParentElemType, OPT>::importFrom(const Element& e, bool)
-{
-    if constexpr (HasTexCoord<Element>) {
-        if (isTexCoordAvailableOn(e)) {
-            texCoord() = e.texCoord().template cast<Scalar>();
-        }
-    }
-}
+    HasTexCoord<T> && HasOptionalComponent<CompId::TEX_COORD, T>;
 
 /* Detector function to check if a class has TexCoord available */
 
-/**
- * @brief Checks if the given Element has TexCoord component
- * available.
- *
- * This function returns `true` also if the component is horizontal and always
- * available in the element. The runtime check is performed only when the
- * component is optional.
- *
- * @param[in] element: The element to check.
- * @return `true` if the element has TexCoord component available,
- * `false` otherwise.
- */
-bool isTexCoordAvailableOn(const auto& element)
+/* Implementation of member functions */
+
+template<typename Scalar, bool OPT>
+template<typename OtherElement>
+void TexCoord<Scalar, OPT>::importFrom(
+    this auto&&         self,
+    const OtherElement& other,
+    bool)
 {
-    return isComponentAvailableOn<CompId::TEX_COORD>(element);
+    if constexpr (HasTexCoord<OtherElement>) {
+        if (other.template isComponentAvailable<CompId::TEX_COORD>()) {
+            self.texCoord() = other.texCoord().template cast<Scalar>();
+        }
+    }
 }
 
 /* Specialization Aliases */
@@ -167,31 +114,25 @@ bool isTexCoordAvailableOn(const auto& element)
  * The TexCoordf class is an alias of the TexCoord component that uses float as
  * scalar type.
  *
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
  * @tparam OPT: If true, the component will be optional. This argument is
  * considered only if the component is stored vertically.
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool OPT = false>
-using TexCoordf = TexCoord<float, ElementType, OPT>;
+template<bool OPT = false>
+using TexCoordf = TexCoord<float, OPT>;
 
 /**
  * The TexCoordd class is an alias of the TexCoord component that uses double as
  * scalar type.
  *
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
  * @tparam OPT: If true, the component will be optional. This argument is
  * considered only if the component is stored vertically.
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool OPT = false>
-using TexCoordd = TexCoord<double, ElementType, OPT>;
+template<bool OPT = false>
+using TexCoordd = TexCoord<double, OPT>;
 
 } // namespace vcl::comp
 

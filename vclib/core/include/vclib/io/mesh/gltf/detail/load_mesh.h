@@ -50,7 +50,20 @@ int loadGltfPrimitiveMaterial(
             occlusionTextureId, emissiveTextureId;
 
         // extensions data
-        double emissiveStrength = 1.0f;
+        double  clearcoatFactor             = 0.0;
+        double  clearcoatRoughness          = 0.0;
+        double  clearcoatNormalScale        = 1.0;
+        int     clearcoatTextureId          = -1;
+        int     clearcoatRoughnessTextureId = -1;
+        int     clearcoatNormalTextureId    = -1;
+        double  specularFactor              = 1.0;
+        Point3f specularColor               = Point3f(1.0, 1.0, 1.0);
+        int     specularTextureId           = -1;
+        int     specularColorTextureId      = -1;
+        double  emissiveStrength            = 1.0f;
+        double  anisotropyStrength          = 0.0;
+        double  anisotropyRotation          = 0.0;
+        int     anisotropyTextureId         = -1;
 
         const tinygltf::Material& mat = model.materials[p.material];
 
@@ -113,6 +126,80 @@ int loadGltfPrimitiveMaterial(
         occlusionStrength = mat.occlusionTexture.strength;
 
         // extensions
+
+        // KHR_materials_anisotropy
+        {
+            static const std::string EXT      = "KHR_materials_anisotropy";
+            static const std::string STRENGTH = "anisotropyStrength";
+            static const std::string ROTATION = "anisotropyRotation";
+            static const std::string TEXTURE  = "anisotropyTexture";
+            if (mat.extensions.contains(EXT)) {
+                const auto& anisotropyExt = mat.extensions.at(EXT);
+
+                if (anisotropyExt.Has(STRENGTH)) {
+                    anisotropyStrength =
+                        anisotropyExt.Get(STRENGTH).GetNumberAsDouble();
+                    anisotropyStrength =
+                        std::clamp(anisotropyStrength, 0.0, 1.0);
+                }
+
+                if (anisotropyExt.Has(ROTATION)) {
+                    anisotropyRotation =
+                        anisotropyExt.Get(ROTATION).GetNumberAsDouble();
+                }
+
+                if (anisotropyExt.Has(TEXTURE)) {
+                    auto& tex = anisotropyExt.Get(TEXTURE);
+                    if (tex.Has("index")) {
+                        anisotropyTextureId = tex.Get("index").GetNumberAsInt();
+                    }
+                }
+            }
+        }
+
+        // KHR_materials_clearcoat
+        {
+            static const std::string EXT        = "KHR_materials_clearcoat";
+            static const std::string FACTOR     = "clearcoatFactor";
+            static const std::string ROUGH      = "clearcoatRoughnessFactor";
+            static const std::string TEXTURE    = "clearcoatTexture";
+            static const std::string ROUGH_TEX  = "clearcoatRoughnessTexture";
+            static const std::string NORMAL_TEX = "clearcoatNormalTexture";
+            if (mat.extensions.contains(EXT)) {
+                const auto& clearcoatExt = mat.extensions.at(EXT);
+
+                if (clearcoatExt.Has(FACTOR))
+                    clearcoatFactor =
+                        clearcoatExt.Get(FACTOR).GetNumberAsDouble();
+
+                if (clearcoatExt.Has(ROUGH))
+                    clearcoatRoughness =
+                        clearcoatExt.Get(ROUGH).GetNumberAsDouble();
+
+                if (clearcoatExt.Has(TEXTURE)) {
+                    clearcoatTextureId =
+                        clearcoatExt.Get(TEXTURE).Get("index").GetNumberAsInt();
+                }
+
+                if (clearcoatExt.Has(ROUGH_TEX)) {
+                    clearcoatRoughnessTextureId = clearcoatExt.Get(ROUGH_TEX)
+                                                      .Get("index")
+                                                      .GetNumberAsInt();
+                }
+
+                if (clearcoatExt.Has(NORMAL_TEX)) {
+                    const auto& clearcoatNormalTexture =
+                        clearcoatExt.Get(NORMAL_TEX);
+                    clearcoatNormalTextureId =
+                        clearcoatNormalTexture.Get("index").GetNumberAsInt();
+                    if (clearcoatNormalTexture.Has("scale"))
+                        clearcoatNormalScale =
+                            clearcoatNormalTexture.Get("scale")
+                                .GetNumberAsDouble();
+                }
+            }
+        }
+
         // KHR_materials_emissive_strength
         {
             static const std::string EXT = "KHR_materials_emissive_strength";
@@ -122,6 +209,36 @@ int loadGltfPrimitiveMaterial(
                 if (emissiveStrengthExt.Has(VAL))
                     emissiveStrength =
                         emissiveStrengthExt.Get(VAL).GetNumberAsDouble();
+            }
+        }
+
+        // KHR_materials_specular
+        {
+            static const std::string EXT       = "KHR_materials_specular";
+            static const std::string FACTOR    = "specularFactor";
+            static const std::string COLOR     = "specularColorFactor";
+            static const std::string TEXTURE   = "specularTexture";
+            static const std::string COLOR_TEX = "specularColorTexture";
+            if (mat.extensions.contains(EXT)) {
+                const auto& specularExt = mat.extensions.at(EXT);
+
+                if (specularExt.Has(FACTOR))
+                    specularFactor =
+                        specularExt.Get(FACTOR).GetNumberAsDouble();
+
+                if (specularExt.Has(COLOR))
+                    for (uint i = 0; i < 3; i++)
+                        specularColor[i] =
+                            specularExt.Get(COLOR).Get(i).GetNumberAsDouble();
+
+                if (specularExt.Has(TEXTURE))
+                    specularTextureId =
+                        specularExt.Get(TEXTURE).Get("index").GetNumberAsInt();
+
+                if (specularExt.Has(COLOR_TEX))
+                    specularColorTextureId = specularExt.Get(COLOR_TEX)
+                                                 .Get("index")
+                                                 .GetNumberAsInt();
             }
         }
 
@@ -188,17 +305,25 @@ int loadGltfPrimitiveMaterial(
 
         if constexpr (HasMaterials<MeshType>) {
             Material mat;
-            mat.name()              = matName;
-            mat.baseColor()         = baseColor;
-            mat.metallic()          = metallic;
-            mat.roughness()         = roughness;
-            mat.emissiveColor()     = emissiveColor;
-            mat.alphaMode()         = alphaMode;
-            mat.alphaCutoff()       = alphaCutoff;
-            mat.doubleSided()       = doubleSided;
-            mat.normalScale()       = normalScale;
-            mat.occlusionStrength() = occlusionStrength;
-            mat.emissiveStrength()  = emissiveStrength;
+            mat.name()                 = matName;
+            mat.baseColor()            = baseColor;
+            mat.metallic()             = metallic;
+            mat.roughness()            = roughness;
+            mat.emissiveColor()        = emissiveColor;
+            mat.alphaMode()            = alphaMode;
+            mat.alphaCutoff()          = alphaCutoff;
+            mat.doubleSided()          = doubleSided;
+            mat.normalScale()          = normalScale;
+            mat.occlusionStrength()    = occlusionStrength;
+            mat.specularFactor()       = specularFactor;
+            mat.specularColor()        = specularColor;
+            mat.emissiveStrength()     = emissiveStrength;
+            mat.clearcoatFactor()      = clearcoatFactor;
+            mat.clearcoatRoughness()   = clearcoatRoughness;
+            mat.clearcoatNormalScale() = clearcoatNormalScale;
+            mat.anisotropyStrength()   = anisotropyStrength;
+            mat.anisotropyRotation()   = anisotropyRotation;
+
             loadTextureInMaterial(
                 mat, baseColorTextureId, Material::TextureType::BASE_COLOR);
             loadTextureInMaterial(
@@ -211,6 +336,24 @@ int loadGltfPrimitiveMaterial(
                 mat, occlusionTextureId, Material::TextureType::OCCLUSION);
             loadTextureInMaterial(
                 mat, emissiveTextureId, Material::TextureType::EMISSIVE);
+            loadTextureInMaterial(
+                mat, anisotropyTextureId, Material::TextureType::ANISOTROPY);
+            loadTextureInMaterial(
+                mat, clearcoatTextureId, Material::TextureType::CLEARCOAT);
+            loadTextureInMaterial(
+                mat,
+                clearcoatRoughnessTextureId,
+                Material::TextureType::CLEARCOAT_ROUGHNESS);
+            loadTextureInMaterial(
+                mat,
+                clearcoatNormalTextureId,
+                Material::TextureType::CLEARCOAT_NORMAL);
+            loadTextureInMaterial(
+                mat, specularTextureId, Material::TextureType::SPECULAR);
+            loadTextureInMaterial(
+                mat,
+                specularColorTextureId,
+                Material::TextureType::SPECULAR_COLOR);
             m.pushMaterial(mat);
             idx = m.materialCount() - 1; // index of the added material
             if constexpr (HasColor<MeshType>) {
@@ -235,7 +378,7 @@ bool populateGltfVertices(
     uint          stride,
     uint          vertCount)
 {
-    using PositionType = typename MeshType::VertexType::PositionType;
+    using PositionType = PositionType<MeshType>;
 
     uint base = m.addVertices(vertCount);
 
@@ -257,13 +400,13 @@ bool populateGltfVNormals(
     unsigned int  stride,
     unsigned int  vertCount)
 {
-    if constexpr (HasPerVertexNormal<MeshType>) {
-        using NormalType = typename MeshType::VertexType::NormalType;
+    if constexpr (HasVertexNormal<MeshType>) {
+        using NormalType = VertexType<MeshType>::NormalType;
 
         if (enableOptionalComponents)
-            enableIfPerVertexNormalOptional(m);
+            enableIfVertexNormalOptional(m);
 
-        if (isPerVertexNormalAvailable(m)) {
+        if (m.isVertexNormalAvailable()) {
             for (unsigned int i = 0; i < vertCount; i++) {
                 const Scalar* normBase = reinterpret_cast<const Scalar*>(
                     reinterpret_cast<const char*>(normArray) + i * stride);
@@ -290,13 +433,13 @@ bool populateGltfVTangents(
     unsigned int  stride,
     unsigned int  vertCount)
 {
-    if constexpr (HasPerVertexTangent<MeshType>) {
-        using TangentType = typename MeshType::VertexType::TangentType;
+    if constexpr (HasVertexTangent<MeshType>) {
+        using TangentType = VertexType<MeshType>::TangentType;
 
         if (enableOptionalComponents)
-            enableIfPerVertexTangentOptional(m);
+            enableIfVertexTangentOptional(m);
 
-        if (isPerVertexTangentAvailable(m)) {
+        if (m.isVertexTangentAvailable()) {
             for (unsigned int i = 0; i < vertCount; i++) {
                 const Scalar* tangBase = reinterpret_cast<const Scalar*>(
                     reinterpret_cast<const char*>(tangArray) + i * stride);
@@ -327,11 +470,11 @@ bool populateGltfVColors(
     bool          colorWithAlpha)
 {
     unsigned int nElemns = colorWithAlpha ? 4 : 3;
-    if constexpr (HasPerVertexColor<MeshType>) {
+    if constexpr (HasVertexColor<MeshType>) {
         if (enableOptionalComponents)
-            enableIfPerVertexColorOptional(m);
+            enableIfVertexColorOptional(m);
 
-        if (isPerVertexColorAvailable(m)) {
+        if (m.isVertexColorAvailable()) {
             for (unsigned int i = 0; i < vertCount * nElemns; i += nElemns) {
                 const Scalar* colorBase = reinterpret_cast<const Scalar*>(
                     reinterpret_cast<const char*>(colorArray) +
@@ -373,13 +516,13 @@ bool populateGltfVTextCoords(
     unsigned int  stride,
     unsigned int  vertCount)
 {
-    if constexpr (HasPerVertexTexCoord<MeshType>) {
-        using TexCoordType = typename MeshType::VertexType::TexCoordType;
+    if constexpr (HasVertexTexCoord<MeshType>) {
+        using TexCoordType = VertexType<MeshType>::TexCoordType;
 
         if (enableOptionalComponents)
-            enableIfPerVertexTexCoordOptional(m);
+            enableIfVertexTexCoordOptional(m);
 
-        if (isPerVertexTexCoordAvailable(m)) {
+        if (m.isVertexTexCoordAvailable()) {
             for (unsigned int i = 0; i < vertCount; i++) {
                 const Scalar* textCoordBase = reinterpret_cast<const Scalar*>(
                     reinterpret_cast<const char*>(textCoordArray) + i * stride);
@@ -405,11 +548,12 @@ bool populateGltfTriangles(
     const Scalar* triArray,
     uint          triCount)
 {
+    using IndexType = IndexType<MeshType>;
     if constexpr (HasFaces<MeshType>) {
         if (triArray != nullptr) {
-            uint fi = m.addFaces(triCount);
-            for (unsigned int i = 0; i < triCount * 3; i += 3, ++fi) {
-                auto& f = m.face(fi);
+            IndexType fi = m.addFaces(triCount);
+            for (uint i = 0; i < triCount * 3; i += 3, ++fi) {
+                auto f = m.face(fi);
                 if constexpr (HasPolygons<MeshType>) {
                     f.resizeVertices(3);
                 }
@@ -419,10 +563,13 @@ bool populateGltfTriangles(
             }
         }
         else {
-            triCount = m.vertexCount() / 3 - firstVertex;
-            uint fi  = m.addFaces(triCount);
+            triCount     = (m.vertexCount() - firstVertex) / 3;
+            IndexType fi = m.addFaces(triCount);
             for (uint i = 0; i < triCount * 3; i += 3, ++fi) {
-                auto& f = m.face(fi);
+                auto f = m.face(fi);
+                if constexpr (HasPolygons<MeshType>) {
+                    f.resizeVertices(3);
+                }
                 for (uint j = 0; j < 3; ++j) {
                     f.setVertex(j, firstVertex + i + j);
                 }
@@ -442,20 +589,21 @@ bool populateGltfLines(
     const Scalar* lineArray,
     uint          lineCount)
 {
+    using IndexType = IndexType<MeshType>;
     if constexpr (HasEdges<MeshType>) {
         if (lineArray != nullptr) {
-            uint ei = m.addEdges(lineCount);
-            for (unsigned int i = 0; i < lineCount * 2; i += 2, ++ei) {
-                auto& e = m.edge(ei);
+            IndexType ei = m.addEdges(lineCount);
+            for (uint i = 0; i < lineCount * 2; i += 2, ++ei) {
+                auto e = m.edge(ei);
                 e.setVertices(
                     firstVertex + lineArray[i], firstVertex + lineArray[i + 1]);
             }
         }
         else {
-            lineCount = m.vertexCount() / 2 - firstVertex;
-            uint ei   = m.addEdges(lineCount);
+            lineCount    = m.vertexCount() / 2 - firstVertex;
+            IndexType ei = m.addEdges(lineCount);
             for (uint i = 0; i < lineCount * 2; i += 2, ++ei) {
-                auto& e = m.edge(ei);
+                auto e = m.edge(ei);
                 e.setVertices(firstVertex + i, firstVertex + i + 1);
             }
         }
@@ -702,16 +850,12 @@ bool loadGltfAttribute(
  * @param model
  * @param p
  */
-template<
-    MeshConcept     MeshType,
-    Matrix44Concept MatrixType,
-    LoggerConcept   LogType>
+template<MeshConcept MeshType, LoggerConcept LogType>
 void loadGltfMeshPrimitive(
     MeshType&                  m,
     MeshInfo&                  info,
     const tinygltf::Model&     model,
     const tinygltf::Primitive& p,
-    const MatrixType&          transf,
     const LoadSettings&        settings,
     LogType&                   log)
 {
@@ -736,7 +880,7 @@ void loadGltfMeshPrimitive(
         model,
         p,
         GltfAttrType::NORMAL);
-    info.setPerVertexNormal(lvn);
+    info.setVertexNormal(lvn);
 
     bool lvc = loadGltfAttribute(
         m,
@@ -746,7 +890,7 @@ void loadGltfMeshPrimitive(
         p,
         GltfAttrType::COLOR_0);
     if (lvc) {
-        info.setPerVertexColor();
+        info.setVertexColor();
     }
 
     bool lvt = loadGltfAttribute(
@@ -757,7 +901,7 @@ void loadGltfMeshPrimitive(
         p,
         GltfAttrType::TEXCOORD_0);
     if (lvt) {
-        info.setPerVertexTexCoord();
+        info.setVertexTexCoord();
     }
 
     bool lvtan = loadGltfAttribute(
@@ -768,19 +912,19 @@ void loadGltfMeshPrimitive(
         p,
         GltfAttrType::TANGENT);
     if (lvtan) {
-        info.setPerVertexTangent();
+        info.setVertexTangent();
     }
 
-    if constexpr (HasPerVertexMaterialIndex<MeshType>) {
+    if constexpr (HasVertexMaterialIndex<MeshType>) {
         if (settings.enableOptionalComponents) {
-            enableIfPerVertexMaterialIndexOptional(m);
+            enableIfVertexMaterialIndexOptional(m);
         }
-        if (isPerVertexMaterialIndexAvailable(m)) {
+        if (m.isVertexMaterialIndexAvailable()) {
             uint vnum = m.vertexCount();
             for (uint v = firstVertex; v < vnum; ++v) {
                 m.vertex(v).materialIndex() = materialId;
             }
-            info.setPerVertexMaterialIndex();
+            info.setVertexMaterialIndex();
         }
     }
 
@@ -798,7 +942,7 @@ void loadGltfMeshPrimitive(
             if (lti) {
                 info.setTriangleMesh();
                 info.setFaces();
-                info.setPerFaceVertexReferences();
+                info.setFaceVertexReferences();
             }
         }
     }
@@ -816,18 +960,9 @@ void loadGltfMeshPrimitive(
                 GltfAttrType::LINE_INDICES);
             if (lti) {
                 info.setEdges();
-                info.setPerEdgeVertexReferences();
+                info.setEdgeVertexReferences();
             }
         }
-    }
-
-    if (HasTransformMatrix<MeshType>) {
-        m.transformMatrix() = transf;
-    }
-    else {
-        // if the mesh does not have a transform matrix, apply the
-        // transformation matrix to the vertices
-        vcl::applyTransformMatrix(m, transf);
     }
 }
 
@@ -862,11 +997,20 @@ void gltfLoadMesh(
 
     // for each primitive, load it into the mesh
     for (uint i = 0; const tinygltf::Primitive& p : tm.primitives) {
-        loadGltfMeshPrimitive(m, info, model, p, transf, settings, log);
+        loadGltfMeshPrimitive(m, info, model, p, settings, log);
         log.progress(++i);
     }
 
     log.endProgress();
+
+    if constexpr (HasTransformMatrix<MeshType>) {
+        m.transformMatrix() = transf;
+    }
+    else {
+        // if the mesh does not have a transform matrix, apply the
+        // transformation matrix to the vertices
+        vcl::applyTransformMatrix(m, transf);
+    }
 
     log.log(
         LogType::MESSAGE_LOG,

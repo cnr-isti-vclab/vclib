@@ -12,6 +12,7 @@
 #include <vclib/io/write.h>
 
 #include <vclib/algorithms/core.h>
+#include <vclib/algorithms/mesh/stat/topology.h>
 #include <vclib/space/complex.h>
 #include <vclib/version.h>
 
@@ -104,23 +105,22 @@ void saveStl(
     detail::writeStlHeader(fp, settings);
 
     if constexpr (HasFaces<MeshType>) {
-        using FaceType = MeshType::FaceType;
-
+        uint numTris = triangulatedFaceCount(m);
         if (settings.binary) {
-            io::writeInt(fp, m.faceCount());
+            io::writeInt(fp, numTris);
         }
 
-        log.startProgress("Saving STL file", m.faceCount());
+        log.startProgress("Saving STL file", numTris);
 
-        for (const FaceType& f : m.faces()) {
+        for (auto f : m.faces()) {
             // For each triangle write the normal, the 3 vert positions and a
             // short
             auto n = faceNormal(f);
 
             unsigned short attributes = 0;
 
-            if constexpr (HasPerFaceColor<MeshType>) {
-                if (meshInfo.hasPerFaceColor()) {
+            if constexpr (HasFaceColor<MeshType>) {
+                if (meshInfo.hasFaceColor()) {
                     if (settings.magicsMode)
                         attributes = 32768 | f.color().bgr5();
                     else
@@ -131,9 +131,9 @@ void saveStl(
             if (f.vertexCount() == 3) {
                 detail::writeSTLTriangle(
                     fp,
-                    f.vertex(0)->position(),
-                    f.vertex(1)->position(),
-                    f.vertex(2)->position(),
+                    f.vertex(0).position(),
+                    f.vertex(1).position(),
+                    f.vertex(2).position(),
                     n,
                     attributes,
                     settings);
@@ -143,16 +143,16 @@ void saveStl(
                 for (uint i = 0; i < tris.size(); i += 3) {
                     detail::writeSTLTriangle(
                         fp,
-                        f.vertex(tris[i])->position(),
-                        f.vertex(tris[i + 1])->position(),
-                        f.vertex(tris[i + 2])->position(),
+                        f.vertex(tris[i]).position(),
+                        f.vertex(tris[i + 1]).position(),
+                        f.vertex(tris[i + 2]).position(),
                         n,
                         attributes,
                         settings);
                 }
             }
 
-            log.progress(m.index(f));
+            log.progress(f.index());
         }
 
         log.endProgress();

@@ -9,7 +9,6 @@
 #define VCL_POISSON_RECON_POISSON_RECONSTRUCTION_H
 
 #include <vclib/mesh.h>
-#include <vclib/mesh/requirements/vertex_requirements.h>
 
 // clang-format off
 // inclusion order matters for PoissonRecon
@@ -267,7 +266,7 @@ OutMesh poissonReconstruction(
     uint            scale     = 1,
     bool            linearFit = false)
 {
-    requirePerVertexNormal(mesh);
+    requireVertexNormal(mesh);
 
     OutMesh outMesh;
 
@@ -275,7 +274,7 @@ OutMesh poissonReconstruction(
         return outMesh;
     }
 
-    using ScalarType = MeshType::VertexType::PositionType::ScalarType;
+    using ScalarType = ScalarType<MeshType>;
     using ReconType  = PoissonRecon::Reconstructor::Poisson;
 
     static constexpr unsigned int DIM     = 3;
@@ -308,10 +307,10 @@ OutMesh poissonReconstruction(
 
     std::vector<detail::RGBAColor<ScalarType>> colors;
     bool                                       useVertexColor = false;
-    if constexpr (HasPerVertexColor<MeshType> && HasPerVertexColor<OutMesh>) {
-        if (isPerVertexColorAvailable(mesh)) {
-            enableIfPerVertexColorOptional(outMesh);
-            if (isPerVertexColorAvailable(outMesh)) {
+    if constexpr (HasVertexColor<MeshType> && HasVertexColor<OutMesh>) {
+        if (mesh.isVertexColorAvailable()) {
+            enableIfVertexColorOptional(outMesh);
+            if (outMesh.isVertexColorAvailable()) {
                 useVertexColor = true;
                 colors         = detail::extrapolateColors(
                     mesh, vertices, depth, width, scale);
@@ -319,17 +318,17 @@ OutMesh poissonReconstruction(
         }
     }
 
-    using OutPoint  = OutMesh::VertexType::PositionType;
+    using OutPoint  = PositionType<OutMesh>;
     using OutScalar = OutPoint::ScalarType;
 
     outMesh.reserveVertices(vertices.size());
     for (size_t i = 0; i < vertices.size(); ++i) {
         const auto& p   = vertices[i];
-        uint        vid = outMesh.addVertex(OutPoint(
+        auto        vid = outMesh.addVertex(OutPoint(
             static_cast<OutScalar>(p[0]),
             static_cast<OutScalar>(p[1]),
             static_cast<OutScalar>(p[2])));
-        if constexpr (HasPerVertexColor<OutMesh>) {
+        if constexpr (HasVertexColor<OutMesh>) {
             if (useVertexColor) {
                 outMesh.vertex(vid).color() = detail::toVclColor(colors[i]);
             }

@@ -240,8 +240,8 @@ public:
      * the iterators begin and end, listed in counterclockwise order,
      * representing a polygon.
      *
-     * The normal is computed as the normalized sum of the cross products of
-     * each triplet of consecutive points.
+     * Triangles and quads use their direct, short formulas. Larger polygons use
+     * Newell's method in a single forward pass over the polygon boundary.
      *
      * @tparam Iterator: an iterator which points to a type that satisfies the
      * PointConcept.
@@ -282,7 +282,7 @@ public:
      * @return The normal of the polygon.
      */
     template<Range R>
-    static PointT normal(R&& range)
+    static PointT normal(R&& range) requires (PointT::DIM == 3)
     {
         return normal(std::ranges::begin(range), std::ranges::end(range));
     }
@@ -415,7 +415,7 @@ public:
         for (auto i = begin; i != end; ++i) {
             const PointT& p0 = *i;
             auto          i1 = i;
-            ++i;
+            ++i1;
             if (i1 == end)
                 i1 = begin;
             const PointT& p1 = *i1;

@@ -25,13 +25,13 @@ int main(int argc, char** argv)
     using enum vcl::MeshRenderInfo::Buffers;
 
     // to test the per-vertex and per-face color rendering, we set both of them
-    mesh.enablePerVertexColor();
-    mesh.enablePerFaceColor();
+    mesh.enableVertexColor();
+    mesh.enableFaceColor();
 
-    for (auto& f : mesh.faces()) {
-        f.vertex(0)->color() = vcl::Color::Red;
-        f.vertex(1)->color() = vcl::Color::Green;
-        f.vertex(2)->color() = vcl::Color::Blue;
+    for (auto f : mesh.faces()) {
+        f.vertex(0).color() = vcl::Color::Red;
+        f.vertex(1).color() = vcl::Color::Green;
+        f.vertex(2).color() = vcl::Color::Blue;
         if (f.index() % 3 == 0)
             f.color() = vcl::Color::Red;
         else if (f.index() % 3 == 1)

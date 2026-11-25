@@ -48,8 +48,8 @@ void readPlyVertexProperty(
         }
     }
     else if (p.name >= ply::nx && p.name <= ply::nz) {
-        if constexpr (HasPerVertexNormal<MeshType>) {
-            if (isPerVertexNormalAvailable(mesh)) {
+        if constexpr (HasVertexNormal<MeshType>) {
+            if (mesh.isVertexNormalAvailable()) {
                 using Scalar = VertexType::NormalType::ScalarType;
                 int a        = p.name - ply::nx;
                 v.normal()[a] =
@@ -59,8 +59,8 @@ void readPlyVertexProperty(
         }
     }
     else if (p.name >= ply::red && p.name <= ply::alpha) {
-        if constexpr (HasPerVertexColor<MeshType>) {
-            if (isPerVertexColorAvailable(mesh)) {
+        if constexpr (HasVertexColor<MeshType>) {
+            if (mesh.isVertexColorAvailable()) {
                 int a = p.name - ply::red;
                 v.color()[a] =
                     io::readPrimitiveType<unsigned char>(file, p.type, end);
@@ -69,9 +69,9 @@ void readPlyVertexProperty(
         }
     }
     else if (p.name == ply::quality) {
-        if constexpr (HasPerVertexQuality<MeshType>) {
+        if constexpr (HasVertexQuality<MeshType>) {
             using QualityType = VertexType::QualityType;
-            if (isPerVertexQualityAvailable(mesh)) {
+            if (mesh.isVertexQualityAvailable()) {
                 v.quality() =
                     io::readPrimitiveType<QualityType>(file, p.type, end);
                 hasBeenRead = true;
@@ -79,9 +79,9 @@ void readPlyVertexProperty(
         }
     }
     else if (p.name >= ply::texture_u && p.name <= ply::texture_v) {
-        if constexpr (HasPerVertexTexCoord<MeshType>) {
+        if constexpr (HasVertexTexCoord<MeshType>) {
             using Scalar = VertexType::TexCoordType::ScalarType;
-            if (isPerVertexTexCoordAvailable(mesh)) {
+            if (mesh.isVertexTexCoordAvailable()) {
                 int a = p.name - ply::texture_u;
                 v.texCoord()[a] =
                     io::readPrimitiveType<Scalar>(file, p.type, end);
@@ -90,8 +90,8 @@ void readPlyVertexProperty(
         }
     }
     else if (p.name == ply::material_index) {
-        if constexpr (HasPerVertexMaterialIndex<MeshType>) {
-            if (isPerVertexMaterialIndexAvailable(mesh)) {
+        if constexpr (HasVertexMaterialIndex<MeshType>) {
+            if (mesh.isVertexMaterialIndexAvailable()) {
                 v.materialIndex() =
                     io::readPrimitiveType<ushort>(file, p.type, end);
                 hasBeenRead = true;
@@ -100,9 +100,9 @@ void readPlyVertexProperty(
     }
     // Gaussian Splat properties
     else if (p.name >= ply::f_dc_0 && p.name <= ply::f_rest_44) {
-        if constexpr (HasPerVertexGaussianSplat<MeshType>) {
+        if constexpr (HasVertexGaussianSplat<MeshType>) {
             using Scalar = VertexType::GaussianSplatType::ScalarType;
-            if (isPerVertexGaussianSplatAvailable(mesh)) {
+            if (mesh.isVertexGaussianSplatAvailable()) {
                 int a = p.name - ply::f_dc_0;
                 v.gaussianSplat().shCoeffAt(a) =
                     io::readPrimitiveType<Scalar>(file, p.type, end);
@@ -111,9 +111,9 @@ void readPlyVertexProperty(
         }
     }
     else if (p.name == ply::opacity) {
-        if constexpr (HasPerVertexGaussianSplat<MeshType>) {
+        if constexpr (HasVertexGaussianSplat<MeshType>) {
             using Scalar = VertexType::GaussianSplatType::ScalarType;
-            if (isPerVertexGaussianSplatAvailable(mesh)) {
+            if (mesh.isVertexGaussianSplatAvailable()) {
                 v.gaussianSplat().opacity() =
                     io::readPrimitiveType<Scalar>(file, p.type, end);
                 hasBeenRead = true;
@@ -121,9 +121,9 @@ void readPlyVertexProperty(
         }
     }
     else if (p.name >= ply::scale_0 && p.name <= ply::scale_2) {
-        if constexpr (HasPerVertexGaussianSplat<MeshType>) {
+        if constexpr (HasVertexGaussianSplat<MeshType>) {
             using Scalar = VertexType::GaussianSplatType::ScalarType;
-            if (isPerVertexGaussianSplatAvailable(mesh)) {
+            if (mesh.isVertexGaussianSplatAvailable()) {
                 int a = p.name - ply::scale_0;
                 v.gaussianSplat().scale()[a] =
                     io::readPrimitiveType<Scalar>(file, p.type, end);
@@ -132,9 +132,9 @@ void readPlyVertexProperty(
         }
     }
     else if (p.name >= ply::rot_0 && p.name <= ply::rot_3) {
-        if constexpr (HasPerVertexGaussianSplat<MeshType>) {
+        if constexpr (HasVertexGaussianSplat<MeshType>) {
             using Scalar = VertexType::GaussianSplatType::ScalarType;
-            if (isPerVertexGaussianSplatAvailable(mesh)) {
+            if (mesh.isVertexGaussianSplatAvailable()) {
                 int a = p.name - ply::rot_0;
                 v.gaussianSplat().rotation().coeffs()[a] =
                     io::readPrimitiveType<Scalar>(file, p.type, end);
@@ -143,8 +143,8 @@ void readPlyVertexProperty(
         }
     }
     else if (p.name == ply::unknown) {
-        if constexpr (HasPerVertexCustomComponents<MeshType>) {
-            if (mesh.hasPerVertexCustomComponent(p.unknownPropertyName)) {
+        if constexpr (HasVertexCustomComponents<MeshType>) {
+            if (mesh.hasVertexCustomComponent(p.unknownPropertyName)) {
                 io::readCustomComponent(
                     file, v, p.unknownPropertyName, p.type, end);
                 hasBeenRead = true;
@@ -201,8 +201,6 @@ void writePlyVertices(
     const PlyHeader& header,
     const MeshType&  mesh)
 {
-    using VertexType = MeshType::VertexType;
-
     FileType format;
     if (header.format() == ply::ASCII) {
         format.isBinary = false;
@@ -211,7 +209,7 @@ void writePlyVertices(
         format.endian = std::endian::big;
     }
 
-    for (const VertexType& v : mesh.vertices()) {
+    for (const auto& v : mesh.vertices()) {
         for (const PlyProperty& p : header.vertexProperties()) {
             bool hasBeenWritten = false;
             if (p.name >= ply::x && p.name <= ply::z) {
@@ -224,42 +222,41 @@ void writePlyVertices(
                 hasBeenWritten = true;
             }
             else if (p.name >= ply::nx && p.name <= ply::nz) {
-                if constexpr (HasPerVertexNormal<MeshType>) {
+                if constexpr (HasVertexNormal<MeshType>) {
                     io::writeProperty(
                         file, v.normal()[p.name - ply::nx], p.type, format);
                     hasBeenWritten = true;
                 }
             }
             else if (p.name >= ply::red && p.name <= ply::alpha) {
-                if constexpr (HasPerVertexColor<MeshType>) {
+                if constexpr (HasVertexColor<MeshType>) {
                     io::writeProperty(
                         file, v.color()[p.name - ply::red], p.type, format);
                     hasBeenWritten = true;
                 }
             }
             else if (p.name == ply::quality) {
-                if constexpr (HasPerVertexQuality<MeshType>) {
+                if constexpr (HasVertexQuality<MeshType>) {
                     io::writeProperty(file, v.quality(), p.type, format);
                     hasBeenWritten = true;
                 }
             }
             else if (p.name >= ply::texture_u && p.name <= ply::texture_v) {
-                if constexpr (HasPerVertexTexCoord<MeshType>) {
+                if constexpr (HasVertexTexCoord<MeshType>) {
                     const uint a = p.name - ply::texture_u;
                     io::writeProperty(file, v.texCoord()[a], p.type, format);
                     hasBeenWritten = true;
                 }
             }
             else if (p.name == ply::material_index) {
-                if constexpr (HasPerVertexMaterialIndex<MeshType>) {
+                if constexpr (HasVertexMaterialIndex<MeshType>) {
                     io::writeProperty(file, v.materialIndex(), p.type, format);
                     hasBeenWritten = true;
                 }
             }
             else if (p.name == ply::unknown) {
-                if constexpr (HasPerVertexCustomComponents<MeshType>) {
-                    if (mesh.hasPerVertexCustomComponent(
-                            p.unknownPropertyName)) {
+                if constexpr (HasVertexCustomComponents<MeshType>) {
+                    if (mesh.hasVertexCustomComponent(p.unknownPropertyName)) {
                         io::writeCustomComponent(
                             file, v, p.unknownPropertyName, p.type, format);
                         hasBeenWritten = true;
@@ -289,9 +286,9 @@ void readPlyVertices(
     log.startProgress("Reading vertices", header.vertexCount());
 
     for (uint vid = 0; vid < header.vertexCount(); ++vid) {
-        auto& v = m.vertex(vid);
+        auto v = m.vertex(vid);
         // Find the count of the spherical harmonics coefficients
-        if constexpr (HasPerVertexGaussianSplat<MeshType>) {
+        if constexpr (HasVertexGaussianSplat<MeshType>) {
             uint shCoeffCount = header.gaussianSplatSHCoeffsCount();
             if (shCoeffCount > 0)
                 v.gaussianSplat().resizeSHCoeffs(shCoeffCount);

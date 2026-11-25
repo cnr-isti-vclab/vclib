@@ -22,7 +22,7 @@ auto bruteforceNearestFaces(
     const std::vector<PointType>& points)
 {
     using ScalarType = PointType::ScalarType;
-    using FaceType   = MeshType::FaceType;
+    using FaceType   = MeshType::ConstFace;
 
     auto distFun = vcl::distFunction<PointType, FaceType>();
 
@@ -37,7 +37,7 @@ auto bruteforceNearestFaces(
             ScalarType dist = distFun(p, f);
             if (dist < dists[i]) {
                 dists[i]   = dist;
-                nearest[i] = mesh.index(f);
+                nearest[i] = f.index();
             }
         }
         ++i;
@@ -62,7 +62,7 @@ auto gridNearestFaces(
         points.size(), std::numeric_limits<ScalarType>::max());
     for (vcl::uint i = 0; i < points.size(); i++) {
         auto it        = grid.closestValue(points[i], dists[i]);
-        nearestGrid[i] = it->second->index();
+        nearestGrid[i] = it->second.index();
     }
     t.stopAndPrint();
     return std::make_pair(nearestGrid, dists);

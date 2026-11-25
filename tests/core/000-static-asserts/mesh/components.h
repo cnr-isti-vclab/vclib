@@ -16,7 +16,6 @@
 #include "components/color.h"
 #include "components/component.h"
 #include "components/custom_components.h"
-#include "components/mark.h"
 #include "components/materials.h"
 #include "components/name.h"
 #include "components/normal.h"
@@ -40,12 +39,11 @@ void componentsStaticAsserts()
     boundingBoxComponentStaticAsserts();
     colorComponentStaticAsserts();
     customComponentsComponentStaticAsserts();
-    markComponentStaticAsserts();
     materialsComponentStaticAsserts();
     nameComponentStaticAsserts();
     normalComponentStaticAsserts();
-    principalCurvatureComponentStaticAsserts();
     positionComponentStaticAsserts();
+    principalCurvatureComponentStaticAsserts();
     qualityComponentStaticAsserts();
     texCoordComponentStaticAsserts();
     transformMatrixComponentStaticAsserts();

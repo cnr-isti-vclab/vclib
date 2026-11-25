@@ -39,7 +39,7 @@ namespace vcl {
  */
 class DrawableObject
 {
-    std::string mName; /**< @brief Name of the object */
+    std::string mObjName; /**< @brief Name of the object */
 
     std::string mInfo; /**< @brief Info about the object */
 
@@ -98,14 +98,13 @@ public:
      * @brief Returns the name of the object.
      * @return The name of the object.
      */
-    virtual const std::string& name() const { return mName; }
+    virtual const std::string& name() const { return mObjName; }
 
     /**
      * @brief Returns a reference of the name of the object, that allows to
      * modify it.
-     * @param[in] name: The name of the object.
      */
-    virtual std::string& name() { return mName; }
+    virtual std::string& name() { return mObjName; }
 
     /**
      * @brief Returns the info of the object.
@@ -116,7 +115,6 @@ public:
     /**
      * @brief Returns a reference of the info of the object, that allows to
      * modify it.
-     * @param[in] info: The info of the object.
      */
     std::string& info() { return mInfo; }
 
@@ -133,7 +131,7 @@ protected:
     void swap(DrawableObject& other)
     {
         using std::swap;
-        swap(mName, other.mName);
+        swap(mObjName, other.mObjName);
         swap(mInfo, other.mInfo);
     }
 };

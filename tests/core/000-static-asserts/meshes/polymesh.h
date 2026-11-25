@@ -30,7 +30,6 @@ void polymeshStaticAsserts()
         PolygonMeshConcept<PolyMesh>,
         "The PolyMesh is not a valid Polygon Mesh.");
 
-    static_assert(HasVertices<PolyMesh>, "");
     static_assert(HasFaces<PolyMesh>, "");
     static_assert(!HasEdges<PolyMesh>, "");
 

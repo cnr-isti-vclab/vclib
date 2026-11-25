@@ -10,14 +10,14 @@
 
 #include "mesh/components.h"
 #include "mesh/containers.h"
+#include "mesh/edge_components.h"
 #include "mesh/elements.h"
+#include "mesh/face_components.h"
+#include "mesh/mesh_components.h"
 #include "mesh/mesh_concept.h"
-#include "mesh/per_edge.h"
-#include "mesh/per_face.h"
-#include "mesh/per_mesh.h"
-#include "mesh/per_vertex.h"
+#include "mesh/vertex_components.h"
 
-void meshStaticAsserts()
+inline void meshStaticAsserts()
 {
     componentsStaticAsserts();
     elementsStaticAsserts();
@@ -25,10 +25,10 @@ void meshStaticAsserts()
 
     meshConceptStaticAsserts();
 
-    perEdgeStaticAsserts();
-    perFaceStaticAsserts();
-    perMeshStaticAsserts();
-    perVertexStaticAsserts();
+    edgeComponentsStaticAsserts();
+    faceComponentsStaticAsserts();
+    meshComponentsStaticAsserts();
+    vertexComponentsStaticAsserts();
 }
 
 #endif // MESH_H

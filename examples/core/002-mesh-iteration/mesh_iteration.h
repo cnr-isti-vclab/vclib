@@ -18,7 +18,7 @@
 // 4. Filtering and transforming during iteration
 // 5. Working with polygon meshes and variable topology
 
-void meshIteration()
+inline void meshIteration()
 {
     std::cout << "=== VCLib Example 002: Mesh Iteration ===\n\n";
 
@@ -48,7 +48,7 @@ void meshIteration()
 
     // Iterate with traditional for loop using indices
     std::cout << "\nFirst 3 faces (using indices):" << std::endl;
-    for (vcl::uint i = 0; i < std::min(3u, mesh.faceCount()); ++i) {
+    for (vcl::uint i = 0; i < std::min(3uz, mesh.faceCount()); ++i) {
         const auto& face = mesh.face(i);
         std::cout << "  Face " << i << ": vertices [";
         for (int j = 0; j < 3; ++j) {
@@ -57,14 +57,6 @@ void meshIteration()
                 std::cout << ", ";
         }
         std::cout << "]" << std::endl;
-    }
-
-    // Iterate with iterators
-    std::cout << "\nUsing iterators:" << std::endl;
-    auto it = mesh.vertexBegin();
-    for (int i = 0; i < 3 && it != mesh.vertexEnd(); ++it, ++i) {
-        std::cout << "  Vertex " << it->index() << ": " << it->position()
-                  << std::endl;
     }
 
     /****** Face-vertex iteration ******/
@@ -84,12 +76,12 @@ void meshIteration()
                       << vertex.position() << std::endl;
         }
 
-        // Method 2: Using pointers
-        std::cout << "  Using pointers:" << std::endl;
+        // Method 2: through face references
+        std::cout << "  Through face references:" << std::endl;
         for (int i = 0; i < 3; ++i) {
-            const auto* vertex = face.vertex(i);
-            std::cout << "    Vertex " << vertex->index() << ": "
-                      << vertex->position() << std::endl;
+            auto vertex = face.vertex(i);
+            std::cout << "    Vertex " << vertex.index() << ": "
+                      << vertex.position() << std::endl;
         }
 
         std::cout << std::endl;
@@ -101,17 +93,17 @@ void meshIteration()
     std::cout << "\n=== Adjacency-Based Iteration ===" << std::endl;
 
     // Enable adjacency information
-    mesh.enablePerVertexAdjacentFaces();
-    vcl::updatePerVertexAdjacentFaces(mesh);
+    mesh.enableVertexAdjacentFaces();
+    vcl::updateVertexAdjacentFaces(mesh);
 
     // Iterate over faces adjacent to each vertex
     for (int count = 0; const auto& vertex : mesh.vertices()) {
         if (count >= 3)
             break;
         std::cout << "Vertex " << vertex.index() << " is adjacent to faces: ";
-        for (const auto* face : vertex.adjFaces()) {
-            if (face != nullptr) {
-                std::cout << face->index() << " ";
+        for (auto face : vertex.adjFaces()) {
+            if (face) {
+                std::cout << face.index() << " ";
             }
             else {
                 std::cout << "null ";
@@ -122,8 +114,8 @@ void meshIteration()
     }
 
     // Enable face-to-face adjacency
-    mesh.enablePerFaceAdjacentFaces();
-    vcl::updatePerFaceAdjacentFaces(mesh);
+    mesh.enableFaceAdjacentFaces();
+    vcl::updateFaceAdjacentFaces(mesh);
 
     std::cout << "\nFace adjacencies:" << std::endl;
     for (int count = 0; const auto& face : mesh.faces()) {
@@ -131,9 +123,9 @@ void meshIteration()
             break;
         std::cout << "Face " << face.index() << " is adjacent to faces: ";
         for (int i = 0; i < 3; ++i) {
-            const auto* adjFace = face.adjFace(i);
-            if (adjFace != nullptr) {
-                std::cout << adjFace->index() << " ";
+            auto adjFace = face.adjFace(i);
+            if (adjFace) {
+                std::cout << adjFace.index() << " ";
             }
             else {
                 std::cout << "null ";
@@ -189,9 +181,8 @@ void meshIteration()
         if (count >= 2)
             break;
         std::cout << "Face " << face.index() << " valid adjacent faces: ";
-        for (const auto* adjFace :
-             face | vcl::views::adjFaces | vcl::views::notNull) {
-            std::cout << adjFace->index() << " ";
+        for (auto adjFace : face | vcl::views::adjFaces | vcl::views::notNull) {
+            std::cout << adjFace.index() << " ";
         }
         std::cout << std::endl;
         count++;
@@ -221,7 +212,7 @@ void meshIteration()
         // Calculate polygon centroid
         vcl::Point3d centroid(0, 0, 0);
         for (vcl::uint i = 0; i < face.vertexCount(); ++i) {
-            centroid += face.vertex(i)->position();
+            centroid += face.vertex(i).position();
         }
         centroid /= face.vertexCount();
         std::cout << "  Centroid: " << centroid << std::endl;
@@ -249,8 +240,8 @@ void meshIteration()
 
     for (const auto& face : mesh.faces()) {
         for (int i = 0; i < 3; ++i) {
-            const auto& v1 = face.vertex(i)->position();
-            const auto& v2 = face.vertex((i + 1) % 3)->position();
+            const auto& v1 = face.vertex(i).position();
+            const auto& v2 = face.vertex((i + 1) % 3).position();
             totalEdgeLength += (v2 - v1).norm();
         }
     }

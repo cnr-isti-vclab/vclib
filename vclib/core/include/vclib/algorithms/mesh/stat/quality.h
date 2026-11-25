@@ -9,6 +9,7 @@
 #define VCL_ALGORITHMS_MESH_STAT_QUALITY_H
 
 #include <vclib/mesh.h>
+#include <vclib/space/core.h>
 
 #include <numeric>
 
@@ -26,10 +27,10 @@ namespace vcl {
  * @return A `std::pair` having as first element the minimum, and as second
  * element the maximum quality.
  */
-template<uint ELEM_ID, MeshConcept MeshType>
+template<ElemId ELEM_ID, MeshConcept MeshType>
 auto elementQualityMinMax(const MeshType& m)
 {
-    requirePerElementComponent<ELEM_ID, CompId::QUALITY>(m);
+    requireElementComponent<ELEM_ID, CompId::QUALITY>(m);
 
     auto [min, max] =
         std::ranges::minmax(m.template elements<ELEM_ID>() | views::quality);
@@ -47,17 +48,17 @@ auto elementQualityMinMax(const MeshType& m)
  * @param[in] m: the input Mesh on which compute the average of the quality.
  * @return The average of the quality of the elements of the given type.
  */
-template<uint ELEM_ID, MeshConcept MeshType>
+template<ElemId ELEM_ID, MeshConcept MeshType>
 auto elementQualityAverage(const MeshType& m)
 {
-    requirePerElementComponent<ELEM_ID, CompId::QUALITY>(m);
+    requireElementComponent<ELEM_ID, CompId::QUALITY>(m);
 
     auto eq = m.template elements<ELEM_ID>() | views::quality;
     return std::accumulate(std::ranges::begin(eq), std::ranges::end(eq), 0.0) /
            m.template count<ELEM_ID>();
 }
 
-template<uint ELEM_ID, MeshConcept MeshType>
+template<ElemId ELEM_ID, MeshConcept MeshType>
 auto elementQualityHistogram(
     const MeshType& m,
     bool            selectionOnly = false,
@@ -66,7 +67,7 @@ auto elementQualityHistogram(
     using QualityType =
         typename MeshType::template ElementType<ELEM_ID>::QualityType;
 
-    requirePerElementComponent<ELEM_ID, CompId::QUALITY>(m);
+    requireElementComponent<ELEM_ID, CompId::QUALITY>(m);
 
     auto minmax = elementQualityMinMax<ELEM_ID>(m);
 
@@ -154,8 +155,8 @@ auto faceQualityAverage(const MeshType& m)
 
 /**
  * @brief When performing an adptive pruning for each sample we expect a varying
- * radius to be removed. The radius is a PerVertex attribute that we compute
- * from the current per vertex quality component. The expected radius of the
+ * radius to be removed. The radius is a vertex attribute that we compute
+ * from the current vertex quality component. The expected radius of the
  * sample is computed so that it linearly maps the quality between diskradius
  * and diskradius*variance
  *
@@ -166,26 +167,25 @@ auto faceQualityAverage(const MeshType& m)
  * @return
  */
 template<MeshConcept MeshType>
-std::vector<typename MeshType::VertexType::QualityType> vertexRadiusFromQuality(
+auto vertexRadiusFromQuality(
     const MeshType& m,
     double          diskRadius,
     double          radiusVariance,
     bool            invert = false)
 {
-    requirePerVertexQuality(m);
+    requireVertexQuality(m);
 
-    using VertexType  = MeshType::VertexType;
-    using QualityType = VertexType::QualityType;
+    using QualityType = VertexType<MeshType>::QualityType;
 
     std::vector<QualityType>            radius(m.vertexContainerSize());
     std::pair<QualityType, QualityType> minmax = vertexQualityMinMax(m);
 
-    float minRad   = diskRadius;
-    float maxRad   = diskRadius * radiusVariance;
-    float deltaQ   = minmax.second - minmax.first;
-    float deltaRad = maxRad - minRad;
-    for (const VertexType& v : m.vertices()) {
-        radius[m.index(v)] =
+    QualityType minRad   = diskRadius;
+    QualityType maxRad   = diskRadius * radiusVariance;
+    QualityType deltaQ   = minmax.second - minmax.first;
+    QualityType deltaRad = maxRad - minRad;
+    for (const auto& v : m.vertices()) {
+        radius[v.index()] =
             minRad + deltaRad * ((invert ? minmax.second - v.quality() :
                                            v.quality() - minmax.first) /
                                  deltaQ);
@@ -194,8 +194,8 @@ std::vector<typename MeshType::VertexType::QualityType> vertexRadiusFromQuality(
     return radius;
 }
 
-template<MeshConcept MeshType, typename HScalar = double>
-Histogram<HScalar> vertexQualityHistogram(
+template<MeshConcept MeshType>
+auto vertexQualityHistogram(
     const MeshType& m,
     bool            selectionOnly = false,
     uint            histSize      = 10000)
@@ -203,8 +203,8 @@ Histogram<HScalar> vertexQualityHistogram(
     return elementQualityHistogram<ElemId::VERTEX>(m, selectionOnly, histSize);
 }
 
-template<FaceMeshConcept MeshType, typename HScalar = double>
-Histogram<HScalar> faceQualityHistogram(
+template<FaceMeshConcept MeshType>
+auto faceQualityHistogram(
     const MeshType& m,
     bool            selectionOnly = false,
     uint            histSize      = 10000)

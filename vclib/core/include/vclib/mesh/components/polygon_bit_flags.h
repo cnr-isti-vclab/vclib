@@ -8,19 +8,61 @@
 #ifndef VCL_MESH_COMPONENTS_POLYGON_BIT_FLAGS_H
 #define VCL_MESH_COMPONENTS_POLYGON_BIT_FLAGS_H
 
-#include "base/container_component.h"
-#include "concepts/bit_flags.h"
+#include "base/bit_flags_concepts.h"
 
 #include <vclib/space/core.h>
 
+#include <cassert>
+#include <istream>
+#include <ostream>
+
 namespace vcl::comp {
+
+/**
+ * @brief Struct that holds the data for PolygonBitFlags: a BitSet<uint> for the
+ * face flags and a Vector of BitSet<uchar> for the per-edge flags.
+ *
+ * @tparam N: The size of the container representing the number of storable bit
+ * flags for each edge of the Polygon. If negative (default -1), the container
+ * is dynamic and tied to the vertex count.
+ */
+template<int N = -1>
+struct PolygonBitFlagsData
+{
+    BitSet<uint>                  flags;
+    vcl::Vector<BitSet<uchar>, N> edgeFlags;
+
+    PolygonBitFlagsData() = default;
+
+    explicit PolygonBitFlagsData(std::size_t n) requires (N < 0)
+            : edgeFlags(n)
+    {
+    }
+
+    decltype(auto) operator[](this auto&& self, std::size_t bit)
+    {
+        return self.flags[bit];
+    }
+
+    bool operator==(const PolygonBitFlagsData&) const = default;
+
+    void serialize(std::ostream& os) const
+    {
+        vcl::serialize(os, flags, edgeFlags);
+    }
+
+    void deserialize(std::istream& is)
+    {
+        vcl::deserialize(is, flags, edgeFlags);
+    }
+};
 
 /**
  * @brief The PolygonBitFlags class represents a collection of 32 bits plus 8
  * bits for each edge that will be part of a generic Polygonal Face of a Mesh.
  *
  * This is a specialization class of the BitFlags component, meaning that it can
- * be used in sostitution to that component. The difference is that this class
+ * be used in substitution to that component. The difference is that this class
  * is meant to be used on Polygonal Faces, and adds bits with particular
  * meanings for polygons.
  *
@@ -29,12 +71,12 @@ namespace vcl::comp {
  * PolygonMeshes. However, these flags should be used only when the mesh is a
  * Triangle mesh, that is when each face has vertexCount() == 3.
  *
- * The bits have the follwing meaning:
+ * The bits have the following meaning:
  * - 0: deleted: if the current Polygon has been deleted - read only
  * - 1: selected: if the current Polygon has been selected
  * - 2: visited: if the current Polygon has been visited (useful for some visit
  *               algorithms)
- * - from 3 to 5: edge faux: if the current Face has is i-th edge (i in [0, 2])
+ * - from 3 to 5: edge faux: if the current Face has its i-th edge (i in [0, 2])
  *                marked as faux
  * - from 6 to 14: unused for compatibility with TriangleBitFlags
  * - from 15 to 31: user bits that can have custom meanings to the user
@@ -45,12 +87,15 @@ namespace vcl::comp {
  * Additionally, this class provides the following bits for each edge of the
  * Polygonal Face:
  * - 0: edge border: if the current Polygonal face has the i-th edge on border
- * - 1: edge selection: if  the current Polygonal face has the i-th edge
- *                      selected
+ * - 1: edge selection: if the current Polygonal face has the i-th edge selected
  * - 2: edge visited: if the i-th edge of the current Polygonal face has been
  *                    visited
- * - from 3 to 7: user bits of the i-th edge that can have custo meanings to the
- *                user
+ * - from 3 to 7: user bits of the i-th edge that can have custom meanings to
+ *                the user
+ *
+ * This class provides 5 edge user bits for each edge, that can be accessed
+ * using the member function edgeUserBit(uint i, uint bit) with position in the
+ * interval [0, 4].
  *
  * The member functions of this class will be available in the instance of any
  * Element that will contain this component.
@@ -60,52 +105,27 @@ namespace vcl::comp {
  * `f`:
  *
  * @code{.cpp}
- * v.isAnyEdgeOnBorder();
+ * f.edgeSelected(1) = true;
  * @endcode
  *
  * @note This component is *Tied To Vertex Count*: it means that the size of
  * the container, if dynamic, will change automatically along the Vertex Count
- * of the Component. For further details check the documentation of the @ref
- * ContainerComponent class.
+ * of the Element.
  *
  * @tparam N: The size of the container, that will represent the number of
- * storable bit flags for each edge of the Polygon. If negative, the container
- * is dynamic and tied to the vertex number.
- * @tparam ParentElemType: This template argument must be `void` if the
- * component needs to be stored horizontally, or the type of the parent element
- * that will contain this component if the component needs to be stored
- * vertically.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
+ * storable bit flags for each edge of the Polygon. If negative (default -1),
+ * the container is dynamic and tied to the vertex number.
  *
  * @ingroup components
  */
-template<int N, typename ParentElemType = void, bool OPT = false>
+template<int N = -1>
 class PolygonBitFlags :
-        public ContainerComponent<
-            PolygonBitFlags<N, ParentElemType, OPT>,
-            CompId::BIT_FLAGS,
-            BitSet<uchar>,
-            N,
-            BitSet<uint>,
-            ParentElemType,
-            !std::is_same_v<ParentElemType, void>,
-            OPT,
-            true>
+        public Component<CompId::BIT_FLAGS, PolygonBitFlagsData<N>>
 {
-    using Base = ContainerComponent<
-        PolygonBitFlags<N, ParentElemType, OPT>,
-        CompId::BIT_FLAGS,
-        BitSet<uchar>,
-        N,
-        BitSet<uint>,
-        ParentElemType,
-        !std::is_same_v<ParentElemType, void>,
-        OPT,
-        true>;
+    using Base = Component<CompId::BIT_FLAGS, PolygonBitFlagsData<N>>;
 
-    static const uint FIRST_USER_BIT      = 15;
-    static const uint FIRST_EDGE_USER_BIT = 3;
+    static constexpr uint FIRST_USER_BIT      = 15;
+    static constexpr uint FIRST_EDGE_USER_BIT = 3;
 
     // indices of the bits
     enum {
@@ -133,42 +153,26 @@ public:
     /**
      * @brief Static number of bits that can have custom meanings to the user
      */
-    inline static const uint USER_BIT_COUNT =
+    static constexpr uint USER_BIT_COUNT =
         sizeof(FlagsType) * 8 - FIRST_USER_BIT;
 
     /**
      * @brief Static number of bits for each edge that can have custom meanings
      * to the user
      */
-    static const uint EDGE_USER_BIT_COUNT =
+    static constexpr uint EDGE_USER_BIT_COUNT =
         sizeof(EdgeFlagsType) * 8 - FIRST_EDGE_USER_BIT;
 
-    /* Constructors */
+    /**
+     * @brief Compile-time edge count (-1 if dynamic).
+     */
+    static constexpr int EDGE_COUNT = N;
 
     /**
-     * @brief Initializes all the bits to `false`.
-     *
-     * If the Edge flags container size is static, initializes all the
-     * Edge flags to `false`, otherwise the container will be empty.
+     * @brief Tells if this component stores a container having its size tied to
+     * the number of the vertices of the Element.
      */
-    PolygonBitFlags()
-    {
-        if constexpr (!Base::IS_VERTICAL) {
-            init();
-        }
-    }
-
-    /**
-     * @private
-     * @brief Initializes the bits to false.
-     *
-     * It is made in the init function since the component could be not
-     * available during construction (e.g. if the component is optional and not
-     * enabled).
-     *
-     * This member function is hidden by the element that inherits this class.
-     */
-    void init() { flags().reset(); }
+    static constexpr bool TIED_TO_VERTEX_COUNT = (N < 0);
 
     /* Member functions */
 
@@ -176,33 +180,26 @@ public:
      * @brief Returns whether the current Polygon is deleted or not.
      * @return true if the Polygon is deleted, false otherwise.
      */
-    bool deleted() const { return flags()[DELETED]; }
-
-    /**
-     * @brief Accesses the 'selected' bit of this Polygon, returning a reference
-     * to it.
-     * @return a reference to the 'selected' bit of this Polygon.
-     */
-    BitProxy<FlagsType> selected() { return flags()[SELECTED]; }
+    bool deleted(this auto&& self)
+    {
+        if (!self.isValid())
+            return false;
+        return self.flags()[DELETED];
+    }
 
     /**
      * @brief Returns whether the current Polygon is selected or not.
-     * @return true if the Polygon is selected, false otherwise.
+     * @return a reference (or value for const) to the 'selected' bit of this
+     * Polygon.
      */
-    bool selected() const { return flags()[SELECTED]; }
-
-    /**
-     * @brief Accesses the 'visited' bit of this Polygon, returning a reference
-     * to it.
-     * @return a reference to the 'visited' bit of this Polygon.
-     */
-    BitProxy<FlagsType> visited() { return flags()[VISITED]; }
+    decltype(auto) selected(this auto&& self) { return self.flags()[SELECTED]; }
 
     /**
      * @brief Returns whether the current Polygon has been visited or not.
-     * @return true if the Polygon has been visited, false otherwise.
+     * @return a reference (or value for const) to the 'visited' bit of this
+     * Polygon.
      */
-    bool visited() const { return flags()[VISITED]; }
+    decltype(auto) visited(this auto&& self) { return self.flags()[VISITED]; }
 
     /**
      * @brief Returns whether the current Polygon is on border or not, by
@@ -210,169 +207,86 @@ public:
      * @return true if at least one edge of the Polygon is on border, false
      * otherwise.
      */
-    bool onBorder() const
+    bool onBorder(this auto&& self)
     {
-        for (uint i = 0; i < 12; ++i)
-            if (edgeOnBorder(i))
+        const uint n = self.edgeFlags().size();
+        for (uint i = 0; i < n; ++i) {
+            if (self.edgeOnBorder(i))
                 return true;
+        }
         return false;
-    }
-
-    /**
-     * @brief Accesses the 'onBorder' bit of the i-th edge of the polygon,
-     * returning a reference to it.
-     * @param[in] i: the index of the edge.
-     * @return a reference to the 'onBorder' bit of the i-th edge of the
-     * polygon.
-     */
-    BitProxy<EdgeFlagsType> edgeOnBorder(uint i)
-    {
-        assert(i < edgeFlags().size());
-        return edgeFlags()[i][EDGEBORD];
     }
 
     /**
      * @brief Returns whether the i-th edge of the current Polygon is on border
      * or not.
      * @param[in] i: the index of the edge.
-     * @return true if the i-th edge of the Polygon is on border, false
-     * otherwise.
+     * @return a reference (or value for const) to the 'onBorder' bit of the
+     * i-th edge of the polygon.
      */
-    bool edgeOnBorder(uint i) const
+    decltype(auto) edgeOnBorder(this auto&& self, uint i)
     {
-        assert(i < edgeFlags().size());
-        return edgeFlags()[i][EDGEBORD];
-    }
-
-    /**
-     * @brief Accesses the 'selected' bit of the i-th edge of the polygon,
-     * returning a reference to it.
-     * @param[in] i: the index of the edge.
-     * @return a reference to the 'selected' bit of the i-th edge of the
-     * polygon.
-     */
-    BitProxy<EdgeFlagsType> edgeSelected(uint i)
-    {
-        assert(i < edgeFlags().size());
-        return edgeFlags()[i][EDGESEL];
+        assert(i < self.edgeFlags().size());
+        return self.edgeFlags()[i][EDGEBORD];
     }
 
     /**
      * @brief Returns whether the i-th edge of the current Polygon is selected
      * or not.
      * @param[in] i: the index of the edge.
-     * @return true if the i-th edge of the Polygon is selected, false
-     * otherwise.
+     * @return a reference (or value for const) to the 'selected' bit of the
+     * i-th edge of the polygon.
      */
-    bool edgeSelected(uint i) const
+    decltype(auto) edgeSelected(this auto&& self, uint i)
     {
-        assert(i < edgeFlags().size());
-        return edgeFlags()[i][EDGESEL];
-    }
-
-    /**
-     * @brief Accesses the 'visited' bit of the i-th edge of the polygon,
-     * returning a reference to it.
-     * @param[in] i: the index of the edge.
-     * @return a reference to the 'visited' bit of the i-th edge of the polygon.
-     */
-    BitProxy<EdgeFlagsType> edgeVisited(uint i)
-    {
-        assert(i < edgeFlags().size());
-        return edgeFlags()[i][EDGEVIS];
+        assert(i < self.edgeFlags().size());
+        return self.edgeFlags()[i][EDGESEL];
     }
 
     /**
      * @brief Returns whether the i-th edge of the current Polygon has been
      * visited or not.
      * @param[in] i: the index of the edge.
-     * @return true if the i-th edge of the Polygon has been visited, false
-     * otherwise.
+     * @return a reference (or value for const) to the 'visited' bit of the
+     * i-th edge of the polygon.
      */
-    bool edgeVisited(uint i) const
+    decltype(auto) edgeVisited(this auto&& self, uint i)
     {
-        assert(i < edgeFlags().size());
-        return edgeFlags()[i][EDGEVIS];
-    }
-
-    /**
-     * @brief Accesses the 'faux' bit of the i-th edge of the polygon, returning
-     * a reference to it.
-     *
-     * @note The 'faux' bit is used to just for portability with triangle meshes
-     * that are stored in polygonal meshes. However, these flags should be used
-     * only when the mesh is a Triangle mesh, that is when each face has
-     * vertexCount()== 3.
-     *
-     * @param[in] i: the index of the edge, it must be less than 3.
-     * @return a reference to the 'faux' bit of the i-th edge of the polygon.
-     */
-    BitProxy<FlagsType> edgeFaux(uint i)
-    {
-        assert(i < 3);
-        return flags()[FAUX0 + i];
+        assert(i < self.edgeFlags().size());
+        return self.edgeFlags()[i][EDGEVIS];
     }
 
     /**
      * @brief Returns whether the i-th edge of the current Polygon is faux or
      * not.
      *
-     * @note The 'faux' bit is used to just for portability with triangle meshes
+     * @note The 'faux' bit is used just for portability with triangle meshes
      * that are stored in polygonal meshes. However, these flags should be used
      * only when the mesh is a Triangle mesh, that is when each face has
-     * vertexCount()== 3.
+     * vertexCount() == 3.
      *
      * @param[in] i: the index of the edge, it must be less than 3.
-     * @return true if the i-th edge of the Polygon is faux, false otherwise.
+     * @return a reference (or value for const) to the 'faux' bit of the i-th
+     * edge of the polygon.
      */
-    bool edgeFaux(uint i) const
+    decltype(auto) edgeFaux(this auto&& self, uint i)
     {
         assert(i < 3);
-        return flags()[FAUX0 + i];
-    }
-
-    /**
-     * @brief Returns the boolean value of the user bit of this Polygon given in
-     * input. The bit is checked to be less than the total number of assigned
-     * user bits, which in this class is 26.
-     *
-     * @param[in] bit: the position of the bit, in the interval [0 - 25], that
-     * will be returned by reference.
-     * @return `true` if the required bit is enabled, `false` otherwise.
-     */
-    bool userBit(uint bit) const
-    {
-        assert(bit < USER_BIT_COUNT);
-        return flags()[bit + FIRST_USER_BIT];
+        return self.flags()[FAUX0 + i];
     }
 
     /**
      * @brief Returns a reference to the value of the user bit of this Polygon
      * given in input. The bit is checked to be less than the total number of
-     * assigned user bits, which in this class is 26.
+     * assigned user bits, which in this class is 17.
      *
-     * @param[in] bit: the position of the bit, in the interval [0 - 25].
-     * @return a reference to the desired user bit.
+     * @param[in] bit: the position of the bit, in the interval [0 - 16].
+     * @return a reference (or value for const) to the desired user bit.
      */
-    BitProxy<FlagsType> userBit(uint bit)
+    decltype(auto) userBit(this auto&& self, uint bit)
     {
         assert(bit < USER_BIT_COUNT);
-        return flags()[bit + FIRST_USER_BIT];
-    }
-
-    /**
-     * @brief Returns the boolean value of the user bit of the i-th edge of this
-     * Polygon given in input. The bit is checked to be less than the total
-     * number of assigned edge user bits, which in this class is 5.
-     *
-     * @param[in] i: the index of the edge.
-     * @param[in] bit: the position of the bit, in the interval [0 - 4].
-     * @return `true` if the required bit is enabled, `false` otherwise.
-     */
-    bool edgeUserBit(uint i, uint bit) const
-    {
-        assert(bit < EDGE_USER_BIT_COUNT);
-        return edgeFlags()[i][bit + FIRST_EDGE_USER_BIT];
+        return self.flags()[bit + FIRST_USER_BIT];
     }
 
     /**
@@ -382,32 +296,38 @@ public:
      *
      * @param[in] i: the index of the edge.
      * @param[in] bit: the position of the bit, in the interval [0 - 4].
-     * @return a reference to the desired user bit.
+     * @return a reference (or value for const) to the desired edge user bit.
      */
-    BitProxy<EdgeFlagsType> edgeUserBit(uint i, uint bit)
+    decltype(auto) edgeUserBit(this auto&& self, uint i, uint bit)
     {
+        assert(i < self.edgeFlags().size());
         assert(bit < EDGE_USER_BIT_COUNT);
-        return edgeFlags()[i][bit + FIRST_EDGE_USER_BIT];
+        return self.edgeFlags()[i][bit + FIRST_EDGE_USER_BIT];
     }
 
     /**
      * @brief Unsets all the flags of this Polygon and sets them to `false`,
      * **except the deleted flag**, which needs to be manually reset.
      */
-    void resetBitFlags()
+    void resetBitFlags(this auto&& self)
     {
-        bool isD = deleted();
-        flags().reset();
-        for (uint i = 0; i < edgeFlags().size(); ++i)
-            edgeFlags()[i].reset();
-        deletedBit() = isD;
+        bool isD = self.deleted();
+        self.flags().reset();
+        const uint n = self.edgeFlags().size();
+        for (uint i = 0; i < n; ++i) {
+            self.edgeFlags()[i].reset();
+        }
+        self.flags()[DELETED] = isD;
     }
 
     /**
      * @brief Returns the underlying integral value of the BitFlags.
      * @return the underlying integral value of the BitFlags.
      */
-    FlagsType underlyingBitFlags() const { return flags().underlying(); }
+    FlagsType underlyingBitFlags(this auto&& self)
+    {
+        return self.flags().underlying();
+    }
 
     /**
      * @brief Sets the underlying integral value of the BitFlags.
@@ -418,11 +338,11 @@ public:
      * @param[in] bits: the integral value to set as the underlying value of the
      * BitFlags
      */
-    void setUnderlyingBitFlags(FlagsType bits)
+    void setUnderlyingBitFlags(this auto&& self, FlagsType bits)
     {
-        bool isD = deleted();
-        flags().setUnderlying(bits);
-        deletedBit() = isD;
+        bool isD = self.deleted();
+        self.flags().setUnderlying(bits);
+        self.flags()[DELETED] = isD;
     }
 
     /**
@@ -432,10 +352,10 @@ public:
      * @return the underlying integral value of the Edge BitFlags of the i-th
      * edge.
      */
-    EdgeFlagsType underlyingEdgeBitFlags(uint i) const
+    EdgeFlagsType underlyingEdgeBitFlags(this auto&& self, uint i)
     {
-        assert(i < edgeFlags().size());
-        return edgeFlags()[i].underlying();
+        assert(i < self.edgeFlags().size());
+        return self.edgeFlags()[i].underlying();
     }
 
     /**
@@ -446,10 +366,10 @@ public:
      * @param[in] bits: the integral value to set as the underlying value of the
      * Edge BitFlags of the i-th edge.
      */
-    void setUnderlyingEdgeBitFlags(uint i, EdgeFlagsType bits)
+    void setUnderlyingEdgeBitFlags(this auto&& self, uint i, EdgeFlagsType bits)
     {
-        assert(i < edgeFlags().size());
-        edgeFlags()[i].setUnderlying(bits);
+        assert(i < self.edgeFlags().size());
+        self.edgeFlags()[i].setUnderlying(bits);
     }
 
     /**
@@ -458,30 +378,31 @@ public:
      * library.
      * @param[in] f: bit flags in the format of the VCG library.
      */
-    void importFlagsFromVCGFormat(int f)
+    void importFlagsFromVCGFormat(this auto&& self, int f)
     {
+        self.resetBitFlags();
         if (f & 0x00000010)
-            visited() = true;
+            self.visited() = true;
         if (f & 0x00000020)
-            selected() = true;
-        if (f & 0x00000040)
-            edgeOnBorder(0) = true;
-        if (f & 0x00000080)
-            edgeOnBorder(1) = true;
-        if (f & 0x00000100)
-            edgeOnBorder(2) = true;
-        if (f & 0x00008000)
-            edgeSelected(0) = true;
-        if (f & 0x00010000)
-            edgeSelected(1) = true;
-        if (f & 0x00020000)
-            edgeSelected(2) = true;
+            self.selected() = true;
+        if (self.edgeFlags().size() > 0 && (f & 0x00000040))
+            self.edgeOnBorder(0) = true;
+        if (self.edgeFlags().size() > 1 && (f & 0x00000080))
+            self.edgeOnBorder(1) = true;
+        if (self.edgeFlags().size() > 2 && (f & 0x00000100))
+            self.edgeOnBorder(2) = true;
+        if (self.edgeFlags().size() > 0 && (f & 0x00008000))
+            self.edgeSelected(0) = true;
+        if (self.edgeFlags().size() > 1 && (f & 0x00010000))
+            self.edgeSelected(1) = true;
+        if (self.edgeFlags().size() > 2 && (f & 0x00020000))
+            self.edgeSelected(2) = true;
         if (f & 0x00040000)
-            edgeFaux(0) = true;
+            self.edgeFaux(0) = true;
         if (f & 0x00080000)
-            edgeFaux(1) = true;
+            self.edgeFaux(1) = true;
         if (f & 0x00100000)
-            edgeFaux(2) = true;
+            self.edgeFaux(2) = true;
     }
 
     /**
@@ -491,114 +412,147 @@ public:
      * @return an integer representing the bit flags of this element in the
      * format of the VCG library.
      */
-    int exportFlagsToVCGFormat() const
+    int exportFlagsToVCGFormat(this auto&& self)
     {
         int f = 0;
-        if (visited())
+        if (self.visited())
             f |= 0x00000010;
-        if (selected())
+        if (self.selected())
             f |= 0x00000020;
-        if (edgeOnBorder(0))
+        if (self.edgeFlags().size() > 0 && self.edgeOnBorder(0))
             f |= 0x00000040;
-        if (edgeOnBorder(1))
+        if (self.edgeFlags().size() > 1 && self.edgeOnBorder(1))
             f |= 0x00000080;
-        if (edgeOnBorder(2))
+        if (self.edgeFlags().size() > 2 && self.edgeOnBorder(2))
             f |= 0x00000100;
-        if (edgeSelected(0))
+        if (self.edgeFlags().size() > 0 && self.edgeSelected(0))
             f |= 0x00008000;
-        if (edgeSelected(1))
+        if (self.edgeFlags().size() > 1 && self.edgeSelected(1))
             f |= 0x00010000;
-        if (edgeSelected(2))
+        if (self.edgeFlags().size() > 2 && self.edgeSelected(2))
             f |= 0x00020000;
-        if (edgeFaux(0))
+        if (self.edgeFaux(0))
             f |= 0x00040000;
-        if (edgeFaux(1))
+        if (self.edgeFaux(1))
             f |= 0x00080000;
-        if (edgeFaux(2))
+        if (self.edgeFaux(2))
             f |= 0x00100000;
         return f;
     }
 
-protected:
-    BitProxy<FlagsType> deletedBit() { return flags()[DELETED]; }
+    /**
+     * @brief Returns the number of edges of the Polygon.
+     * @return the number of edges of the Polygon.
+     */
+    uint edgeCount(this auto&& self) { return self.edgeFlags().size(); }
 
-    // Component interface functions
-    template<typename Element>
-    void importFrom(const Element& e, bool = true)
+protected:
+    template<typename OtherElement>
+    void importFrom(this auto&& self, const OtherElement& other, bool = true);
+
+    void setDeleted(this auto&& self, bool b = true)
     {
-        if constexpr (HasBitFlags<Element>) {
-            resetBitFlags();
-            if constexpr (HasPolygonBitFlags<Element>) {
-                flags()     = e.flags();
-                edgeFlags() = e.edgeFlags();
+        self.flags()[DELETED] = b;
+    }
+
+    decltype(auto) deletedBit(this auto&& self)
+    {
+        return self.flags()[DELETED];
+    }
+
+    // ContainerComponent / TTVC interface functions
+    void resize(this auto&& self, uint n) requires (N < 0)
+    {
+        self.edgeFlags().resize(n);
+    }
+
+    void pushBack(
+        this auto&&           self,
+        BitSet<EdgeFlagsType> f = BitSet<EdgeFlagsType>()) requires (N < 0)
+    {
+        self.edgeFlags().pushBack(f);
+    }
+
+    void insert(
+        this auto&&           self,
+        uint                  pos,
+        BitSet<EdgeFlagsType> f = BitSet<EdgeFlagsType>()) requires (N < 0)
+    {
+        self.edgeFlags().insert(pos, f);
+    }
+
+    void erase(this auto&& self, uint pos) requires (N < 0)
+    {
+        self.edgeFlags().erase(pos);
+    }
+
+    void clear(this auto&& self) requires (N < 0) { self.edgeFlags().clear(); }
+
+private:
+    template<int OtherN>
+    friend class PolygonBitFlags;
+
+    decltype(auto) data(this auto&& self) { return Base::compData(self); }
+
+    decltype(auto) flags(this auto&& self) { return (self.data().flags); }
+
+    decltype(auto) edgeFlags(this auto&& self)
+    {
+        return (self.data().edgeFlags);
+    }
+};
+
+/* Implementation of member functions */
+
+template<int N>
+template<typename OtherElement>
+void PolygonBitFlags<N>::importFrom(
+    this auto&&         self,
+    const OtherElement& other,
+    bool)
+{
+    if constexpr (HasBitFlags<OtherElement>) {
+        const bool wasDeleted = self.deleted();
+        const bool isDeleted  = other.deleted();
+        self.resetBitFlags();
+        if constexpr (HasPolygonBitFlags<OtherElement>) {
+            self.setUnderlyingBitFlags(other.underlyingBitFlags());
+            self.setDeleted(isDeleted);
+            const uint n =
+                std::min((uint) self.edgeCount(), (uint) other.edgeCount());
+            for (uint i = 0; i < n; ++i) {
+                self.setUnderlyingEdgeBitFlags(
+                    i, other.underlyingEdgeBitFlags(i));
             }
-            else {
-                // BitFlags
-                deletedBit()  = e.deleted();
-                selected()    = e.selected();
-                visited()     = e.visited();
-                const uint UM = std::min(USER_BIT_COUNT, e.USER_BIT_COUNT);
-                for (uint i = 0; i < UM; ++i)
-                    userBit(i) = e.userBit(i);
-                if constexpr (HasTriangleBitFlags<Element>) {
-                    // TriangleBitFlags
-                    for (uint i = 0; i < 3; ++i) {
-                        edgeOnBorder(i) = e.edgeOnBorder(i);
-                        edgeSelected(i) = e.edgeSelected(i);
-                        edgeVisited(i)  = e.edgeVisited(i);
-                        edgeFaux(i)     = e.edgeFaux(i);
-                    }
+        }
+        else {
+            self.setDeleted(isDeleted);
+            self.selected() = other.selected();
+            self.visited()  = other.visited();
+
+            const uint um =
+                std::min(USER_BIT_COUNT, (uint) OtherElement::USER_BIT_COUNT);
+            for (uint i = 0; i < um; ++i) {
+                self.userBit(i) = other.userBit(i);
+            }
+            if constexpr (HasTriangleBitFlags<OtherElement>) {
+                const uint numEdges = std::min((uint) self.edgeCount(), 3u);
+                for (uint i = 0; i < numEdges; ++i) {
+                    self.edgeOnBorder(i) = other.edgeOnBorder(i);
+                    self.edgeSelected(i) = other.edgeSelected(i);
+                    self.edgeVisited(i)  = other.edgeVisited(i);
+                    self.edgeFaux(i)     = other.edgeFaux(i);
                 }
             }
         }
+        if constexpr (CanAdjustContainerElemCount<decltype(self)>) {
+            if (self.isValid()) {
+                self.parentContainer().adjustElemCountOnDeletedChange(
+                    wasDeleted, isDeleted);
+            }
+        }
     }
-
-    void serialize(std::ostream& os) const
-    {
-        flags().serialize(os);
-        edgeFlags().serialize(os);
-    }
-
-    void deserialize(std::istream& is)
-    {
-        flags().deserialize(is);
-        edgeFlags().deserialize(is);
-    }
-
-    // ContainerComponent interface functions
-    void resize(uint n) requires (N < 0) { edgeFlags().resize(n); }
-
-    void pushBack(BitSet<EdgeFlagsType> f = BitSet<EdgeFlagsType>())
-        requires (N < 0)
-    {
-        edgeFlags().pushBack(f);
-    }
-
-    void insert(uint i, BitSet<EdgeFlagsType> f = BitSet<EdgeFlagsType>())
-        requires (N < 0)
-    {
-        edgeFlags().insert(i, f);
-    }
-
-    void erase(uint i) requires (N < 0) { edgeFlags().erase(i); }
-
-    void clear() requires (N < 0) { edgeFlags().clear(); }
-
-private:
-    // members that allow to access the flags, trough data (horizontal) or
-    // trough parent (vertical)
-
-    BitSet<FlagsType>& flags() { return Base::additionalData(); }
-
-    const BitSet<FlagsType>& flags() const { return Base::additionalData(); }
-
-    Vector<BitSet<EdgeFlagsType>, -1>& edgeFlags() { return Base::container(); }
-
-    const Vector<BitSet<EdgeFlagsType>, -1>& edgeFlags() const
-    {
-        return Base::container();
-    }
-};
+}
 
 } // namespace vcl::comp
 

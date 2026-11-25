@@ -217,6 +217,12 @@ _deps
 build/*
 out/*
 
+# Benchmark reports and assets
+scripts/benchmarks/results/
+benchmark_meshes/
+benchmark_results/
+run_suite.py
+
 # Local History for Visual Studio Code
 */.history/
 
