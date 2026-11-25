@@ -13,6 +13,7 @@
 #include "algorithms/mesh/create.h"
 #include "algorithms/mesh/distance.h"
 #include "algorithms/mesh/face_topology.h"
+#include "algorithms/mesh/filter.h"
 #include "algorithms/mesh/import_export.h"
 #include "algorithms/mesh/smooth.h"
 #include "algorithms/mesh/stat.h"
@@ -29,6 +30,7 @@ inline void initAlgorithms(pybind11::module& m)
     initCreateAlgorithms(m);
     initDistanceAlgorithms(m);
     initFaceTopologyAlgorithms(m);
+    initFilterAlgorithms(m);
     initImportExportAlgorithms(m);
     initSmoothAlgorithms(m);
     initStatAlgorithms(m);
