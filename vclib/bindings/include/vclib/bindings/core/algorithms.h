@@ -16,6 +16,7 @@
 #include "algorithms/mesh/face_topology.h"
 #include "algorithms/mesh/filter.h"
 #include "algorithms/mesh/import_export.h"
+#include "algorithms/mesh/point_sampling.h"
 #include "algorithms/mesh/smooth.h"
 #include "algorithms/mesh/stat.h"
 #include "algorithms/mesh/update.h"
@@ -34,6 +35,7 @@ inline void initAlgorithms(pybind11::module& m)
     initFaceTopologyAlgorithms(m);
     initFilterAlgorithms(m);
     initImportExportAlgorithms(m);
+    initPointSamplingAlgorithms(m);
     initSmoothAlgorithms(m);
     initStatAlgorithms(m);
     initUpdateAlgorithms(m);
