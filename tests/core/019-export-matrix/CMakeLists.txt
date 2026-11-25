@@ -8,10 +8,18 @@
 get_filename_component(TEST_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(vclib-core-test-${TEST_NAME})
 
-set(SOURCES main.cpp)
+set(HEADERS helpers.h)
+
+set(SOURCES
+    export_adjacencies.cpp
+    export_colors_quality.cpp
+    export_geometry.cpp
+    export_normals_selection.cpp
+    export_sentinels_bimap.cpp
+)
 
 vclib_add_test(
     ${TEST_NAME}
-    SOURCES ${SOURCES}
+    SOURCES ${HEADERS} ${SOURCES}
     ${HEADER_ONLY_OPTION}
 )

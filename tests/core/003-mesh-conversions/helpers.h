@@ -5,28 +5,25 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <vclib/io.h>
-#include <vclib/meshes.h>
+#ifndef HELPERS_H
+#define HELPERS_H
 
-#include <catch2/catch_template_test_macros.hpp>
+#include <vclib/io/mesh/load_mesh.h>
+#include <vclib/meshes/poly_mesh.h>
+#include <vclib/meshes/tri_mesh.h>
+
 #include <catch2/catch_test_macros.hpp>
+
+#include <utility>
 
 using Meshes    = std::pair<vcl::TriMesh, vcl::PolyMesh>;
 using Meshesf   = std::pair<vcl::TriMeshf, vcl::PolyMeshf>;
 using Meshes64  = std::pair<vcl::TriMesh64, vcl::PolyMesh64>;
 using Meshes64f = std::pair<vcl::TriMesh64f, vcl::PolyMesh64f>;
 
-TEMPLATE_TEST_CASE(
-    "Mesh Conversions -The TextureDouble mesh loaded on TriMesh",
-    "",
-    Meshes,
-    Meshesf,
-    Meshes64,
-    Meshes64f)
+template<typename TriMesh, typename PolyMesh>
+void testTextureDoubleConversion()
 {
-    using TriMesh  = typename TestType::first_type;
-    using PolyMesh = typename TestType::second_type;
-
     TriMesh tm =
         vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply");
 
@@ -118,37 +115,9 @@ TEMPLATE_TEST_CASE(
     }
 }
 
-TEMPLATE_TEST_CASE(
-    "Mesh Conversions - The polygonal cube mesh loaded on TriMesh",
-    "",
-    vcl::TriMesh,
-    vcl::TriMeshf,
-    vcl::TriMesh64,
-    vcl::TriMesh64f)
+template<typename TriMesh, typename PolyMesh>
+void testCubePolyConversion()
 {
-    using TriMesh = TestType;
-
-    TriMesh tm =
-        vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
-
-    THEN("The loaded TriMesh has 8 vertices and 12 faces")
-    {
-        REQUIRE(tm.vertexCount() == 8);
-        REQUIRE(tm.faceCount() == 12);
-    }
-}
-
-TEMPLATE_TEST_CASE(
-    "Mesh Conversions - The polygonal cube mesh loaded on PolyMesh",
-    "",
-    Meshes,
-    Meshesf,
-    Meshes64,
-    Meshes64f)
-{
-    using TriMesh  = typename TestType::first_type;
-    using PolyMesh = typename TestType::second_type;
-
     PolyMesh pm =
         vcl::loadMesh<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
 
@@ -210,3 +179,5 @@ TEMPLATE_TEST_CASE(
         }
     }
 }
+
+#endif // HELPERS_H

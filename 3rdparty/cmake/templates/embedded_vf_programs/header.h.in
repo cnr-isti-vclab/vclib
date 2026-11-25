@@ -5,8 +5,8 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_@PR_NAME_UC@_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_@PR_NAME_UC@_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_@PR_HEADER_GUARD@_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_@PR_HEADER_GUARD@_H
 
 #include <vclib/bgfx/programs/vert_frag_loader.h>
 
@@ -24,4 +24,4 @@ struct VertFragLoader<VertFragProgram::@PR_NAME_UC@>
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_@PR_NAME_UC@_H
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_@PR_HEADER_GUARD@_H

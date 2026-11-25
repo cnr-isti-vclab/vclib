@@ -12,6 +12,16 @@
 
 namespace vcl::bind {
 
+namespace detail {
+
+void initUpdateColorAlgorithms(pybind11::module& m);
+void initUpdateCurvatureQualityAlgorithms(pybind11::module& m);
+void initUpdateNormalAlgorithms(pybind11::module& m);
+void initUpdateSelectionTopologyBorderAlgorithms(pybind11::module& m);
+void initUpdateTransformBoundingBoxAlgorithms(pybind11::module& m);
+
+} // namespace detail
+
 void initUpdateAlgorithms(pybind11::module& m);
 
 } // namespace vcl::bind
