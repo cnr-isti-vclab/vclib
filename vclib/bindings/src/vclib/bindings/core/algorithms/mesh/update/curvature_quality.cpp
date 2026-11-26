@@ -168,6 +168,40 @@ void initUpdateCurvatureQualityAlgorithms(pybind11::module& m)
     };
 
     defForAllMeshTypes(m, fFaceMeshes);
+
+    auto fEdgeMeshes = []<EdgeMeshConcept MeshType>(
+                           pybind11::module& m, MeshType = MeshType()) {
+        // quality.h
+
+        m.def(
+            "set_edge_quality",
+            [](MeshType& m, double quality) {
+                return vcl::setElementQuality<ElemId::EDGE>(m, quality);
+            },
+            "mesh"_a,
+            "quality"_a = 0.0);
+
+        m.def(
+            "clamp_edge_quality",
+            [](MeshType& m, double minQ, double maxQ) {
+                return vcl::clampElementQuality<ElemId::EDGE>(m, minQ, maxQ);
+            },
+            "mesh"_a,
+            "min_quality"_a = 0.0,
+            "max_quality"_a = 1.0);
+
+        m.def(
+            "normalize_edge_quality",
+            [](MeshType& m, double minQ, double maxQ) {
+                return vcl::normalizeElementQuality<ElemId::EDGE>(
+                    m, minQ, maxQ);
+            },
+            "mesh"_a,
+            "min_quality"_a = 0.0,
+            "max_quality"_a = 1.0);
+    };
+
+    defForAllMeshTypes(m, fEdgeMeshes);
 }
 
 } // namespace vcl::bind::detail

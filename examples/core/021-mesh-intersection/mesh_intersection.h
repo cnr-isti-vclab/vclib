@@ -5,21 +5,23 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef MESH_SPHERE_INTERSECTION_H
-#define MESH_SPHERE_INTERSECTION_H
+#ifndef MESH_INTERSECTION_H
+#define MESH_INTERSECTION_H
 
 #include <vclib/algorithms.h>
 #include <vclib/io.h>
 #include <vclib/meshes.h>
 
-// This example demonstrates mesh-sphere intersection using different sphere
-// sizes and positions to show various intersection scenarios
+// This example demonstrates mesh intersections with spheres and planes:
+// 1. Mesh-sphere intersection using different sphere sizes and positions
+// 2. Mesh-plane intersection producing an EdgeMesh section contour
 
-inline auto meshSphereIntersection()
+inline auto meshIntersection()
 {
     using SSphere = vcl::Sphere<vcl::ScalarType<vcl::TriMesh>>;
+    using SPlane  = vcl::Plane<vcl::ScalarType<vcl::TriMesh>>;
 
-    std::cout << "=== VCLib Example 021: Mesh-Sphere Intersection ===\n\n";
+    std::cout << "=== VCLib Example 021: Mesh Intersection ===\n\n";
 
     /****** Load base mesh ******/
 
@@ -100,6 +102,21 @@ inline auto meshSphereIntersection()
     vcl::TriMesh largeSphereMesh = vcl::createSphere<vcl::TriMesh>(largeSphere);
     largeSphereMesh.name()       = "Large Sphere";
 
+    /****** Mesh-plane intersection ******/
+
+    std::cout << "\n=== Mesh-Plane Intersection ===" << std::endl;
+
+    SPlane cutPlane(
+        vcl::Point3d(0.28, 0.18, 0.49), vcl::Point3d(0.0, 1.0, 0.0));
+
+    vcl::EdgeMesh planeIntersection =
+        vcl::intersection<vcl::EdgeMesh>(originalMesh, cutPlane);
+    planeIntersection.name() = "Bunny-Plane Intersection";
+
+    std::cout << "Plane intersection: " << planeIntersection.vertexCount()
+              << " vertices, " << planeIntersection.edgeCount() << " edges"
+              << std::endl;
+
     return std::make_tuple(
         originalMesh,
         centerSphereMesh,
@@ -107,7 +124,8 @@ inline auto meshSphereIntersection()
         earSphereMesh,
         earSphereIntersection,
         largeSphereMesh,
-        largeSphereIntersection);
+        largeSphereIntersection,
+        planeIntersection);
 }
 
-#endif // MESH_SPHERE_INTERSECTION_H
+#endif // MESH_INTERSECTION_H

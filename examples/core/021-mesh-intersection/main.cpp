@@ -5,7 +5,7 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include "mesh_sphere_intersection.h"
+#include "mesh_intersection.h"
 
 int main()
 {
@@ -16,7 +16,8 @@ int main()
          earSphereMesh,
          earSphereIntersection,
          largeSphereMesh,
-         largeSphereIntersection] = meshSphereIntersection();
+         largeSphereIntersection,
+         planeIntersection] = meshIntersection();
 
     /****** Save the created meshes ******/
 
@@ -47,6 +48,10 @@ int main()
         vcl::saveMesh(
             largeSphereIntersection,
             resultsPath + "/021_large_sphere_intersection.ply",
+            settings);
+        vcl::saveMesh(
+            planeIntersection,
+            resultsPath + "/021_plane_intersection.ply",
             settings);
 
         std::cout << "\nAll files have been saved to: " << resultsPath << "\n";

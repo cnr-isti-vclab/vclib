@@ -8,6 +8,8 @@
 #ifndef VCL_BINDINGS_CORE_SPACE_COMPLEX_H
 #define VCL_BINDINGS_CORE_SPACE_COMPLEX_H
 
+#include "complex/kd_tree.h"
+#include "complex/mesh_inertia.h"
 #include "complex/mesh_info.h"
 #include "complex/point_sampler.h"
 #include "complex/tri_poly_index_bimap.h"
@@ -23,6 +25,8 @@ inline void initComplex(pybind11::module& m)
     // py::module_ sm = m.def_submodule("complex", "Complex Spatial Data
     // Structures");
 
+    initKDTree(m);
+    initMeshInertia(m);
     initMeshInfo(m);
     initPointSampler(m);
     initTriPolyIndexBimap(m);

@@ -8,7 +8,7 @@
 get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(vclib-core-example-${EXAMPLE_NAME})
 
-set(SOURCES mesh_sphere_intersection.h main.cpp)
+set(SOURCES mesh_filter_and_delete.h main.cpp)
 
 vclib_add_example(
     ${EXAMPLE_NAME}

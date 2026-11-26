@@ -12,6 +12,7 @@
 #include "components/adjacent_faces.h"
 #include "components/adjacent_vertices.h"
 #include "components/bit_flags.h"
+#include "components/custom_components.h"
 #include "components/materials.h"
 #include "components/polygon_bit_flags.h"
 #include "components/triangle_bit_flags.h"
@@ -235,6 +236,15 @@ void initComponents(pybind11::class_<ElementType, Options...>& c)
 
     if constexpr (comp::HasVertexReferences<ElementType>) {
         initVertexReferences(c);
+    }
+
+    if constexpr (
+        MeshConcept<ElementType> && comp::HasCustomComponents<ElementType>) {
+        initMeshCustomComponents(c);
+    }
+    if constexpr (
+        ElementConcept<ElementType> && comp::HasCustomComponents<ElementType>) {
+        initElemCustomComponents(c);
     }
 }
 

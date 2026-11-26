@@ -14,15 +14,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       VCLIB_WHEEL_BUILD_DIR: ${{ github.workspace }}/build_wheel
+      VCLIB_MACOS_UNIVERSAL: ${{ startsWith(matrix.os, 'macos') && '1' || '0' }}
+      MACOSX_DEPLOYMENT_TARGET: ${{ startsWith(matrix.os, 'macos') && '15.0' || '' }}
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-22.04', 'ubuntu-24.04-arm', 'macos-26-intel', 'macos-latest', 'windows-latest']
+        os: ['ubuntu-22.04', 'ubuntu-24.04-arm', 'macos-latest', 'windows-latest']
     steps:
     - uses: actions/checkout@v7
       with:
         submodules: recursive
-        ref: ${{ inputs.ref || github.ref }}
+        ref: ${{ inputs.ref || github.sha }}
 
     - name: Setup MSVC
       uses: TheMrMilchmann/setup-msvc-dev@v4
@@ -54,12 +56,13 @@ jobs:
         choco install ninja ccache
 
     - name: Ccache
-      uses: hendrikmuhs/ccache-action@v1.2.26
+      uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: bindings-${{ matrix.os }}
         max-size: 1G
 
     - name: Build and Install bgfx
+      if: runner.os != 'macOS'
       uses: ./.github/actions/build-install-bgfx
 
     - name: Build Wheel 3.12
@@ -80,6 +83,44 @@ jobs:
         python-version: '3.14'
         os: ${{ runner.os }}
 
+    - name: Verify Universal macOS Wheels
+      if: runner.os == 'macOS'
+      run: |
+        shopt -s nullglob
+        wheels=(dist/*universal2.whl)
+        if [ ${#wheels[@]} -eq 0 ]; then
+          echo "ERROR: No universal2 wheel found in dist/" >&2
+          ls -la dist/
+          exit 1
+        fi
+        tmp_dir=$(mktemp -d)
+        for whl in "${wheels[@]}"; do
+          echo "=== Checking $whl ==="
+          unzip -q -o "$whl" -d "$tmp_dir"
+        done
+        binaries=()
+        while IFS= read -r -d '' so; do
+          binaries+=("$so")
+        done < <(find "$tmp_dir" -type f -name '*.so' -print0)
+        if [ ${#binaries[@]} -eq 0 ]; then
+          echo "ERROR: No .so modules found inside universal2 wheel(s)" >&2
+          find "$tmp_dir" -maxdepth 5
+          exit 1
+        fi
+        for so in "${binaries[@]}"; do
+          archs=$(lipo -archs "$so")
+          echo "$so -> architectures: $archs"
+          if [[ "$archs" != *"x86_64"* ]] || [[ "$archs" != *"arm64"* ]]; then
+            echo "ERROR: $so is missing x86_64 or arm64 slice ($archs)" >&2
+            exit 1
+          fi
+          otool -L "$so"
+          if otool -L "$so" | grep -E "(/opt/homebrew|/usr/local)"; then
+            echo "ERROR: $so links against a local/Homebrew dynamic library!" >&2
+            exit 1
+          fi
+        done
+
     - name: Upload Wheels
       uses: actions/upload-artifact@v7
       with:
@@ -98,7 +139,7 @@ jobs:
     - uses: actions/checkout@v7
       with:
         submodules: recursive
-        ref: ${{ inputs.ref || github.ref }}
+        ref: ${{ inputs.ref || github.sha }}
 
     - name: Install dependencies
       if: runner.os == 'Linux'
@@ -108,7 +149,7 @@ jobs:
 
     - uses: actions/download-artifact@v8
       with:
-        name: vclib-wheel-${{ matrix.os }}
+        name: vclib-wheel-${{ matrix.os == 'macos-26-intel' && 'macos-latest' || matrix.os }}
         path: dist/
 
     - name: Run Examples 3.12

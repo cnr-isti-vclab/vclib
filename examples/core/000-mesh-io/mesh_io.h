@@ -38,11 +38,11 @@ inline auto loadMeshes()
     // The loaded mesh is adapted to the type of mesh you want to use (e.g.
     // loading a file that contains a polygonal mesh in a TriMesh object).
 
-    // To know what data was loaded, you can pass a MeshInfo object to the
-    // load function.
+    // To know what data was loaded, you can use loadMeshWithInfo, which returns
+    // a MeshInfo object describing the loaded data.
 
-    vcl::MeshInfo info;
-    vcl::loadMesh(mesh0, VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj", info);
+    vcl::MeshInfo info = vcl::loadMeshWithInfo(
+        mesh0, VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
     std::println("Mesh has per face color: {}", info.hasFaceColor());
 
