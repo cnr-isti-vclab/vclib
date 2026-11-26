@@ -54,17 +54,32 @@ void initLoadMesh(pybind11::module& m)
             "load_mesh",
             [](MeshType&          m,
                const std::string& filename,
-               MeshInfo&          loadedInfo,
                bool               enableOptionalComponents,
                bool               loadTextureImages,
                AbstractLogger&    log) {
                 auto settings = makeLoadSettings(
                     enableOptionalComponents, loadTextureImages);
-                vcl::loadMesh(m, filename, loadedInfo, settings, log);
+                vcl::loadMesh(m, filename, settings, log);
             },
             "m"_a,
             "filename"_a,
-            "loaded_info"_a                = MeshInfo(),
+            "enable_optional_components"_a = true,
+            "load_texture_images"_a        = false,
+            "log"_a                        = py::cast(&vcl::nullLogger));
+
+        m.def(
+            "load_mesh_with_info",
+            [](MeshType&          m,
+               const std::string& filename,
+               bool               enableOptionalComponents,
+               bool               loadTextureImages,
+               AbstractLogger&    log) {
+                auto settings = makeLoadSettings(
+                    enableOptionalComponents, loadTextureImages);
+                return vcl::loadMeshWithInfo(m, filename, settings, log);
+            },
+            "m"_a,
+            "filename"_a,
             "enable_optional_components"_a = true,
             "load_texture_images"_a        = false,
             "log"_a                        = py::cast(&vcl::nullLogger));
@@ -73,17 +88,30 @@ void initLoadMesh(pybind11::module& m)
         m.def(
             loadName.c_str(),
             [](const std::string& filename,
-               MeshInfo&          loadedInfo,
                bool               enableOptionalComponents,
                bool               loadTextureImages,
                AbstractLogger&    log) {
                 auto settings = makeLoadSettings(
                     enableOptionalComponents, loadTextureImages);
-                return vcl::loadMesh<MeshType>(
-                    filename, loadedInfo, settings, log);
+                return vcl::loadMesh<MeshType>(filename, settings, log);
             },
             "filename"_a,
-            "loaded_info"_a                = MeshInfo(),
+            "enable_optional_components"_a = true,
+            "load_texture_images"_a        = false,
+            "log"_a                        = py::cast(&vcl::nullLogger));
+
+        std::string loadWithInfoName = "load_" + meshName + "_with_info";
+        m.def(
+            loadWithInfoName.c_str(),
+            [](const std::string& filename,
+               bool               enableOptionalComponents,
+               bool               loadTextureImages,
+               AbstractLogger&    log) {
+                auto settings = makeLoadSettings(
+                    enableOptionalComponents, loadTextureImages);
+                return vcl::loadMeshWithInfo<MeshType>(filename, settings, log);
+            },
+            "filename"_a,
             "enable_optional_components"_a = true,
             "load_texture_images"_a        = false,
             "log"_a                        = py::cast(&vcl::nullLogger));
