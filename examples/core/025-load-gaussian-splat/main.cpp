@@ -19,12 +19,11 @@ int main()
 
     vcl::LoadSettings lS;
     lS.loadTextureImages = true;
-    vcl::MeshInfo info;
 
     std::cout << "Loading Bonsai Gaussian Splat Point Cloud..." << std::endl;
 
-    auto pointCloud = vcl::loadMesh<vcl::PointCloud>(
-        VCLIB_EXAMPLE_MESHES_PATH "/splat/cactus_142k.ply", info,lS);
+    auto [pointCloud, info] = vcl::loadMeshWithInfo<vcl::PointCloud>(
+        VCLIB_EXAMPLE_MESHES_PATH "/splat/cactus_142k.ply",lS);
 
     std::cout << "has gs: " << info.hasVertexGaussianSplat() << "\n"
               << std::endl;
