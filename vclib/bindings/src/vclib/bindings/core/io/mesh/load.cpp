@@ -114,7 +114,7 @@ void initLoadMesh(pybind11::module& m)
                 auto settings = makeLoadSettings(
                     enableOptionalComponents, loadTextureImages);
                 std::vector<MeshInfo> loadedInfo;
-                auto meshes = vcl::loadMeshes<MeshType>(
+                auto                  meshes = vcl::loadMeshes<MeshType>(
                     filename, loadedInfo, settings, log);
                 return std::make_pair(std::move(meshes), std::move(loadedInfo));
             },

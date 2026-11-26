@@ -62,14 +62,14 @@ void initIOImage(pybind11::module& m)
         "image"_a,
         "filename"_a);
 
-    auto fMaterials = []<MeshConcept MeshType>(
-                          pybind11::module& m,
-                          MeshType = MeshType()) requires HasMaterials<MeshType>
+    auto fMaterials =
+        []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType())
+            requires HasMaterials<MeshType>
     {
         m.def(
             "load_texture_images",
-            [](MeshType&                                                mesh,
-               const std::string&                                       basePath,
+            [](MeshType&          mesh,
+               const std::string& basePath,
                const std::optional<std::vector<Material::TextureType>>& types,
                AbstractLogger&                                          log) {
                 vcl::loadTextureImages(
@@ -82,8 +82,8 @@ void initIOImage(pybind11::module& m)
 
         m.def(
             "save_texture_images",
-            [](const MeshType&                                          mesh,
-               const std::string&                                       basePath,
+            [](const MeshType&    mesh,
+               const std::string& basePath,
                const std::optional<std::vector<Material::TextureType>>& types,
                AbstractLogger&                                          log) {
                 vcl::saveTextureImages(

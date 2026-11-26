@@ -110,7 +110,7 @@ void defFaceEdgeFilters(pybind11::module& m, const std::string& suffix = "")
         },
         "mesh"_a,
         "face_edge_filter"_a,
-        "dont_duplicate_edges"_a                  = true,
+        "dont_duplicate_edges"_a                   = true,
         "save_birth_indices_in_custom_component"_a = true);
 
     m.def(
@@ -122,7 +122,7 @@ void defFaceEdgeFilters(pybind11::module& m, const std::string& suffix = "")
                 m, dontDuplicateEdges, saveBirthIndicesInCustomComponent);
         },
         "mesh"_a,
-        "dont_duplicate_edges"_a                  = true,
+        "dont_duplicate_edges"_a                   = true,
         "save_birth_indices_in_custom_component"_a = true);
 }
 
@@ -148,14 +148,14 @@ void defAllFaceEdgeFilters(pybind11::module& m)
 
 void initFilterAlgorithms(pybind11::module& m)
 {
-    auto fAllMeshes = []<MeshConcept MeshType>(
-                          pybind11::module& m, MeshType = MeshType()) {
-        detail::defElementMeshFilter<ElemId::VERTEX, MeshType>(
-            m,
-            "vertex_mesh_filter",
-            "vertex_selection_mesh_filter",
-            "vertex_filter");
-    };
+    auto fAllMeshes =
+        []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
+            detail::defElementMeshFilter<ElemId::VERTEX, MeshType>(
+                m,
+                "vertex_mesh_filter",
+                "vertex_selection_mesh_filter",
+                "vertex_filter");
+        };
 
     defForAllMeshTypes(m, fAllMeshes);
 

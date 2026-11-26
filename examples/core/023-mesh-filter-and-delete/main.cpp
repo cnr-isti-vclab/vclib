@@ -35,8 +35,7 @@ int main()
             deletedFacesMesh, resultsPath + "/023_deleted_faces_bunny.ply");
         vcl::saveMesh(
             deletedVertsMesh, resultsPath + "/023_deleted_vertices_bunny.ply");
-        vcl::saveMesh(
-            deletedEdgesMesh, resultsPath + "/023_deleted_edges.ply");
+        vcl::saveMesh(deletedEdgesMesh, resultsPath + "/023_deleted_edges.ply");
 
         std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
     }

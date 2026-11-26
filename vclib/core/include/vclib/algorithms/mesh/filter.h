@@ -239,10 +239,9 @@ template<
     MeshConcept InMeshType,
     MeshConcept OutMeshType = InMeshType>
 OutMeshType elementMeshFilter(
-    const InMeshType& m,
-    const std::function<
-        bool(typename InMeshType::template ConstElementType<ELEM_ID>)>&
-         elemFilter,
+    const InMeshType&                                              m,
+    const std::function<bool(
+        typename InMeshType::template ConstElementType<ELEM_ID>)>& elemFilter,
     bool saveBirthIndicesInCustomComponent = true)
 {
     auto view =

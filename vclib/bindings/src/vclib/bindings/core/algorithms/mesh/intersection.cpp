@@ -15,9 +15,7 @@ namespace vcl::bind {
 namespace detail {
 
 template<FaceMeshConcept InMeshType, EdgeMeshConcept OutMeshType>
-void defPlaneIntersection(
-    pybind11::module&  m,
-    const std::string& suffix = "")
+void defPlaneIntersection(pybind11::module& m, const std::string& suffix = "")
 {
     using namespace pybind11::literals;
 

@@ -16,13 +16,13 @@ void initCheckReferencesAlgorithms(pybind11::module& m)
 {
     using namespace pybind11::literals;
 
-    auto fAllMeshes = []<MeshConcept MeshType>(
-                          pybind11::module& m, MeshType = MeshType()) {
-        m.def(
-            "check_mesh_references",
-            [](const MeshType& m) { return vcl::checkMeshReferences(m); },
-            "mesh"_a);
-    };
+    auto fAllMeshes =
+        []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
+            m.def(
+                "check_mesh_references",
+                [](const MeshType& m) { return vcl::checkMeshReferences(m); },
+                "mesh"_a);
+        };
 
     defForAllMeshTypes(m, fAllMeshes);
 }

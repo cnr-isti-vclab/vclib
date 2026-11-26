@@ -61,11 +61,11 @@ void defDeleteElementIf(
 
 void initDeleteAlgorithms(pybind11::module& m)
 {
-    auto fAllMeshes = []<MeshConcept MeshType>(
-                          pybind11::module& m, MeshType = MeshType()) {
-        detail::defDeleteElementIf<ElemId::VERTEX, MeshType>(
-            m, "delete_vertices_if", "vertex_filter");
-    };
+    auto fAllMeshes =
+        []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
+            detail::defDeleteElementIf<ElemId::VERTEX, MeshType>(
+                m, "delete_vertices_if", "vertex_filter");
+        };
 
     defForAllMeshTypes(m, fAllMeshes);
 

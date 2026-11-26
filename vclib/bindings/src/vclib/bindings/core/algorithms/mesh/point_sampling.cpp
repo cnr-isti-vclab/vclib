@@ -67,7 +67,7 @@ void defVertexWeightedSampling(pybind11::module& m)
            std::optional<uint> seed) {
             checkVertexWeightsSize(m, weights);
             std::vector<IndexType> birthVertices;
-            auto ps = vcl::vertexWeightedPointSampling(
+            auto                   ps = vcl::vertexWeightedPointSampling(
                 m, weights, nSamples, birthVertices, toRConfig(seed));
             return std::make_pair(std::move(ps), std::move(birthVertices));
         },
@@ -107,7 +107,7 @@ void defFaceWeightedSampling(pybind11::module& m)
            std::optional<uint> seed) {
             checkFaceWeightsSize(m, weights);
             std::vector<IndexType> birthFaces;
-            auto ps = vcl::faceWeightedPointSampling(
+            auto                   ps = vcl::faceWeightedPointSampling(
                 m, weights, nSamples, birthFaces, toRConfig(seed));
             return std::make_pair(std::move(ps), std::move(birthFaces));
         },

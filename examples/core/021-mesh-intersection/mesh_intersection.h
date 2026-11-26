@@ -106,7 +106,8 @@ inline auto meshIntersection()
 
     std::cout << "\n=== Mesh-Plane Intersection ===" << std::endl;
 
-    SPlane cutPlane(vcl::Point3d(0.28, 0.18, 0.49), vcl::Point3d(0.0, 1.0, 0.0));
+    SPlane cutPlane(
+        vcl::Point3d(0.28, 0.18, 0.49), vcl::Point3d(0.0, 1.0, 0.0));
 
     vcl::EdgeMesh planeIntersection =
         vcl::intersection<vcl::EdgeMesh>(originalMesh, cutPlane);

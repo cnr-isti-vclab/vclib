@@ -79,10 +79,10 @@ void initDistanceAlgorithms(pybind11::module& m)
             HausdorffSamplingMethod::HAUSDORFF_MONTECARLO)
         .export_values();
 
-    auto fAllMeshes = []<MeshConcept MeshType>(
-                          pybind11::module& m, MeshType = MeshType()) {
-        detail::defAllHausdorffDistances<MeshType>(m);
-    };
+    auto fAllMeshes =
+        []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
+            detail::defAllHausdorffDistances<MeshType>(m);
+        };
 
     defForAllMeshTypes(m, fAllMeshes);
 }

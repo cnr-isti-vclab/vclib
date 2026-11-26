@@ -41,8 +41,8 @@ inline auto meshFilterAndDelete()
     std::cout << "\n=== 1. Vertex Filtering ===" << std::endl;
 
     // Filter vertices using a predicate function
-    vcl::TriMesh upperVertices = vcl::vertexMeshFilter(
-        bunny, [](vcl::TriMesh::ConstVertex v) {
+    vcl::TriMesh upperVertices =
+        vcl::vertexMeshFilter(bunny, [](vcl::TriMesh::ConstVertex v) {
             return v.position().y() > 0.1;
         });
     upperVertices.name() = "Upper Vertices";
@@ -65,10 +65,8 @@ inline auto meshFilterAndDelete()
     std::cout << "\n=== 2. Face Filtering ===" << std::endl;
 
     // Filter faces using a predicate function
-    vcl::TriMesh upwardFaces =
-        vcl::faceMeshFilter(bunny, [](vcl::TriMesh::ConstFace f) {
-            return f.normal().y() > 0.0;
-        });
+    vcl::TriMesh upwardFaces = vcl::faceMeshFilter(
+        bunny, [](vcl::TriMesh::ConstFace f) { return f.normal().y() > 0.0; });
     upwardFaces.name() = "Upward Faces";
 
     std::cout << "Upward-facing mesh (normal.y > 0): "
@@ -147,14 +145,14 @@ inline auto meshFilterAndDelete()
     vcl::TriMesh deletedFacesMesh = bunny;
     deletedFacesMesh.name()       = "Deleted Faces Bunny";
 
-    vcl::uint nDelFaces = vcl::deleteFacesIf(
-        deletedFacesMesh,
-        [](vcl::TriMesh::ConstFace f) { return f.normal().y() < 0.0; });
+    vcl::uint nDelFaces =
+        vcl::deleteFacesIf(deletedFacesMesh, [](vcl::TriMesh::ConstFace f) {
+            return f.normal().y() < 0.0;
+        });
     vcl::removeUnreferencedVertices(deletedFacesMesh);
     deletedFacesMesh.compact();
 
-    std::cout << "Deleted " << nDelFaces
-              << " downward faces -> remaining: "
+    std::cout << "Deleted " << nDelFaces << " downward faces -> remaining: "
               << deletedFacesMesh.vertexCount() << " vertices, "
               << deletedFacesMesh.faceCount() << " faces\n";
 
@@ -192,8 +190,7 @@ inline auto meshFilterAndDelete()
         edgeDeleteMask.push_back(e.vertex(0).position().y() < 0.0);
     }
 
-    vcl::uint nDelEdges =
-        vcl::deleteEdgesIf(deletedEdgesMesh, edgeDeleteMask);
+    vcl::uint nDelEdges = vcl::deleteEdgesIf(deletedEdgesMesh, edgeDeleteMask);
     vcl::removeUnreferencedVertices(deletedEdgesMesh);
     deletedEdgesMesh.compact();
 
