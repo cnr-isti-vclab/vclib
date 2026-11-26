@@ -132,7 +132,8 @@ void initLoadMesh(pybind11::module& m)
             "load_texture_images"_a        = false,
             "log"_a                        = py::cast(&vcl::nullLogger));
 
-        std::string loadMeshesInfoName = "load_meshes_with_info_" + meshName;
+        std::string loadMeshesInfoName =
+            "load_meshes_" + meshName + "_with_info";
         m.def(
             loadMeshesInfoName.c_str(),
             [](const std::string& filename,
@@ -141,10 +142,8 @@ void initLoadMesh(pybind11::module& m)
                AbstractLogger&    log) {
                 auto settings = makeLoadSettings(
                     enableOptionalComponents, loadTextureImages);
-                std::vector<MeshInfo> loadedInfo;
-                auto                  meshes = vcl::loadMeshes<MeshType>(
-                    filename, loadedInfo, settings, log);
-                return std::make_pair(std::move(meshes), std::move(loadedInfo));
+                return vcl::loadMeshesWithInfo<MeshType>(
+                    filename, settings, log);
             },
             "filename"_a,
             "enable_optional_components"_a = true,
