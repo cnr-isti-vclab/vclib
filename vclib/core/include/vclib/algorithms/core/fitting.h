@@ -24,7 +24,8 @@ template<typename Scalar>
 Plane<Scalar> fitPlaneToPointCloud(const std::vector<Point3<Scalar>>& pointVec)
 {
     Matrix33<Scalar> covMat = covarianceMatrixOfPointCloud(pointVec);
-    Point3<Scalar>   b = polygonBarycenter(pointVec.begin(), pointVec.end());
+    Point3<Scalar>   b =
+        Polygon<Point3<Scalar>>::barycenter(pointVec.begin(), pointVec.end());
 
     Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Scalar, 3, 3>> eig(covMat);
 

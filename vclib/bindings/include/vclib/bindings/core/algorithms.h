@@ -8,18 +8,22 @@
 #ifndef VCL_BINDINGS_CORE_ALGORITHMS_H
 #define VCL_BINDINGS_CORE_ALGORITHMS_H
 
+#include "algorithms/core.h"
 #include "algorithms/mesh/check_references.h"
 #include "algorithms/mesh/clean.h"
 #include "algorithms/mesh/convex_hull.h"
 #include "algorithms/mesh/create.h"
 #include "algorithms/mesh/delete.h"
 #include "algorithms/mesh/distance.h"
+#include "algorithms/mesh/elem_algorithms.h"
 #include "algorithms/mesh/face_topology.h"
 #include "algorithms/mesh/filter.h"
 #include "algorithms/mesh/import_export.h"
 #include "algorithms/mesh/intersection.h"
 #include "algorithms/mesh/point_sampling.h"
+#include "algorithms/mesh/shuffle.h"
 #include "algorithms/mesh/smooth.h"
+#include "algorithms/mesh/sort.h"
 #include "algorithms/mesh/stat.h"
 #include "algorithms/mesh/update.h"
 
@@ -29,6 +33,9 @@ namespace vcl::bind {
 
 inline void initAlgorithms(pybind11::module& m)
 {
+    initElemAlgorithms(m);
+    initCoreAlgorithms(m);
+
     initCheckReferencesAlgorithms(m);
     initCleanAlgorithms(m);
     initConvexHullAlgorithms(m);
@@ -40,7 +47,9 @@ inline void initAlgorithms(pybind11::module& m)
     initImportExportAlgorithms(m);
     initIntersectionAlgorithms(m);
     initPointSamplingAlgorithms(m);
+    initShuffleAlgorithms(m);
     initSmoothAlgorithms(m);
+    initSortAlgorithms(m);
     initStatAlgorithms(m);
     initUpdateAlgorithms(m);
 }

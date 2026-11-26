@@ -22,6 +22,11 @@ void initCamera(pybind11::module& m)
     using PointType  = typename CameraType::PointType;
     using MatrixType = typename CameraType::MatrixType;
 
+    py::enum_<Handedness>(m, "Handedness")
+        .value("LEFT_HAND", Handedness::LEFT_HAND)
+        .value("RIGHT_HAND", Handedness::RIGHT_HAND)
+        .export_values();
+
     py::class_<CameraType> c(m, "Camera");
     c.def(py::init<>());
     defCopy(c);

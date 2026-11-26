@@ -10,6 +10,7 @@
 
 #include <vclib/meshes.h>
 
+#include <pybind11/numpy.h>
 #include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 
@@ -270,6 +271,54 @@ Eigen::Matrix<double, R, C, Eigen::RowMajor> pyBufferToEigen(
 }
 
 /**
+ * @brief Central list of all mesh types exposed in the Python bindings.
+ */
+using BindedMeshTypes = TypeWrapper<
+    vcl::PointCloud,
+    vcl::EdgeMesh,
+    vcl::PolyMesh,
+    vcl::PolyEdgeMesh,
+    vcl::TriMesh,
+    vcl::TriEdgeMesh>;
+
+namespace detail {
+
+template<typename FirstArg, typename... MeshTypes>
+void defForMeshTypesImpl(
+    FirstArg& firstArg,
+    auto&&    function,
+    TypeWrapper<MeshTypes...>)
+{
+    using FType = decltype(function);
+    auto call   = [&]<MeshConcept MeshType>() {
+        if constexpr (std::invocable<FType, FirstArg&, MeshType>) {
+            function.template operator()<MeshType>(firstArg);
+        }
+    };
+    (call.template operator()<MeshTypes>(), ...);
+}
+
+template<ElemId ELEM_ID, typename... MeshTypes>
+void defForElemTypesImpl(
+    pybind11::module_& pymod,
+    auto&&             function,
+    TypeWrapper<MeshTypes...>)
+{
+    using FType = decltype(function);
+    auto call   = [&]<MeshConcept MeshType>() {
+        if constexpr (MeshType::template hasContainerOf<ELEM_ID>()) {
+            using ElemType = typename MeshType::template ElementType<ELEM_ID>;
+            if constexpr (std::invocable<FType, pybind11::module&, ElemType>) {
+                function.template operator()<ElemType>(pymod);
+            }
+        }
+    };
+    (call.template operator()<MeshTypes>(), ...);
+}
+
+} // namespace detail
+
+/**
  * @brief calls a function for all mesh types, if the function is callable for
  * the specific mesh type. The function takes as a first argument a
  * pybind11::module_ object.
@@ -304,26 +353,7 @@ Eigen::Matrix<double, R, C, Eigen::RowMajor> pyBufferToEigen(
  */
 void defForAllMeshTypes(pybind11::module_& pymod, auto&& function)
 {
-    using FType = decltype(function);
-
-    if constexpr (std::invocable<FType, pybind11::module&, vcl::PointCloud>) {
-        function.template operator()<vcl::PointCloud>(pymod);
-    }
-    if constexpr (std::invocable<FType, pybind11::module&, vcl::EdgeMesh>) {
-        function.template operator()<vcl::EdgeMesh>(pymod);
-    }
-    if constexpr (std::invocable<FType, pybind11::module&, vcl::PolyMesh>) {
-        function.template operator()<vcl::PolyMesh>(pymod);
-    }
-    if constexpr (std::invocable<FType, pybind11::module&, vcl::PolyEdgeMesh>) {
-        function.template operator()<vcl::PolyEdgeMesh>(pymod);
-    }
-    if constexpr (std::invocable<FType, pybind11::module&, vcl::TriMesh>) {
-        function.template operator()<vcl::TriMesh>(pymod);
-    }
-    if constexpr (std::invocable<FType, pybind11::module&, vcl::TriEdgeMesh>) {
-        function.template operator()<vcl::TriEdgeMesh>(pymod);
-    }
+    detail::defForMeshTypesImpl(pymod, function, BindedMeshTypes {});
 }
 
 /**
@@ -364,33 +394,7 @@ void defForAllMeshTypes(
     pybind11::class_<C, Options...>& pyclass,
     auto&&                           function)
 {
-    using FType = decltype(function);
-
-    if constexpr (std::
-                      invocable<FType, pybind11::class_<C>&, vcl::PointCloud>) {
-        function.template operator()<vcl::PointCloud>(pyclass);
-    }
-    if constexpr (std::invocable<FType, pybind11::class_<C>&, vcl::EdgeMesh>) {
-        function.template operator()<vcl::EdgeMesh>(pyclass);
-    }
-    if constexpr (std::invocable<FType, pybind11::class_<C>&, vcl::PolyMesh>) {
-        function.template operator()<vcl::PolyMesh>(pyclass);
-    }
-    if constexpr (std::invocable<
-                      FType,
-                      pybind11::class_<C>&,
-                      vcl::PolyEdgeMesh>) {
-        function.template operator()<vcl::PolyEdgeMesh>(pyclass);
-    }
-    if constexpr (std::invocable<FType, pybind11::class_<C>&, vcl::TriMesh>) {
-        function.template operator()<vcl::TriMesh>(pyclass);
-    }
-    if constexpr (std::invocable<
-                      FType,
-                      pybind11::class_<C>&,
-                      vcl::TriEdgeMesh>) {
-        function.template operator()<vcl::TriEdgeMesh>(pyclass);
-    }
+    detail::defForMeshTypesImpl(pyclass, function, BindedMeshTypes {});
 }
 
 /**
@@ -426,44 +430,8 @@ void defForAllMeshTypes(
  */
 void defForAllVertexTypes(pybind11::module_& pymod, auto&& function)
 {
-    using FType = decltype(function);
-
-    if constexpr (std::invocable<
-                      FType,
-                      pybind11::module&,
-                      vcl::VertexType<vcl::PointCloud>>) {
-        function.template operator()<vcl::VertexType<vcl::PointCloud>>(pymod);
-    }
-    if constexpr (std::invocable<
-                      FType,
-                      pybind11::module&,
-                      vcl::VertexType<vcl::EdgeMesh>>) {
-        function.template operator()<vcl::VertexType<vcl::EdgeMesh>>(pymod);
-    }
-    if constexpr (std::invocable<
-                      FType,
-                      pybind11::module&,
-                      vcl::VertexType<vcl::PolyMesh>>) {
-        function.template operator()<vcl::VertexType<vcl::PolyMesh>>(pymod);
-    }
-    if constexpr (std::invocable<
-                      FType,
-                      pybind11::module&,
-                      vcl::VertexType<vcl::PolyEdgeMesh>>) {
-        function.template operator()<vcl::VertexType<vcl::PolyEdgeMesh>>(pymod);
-    }
-    if constexpr (std::invocable<
-                      FType,
-                      pybind11::module&,
-                      vcl::VertexType<vcl::TriMesh>>) {
-        function.template operator()<vcl::VertexType<vcl::TriMesh>>(pymod);
-    }
-    if constexpr (std::invocable<
-                      FType,
-                      pybind11::module&,
-                      vcl::VertexType<vcl::TriEdgeMesh>>) {
-        function.template operator()<vcl::VertexType<vcl::TriEdgeMesh>>(pymod);
-    }
+    detail::defForElemTypesImpl<ElemId::VERTEX>(
+        pymod, function, BindedMeshTypes {});
 }
 
 /**
@@ -499,32 +467,8 @@ void defForAllVertexTypes(pybind11::module_& pymod, auto&& function)
  */
 void defForAllFaceTypes(pybind11::module_& pymod, auto&& function)
 {
-    using FType = decltype(function);
-
-    if constexpr (std::invocable<
-                      FType,
-                      pybind11::module&,
-                      vcl::FaceType<vcl::PolyMesh>>) {
-        function.template operator()<vcl::FaceType<vcl::PolyMesh>>(pymod);
-    }
-    if constexpr (std::invocable<
-                      FType,
-                      pybind11::module&,
-                      vcl::FaceType<vcl::PolyEdgeMesh>>) {
-        function.template operator()<vcl::FaceType<vcl::PolyEdgeMesh>>(pymod);
-    }
-    if constexpr (std::invocable<
-                      FType,
-                      pybind11::module&,
-                      vcl::FaceType<vcl::TriMesh>>) {
-        function.template operator()<vcl::FaceType<vcl::TriMesh>>(pymod);
-    }
-    if constexpr (std::invocable<
-                      FType,
-                      pybind11::module&,
-                      vcl::FaceType<vcl::TriEdgeMesh>>) {
-        function.template operator()<vcl::FaceType<vcl::TriEdgeMesh>>(pymod);
-    }
+    detail::defForElemTypesImpl<ElemId::FACE>(
+        pymod, function, BindedMeshTypes {});
 }
 
 /**
@@ -560,26 +504,93 @@ void defForAllFaceTypes(pybind11::module_& pymod, auto&& function)
  */
 void defForAllEdgeTypes(pybind11::module_& pymod, auto&& function)
 {
-    using FType = decltype(function);
+    detail::defForElemTypesImpl<ElemId::EDGE>(
+        pymod, function, BindedMeshTypes {});
+}
 
-    if constexpr (std::invocable<
-                      FType,
-                      pybind11::module&,
-                      vcl::EdgeType<vcl::EdgeMesh>>) {
-        function.template operator()<vcl::EdgeType<vcl::EdgeMesh>>(pymod);
+/**
+ * @brief Converts a (N, DIM) NumPy array or Python sequence of Points/coordinates
+ * into a std::vector<Point<double, DIM>>.
+ */
+template<uint DIM>
+std::vector<Point<double, DIM>> pyToPointVector(pybind11::handle obj)
+{
+    namespace py = pybind11;
+    using P      = Point<double, DIM>;
+
+    if (py::isinstance<py::array>(obj)) {
+        auto arr = py::reinterpret_borrow<py::array>(obj);
+        if (arr.ndim() != 2 || static_cast<uint>(arr.shape(1)) != DIM) {
+            throw std::invalid_argument(
+                "Expected a 2D array of shape (N, " + std::to_string(DIM) +
+                ").");
+        }
+        char kind = arr.dtype().kind();
+        if (kind != 'f' && kind != 'i' && kind != 'u') {
+            throw std::invalid_argument(
+                "Expected a numeric array for point coordinates.");
+        }
+        auto typed =
+            py::array_t<double, py::array::c_style | py::array::forcecast>::
+                ensure(arr);
+        if (!typed) {
+            throw std::invalid_argument("Failed to convert point array.");
+        }
+        auto           r = typed.template unchecked<2>();
+        std::size_t    n = static_cast<std::size_t>(typed.shape(0));
+        std::vector<P> pts(n);
+        for (std::size_t i = 0; i < n; ++i) {
+            for (uint d = 0; d < DIM; ++d) {
+                pts[i](d) = r(i, d);
+            }
+        }
+        return pts;
     }
-    if constexpr (std::invocable<
-                      FType,
-                      pybind11::module&,
-                      vcl::EdgeType<vcl::PolyEdgeMesh>>) {
-        function.template operator()<vcl::EdgeType<vcl::PolyEdgeMesh>>(pymod);
+
+    if (py::isinstance<py::sequence>(obj) && !py::isinstance<py::str>(obj) &&
+        !py::isinstance<py::bytes>(obj)) {
+        py::sequence   seq = obj.cast<py::sequence>();
+        std::size_t    n   = seq.size();
+        std::vector<P> pts;
+        pts.reserve(n);
+        for (std::size_t i = 0; i < n; ++i) {
+            py::handle item = seq[i];
+            if (py::isinstance<P>(item)) {
+                pts.push_back(item.cast<P>());
+            }
+            else if (py::isinstance<py::buffer>(item)) {
+                pts.emplace_back(
+                    pyBufferToEigen<1, DIM>(item.cast<py::buffer>())
+                        .transpose());
+            }
+            else if (
+                py::isinstance<py::sequence>(item) &&
+                !py::isinstance<py::str>(item) &&
+                !py::isinstance<py::bytes>(item)) {
+                py::sequence s = item.cast<py::sequence>();
+                if (s.size() != DIM) {
+                    throw std::invalid_argument(
+                        "Expected point sequence of length " +
+                        std::to_string(DIM) + ".");
+                }
+                P p;
+                for (uint d = 0; d < DIM; ++d) {
+                    p(d) = s[d].cast<double>();
+                }
+                pts.push_back(p);
+            }
+            else {
+                throw std::invalid_argument(
+                    "Expected Point" + std::to_string(DIM) +
+                    " or coordinate sequence.");
+            }
+        }
+        return pts;
     }
-    if constexpr (std::invocable<
-                      FType,
-                      pybind11::module&,
-                      vcl::EdgeType<vcl::TriEdgeMesh>>) {
-        function.template operator()<vcl::EdgeType<vcl::TriEdgeMesh>>(pymod);
-    }
+
+    throw std::invalid_argument(
+        "Expected a (N, " + std::to_string(DIM) +
+        ") array or sequence of points.");
 }
 
 } // namespace vcl::bind
