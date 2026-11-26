@@ -15,6 +15,7 @@ jobs:
     env:
       VCLIB_WHEEL_BUILD_DIR: ${{ github.workspace }}/build_wheel
       VCLIB_MACOS_UNIVERSAL: ${{ startsWith(matrix.os, 'macos') && '1' || '0' }}
+      MACOSX_DEPLOYMENT_TARGET: ${{ startsWith(matrix.os, 'macos') && '15.0' || '' }}
     strategy:
       fail-fast: false
       matrix:
@@ -23,7 +24,7 @@ jobs:
     - uses: actions/checkout@v7
       with:
         submodules: recursive
-        ref: ${{ inputs.ref || github.ref }}
+        ref: ${{ inputs.ref || github.sha }}
 
     - name: Setup MSVC
       uses: TheMrMilchmann/setup-msvc-dev@v4
@@ -97,9 +98,13 @@ jobs:
           echo "=== Checking $whl ==="
           unzip -q -o "$whl" -d "$tmp_dir"
         done
-        binaries=("$tmp_dir"/vclib/*.so)
+        binaries=()
+        while IFS= read -r -d '' so; do
+          binaries+=("$so")
+        done < <(find "$tmp_dir" -type f -name '*.so' -print0)
         if [ ${#binaries[@]} -eq 0 ]; then
           echo "ERROR: No .so modules found inside universal2 wheel(s)" >&2
+          find "$tmp_dir" -maxdepth 5
           exit 1
         fi
         for so in "${binaries[@]}"; do
@@ -134,7 +139,7 @@ jobs:
     - uses: actions/checkout@v7
       with:
         submodules: recursive
-        ref: ${{ inputs.ref || github.ref }}
+        ref: ${{ inputs.ref || github.sha }}
 
     - name: Install dependencies
       if: runner.os == 'Linux'
