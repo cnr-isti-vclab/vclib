@@ -158,9 +158,9 @@ void defArithmeticOperators(pybind11::class_<Class, Options...>& c)
         },
         py::is_operator());
 
-    c.def( // a*b
-        "__mul__",
-        [](double a, const Class& b) -> Class {
+    c.def( // b*a
+        "__rmul__",
+        [](const Class& b, double a) -> Class {
             return a * b;
         },
         py::is_operator());
