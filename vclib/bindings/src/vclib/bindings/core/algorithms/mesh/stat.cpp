@@ -10,22 +10,40 @@
 
 #include <vclib/algorithms/mesh.h>
 
-#include <pybind11/eigen.h>
+#include <pybind11/numpy.h>
 #include <pybind11/stl.h>
+
+#include <span>
 
 namespace vcl::bind {
 
 namespace detail {
 
-template<typename WeightsType, MeshConcept MeshType>
+template<MeshConcept MeshType>
 void defWeightedBarycenter(pybind11::module& m)
 {
     using namespace pybind11::literals;
 
     m.def(
         "weighted_barycenter",
-        [](const MeshType& m, const WeightsType& weights) {
-            if (static_cast<std::size_t>(weights.size()) != m.vertexCount()) {
+        [](const MeshType& m,
+           const pybind11::array_t<double, pybind11::array::c_style>& weights) {
+            if (weights.ndim() != 1 ||
+                static_cast<std::size_t>(weights.shape(0)) != m.vertexCount()) {
+                throw WrongSizeException(
+                    "Weights size must match vertex count (" +
+                    std::to_string(m.vertexCount()) + ").");
+            }
+            return vcl::weightedBarycenter(
+                m, std::span<const double>(weights.data(), weights.size()));
+        },
+        "mesh"_a,
+        "weights"_a);
+
+    m.def(
+        "weighted_barycenter",
+        [](const MeshType& m, const std::vector<double>& weights) {
+            if (weights.size() != m.vertexCount()) {
                 throw WrongSizeException(
                     "Weights size must match vertex count (" +
                     std::to_string(m.vertexCount()) + ").");
@@ -49,8 +67,7 @@ void initStatAlgorithms(pybind11::module& m)
         m.def(
             "barycenter", [](const MeshType& m) { return vcl::barycenter(m); });
 
-        detail::defWeightedBarycenter<Eigen::VectorXd, MeshType>(m);
-        detail::defWeightedBarycenter<std::vector<double>, MeshType>(m);
+        detail::defWeightedBarycenter<MeshType>(m);
 
         m.def("quality_weighted_barycenter", [](const MeshType& m) {
             return vcl::qualityWeightedBarycenter(m);
