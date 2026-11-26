@@ -61,7 +61,7 @@ void fillHexahedronQuads(MeshType& m)
 template<FaceMeshConcept MeshType>
 MeshType createHexahedron()
 {
-    using PositionType = MeshType::Vertex::PositionType;
+    using PositionType = PositionType<MeshType>;
 
     return createHexahedron<MeshType>(
         PositionType(-1, -1, -1), PositionType(1, 1, 1));
@@ -79,21 +79,27 @@ MeshType createHexahedron()
  *
  * @ingroup create
  */
-template<FaceMeshConcept MeshType, Point3Concept PositionType>
-MeshType createHexahedron(const PositionType& min, const PositionType& max)
+template<FaceMeshConcept MeshType, Point3Concept PointType>
+MeshType createHexahedron(const PointType& min, const PointType& max)
 {
+    using PositionType = PositionType<MeshType>;
+    using ScalarType   = ScalarType<MeshType>;
+
     MeshType m;
+
+    PositionType minP = min.template cast<ScalarType>();
+    PositionType maxP = max.template cast<ScalarType>();
 
     // fill vertices...
     m.addVertices(
-        PositionType(min(0), min(1), min(2)),
-        PositionType(max(0), min(1), min(2)),
-        PositionType(min(0), max(1), min(2)),
-        PositionType(max(0), max(1), min(2)),
-        PositionType(min(0), min(1), max(2)),
-        PositionType(max(0), min(1), max(2)),
-        PositionType(min(0), max(1), max(2)),
-        PositionType(max(0), max(1), max(2)));
+        PositionType(minP(0), minP(1), minP(2)),
+        PositionType(maxP(0), minP(1), minP(2)),
+        PositionType(minP(0), maxP(1), minP(2)),
+        PositionType(maxP(0), maxP(1), minP(2)),
+        PositionType(minP(0), minP(1), maxP(2)),
+        PositionType(maxP(0), minP(1), maxP(2)),
+        PositionType(minP(0), maxP(1), maxP(2)),
+        PositionType(maxP(0), maxP(1), maxP(2)));
 
     // fill faces
     if constexpr (HasTriangles<MeshType>) {
@@ -120,10 +126,14 @@ MeshType createHexahedron(const PositionType& min, const PositionType& max)
  *
  * @ingroup create
  */
-template<FaceMeshConcept MeshType, Point3Concept PositionType>
-MeshType createCube(const PositionType& min, double edgeLength)
+template<FaceMeshConcept MeshType, Point3Concept PointType>
+MeshType createCube(const PointType& min, auto edgeLength)
 {
-    return createHexahedron<MeshType>(min, PositionType(min + edgeLength));
+    using PositionType = PositionType<MeshType>;
+    using ScalarType   = ScalarType<MeshType>;
+
+    PositionType minP = min.template cast<ScalarType>();
+    return createHexahedron<MeshType>(minP, PositionType(minP + edgeLength));
 }
 
 /**
@@ -141,7 +151,7 @@ MeshType createCube(const PositionType& min, double edgeLength)
 template<FaceMeshConcept MeshType>
 MeshType createCube()
 {
-    using PositionType = MeshType::Vertex::PositionType;
+    using PositionType = PositionType<MeshType>;
     return createCube<MeshType>(PositionType(-0.5, -0.5, -0.5), 1);
 }
 

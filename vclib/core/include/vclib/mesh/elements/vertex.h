@@ -8,71 +8,140 @@
 #ifndef VCL_MESH_ELEMENTS_VERTEX_H
 #define VCL_MESH_ELEMENTS_VERTEX_H
 
-#include "base/element.h"
 #include "vertex_components.h"
+
+#include <vclib/mesh/components/bit_flags.h>
+#include <vclib/mesh/components/position.h>
+#include <vclib/mesh/elements/base/base.h>
+#include <vclib/mesh/elements/base/element_proxy.h>
 
 namespace vcl {
 
 /**
- * @brief The Vertex class represents an Vertex element of the vcl::Mesh class.
+ * @brief The Vertex class represents the runtime proxy (view) of a
+ * Vertex element in a mesh container.
  *
- * Using the VertexContainer class, it is possible to add a vector of Vertex
- * elements to a mesh, and manage them with the member functions exposed by the
- * VertexContainer. Each Vertex element exposes all the member functions of its
- * Component types.
+ * It inherits from ElementProxy and provides object-oriented access to
+ * the per-vertex components stored in the container's Structure of Arrays.
  *
- * @tparam MeshType The type of the parent mesh.
- * @tparam Comps The types of the components of the element.
+ * @tparam ContainerType: The type of the container (mutable or const).
  *
  * @ingroup elements
  */
-template<typename MeshType, comp::ComponentConcept... Comps>
-class Vertex : public Element<ElemId::VERTEX, MeshType, Comps...>
+template<typename ContainerType>
+class Vertex : public ElementProxy<ElemId::VERTEX, ContainerType>
 {
+    using Base = ElementProxy<ElemId::VERTEX, ContainerType>;
+
 public:
-    /**
-     * @brief Empty constructor.
-     *
-     * Calls automatically all the empty constructors of all the components
-     * available in the Vertex (for all the components non-available, their
-     * empty constructor is called only when they become available).
-     */
+    using Base::NULL_INDEX;
+    using typename Base::Components;
+    using typename Base::IndexType;
+    using typename Base::ParentMeshType;
+
+    static_assert(
+        comp::HasPosition<Components>,
+        "A Vertex must have the Position component "
+        "(vcl::comp::Position).");
+    static_assert(
+        comp::HasBitFlags<Components>,
+        "A Vertex must have the BitFlags component "
+        "(vcl::comp::BitFlags).");
+
     Vertex() = default;
 
+    // Implicit conversion constructor from mutable Vertex to const Vertex
+    template<typename OtherContainerType>
+    requires std::is_same_v<ContainerType, const OtherContainerType>
+    Vertex(const Vertex<OtherContainerType>& other) : Base(other)
+    {
+    }
+
     /**
-     * @brief Swap function that delegates to the base Element swap.
-     *
-     * This friend function enables ADL (Argument Dependent Lookup) to find
-     * the correct swap function when swapping Vertex objects.
+     * @brief Swaps this Vertex proxy handle with another one.
      */
-    friend void swap(Vertex& a, Vertex& b) { a.swap(b); }
+    void swap(Vertex& other) noexcept { Base::swap(other); }
+
+    /**
+     * @brief Swaps two Vertex proxy handles.
+     */
+    friend void swap(Vertex& a, Vertex& b) noexcept { a.swap(b); }
+
+protected:
+    Vertex(ContainerType& container, IndexType index) : Base(container, index)
+    {
+    }
+
+private:
+    /// friend classes declarations
+
+    template<
+        typename,
+        typename,
+        std::unsigned_integral,
+        template<typename...> class>
+    friend class mesh::ElementContainer;
+
+    template<typename>
+    friend class mesh::ElementIterator;
+
+    template<typename>
+    friend class Vertex;
 };
 
-template<typename MeshType, comp::ComponentConcept... Comps>
-class Vertex<MeshType, TypeWrapper<Comps...>> :
-        public Vertex<MeshType, Comps...>
+/**
+ * @brief The VertexComponents struct defines a type-wrapper for the components
+ * of a Vertex, checking at compile-time that the required components (BitFlags,
+ * Position) are present.
+ *
+ * @tparam Comps: The components that compose the Vertex.
+ *
+ * @ingroup elements
+ */
+template<typename... Comps>
+struct VertexComponents : vcl::TypeWrapper<Comps...>
+{
+    static_assert(
+        comp::HasPosition<vcl::TypeWrapper<Comps...>>,
+        "Vertex components must include Position "
+        "(vcl::comp::Position).");
+    static_assert(
+        comp::HasBitFlags<vcl::TypeWrapper<Comps...>>,
+        "Vertex components must include BitFlags "
+        "(vcl::comp::BitFlags).");
+};
+
+template<typename... Comps>
+struct VertexComponents<vcl::TypeWrapper<Comps...>> : VertexComponents<Comps...>
 {
 };
 
 /* Concepts */
 
 /**
- * @brief A concept that checks whether a class has (inherits from) a
- * Vertex class.
+ * @brief Concept that checks whether a type T is a Vertex element.
  *
- * The concept is satisfied when `T` is a class that instantiates or derives
- * from a Vertex class having any ParentMesh type and any Component types.
- * The concept checks also that the Vertex has a BitFlags component and a
- * Position component.
+ * The concept is satisfied when T satisfies ElementConcept, has ELEMENT_ID ==
+ * ElemId::VERTEX, and has BitFlags and Position components.
  *
- * @tparam T: The type to be tested for conformity to the VertexConcept.
- *
- * @ingroup vertex_concepts
+ * @ingroup element_concepts
  */
 template<typename T>
-concept VertexConcept = IsDerivedFromSpecializationOfV<T, Vertex> &&
-                        RemoveRef<T>::ELEMENT_ID == ElemId::VERTEX &&
-                        vert::HasBitFlags<T> && vert::HasPosition<T>;
+concept VertexConcept =
+    ElementConcept<T> &&
+    (std::remove_cvref_t<T>::ELEMENT_ID == ElemId::VERTEX) &&
+    comp::HasBitFlags<typename std::remove_cvref_t<T>::Components> &&
+    comp::HasPosition<typename std::remove_cvref_t<T>::Components>;
+
+/**
+ * @brief Concept that checks whether a type T is a valid component list for a
+ * Vertex.
+ *
+ * @ingroup element_concepts
+ */
+template<typename T>
+concept HasRequiredVertexComponents =
+    comp::HasBitFlags<T> && comp::HasPosition<T>;
 
 } // namespace vcl
 

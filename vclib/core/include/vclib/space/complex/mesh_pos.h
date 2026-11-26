@@ -26,51 +26,80 @@ namespace vcl {
  * Face-Vertex-Edge triplet is defined, has per Face Adjacent Faces topology
  * informtion.
  *
+ * The MeshPos stores const proxies of the Face and the Vertex (ConstFace and
+ * ConstVertex of the Mesh): it is a read-only navigator, that never allows to
+ * modify the Mesh, also if it has been built from non-const elements (that are
+ * implicitly converted to their const version). A null (or missing, e.g. the
+ * adjacent face of a border edge) element is represented by an invalid proxy
+ * (that evaluates to `false`).
+ *
+ * @tparam MeshType: The type of the Mesh. It must satisfy the
+ * HasFaceAdjacentFaces concept.
+ *
  * @ingroup space_complex
  */
-template<face::HasAdjacentFaces FaceType>
+template<HasFaceAdjacentFaces MeshType>
 class MeshPos
 {
-    const FaceType* mFace = nullptr;
+public:
+    using ConstFaceType   = typename MeshType::ConstFace;
+    using ConstVertexType = typename MeshType::ConstVertex;
 
-    const typename FaceType::VertexType* mVertex = nullptr;
-
-    short mEdge = -1;
+private:
+    ConstFaceType   mFace;
+    ConstVertexType mVertex;
+    short           mEdge = -1;
 
 public:
-    using VertexType = FaceType::VertexType;
-
     /**
      * @brief Empty constructor that creates a null (invalid) MeshPos.
      */
     MeshPos() = default;
 
-    MeshPos(const FaceType* f, short e) : mFace(f), mEdge(e)
+    /**
+     * @brief Constructor that creates a MeshPos with the given face and edge.
+     * The vertex is the one of the face in position e. The resulting MeshPos
+     * **must be valid**. The constructor asserts this condition.
+     *
+     * @param[in] f: the Face on which place the MeshPos.
+     * @param[in] e: the Edge (an positive index < f.vertexCount()) on which
+     * place the MeshPos.
+     */
+    MeshPos(ConstFaceType f, short e) : mFace(f), mEdge(e)
     {
-        if (f != nullptr)
-            mVertex = f->vertex(e);
+        if (f)
+            mVertex = f.vertex(e);
         assert(isValid(mFace, mVertex, mEdge));
     }
 
-    MeshPos(const FaceType* f, const VertexType* v) : mFace(f), mVertex(v)
+    /**
+     * @brief Constructor that creates a MeshPos with the given face and vertex.
+     * The edge is the one of the face starting from the given vertex. The
+     * resulting MeshPos **must be valid**. The constructor asserts this
+     * condition.
+     *
+     * @param[in] f: the Face on which place the MeshPos.
+     * @param[in] v: the Vertex on which place the MeshPos.
+     */
+    MeshPos(ConstFaceType f, ConstVertexType v) : mFace(f), mVertex(v)
     {
-        for (uint i = 0; i < f->vertexCount(); i++)
-            if (f->vertex(i) == v)
+        for (uint i = 0; i < f.vertexCount(); i++)
+            if (f.vertex(i) == v)
                 mEdge = i;
         assert(isValid(mFace, mVertex, mEdge));
     }
 
     /**
-     * @brief Constructor that creates a MeshPos with the given facem vertex and
+     * @brief Constructor that creates a MeshPos with the given face, vertex and
      * edge. The given triplet **must describe a valid MeshPos**. The
      * constructor asserts this condition.
      *
-     * @param[in] f: the Face pointer on which place the MeshPos.
-     * @param[in] v: the Vertex pointer on which place the MeshPos.
+     * @param[in] f: the Face on which place the MeshPos.
+     * @param[in] v: the Vertex on which place the MeshPos.
      * @param[in] e: the Edge (an positive index < f.vertexCount() on which
      * place the MeshPos.
      */
-    MeshPos(const FaceType* f, const VertexType* v, short e) :
+    MeshPos(ConstFaceType f, ConstVertexType v, short e) :
             mFace(f), mVertex(v), mEdge(e)
     {
         assert(isValid(mFace, mVertex, mEdge));
@@ -78,45 +107,50 @@ public:
 
     /**
      * @brief Helper function to check if a MeshPos is valid, that is if:
-     * - v and f are valid vertex/face pointers, and e >= 0
-     * - the type of f has AdjacentFaces
+     * - v and f are valid vertex/face elements, and e >= 0
+     * - f has AdjacentFaces available
      * - e is less than the number of vertices of f (that is the number of edges
      *   of f)
-     * - v is the vertex of f in position e or (e+1)%f->vertexCount()
+     * - v is the vertex of f in position e or (e+1)%f.vertexCount()
      *
-     * @param f: a face pointer
-     * @param v: a vertex pointer
+     * @param f: a face
+     * @param v: a vertex
      * @param e: an integer that represents the edge position in the face f
      * @return `true` if the triple (f,v,e) is a valid MeshPos.
      */
-    static bool isValid(const FaceType* f, const VertexType* v, short e)
+    static bool isValid(ConstFaceType f, ConstVertexType v, short e)
     {
-        if (f == nullptr || v == nullptr || e < 0)
+        if (!f || !v || e < 0)
             return false;
-        if (!comp::isAdjacentFacesAvailableOn(*f))
+        if (!f.template isComponentAvailable<CompId::ADJACENT_FACES>())
             return false;
-        return (ushort) e < f->vertexCount() &&
-               (v == f->vertex(e) || v == f->vertexMod(e + 1));
+        return (ushort) e < f.vertexCount() &&
+               (v == f.vertex(e) || v == f.vertexMod(e + 1));
     }
 
-    const FaceType* face() const { return mFace; }
+    ConstFaceType face() const { return mFace; }
 
-    const VertexType* vertex() const { return mVertex; }
+    ConstVertexType vertex() const { return mVertex; }
 
     short edge() const { return mEdge; }
 
-    const FaceType* adjFace() const { return mFace->adjFace(mEdge); }
+    /**
+     * @brief Returns the face adjacent to the current face along the current
+     * edge. The returned face is invalid (it evaluates to `false`) if the
+     * current edge is on border.
+     */
+    ConstFaceType adjFace() const { return mFace.adjFace(mEdge); }
 
-    const VertexType* adjVertex() const
+    ConstVertexType adjVertex() const
     {
-        MeshPos<FaceType> tmpPos = *this;
+        MeshPos tmpPos = *this;
         tmpPos.flipVertex();
         return tmpPos.vertex();
     }
 
     short adjEdge() const
     {
-        MeshPos<FaceType> tmpPos = *this;
+        MeshPos tmpPos = *this;
         tmpPos.flipEdge();
         return tmpPos.edge();
     }
@@ -132,10 +166,7 @@ public:
      * result of this function is different from calling !isValid().
      * @return `true` if this MeshPos is null.
      */
-    bool isNull() const
-    {
-        return mFace == nullptr || mVertex == nullptr || mEdge < 0;
-    }
+    bool isNull() const { return !mFace || !mVertex || mEdge < 0; }
 
     /**
      * @brief Returns `true` if the current edge of this MeshPos is on a border.
@@ -144,7 +175,7 @@ public:
      * not use border flags.
      * @return `true` if the current edge in the current face is on a border.
      */
-    bool isEdgeOnBorder() const { return mFace->adjFace(mEdge) == nullptr; }
+    bool isEdgeOnBorder() const { return !mFace.adjFace(mEdge); }
 
     /**
      * @brief Returns `true` if the current vertex of the MeshPos corresponts to
@@ -154,7 +185,7 @@ public:
      *
      * @return
      */
-    bool isCCWOriented() const { return mFace->vertex(mEdge) == mVertex; }
+    bool isCCWOriented() const { return mFace.vertex(mEdge) == mVertex; }
 
     /**
      * @brief Moves this MeshPos to the face adjacent to the current face that
@@ -169,24 +200,24 @@ public:
      */
     bool flipFace()
     {
-        const FaceType* nf = mFace->adjFace(mEdge);
-        if (nf != nullptr) {
-            short oldEdge = mEdge;
-            mEdge         = nf->indexOfAdjFace(mFace);
-            if (mEdge < 0) {
-                // non-manifold edge. I need to find the edge that has the
-                // current vertex
-                const auto* v0 = mFace->vertex(oldEdge);
-                const auto* v1 = mFace->vertexMod(oldEdge + 1);
-                mEdge          = nf->indexOfEdge(v0, v1);
-                // if this assert fails, it means that the edge was not found.
-                // you probably need to update adjacency information of the mesh
-                assert(mEdge >= 0 && mEdge < nf->vertexCount());
-                if (mEdge < 0) {
-                    *this = MeshPos<FaceType>(); // reset to null
-                    return false;
-                }
+        ConstFaceType nf = mFace.adjFace(mEdge);
+        if (nf) {
+            // The edge of the adjacent face must be found using the vertices
+            // of the current edge: searching the position of the current face
+            // in the adjacent faces of nf is not enough, because nf could be
+            // adjacent to the current face along more than one edge (e.g. two
+            // faces with the same vertices), and in this case the first match
+            // could be the wrong edge, leading to wrong (and possibly endless)
+            // navigations.
+            auto v0      = mFace.vertex(mEdge);
+            auto v1      = mFace.vertexMod(mEdge + 1);
+            uint newEdge = nf.indexOfEdge(v0, v1);
+            assert(newEdge != UINT_NULL);
+            if (newEdge == UINT_NULL) {
+                *this = MeshPos();
+                return false;
             }
+            mEdge = newEdge;
             mFace = nf;
             return true;
         }
@@ -201,11 +232,11 @@ public:
      */
     void flipVertex()
     {
-        if (mFace->vertexMod(mEdge) == mVertex) {
-            mVertex = mFace->vertexMod(mEdge + 1);
+        if (mFace.vertexMod(mEdge) == mVertex) {
+            mVertex = mFace.vertexMod(mEdge + 1);
         }
         else {
-            mVertex = mFace->vertexMod(mEdge);
+            mVertex = mFace.vertexMod(mEdge);
         }
     }
 
@@ -215,11 +246,11 @@ public:
      */
     void flipEdge()
     {
-        if (mFace->vertexMod(mEdge + 1) == mVertex) {
-            mEdge = (mEdge + 1) % (short) mFace->vertexCount();
+        if (mFace.vertexMod(mEdge + 1) == mVertex) {
+            mEdge = (mEdge + 1) % (short) mFace.vertexCount();
         }
         else {
-            short n = mFace->vertexCount();
+            short n = mFace.vertexCount();
             mEdge   = ((mEdge - 1) % n + n) %
                     n; // be sure to get the right index of the previous edge
         }
@@ -252,7 +283,7 @@ public:
      */
     bool nextEdgeOnBorderAdjacentToV()
     {
-        MeshPos<FaceType> startPos = *this;
+        MeshPos startPos = *this;
         do {
             nextEdgeAdjacentToV();
         } while (*this != startPos && !isEdgeOnBorder());
@@ -289,12 +320,12 @@ public:
     {
         if (mFace == op.mFace) {
             if (mEdge == op.mEdge)
-                return mVertex < op.mVertex;
+                return mVertex.index() < op.mVertex.index();
             else
                 return mEdge < op.mEdge;
         }
         else {
-            return mFace < op.mFace;
+            return mFace.index() < op.mFace.index();
         }
     }
 
@@ -304,7 +335,7 @@ private:
         uint count = 0;
         onBorder   = false;
         // start from this MeshPos
-        MeshPos<FaceType> mp = *this;
+        MeshPos mp = *this;
         do {
             // go to the next edge in the star of v (if face is on border, will
             // change just edge)
@@ -320,6 +351,17 @@ private:
         return count;
     }
 };
+
+/* Deduction guides */
+
+template<FaceConcept FaceType, std::integral EdgeType>
+MeshPos(FaceType, EdgeType) -> MeshPos<ParentMeshType<FaceType>>;
+
+template<FaceConcept FaceType, VertexConcept VertexType>
+MeshPos(FaceType, VertexType) -> MeshPos<ParentMeshType<FaceType>>;
+
+template<FaceConcept FaceType, VertexConcept VertexType, std::integral EdgeType>
+MeshPos(FaceType, VertexType, EdgeType) -> MeshPos<ParentMeshType<FaceType>>;
 
 } // namespace vcl
 

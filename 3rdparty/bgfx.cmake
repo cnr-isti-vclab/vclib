@@ -5,12 +5,170 @@
 # v. 2.0. If a copy of the MPL was not distributed with this file, You can
 # obtain one at https://mozilla.org/MPL/2.0/.
 
-set(BGFX_VERSION 1.164.9539-586)
+include(FetchContent)
 
-find_package(bgfx QUIET)
+set(BGFX_VERSION 1.172.9657-621)
+set(BGFX_PRECOMPILED_TAG v1.1.0)
 
-if(VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
-    message(STATUS "- bgfx - using system-provided library")
+function(_vclib_download_precompiled_bgfx OUT_DIR OUT_PLATFORM)
+    set(${OUT_DIR} "" PARENT_SCOPE)
+    set(${OUT_PLATFORM} "" PARENT_SCOPE)
+
+    set(_PLATFORM "")
+    if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+        if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|AMD64")
+            set(_PLATFORM "linux-x64")
+        elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm64")
+            set(_PLATFORM "linux-arm64")
+        endif()
+    elseif(APPLE)
+        set(_PLATFORM "macos-universal")
+    elseif(WIN32)
+        if(
+            MSVC
+            AND (
+                CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|AMD64"
+                OR CMAKE_SIZEOF_VOID_P EQUAL 8
+            )
+        )
+            get_property(
+                _IS_MULTI_CONFIG
+                GLOBAL
+                PROPERTY GENERATOR_IS_MULTI_CONFIG
+            )
+            if(NOT _IS_MULTI_CONFIG AND CMAKE_BUILD_TYPE STREQUAL "Debug")
+                set(_PLATFORM "windows-x64-Debug")
+            else()
+                set(_PLATFORM "windows-x64")
+            endif()
+        endif()
+    endif()
+
+    if(NOT _PLATFORM)
+        message(
+            STATUS
+            "- bgfx - no precompiled binary available for this platform / configuration"
+        )
+        return()
+    endif()
+
+    set(_ARCHIVE_NAME "bgfx-install-${_PLATFORM}-v${BGFX_VERSION}.tar.gz")
+    set(_URL
+        "https://github.com/alemuntoni/install-bgfx-cmake/releases/download/${BGFX_PRECOMPILED_TAG}/${_ARCHIVE_NAME}"
+    )
+
+    message(
+        STATUS
+        "- bgfx - downloading precompiled binaries (${_PLATFORM}) from ${BGFX_PRECOMPILED_TAG}..."
+    )
+    FetchContent_Declare(vclib_bgfx_precompiled URL "${_URL}")
+    FetchContent_MakeAvailable(vclib_bgfx_precompiled)
+
+    FetchContent_GetProperties(vclib_bgfx_precompiled SOURCE_DIR _SOURCE_DIR)
+
+    if(NOT EXISTS "${_SOURCE_DIR}")
+        return()
+    endif()
+
+    # Ensure binaries have execution permissions on POSIX
+    if(UNIX)
+        file(GLOB _BINS "${_SOURCE_DIR}/bin/*")
+        foreach(_BIN IN LISTS _BINS)
+            if(NOT IS_DIRECTORY "${_BIN}")
+                file(
+                    CHMOD "${_BIN}"
+                    PERMISSIONS
+                        OWNER_READ
+                        OWNER_WRITE
+                        OWNER_EXECUTE
+                        GROUP_READ
+                        GROUP_EXECUTE
+                        WORLD_READ
+                        WORLD_EXECUTE
+                )
+            endif()
+        endforeach()
+    endif()
+
+    # Sanity check: test that shaderc can execute (checks glibc / runtime compatibility)
+    find_program(
+        _TEST_SHADERC
+        NAMES shaderc shaderc.exe
+        PATHS "${_SOURCE_DIR}/bin"
+        NO_DEFAULT_PATH
+    )
+
+    set(_SANITY_OK TRUE)
+    if(_TEST_SHADERC)
+        execute_process(
+            COMMAND "${_TEST_SHADERC}" -v
+            RESULT_VARIABLE _SHADERC_RES
+            OUTPUT_QUIET
+            ERROR_QUIET
+            TIMEOUT 10
+        )
+        if(NOT _SHADERC_RES EQUAL 0)
+            message(
+                STATUS
+                "- bgfx - precompiled shaderc failed sanity check: falling back to building from source"
+            )
+            set(_SANITY_OK FALSE)
+        endif()
+    else()
+        message(
+            STATUS
+            "- bgfx - shaderc binary not found in precompiled archive: falling back to building from source"
+        )
+        set(_SANITY_OK FALSE)
+    endif()
+    unset(_TEST_SHADERC CACHE)
+
+    if(_SANITY_OK)
+        set(${OUT_DIR} "${_SOURCE_DIR}/lib/cmake/bgfx" PARENT_SCOPE)
+        set(${OUT_PLATFORM} "${_PLATFORM}" PARENT_SCOPE)
+    endif()
+endfunction()
+
+if(VCLIB_ALLOW_SYSTEM_BGFX)
+    find_package(bgfx QUIET)
+endif()
+
+# If not found on system and precompiled is allowed, attempt to download and use precompiled binaries
+if(NOT bgfx_FOUND AND VCLIB_ALLOW_PRECOMPILED_BGFX)
+    _vclib_download_precompiled_bgfx(_BGFX_PRECOMPILED_DIR _BGFX_PLATFORM)
+    if(_BGFX_PRECOMPILED_DIR)
+        find_package(
+            bgfx
+            CONFIG
+            PATHS "${_BGFX_PRECOMPILED_DIR}"
+            NO_DEFAULT_PATH
+        )
+        if(bgfx_FOUND)
+            set(VCLIB_DOWNLOADED_PRECOMPILED_BGFX ON)
+            if(
+                NOT CMAKE_MAP_IMPORTED_CONFIG_DEBUG
+                AND NOT _BGFX_PLATFORM MATCHES "Debug"
+            )
+                set(CMAKE_MAP_IMPORTED_CONFIG_DEBUG
+                    Release
+                    RelWithDebInfo
+                    MinSizeRel
+                    ""
+                )
+            endif()
+        endif()
+    endif()
+endif()
+
+if(bgfx_FOUND)
+    if(VCLIB_DOWNLOADED_PRECOMPILED_BGFX)
+        message(
+            STATUS
+            "- bgfx - using downloaded precompiled library (${_BGFX_PLATFORM})"
+        )
+    else()
+        message(STATUS "- bgfx - using system-provided library")
+    endif()
     set(VCLIB_USED_SYSTEM_BGFX ON CACHE INTERNAL "")
 
     add_library(vclib-3rd-bgfx INTERFACE)
@@ -29,15 +187,11 @@ if(VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
     target_include_directories(
         vclib-3rd-bgfx
         INTERFACE
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/iconfontheaders/include>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/iconfontheaders/include>
     )
     target_include_directories(
         vclib-3rd-bgfx
-        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/sdf/include>
-    )
-    target_include_directories(
-        vclib-3rd-bgfx
-        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/tinystl/include>
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/sdf/include>
     )
 
     # make sure that the imported targets are global
@@ -57,16 +211,16 @@ if(VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
 
     # for each path in BGFX_INCLUDE_PATH:
     foreach(PATH ${BGFX_INCLUDE_PATH})
-        # if $PATH/bgfx_shader.sh exists
         if(EXISTS ${PATH}/bgfx_shader.sh)
-            # set BGFX_SHADER_INCLUDE_PATH to $PATH/bgfx
+            set(BGFX_SHADER_INCLUDE_PATH ${PATH})
+        elseif(EXISTS ${PATH}/bgfx/bgfx_shader.sh)
             set(BGFX_SHADER_INCLUDE_PATH ${PATH}/bgfx)
         endif()
     endforeach(PATH ${BGFX_INCLUDE_PATH})
 
     set_target_properties(
         vclib-3rd-bgfx
-        PROPERTIES BGFX_SHADER_INCLUDE_PATH ${BGFX_SHADER_INCLUDE_PATH}
+        PROPERTIES BGFX_SHADER_INCLUDE_PATH "${BGFX_SHADER_INCLUDE_PATH}"
     )
 
     list(APPEND VCLIB_RENDER_OPTIONAL_SYSTEM_LIBRARIES vclib-3rd-bgfx)
@@ -93,7 +247,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
     endif()
 
     FetchContent_Declare(
-        bgfx
+        bgfx.cmake
         GIT_REPOSITORY https://github.com/bkaradzic/bgfx.cmake
         GIT_TAG v${BGFX_VERSION}
         ${BGFX_EXCLUDE_FROM_ALL_OPTION}
@@ -101,9 +255,11 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
 
     vclib_begin_3rdparty_install_scope()
 
-    FetchContent_MakeAvailable(bgfx)
+    FetchContent_MakeAvailable(bgfx.cmake)
 
     vclib_end_3rdparty_install_scope()
+
+    FetchContent_GetProperties(bgfx SOURCE_DIR BGFX_SOURCE_DIR)
 
     # there are some warnings that we need to ignore
     vclib_disable_target_warnings(spirv-cross) #bgfx 3rdparty
@@ -118,18 +274,14 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
         INTERFACE bx bgfx bimg bimg_decode bimg_encode vclib-3rd-stb
     )
 
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-        target_compile_options(bimg_decode PRIVATE -O1)
-    endif()
-
     target_include_directories(
         vclib-3rd-bgfx
-        INTERFACE $<BUILD_INTERFACE:${bgfx_SOURCE_DIR}/bgfx/3rdparty>
+        INTERFACE $<BUILD_INTERFACE:${BGFX_SOURCE_DIR}/3rdparty>
     )
 
     set_target_properties(
         vclib-3rd-bgfx
-        PROPERTIES BGFX_SHADER_INCLUDE_PATH ${bgfx_SOURCE_DIR}/bgfx/src
+        PROPERTIES BGFX_SHADER_INCLUDE_PATH ${BGFX_SOURCE_DIR}/src
     )
 
     list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-bgfx)
@@ -141,14 +293,14 @@ else()
 endif()
 
 if(TARGET vclib-3rd-bgfx)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
+    include(${CMAKE_CURRENT_LIST_DIR}/cmake/bgfx_config.cmake)
 
     install(
-        FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake
+        FILES ${CMAKE_CURRENT_LIST_DIR}/cmake/bgfx_config.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/vclib
     )
     install(
-        FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/vclib_shader_combinations.cmake
+        FILES ${CMAKE_CURRENT_LIST_DIR}/cmake/vclib_shader_combinations.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/vclib
     )
 

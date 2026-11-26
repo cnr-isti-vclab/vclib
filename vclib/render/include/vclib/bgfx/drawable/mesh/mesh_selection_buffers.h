@@ -141,7 +141,7 @@ public:
      *
      * @param[in] maxElements: max(numVerts, numTris).
      */
-    void initReadbackHandler(uint) {}
+    void initReadbackHandler([[maybe_unused]] uint maxElements) {}
 
     // --- Set calls
 
@@ -463,7 +463,7 @@ public:
 
             vcl::BitSet<uint8_t, true> flags;
 
-            for (auto& v : m.vertices()) {
+            for (auto v : m.vertices()) {
                 const uint byteIdx = vidx / 8;
                 if (byteIdx < cpuBackup.bytes().size()) {
                     if (vidx % 8 == 0)
@@ -485,8 +485,7 @@ public:
                 !mFaceSelection.cpuBackup().empty()) {
                 const auto& cpuBackup = mFaceSelection.cpuBackup();
 
-                const bool isMappingTrivial =
-                    indexMap.triangleCount() == m.faceCount();
+                const bool isMappingTrivial = indexMap.isMappingTrivial();
 
                 uint numSelectedFaces = 0;
                 // For each face, check if its first triangle is selected
@@ -495,7 +494,7 @@ public:
                 vcl::BitSet<uint8_t, true> flags;
                 uint                       lastByteIdx = UINT_NULL;
 
-                for (auto& f : m.faces()) {
+                for (auto f : m.faces()) {
                     const uint faceIdx = f.index();
                     const uint firstTriIdx =
                         isMappingTrivial ? faceIdx :

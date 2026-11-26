@@ -137,20 +137,36 @@ template<typename T>
 concept StringConvertible = Stringifiable<T> && Parsable<T>;
 
 /**
- * @brief Concept that is evaluated true if T is serializable.
- *
- * A type T is serializable if it can be written to an output stream and read
- * from an input stream, through the methods `serialize` and `deserialize`.
+ * @brief Checks if a type has a member function `.serialize(os)`.
  *
  * @ingroup util_concepts
  */
 template<typename T>
-concept Serializable = requires (T&& obj, std::ostream& os, std::istream& is) {
-    { obj.serialize(os) } -> std::same_as<void>;
-    requires IsConst<T> || requires {
+concept HasMemberSerialize =
+    requires (const std::remove_reference_t<T>& obj, std::ostream& os) {
+        { obj.serialize(os) } -> std::same_as<void>;
+    };
+
+/**
+ * @brief Checks if a type has a member function `.deserialize(is)`.
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept HasMemberDeserialize =
+    !IsConst<T> && requires (T& obj, std::istream& is) {
         { obj.deserialize(is) } -> std::same_as<void>;
     };
-};
+
+/**
+ * @brief Checks if a type has both member functions `.serialize(os)` and
+ * `.deserialize(is)`.
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept HasMemberSerialization =
+    HasMemberSerialize<T> && (IsConst<T> || HasMemberDeserialize<T>);
 
 } // namespace vcl
 

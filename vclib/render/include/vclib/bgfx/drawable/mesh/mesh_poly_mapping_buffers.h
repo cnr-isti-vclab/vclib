@@ -10,6 +10,7 @@
 
 #include "mesh_render_buffers_macros.h"
 
+#include <cstddef>
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
 
@@ -72,7 +73,7 @@ public:
         if (numTris == 0)
             return;
 
-        const uint numPolys = indexMap.polygonCount();
+        const std::size_t numPolys = indexMap.polygonCount();
 
         // tri_to_poly[triIdx] = polygon index
         {
@@ -92,9 +93,9 @@ public:
             auto [bufCount, relCount] =
                 Context::getAllocatedBufferAndReleaseFn<uint>(numPolys);
 
-            for (uint i = 0; i < numPolys; i++) {
-                uint begin = indexMap.triangleBegin(i);
-                if (begin != UINT_NULL) {
+            for (std::size_t i = 0; i < numPolys; i++) {
+                std::size_t begin = indexMap.triangleBegin(i);
+                if (begin != NULL_INDEX<std::size_t>) {
                     bufBegin[i] = begin;
                     bufCount[i] = indexMap.triangleCount(i);
                 }

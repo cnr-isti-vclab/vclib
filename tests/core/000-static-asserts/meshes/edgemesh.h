@@ -30,7 +30,6 @@ void edgemeshStaticAsserts()
     static_assert(
         !PolygonMeshConcept<EdgeMesh>, "The EdgeMesh is a PolygonMesh.");
 
-    static_assert(HasVertices<EdgeMesh>, "");
     static_assert(!HasFaces<EdgeMesh>, "");
     static_assert(HasEdges<EdgeMesh>, "");
 

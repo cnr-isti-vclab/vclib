@@ -45,23 +45,23 @@ inline void meshTopology()
     std::cout << "------------------------------\n";
 
     // Enable and compute vertex-face adjacency
-    mesh.enablePerVertexAdjacentFaces();
-    vcl::updatePerVertexAdjacentFaces(mesh);
+    mesh.enableVertexAdjacentFaces();
+    vcl::updateVertexAdjacentFaces(mesh);
 
     std::cout << "Vertex-face adjacency enabled and computed\n\n";
 
     // Show adjacency for first few vertices
     std::cout << "Adjacent faces for first 3 vertices:\n";
     for (int i = 0; i < 3 && i < mesh.vertexCount(); ++i) {
-        const auto& vertex = mesh.vertex(i);
+        auto vertex = mesh.vertex(i);
         std::cout << "  Vertex " << i << " is adjacent to faces: ";
 
-        for (const auto* face : vertex.adjFaces()) {
+        for (auto face : vertex.adjFaceIndices()) {
             // this should never happen
             // if it happens, something is wrong with the mesh
-            // (e.g. a face with a null pointer as vertex)
-            assert(face != nullptr); // Ensure face pointer is valid
-            std::cout << face->index() << " ";
+            // (e.g. a face with a null index as vertex)
+            assert(face != mesh.NULL_INDEX); // Ensure face index is valid
+            std::cout << face << " ";
         }
         std::cout << "(" << vertex.adjFaces().size() << " faces total)\n";
     }
@@ -69,7 +69,7 @@ inline void meshTopology()
     // Find vertex with most adjacent faces
     vcl::uint maxAdjFaces = 0;
     vcl::uint maxVertex   = 0;
-    for (const auto& vertex : mesh.vertices()) {
+    for (auto vertex : mesh.vertices()) {
         if (vertex.adjFaces().size() > maxAdjFaces) {
             maxAdjFaces = vertex.adjFaces().size();
             maxVertex   = vertex.index();
@@ -86,8 +86,8 @@ inline void meshTopology()
     std::cout << "--------------------------------\n";
 
     // Enable and compute vertex-vertex adjacency
-    mesh.enablePerVertexAdjacentVertices();
-    vcl::updatePerVertexAdjacentVertices(mesh);
+    mesh.enableVertexAdjacentVertices();
+    vcl::updateVertexAdjacentVertices(mesh);
 
     std::cout << "Vertex-vertex adjacency enabled and computed\n\n";
 
@@ -97,12 +97,12 @@ inline void meshTopology()
         const auto& vertex = mesh.vertex(i);
         std::cout << "  Vertex " << i << " is adjacent to vertices: ";
 
-        for (const auto* adjVertex : vertex.adjVertices()) {
+        for (auto adjVertex : vertex.adjVertices()) {
             // this should never happen
             // if it happens, something is wrong with the mesh
-            // (e.g. a face with a null pointer as vertex)
+            // (e.g. a face with a null index as vertex)
             assert(adjVertex != nullptr);
-            std::cout << adjVertex->index() << " ";
+            std::cout << adjVertex.index() << " ";
         }
         std::cout << "(" << vertex.adjVertices().size() << " vertices total)\n";
     }
@@ -110,7 +110,7 @@ inline void meshTopology()
     // Analyze vertex degrees (number of adjacent vertices)
     vcl::uint minDegree = UINT_MAX, maxDegree = 0;
     double    avgDegree = 0;
-    for (const auto& vertex : mesh.vertices()) {
+    for (auto vertex : mesh.vertices()) {
         vcl::uint degree = vertex.adjVertices().size();
         minDegree        = std::min(minDegree, degree);
         maxDegree        = std::max(maxDegree, degree);
@@ -131,8 +131,8 @@ inline void meshTopology()
     std::cout << "----------------------------\n";
 
     // Enable and compute face-face adjacency
-    mesh.enablePerFaceAdjacentFaces();
-    vcl::updatePerFaceAdjacentFaces(mesh);
+    mesh.enableFaceAdjacentFaces();
+    vcl::updateFaceAdjacentFaces(mesh);
 
     std::cout << "Face-face adjacency enabled and computed\n\n";
 
@@ -142,9 +142,9 @@ inline void meshTopology()
         const auto& face = mesh.face(i);
         std::cout << "  Face " << i << " is adjacent to faces: ";
 
-        for (const auto* adjFace : face.adjFaces()) {
+        for (auto adjFace : face.adjFaces()) {
             if (adjFace != nullptr) {
-                std::cout << mesh.index(adjFace) << " ";
+                std::cout << adjFace.index() << " ";
             }
             else {
                 std::cout << "border ";
@@ -155,8 +155,8 @@ inline void meshTopology()
 
     // Count border edges (faces with null adjacent faces)
     vcl::uint borderEdges = 0;
-    for (const auto& face : mesh.faces()) {
-        for (const auto* adjFace : face.adjFaces()) {
+    for (auto face : mesh.faces()) {
+        for (auto adjFace : face.adjFaces()) {
             if (adjFace == nullptr) {
                 borderEdges++;
             }
@@ -173,23 +173,23 @@ inline void meshTopology()
 
     // Navigate around a vertex using adjacency information
     if (mesh.vertexCount() > 0) {
-        vcl::uint   startVertex = 0;
-        const auto& vertex      = mesh.vertex(startVertex);
+        vcl::uint startVertex = 0;
+        auto      vertex      = mesh.vertex(startVertex);
 
         std::cout << "Navigation example starting from vertex " << startVertex
                   << ":\n";
 
         std::cout << "  1-ring neighborhood (direct neighbors): ";
-        for (const auto* adjVertex : vertex.adjVertices()) {
-            std::cout << adjVertex->index() << " ";
+        for (auto adjVertex : vertex.adjVertices()) {
+            std::cout << adjVertex.index() << " ";
         }
         std::cout << "\n";
 
         // 2-ring neighborhood (neighbors of neighbors)
         std::set<vcl::uint> twoRingVertices;
-        for (const auto* adjVertex : vertex.adjVertices()) {
-            for (const auto* adjAdjVertex : adjVertex->adjVertices()) {
-                vcl::uint idx = adjAdjVertex->index();
+        for (auto adjVertex : vertex.adjVertices()) {
+            for (auto adjAdjVertex : adjVertex.adjVertices()) {
+                vcl::uint idx = adjAdjVertex.index();
                 if (idx != startVertex) { // Exclude the starting vertex
                     twoRingVertices.insert(idx);
                 }
@@ -204,9 +204,9 @@ inline void meshTopology()
 
         // Star of faces around the vertex
         std::cout << "  Star of faces around vertex: ";
-        for (const auto* face : vertex.adjFaces()) {
+        for (auto face : vertex.adjFaces()) {
             assert(face != nullptr);
-            std::cout << face->index() << " ";
+            std::cout << face.index() << " ";
         }
         std::cout << "\n";
     }
@@ -257,20 +257,19 @@ inline void meshTopology()
     std::cout << "\nIn this example we learned:\n\n";
 
     std::cout << "1. VERTEX-FACE ADJACENCY:\n";
-    std::cout << "   - enablePerVertexAdjacentFaces() + "
-                 "updatePerVertexAdjacentFaces()\n";
+    std::cout << "   - enableVertexAdjacentFaces() + "
+                 "updateVertexAdjacentFaces()\n";
     std::cout << "   - Find all faces incident to a vertex\n";
     std::cout << "   - Useful for local surface analysis\n\n";
 
     std::cout << "2. VERTEX-VERTEX ADJACENCY:\n";
-    std::cout << "   - enablePerVertexAdjacentVertices() + "
-                 "updatePerVertexAdjacentVertices()\n";
+    std::cout << "   - enableVertexAdjacentVertices() + "
+                 "updateVertexAdjacentVertices()\n";
     std::cout << "   - Find all vertices connected by an edge\n";
     std::cout << "   - Essential for graph-based algorithms\n\n";
 
     std::cout << "3. FACE-FACE ADJACENCY:\n";
-    std::cout
-        << "   - enablePerFaceAdjacentFaces() + updatePerFaceAdjacentFaces()\n";
+    std::cout << "   - enableFaceAdjacentFaces() + updateFaceAdjacentFaces()\n";
     std::cout << "   - Find faces sharing an edge\n";
     std::cout << "   - Identify border edges (null adjacencies)\n\n";
 

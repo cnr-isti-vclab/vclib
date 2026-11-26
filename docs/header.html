@@ -16,6 +16,50 @@
        <script type="text/javascript">
            DoxygenAwesomeDarkModeToggle.init()
        </script>
+<script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    const mermaidRegex = /^(flowchart|graph|sequenceDiagram|classDiagram|stateDiagram|stateDiagram-v2|erDiagram|gantt|pie|gitGraph|mindmap|timeline|block-beta)\b/;
+
+    async function renderMermaid() {
+        const isDark = document.documentElement.classList.contains('dark-mode');
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: isDark ? 'dark' : 'default'
+        });
+        const nodes = document.querySelectorAll('pre.mermaid');
+        for (const node of nodes) {
+            if (node.dataset.mermaidSrc) {
+                node.removeAttribute('data-processed');
+                node.textContent = node.dataset.mermaidSrc;
+            }
+        }
+        if (nodes.length > 0) {
+            await mermaid.run({ nodes });
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        document.querySelectorAll('div.fragment').forEach((fragment) => {
+            const lines = Array.from(fragment.querySelectorAll('.line')).map(l => l.textContent);
+            const firstNonEmpty = lines.find(l => l.trim().length > 0 && !l.trim().startsWith('%%'));
+            if (firstNonEmpty && mermaidRegex.test(firstNonEmpty.trim())) {
+                const pre = document.createElement('pre');
+                pre.className = 'mermaid';
+                pre.style.textAlign = 'center';
+                pre.style.background = 'transparent';
+                pre.style.border = 'none';
+                const src = lines.join('\n');
+                pre.dataset.mermaidSrc = src;
+                pre.textContent = src;
+                fragment.replaceWith(pre);
+            }
+        });
+        await renderMermaid();
+
+        const observer = new MutationObserver(() => renderMermaid());
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    });
+</script>
 $treeview
 $search
 $mathjax

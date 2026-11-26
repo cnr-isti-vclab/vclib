@@ -16,40 +16,40 @@ void transformMatrixComponentStaticAsserts()
 
     // test only the transform matrix component
     static_assert(
-        comp::HasTransformMatrix<mesh::TransformMatrixd>,
+        HasTransformMatrix<mesh::TransformMatrixd>,
         "mesh::TransformMatrixd does not satisfy the HasTransformMatrix "
         "concept");
     static_assert(
-        comp::HasTransformMatrix<const mesh::TransformMatrixd>,
+        HasTransformMatrix<const mesh::TransformMatrixd>,
         "const mesh::TransformMatrixd does not satisfy the HasTransformMatrix "
         "concept");
     static_assert(
-        comp::HasTransformMatrix<mesh::TransformMatrixd&>,
+        HasTransformMatrix<mesh::TransformMatrixd&>,
         "mesh::TransformMatrixd& does not satisfy the HasTransformMatrix "
         "concept");
     static_assert(
-        comp::HasTransformMatrix<const mesh::TransformMatrixd&>,
+        HasTransformMatrix<const mesh::TransformMatrixd&>,
         "const mesh::TransformMatrixd& does not satisfy the HasTransformMatrix "
         "concept");
     static_assert(
-        comp::HasTransformMatrix<mesh::TransformMatrixd&&>,
+        HasTransformMatrix<mesh::TransformMatrixd&&>,
         "mesh::TransformMatrixd&& does not satisfy the HasTransformMatrix "
         "concept");
 
     static_assert(
-        comp::HasTransformMatrix<TriMesh>,
+        HasTransformMatrix<TriMesh>,
         "TriMesh does not satisfy the HasTransformMatrix concept");
     static_assert(
-        comp::HasTransformMatrix<const TriMesh>,
+        HasTransformMatrix<const TriMesh>,
         "const TriMesh does not satisfy the HasTransformMatrix concept");
     static_assert(
-        comp::HasTransformMatrix<TriMesh&>,
+        HasTransformMatrix<TriMesh&>,
         "TriMesh& does not satisfy the HasTransformMatrix concept");
     static_assert(
-        comp::HasTransformMatrix<const TriMesh&>,
+        HasTransformMatrix<const TriMesh&>,
         "const TriMesh& does not satisfy the HasTransformMatrix concept");
     static_assert(
-        comp::HasTransformMatrix<TriMesh&&>,
+        HasTransformMatrix<TriMesh&&>,
         "TriMesh&& does not satisfy the HasTransformMatrix concept");
 }
 

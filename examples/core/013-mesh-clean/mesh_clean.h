@@ -20,7 +20,7 @@
 // 5. Checking mesh topology properties
 // 6. Connected components analysis
 
-auto meshClean()
+inline auto meshClean()
 {
     std::cout << "=== VCLib Example 013: Mesh Cleaning ===\n\n";
 

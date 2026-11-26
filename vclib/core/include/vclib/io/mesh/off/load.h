@@ -222,11 +222,11 @@ inline void readOffHeader(
     if (header.rfind("OFF") != std::basic_string<char>::npos) {
         for (int u = header.rfind("OFF") - 1; u >= 0; u--) {
             if (header[u] == 'C')
-                fileInfo.setPerVertexColor();
+                fileInfo.setVertexColor();
             else if (header[u] == 'N')
-                fileInfo.setPerVertexNormal();
+                fileInfo.setVertexNormal();
             else if (u > 0 && header[u - 1] == 'S' && header[u] == 'T')
-                fileInfo.setPerVertexTexCoord();
+                fileInfo.setVertexTexCoord();
             else if (header[u] == '4')
                 throw MalformedFileException(
                     "Unsupported Homogeneus components in OFF.");
@@ -301,14 +301,12 @@ void readOffVertices(
     uint            nv,
     LogType&        log)
 {
-    using VertexType = MeshType::VertexType;
-
-    const uint nTexCoords = fileInfo.hasPerVertexTexCoord() ? 2 : 0;
+    const uint nTexCoords = fileInfo.hasVertexTexCoord() ? 2 : 0;
 
     log.startProgress("Reading vertices", nv);
     mesh.addVertices(nv);
     for (uint i = 0; i < nv; i++) {
-        VertexType& v = mesh.vertex(i);
+        auto v = mesh.vertex(i);
 
         Tokenizer           tokens = readAndTokenizeNextNonCommentLine(file);
         Tokenizer::iterator token  = tokens.begin();
@@ -319,9 +317,8 @@ void readOffVertices(
             v.position()[j] = io::readDouble<double>(token);
         }
 
-        if constexpr (HasPerVertexNormal<MeshType>) {
-            if (isPerVertexNormalAvailable(mesh) &&
-                fileInfo.hasPerVertexNormal()) {
+        if constexpr (HasVertexNormal<MeshType>) {
+            if (mesh.isVertexNormalAvailable() && fileInfo.hasVertexNormal()) {
                 // Read 3 normal coordinates
                 for (unsigned int j = 0; j < 3; j++) {
                     v.normal()[j] = io::readDouble<double>(token);
@@ -329,7 +326,7 @@ void readOffVertices(
             }
         }
         // need to read and throw away data
-        else if (fileInfo.hasPerVertexNormal()) {
+        else if (fileInfo.hasVertexNormal()) {
             for (unsigned int j = 0; j < 3; j++) {
                 io::readDouble<double>(token);
             }
@@ -339,9 +336,8 @@ void readOffVertices(
         const int  nColorComponents =
             (int) tokens.size() - nReadComponents - nTexCoords;
 
-        if constexpr (HasPerVertexColor<MeshType>) {
-            if (isPerVertexColorAvailable(mesh) &&
-                fileInfo.hasPerVertexColor()) {
+        if constexpr (HasVertexColor<MeshType>) {
+            if (mesh.isVertexColorAvailable() && fileInfo.hasVertexColor()) {
                 if (nColorComponents != 1 && nColorComponents != 3 &&
                     nColorComponents != 4)
                     throw MalformedFileException(
@@ -350,7 +346,7 @@ void readOffVertices(
             }
         }
         // need to read and throw away data
-        else if (fileInfo.hasPerVertexColor()) {
+        else if (fileInfo.hasVertexColor()) {
             if (nColorComponents != 1 && nColorComponents != 3 &&
                 nColorComponents != 4)
                 throw MalformedFileException(
@@ -358,9 +354,9 @@ void readOffVertices(
             readOffColor(token, nColorComponents);
         }
 
-        if constexpr (HasPerVertexTexCoord<MeshType>) {
-            if (isPerVertexTexCoordAvailable(mesh) &&
-                fileInfo.hasPerVertexTexCoord()) {
+        if constexpr (HasVertexTexCoord<MeshType>) {
+            if (mesh.isVertexTexCoordAvailable() &&
+                fileInfo.hasVertexTexCoord()) {
                 // Read 2 tex coordinates
                 for (unsigned int j = 0; j < 2; j++) {
                     v.texCoord()[j] = io::readDouble<double>(token);
@@ -368,7 +364,7 @@ void readOffVertices(
             }
         }
         // need to read and throw away data
-        else if (fileInfo.hasPerVertexTexCoord()) {
+        else if (fileInfo.hasVertexTexCoord()) {
             for (unsigned int j = 0; j < 2; j++) {
                 io::readDouble<double>(token);
             }
@@ -389,7 +385,7 @@ void readOffFaces(
     LogType&            log)
 {
     if constexpr (HasFaces<MeshType>) {
-        using FaceType = MeshType::FaceType;
+        using FaceType = FaceType<MeshType>;
 
         mesh.reserveFaces(nf);
         log.startProgress("Reading faces", nf);
@@ -398,7 +394,7 @@ void readOffFaces(
             Tokenizer tokens          = readAndTokenizeNextNonCommentLine(file);
             Tokenizer::iterator token = tokens.begin();
             mesh.addFace();
-            FaceType& f = mesh.face(mesh.faceCount() - 1);
+            FaceType f = mesh.face(mesh.faceCount() - 1);
 
             // read vertex indices
             uint fSize = io::readUInt<uint>(token);
@@ -439,17 +435,16 @@ void readOffFaces(
 
             // read face color
             if (token != tokens.end()) { // there are colors to read
-                if constexpr (HasPerFaceColor<MeshType>) {
-                    if (isPerFaceColorAvailable(mesh) ||
+                if constexpr (HasFaceColor<MeshType>) {
+                    if (mesh.isFaceColorAvailable() ||
                         (settings.enableOptionalComponents &&
-                         enableIfPerFaceColorOptional(mesh))) {
-                        loadedInfo.setPerFaceColor();
+                         enableIfFaceColorOptional(mesh))) {
+                        loadedInfo.setFaceColor();
                         f.color() = readOffColor(
                             token, tokens.size() - (token - tokens.begin()));
                         // in case the loaded polygon has been triangulated in
                         // the last n triangles
-                        for (uint ff = mesh.index(f); ff < mesh.faceCount();
-                             ++ff) {
+                        for (uint ff = f.index(); ff < mesh.faceCount(); ++ff) {
                             mesh.face(ff).color() = f.color();
                         }
                     }

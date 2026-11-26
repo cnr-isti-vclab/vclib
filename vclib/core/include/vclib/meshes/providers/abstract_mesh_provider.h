@@ -60,6 +60,14 @@ public:
     virtual uint faceCount() const   = 0;
     virtual uint edgeCount() const   = 0;
 
+    virtual uint vertexContainerSize() const = 0;
+    virtual uint faceContainerSize() const   = 0;
+    virtual uint edgeContainerSize() const   = 0;
+
+    virtual bool isVertexDeleted(uint vertId) const = 0;
+    virtual bool isFaceDeleted(uint faceId) const   = 0;
+    virtual bool isEdgeDeleted(uint edgeId) const   = 0;
+
     virtual std::vector<uint>     faceVertices(uint faceId) const = 0;
     virtual std::pair<uint, uint> edgeVertices(uint edgeId) const = 0;
 

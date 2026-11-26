@@ -8,480 +8,388 @@
 #ifndef VCL_MESH_CONTAINERS_FACE_CONTAINER_H
 #define VCL_MESH_CONTAINERS_FACE_CONTAINER_H
 
-#include "base/element_container.h"
-
-#include <vclib/mesh/elem_algorithms.h>
+#include <vclib/mesh/components/base/component_predicates.h>
+#include <vclib/mesh/containers/base/element_container.h>
+#include <vclib/mesh/containers/base/macros.h>
 #include <vclib/mesh/elements/face.h>
 #include <vclib/mesh/elements/face_components.h>
+#include <vclib/mesh/views/components/positions.h>
 
 #include <vclib/algorithms/core.h>
+#include <vclib/base.h>
 
-namespace vcl {
-namespace mesh {
+namespace vcl::mesh {
 
 /**
- * @brief The FaceContainer class represents a container of Face elements that
- * can be used in a Mesh class.
+ * @brief FaceContainer stores the per-face data in a Structure of Arrays (SoA),
+ * and it is meant to be used as a template parameter of the Mesh class.
  *
- * This class adds a container (vector) of Faces to the Mesh, making available
- * the accessors members to them and their components.
+ * It accepts the Face component list (satisfying HasRequiredFaceComponents),
+ * instantiates the underlying storage and exposes the Face element view.
  *
- * It provides all the add, delete, reserve, compact and other functions to
- * manage the Faces, plus the iterators and views to iterate over them. It also
- * provides the functions to enable and disable the optional components of the
- * Faces.
- *
- * @tparam T: The type of the Face elements. It must satisfy the FaceConcept.
+ * @tparam CompList: The face components type (e.g. FaceComponents<BitFlags,
+ * TriangleVertexReferences<uint>>).
+ * @tparam Index: The index type (default uint).
+ * @tparam ParentMesh: The parent mesh type. On Mesh instantiation, this is
+ * automatically set to the Mesh type. Default is void.
  *
  * @ingroup containers
  */
-template<FaceConcept T>
-class FaceContainer : public ElementContainer<T>
+template<
+    HasRequiredFaceComponents CompList,
+    std::unsigned_integral    Index = uint,
+    typename ParentMesh             = void>
+class FaceContainer :
+        public ElementContainer<
+            typename comp::detail::ComponentListHelper<CompList>::type,
+            ParentMesh,
+            Index,
+            Face>
 {
-    template<FaceConcept U>
-    friend class FaceContainer;
-
-    using FaceContainerType = FaceContainer<T>;
-    using Base              = ElementContainer<T>;
+    using Base = ElementContainer<
+        typename comp::detail::ComponentListHelper<CompList>::type,
+        ParentMesh,
+        Index,
+        Face>;
 
 public:
-    using Face              = T;
-    using FaceType          = T;
-    using FaceIterator      = Base::ElementIterator;
-    using ConstFaceIterator = Base::ConstElementIterator;
+    using Face           = typename Base::ElementType;
+    using ConstFace      = typename Base::ConstElementType;
+    using FaceComponents = typename Base::Components;
+    using Components     = FaceComponents;
+    using Base::NULL_INDEX;
+
+    // Rebind idiom to allow changing the ParentMesh type while keeping the same
+    // component list and index type.
+    template<typename NewParent>
+    using Rebind = FaceContainer<CompList, Index, NewParent>;
 
     /**
      * @brief Empty constructor that creates an empty container of Faces.
      */
     FaceContainer() = default;
 
+    friend void swap(FaceContainer& a, FaceContainer& b) noexcept { a.swap(b); }
+
     /**
-     * @brief Returns a const reference of the Face at the i-th position in the
-     * Face Container of the Mesh, which will be the Face having index = i.
+     * @brief Returns the Face at the i-th position in the Face Container of
+     * the Mesh, which will be the face having index = i.
      *
      * This function does not perform any sanity check: if i is less than
-     * faceContainerSize(), this function will return a valid Face reference
+     * faceContainerSize(), this function will return a valid Face
      * (note that the Face may have been flagged as deleted).
      *
-     * @param[in] i: the index of the Face that will be returned.
+     * @param[in] i: the index of the face that will be returned.
+     *
+     * @return The i-th Face of the Face Container.
      */
-    const FaceType& face(uint i) const { return Base::element(i); }
+    Face face(Index i) { return Base::element(i); }
 
     /**
-     * @brief Returns a reference of the Face at the i-th position in the Face
-     * Container of the Mesh, which will be the Face having index = i.
+     * @brief Returns the const Face at the i-th position in the Face
+     * Container of the Mesh, which will be the face having index = i.
      *
      * This function does not perform any sanity check: if i is less than
-     * faceContainerSize(), this function will return a valid Face reference
+     * faceContainerSize(), this function will return a valid ConstFace
      * (note that the Face may have been flagged as deleted).
      *
-     * @param[in] i: the index of the Face that will be returned.
+     * @param[in] i: the index of the face that will be returned.
+     *
+     * @return The i-th const Face of the Face Container.
      */
-    FaceType& face(uint i) { return Base::element(i); }
+    ConstFace face(Index i) const { return Base::element(i); }
 
     /**
-     * @brief Returns the number of **non-deleted** Faces contained in the Face
-     * container of the Mesh.
+     * @brief Returns the number of **non-deleted** faces contained in the
+     * Face container of the Mesh.
      *
      * If faceCount() != faceContainerSize(), it means that there are some
-     * Faces that are flagged as deleted.
+     * faces that are flagged as deleted.
      *
-     * @return the number of non-deleted Faces of the Mesh.
+     * @return The number of non-deleted faces of the Mesh.
      */
-    uint faceCount() const { return Base::elementCount(); }
+    std::size_t faceCount() const { return Base::elementCount(); }
 
     /**
-     * @brief Returns the number of Faces (also deleted) contained in the Face
-     * container of the Mesh.
+     * @brief Returns the number of faces (also deleted) contained in the
+     * Face container of the Mesh.
      *
      * If faceCount() != faceContainerSize(), it means that there are some
-     * Faces that are flagged as deleted.
+     * faces that are flagged as deleted.
      *
-     * @return the number of all the Faces contained in the Mesh.
+     * @return The number of all the faces contained in the Mesh.
      */
-    uint faceContainerSize() const { return Base::elementContainerSize(); }
-
-    /**
-     * @brief Returns the number of deleted Faces in the Face container, that is
-     * faceContainerSize() - faceCount().
-     *
-     * @return The number of deleted Faces in the container.
-     */
-    uint deletedFaceCount() const { return Base::deletedElementCount(); }
-
-    /**
-     * @brief Add a Face to the container, returning its index.
-     *
-     * If the call of this function will cause a reallocation of the
-     * FaceContainer, the function will automatically take care of updating
-     * all the Face pointers contained in the Mesh.
-     *
-     * @return the id of the newly added Face.
-     */
-    uint addFace() { return Base::addElement(); }
-
-    template<typename... V>
-    uint addFace(V... args) requires (sizeof...(args) >= 3)
+    std::size_t faceContainerSize() const
     {
-        uint  fid = addFace();
-        Face& f   = face(fid);
-
-        constexpr uint n = sizeof...(args);
-
-        if constexpr (T::VERTEX_COUNT < 0) {
-            f.resizeVertices(n);
-        }
-        else {
-            static_assert(
-                n == T::VERTEX_COUNT,
-                "Wrong number of vertices in Mesh::addFace.");
-        }
-
-        addFaceHelper(f, args...);
-        return fid;
+        return Base::elementContainerSize();
     }
 
-    template<Range Rng>
-    uint addFace(Rng&& r) requires (
-        InputRange<Rng, typename Face::VertexType*> || InputRange<Rng, uint>)
+    /**
+     * @brief Returns the number of deleted faces in the Face container,
+     * that is faceContainerSize() - faceCount().
+     *
+     * @return The number of deleted faces in the container.
+     */
+    std::size_t deletedFaceCount() const { return Base::deletedElementCount(); }
+
+    /**
+     * @brief Adds a new face into the Face container, returning the index of
+     * the added face.
+     *
+     * @return The index of the new face.
+     */
+    Index addFace() { return Base::addElement(); }
+
+    /**
+     * @brief Adds a new face with the given vertices or vertex indices into the
+     * Face container, returning the index of the added face.
+     *
+     * @tparam Args: The types of the vertex arguments (references or indices).
+     * @param[in] args: The vertices or vertex indices of the new face.
+     * @return The index of the new face.
+     */
+    template<typename... Args>
+    Index addFace(const Args&... args) requires (
+        sizeof...(Args) >= 3 &&
+        (sizeof...(Args) == Face::VERTEX_COUNT || Face::VERTEX_COUNT < 0))
     {
-        auto begin = std::ranges::begin(r);
-        auto end   = std::ranges::end(r);
-
-        if (begin == end)
-            return UINT_NULL;
-        uint n = std::distance(begin, end);
-
-        uint fid = UINT_NULL;
-
-        assert(n >= 3);
-        if (n < 3)
-            return UINT_NULL;
-
-        if constexpr (T::VERTEX_COUNT < 0) {
-            fid = addFace();
-            face(fid).resizeVertices(n);
-        }
-        else {
-            assert(n == T::VERTEX_COUNT);
-            if (n == T::VERTEX_COUNT)
-                fid = addFace();
-        }
-
-        if (fid != UINT_NULL) {
-            Face& f = face(fid);
-
-            unsigned int i = 0;
-            for (auto it = begin; it != end; ++it) {
-                f.setVertex(i, *it);
-                ++i;
-            }
-        }
+        Index fid = addFace();
+        face(fid).setVertices(args...);
         return fid;
     }
 
     /**
-     * @brief Add an arbitrary number of n Faces, returning the id of the first
-     * added Face.
+     * @brief Adds a new face with the vertices or vertex indices contained in
+     * the given range, returning the index of the added face.
      *
-     * This means that, if you want to add 5 Faces and this member function
-     * returns 4, the added Faces will have id from 4 to id 8 included.
-     *
-     * If the call of this function will cause a reallocation of the
-     * FaceContainer, the function will automatically take care of updating all
-     * the Face pointers contained in the Mesh.
-     *
-     * @param n: the number of Faces to add to the mesh.
-     * @return the id of the first added Face.
+     * @tparam Rng: An input range type containing vertices or vertex indices.
+     * @param[in] rng: The range of vertices or vertex indices of the new face.
+     * @return The index of the new face.
      */
-    uint addFaces(uint n) { return Base::addElements(n); }
+    template<std::ranges::input_range Rng>
+    Index addFace(Rng&& rng)
+    {
+        Index fid = addFace();
+        face(fid).setVertices(std::forward<Rng>(rng));
+        return fid;
+    }
+
+    /**
+     * @brief Adds an arbitrary number of n faces, returning the index of the
+     * first added face.
+     *
+     * @param[in] n: the number of faces to add to the mesh.
+     * @return The index of the first added face.
+     */
+    Index addFaces(std::size_t n) { return Base::addElements(n); }
+
+    /**
+     * @brief Adds an arbitrary number of faces with the vertices or vertex
+     * indices contained in the given range of ranges, returning the index of
+     * the first added face.
+     *
+     * @tparam Rng: A range of ranges containing vertices or vertex indices.
+     * @param[in] rng: A range of ranges containing the vertices or vertex
+     * indices for each face.
+     * @return The index of the first added face.
+     */
+    template<std::ranges::input_range Rng>
+    requires std::ranges::input_range<std::ranges::range_value_t<Rng>>
+    Index addFaces(Rng&& rng)
+    {
+        Index baseId = faceContainerSize();
+        if constexpr (std::ranges::sized_range<Rng>) {
+            reserveFaces(baseId + std::ranges::size(rng));
+        }
+        for (auto&& f : rng) {
+            addFace(f);
+        }
+        return baseId;
+    }
 
     /**
      * @brief Clears the Face container of the Mesh, deleting all the
-     * Faces.
+     * faces.
      *
-     * The contained faces are actually removed from the container, not only
-     * marked as deleted. Therefore, the container will have size 0
+     * The contained face components are actually removed from the container,
+     * not only marked as deleted. Therefore, the container will have size 0
      * (`faceContainerSize() == 0`) after the call of this function.
      *
-     * @note This function does not cause a reallocation of the Face
-     * container.
-     *
-     * @warning Any pointer to Faces in the Mesh will be left unchanged, and
-     * therefore will point to invalid Faces. This means that, if you have a
-     * pointer to a Face and you call this function, you will have a dangling
-     * pointer.
+     * @warning Any index or reference to faces in the Mesh will be left
+     * unchanged, and therefore will point to invalid faces.
      */
     void clearFaces() { Base::clearElements(); }
 
     /**
-     * @brief Resizes the Face container to contain `n` Faces.
+     * @brief Resizes the Face container to contain `n` faces.
      *
-     * If the new size is greater than the old one, new Faces are added to the
-     * container, and a reallocation may happen. If the new size is smaller than
-     * the old one, the container will keep its first non-deleted `n` Faces, and
-     * the remaining Faces are marked as deleted.
+     * If the new size is greater than the old one, new faces are added to
+     * the container. If the new size is smaller than the old one, the container
+     * is truncated to `n` faces (faces beyond `n` are removed).
      *
-     * If the call of this function will cause a reallocation of the Face
-     * container, the function will automatically take care of updating all the
-     * Face pointers contained in the Mesh.
-     *
-     * @warning The given size `n` is relative to the number of non-deleted
-     * Faces, not to the size of the Face container. For example, if you
-     * have a mesh with 10 Faces and faceContainerSize() == 20, calling
-     * resizeFaces(5) will not cause a reallocation of the container, but will
-     * mark as deleted the least 5 non-deleted Faces of the container. In the
-     * same scenario, calling resizeFaces(15) will result in a Face
-     * container having 15 Faces and faceContainerSize() == 25.
-     * The latest 5 Faces will be the newly added.
-     *
-     * @warning Any pointer to deleted Faces in the Mesh will be left
-     * unchanged, and therefore will point to invalid Faces. This means that
-     * if you call this member function with a lower number of Faces, you'll
-     * need to manually manage the pointers to the deleted Faces.
+     * @warning Any index to removed faces in the Mesh will be left
+     * unchanged, and therefore will point to invalid faces.
      *
      * @param[in] n: the new size of the Face container.
      */
-    void resizeFaces(uint n) { Base::resizeElements(n); }
+    void resizeFaces(std::size_t n) { Base::resizeElements(n); }
 
     /**
-     * @brief Reserve a number of Faces in the container of Faces. This is
-     * useful when you know (or you have an idea) of how much Faces are going to
-     * add into a newly of existing mesh. Calling this function before any
-     * addFace() call will avoid unuseful reallocations of the container, saving
-     * execution time.
+     * @brief Reserves a number of faces in the container of Faces. This is
+     * useful when you know (or you have an idea) of how many faces will be
+     * added to a new or existing mesh. Calling this function before any
+     * addFace() call will avoid unnecessary reallocations of the container,
+     * saving execution time.
      *
-     * The filosofy of this function is similar to the one of the
+     * The philosophy of this function is similar to the one of the
      * [reserve()](https://en.cppreference.com/w/cpp/container/vector/reserve)
      * function of the [std::vector
      * class](https://en.cppreference.com/w/cpp/container/vector).
      *
-     * If the call of this function will cause a reallocation of the Face
-     * container, the function will automatically take care of updating all the
-     * Face pointers contained in the Mesh.
-     *
-     * @param n: the new capacity of the Face container.
+     * @param[in] n: the new capacity of the face container.
      */
-    void reserveFaces(uint n) { Base::reserveElements(n); }
+    void reserveFaces(std::size_t n) { Base::reserveElements(n); }
 
     /**
-     * @brief Compacts the FaceContainer, removing all the Faces marked as
-     * deleted. Faces indices will change accordingly. The function will
-     * automatically take care of updating all the Face pointers contained in
-     * the Mesh.
+     * @brief Compacts the Face Container, removing all the faces marked as
+     * deleted. Face references will automatically change accordingly in all
+     * the containers of the Mesh.
+     *
+     * @return A vector that maps each old face index to its new index in the
+     * compacted container (or NULL_INDEX if it was deleted).
      */
-    void compactFaces() { Base::compactElements(); }
+    std::vector<Index> compactFaces() { return Base::compactElements(); }
 
     /**
-     * @brief Marks as deleted the Face with the given id.
+     * @brief Marks as deleted the face with the given id.
      *
-     * This member function does not perform any reallocation of the Faces: the
-     * deleted Faces will stay in the Face Container, but will be marked as
-     * deleted.
+     * This member function does not perform any reallocation of the faces:
+     * the deleted faces will stay in the Face Container, but will be
+     * marked as deleted.
      *
-     * Deleted Faces are automatically jumped by the iterators provided by the
-     * Face Container.
+     * Deleted faces are automatically jumped by the iterators provided by
+     * the Face Container.
      *
-     * @param[in] i: the id of the Face that will be marked as deleted.
+     * @param[in] i: the index of the face that will be marked as deleted.
      */
-    void deleteFace(uint i) { Base::deleteElement(i); }
+    void deleteFace(Index i) { Base::deleteElement(i); }
 
     /**
-     * @brief Marks as deleted the given Face, before asserting that the Face
-     * belongs to this container.
+     * @brief Marks as deleted the given face.
      *
-     * This member function does not perform any reallocation of the Faces: the
-     * deleted Faces will stay in the Face Container, but will be marked as
-     * deleted.
+     * This member function does not perform any reallocation of the faces:
+     * the deleted faces will stay in the Face Container, but will be
+     * marked as deleted.
      *
-     * Deleted Faces are automatically jumped by the iterators provided by the
-     * Face Container.
+     * Deleted faces are automatically jumped by the iterators provided by
+     * the Face Container.
      *
-     * @param[in] f: the pointer of the Face that will be marked as deleted.
+     * @param[in] f: the face that will be marked as deleted.
      */
-    void deleteFace(const FaceType* f) { Base::deleteElement(f); }
+    void deleteFace(const Face& f) { Base::deleteElement(f.index()); }
 
     /**
-     * @brief This is an utility member function that returns the index of an
-     * element if the container would be compact, that is the number of
-     * non-deleted elements before the Face with the given index.
+     * @brief This is a utility member function that returns the index of an
+     * element if the container were compact, that is the number of
+     * non-deleted elements before the face with the given index.
      *
-     * Complexity: O(n), with n the number of Faces in the container.
+     * Complexity: O(n), with n the number of faces in the container.
      *
      * This function does not perform any sanity check on the given index.
      *
-     * @param[in] i: the index of a Face of the container.
-     * @return The index that the Face with index i would have if this container
-     * would be compact.
+     * @param[in] i: the index of a face of the container.
+     * @return The index that the face with index i would have if this
+     * container were compact.
      */
-    uint faceIndexIfCompact(uint i) const
+    Index faceIndexIfCompact(Index i) const
     {
         return Base::elementIndexIfCompact(i);
     }
 
     /**
-     * @brief Returns a vector that tells, for each actual Face index, the
-     * new index that the Face would have in a compacted container. For each
-     * deleted Face index, the value of the vector will be UINT_NULL.
+     * @brief Returns a vector that tells, for each actual face index, the new
+     * index that the face would have in a compacted container. For each
+     * deleted face index, the value of the vector will be NULL_INDEX.
      *
-     * This is useful if you need to know the indices of the Faces that they
+     * This is useful if you need to know the indices of the faces that they
      * would have in a compact container, without considering the deleted ones.
      *
-     * @return A vector containing, for each Face index, its index if the
-     * container would be compact.
+     * @return A vector containing, for each face index, its index if the
+     * container were compact.
      */
-    std::vector<uint> faceCompactIndices() const
+    std::vector<Index> faceCompactIndices() const
     {
         return Base::elementCompactIndices();
     }
 
     /**
-     * @brief Updates all the indices and pointers of the Faces of this
-     * container that are stored in any container of the mesh, according to the
-     * mapping stored in the newIndices vector, that tells for each old Face
-     * index, the new Face index.
+     * @brief Updates references to the faces of this mesh according to the
+     * mapping stored in the newIndices vector.
      *
-     * This function is useful when delete some Faces, and you want to update
-     * the indices/pointers stored in all the containers of the mesh
-     * accordingly.
+     * This function is useful when faces are deleted, compacted, or
+     * permuted, and you want to update all references stored across the
+     * mesh containers to point to their new indices.
      *
-     * E.g. Supposing you deleted a set of Faces, you can give to this function
-     * the vector telling, for each one of the old Face indices, the new Face
-     * index (or UINT_NULL if you want to leave it unreferenced). This function
-     * will update all the pointers stored in the mesh containers accordingly
-     * (if they store adjacencies to the Faces).
+     * @note This function does not change the position of the faces in this
+     * container. It updates face references stored in this and other
+     * containers of the mesh.
      *
-     * @note This function *does not change the position of the Faces in this
-     * container*. It just updates the indices/pointers of the Faces stored in
-     * this or other containers.
-     *
-     * @param[in] newIndices: a vector that tells, for each old Face index, the
-     * new Face index. If the old Face must be left as unreferenced (setting
-     * `nullptr` to the pointers), the value of the vector must be UINT_NULL.
+     * @param[in] newIndices: A vector mapping old face indices to new ones.
+     * If a face was deleted or should become unreferenced, its mapping entry
+     * must be NULL_INDEX.
      */
-    void updateFaceReferences(const std::vector<uint>& newIndices)
+    void updateFaceReferences(const std::vector<Index>& newIndices)
     {
         Base::updateElementReferences(newIndices);
     }
 
     /**
-     * @brief Returns an iterator to the beginning of the container.
-     *
-     * The iterator is automatically initialized to jump deleted Faces of
-     * the container. You can change this option by calling this function with
-     * `jumpDeleted=false`.
-     *
-     * @param[in] jumpDeleted: boolean that tells if the iterator
-     * should jump deleted Faces.
-     * @return An iterator the the first Face of the container.
-     */
-    FaceIterator faceBegin(bool jumpDeleted = true)
-    {
-        return Base::elementBegin(jumpDeleted);
-    }
-
-    /**
-     * @brief Returns an iterator to the end of the container.
-     * @return An iterator to the end of the container.
-     */
-    FaceIterator faceEnd() { return Base::elementEnd(); }
-
-    /**
-     * @brief Returns a const iterator to the beginning of the container.
-     *
-     * The iterator is automatically initialized to jump deleted Faces of
-     * the container. You can change this option by calling this function with
-     * `jumpDeleted=false`.
-     *
-     * @param[in] jumpDeleted: boolean that tells if the iterator should jump
-     * deleted Faces.
-     * @return A const iterator the the first Face of the container.
-     */
-    ConstFaceIterator faceBegin(bool jumpDeleted = true) const
-    {
-        return Base::elementBegin(jumpDeleted);
-    }
-
-    /**
-     * @brief Returns a const iterator to the end of the container.
-     * @return A const iterator to the end of the container.
-     */
-    ConstFaceIterator faceEnd() const { return Base::elementEnd(); }
-
-    /**
-     * @brief Returns a small view object that allows to iterate over the Faces
-     * of the containers, providing two member functions begin() and end().
+     * @brief Returns an ElementContainerProxy object that allows to iterate
+     * over the faces of the container, providing begin() and end() member
+     * functions.
      *
      * This member function is very useful when you want to iterate over the
-     * Faces using the C++ foreach syntax:
+     * faces using the C++ range-based for loop syntax:
      *
      * @code{.cpp}
-     * for (Face& e : m.faces()){
-     *     // do something with this Face
+     * for (Face f : m.faces()) {
+     *     // do something with this face
      * }
      * @endcode
      *
-     * The iterator used to iterate over Faces is automatically initialized
-     * to jump deleted Faces of the container. You can change this option by
-     * calling this function with `jumpDeleted=false`.
+     * The iterator used to iterate over faces is automatically initialized
+     * to jump deleted faces of the container. You can change this option by
+     * calling this function with jumpDeleted = false.
      *
-     * @param[in] jumpDeleted: boolean that tells if the iterator should jump
-     * deleted Faces.
-     * @return An object having begin() and end() function, allowing to iterate
-     * over the container.
+     * @param[in] jumpDeleted (default: true): boolean that tells if the
+     * iterator should jump deleted faces.
+     * @return An object having begin() and end() functions, allowing to
+     * iterate over the container.
      */
     auto faces(bool jumpDeleted = true) { return Base::elements(jumpDeleted); }
 
     /**
-     * @brief Returns a view object that allows to iterate over the Faces
-     * of the container in the given range:
-     *
-     * @code{.cpp}
-     * for (Face& e : m.faces(3, 10)){
-     *     // iterate over the Faces from index 3 to 10
-     *     // do something with e
-     * }
-     * @endcode
-     *
-     * @note Unlike the faces() function, this member function does not
-     * automatically jump deleted faces, but it iterates over the
-     * faces in the given range, regardless of whether they are deleted or
-     * not.
-     *
-     * @param[in] begin: the index of the first face to be included in the
-     * range. It must be less or equal to faceContainerSize() and less or
-     * equal to the end index.
-     * @param[in] end: the index of the last face to be included in the
-     * range.
-     * @return An object having begin() and end() function, allowing to iterate
-     * over the given range of the container.
-     */
-    auto faces(uint begin, uint end = UINT_NULL)
-    {
-        return Base::elements(begin, end);
-    }
-
-    /**
-     * @brief Returns a small view object that allows to iterate over the Faces
-     * of the containers, providing two member functions begin() and end().
+     * @brief Returns an ElementContainerProxy object that allows to iterate
+     * over the faces of the container, providing begin() and end() member
+     * functions.
      *
      * This member function is very useful when you want to iterate over the
-     * Faces using the C++ foreach syntax:
+     * faces using the C++ range-based for loop syntax:
      *
      * @code{.cpp}
-     * for (const Face& e : m.faces()){
-     *     // do something with this Face
+     * for (ConstFace f : m.faces()) {
+     *     // do something with this face
      * }
      * @endcode
      *
-     * The iterator used to iterate over Faces is automatically initialized
-     * to jump deleted Faces of the container. You can change this option by
-     * calling this function with `jumpDeleted=false`.
+     * The iterator used to iterate over faces is automatically initialized
+     * to jump deleted faces of the container. You can change this option by
+     * calling this function with jumpDeleted = false.
      *
-     * @param[in] jumpDeleted: boolean that tells if the iterator should jump
-     * deleted Faces.
-     * @return An object having begin() and end() function, allowing to iterate
-     * over the container.
+     * @param[in] jumpDeleted (default: true): boolean that tells if the
+     * iterator should jump deleted faces.
+     * @return An object having begin() and end() functions, allowing to
+     * iterate over the container.
      */
     auto faces(bool jumpDeleted = true) const
     {
@@ -489,15 +397,9 @@ public:
     }
 
     /**
-     * @brief Returns a view object that allows to iterate over the Faces
-     * of the container in the given range:
-     *
-     * @code{.cpp}
-     * for (const Face& e : m.faces(3, 10)){
-     *     // iterate over the Faces from index 3 to 10
-     *     // do something with e
-     * }
-     * @endcode
+     * @brief Returns a view object that allows to iterate over the faces of
+     * the container in the range [begin, end), providing begin() and end()
+     * member functions.
      *
      * @note Unlike the faces() function, this member function does not
      * automatically jump deleted faces, but it iterates over the
@@ -505,449 +407,123 @@ public:
      * not.
      *
      * @param[in] begin: the index of the first face to be included in the
-     * range. It must be less or equal to faceContainerSize() and less or
-     * equal to the end index.
+     * range. It must be less than or equal to faceContainerSize() and less than
+     * or equal to the end index.
      * @param[in] end: the index of the last face to be included in the
-     * range.
-     * @return An object having begin() and end() function, allowing to iterate
-     * over the given range of the container.
+     * range (exclusive). If NULL_INDEX (default) or greater than
+     * faceContainerSize(), it will be set to faceContainerSize().
+     * @return A View object allowing to iterate over the given range of the
+     * container.
      */
-    auto faces(uint begin, uint end = UINT_NULL) const
+    auto faces(Index begin, Index end = NULL_INDEX)
     {
         return Base::elements(begin, end);
     }
 
     /**
-     * @brief Enables all the optional components associated to the Face type
-     * contained in the FaceContainer.
+     * @brief Returns a view object that allows to iterate over the faces of
+     * the container in the range [begin, end), providing begin() and end()
+     * member functions.
+     *
+     * @note Unlike the faces() function, this member function does not
+     * automatically jump deleted faces, but it iterates over the
+     * faces in the given range, regardless of whether they are deleted or
+     * not.
+     *
+     * @param[in] begin: the index of the first face to be included in the
+     * range. It must be less than or equal to faceContainerSize() and less than
+     * or equal to the end index.
+     * @param[in] end: the index of the last face to be included in the
+     * range (exclusive). If NULL_INDEX (default) or greater than
+     * faceContainerSize(), it will be set to faceContainerSize().
+     * @return A View object allowing to iterate over the given range of the
+     * container.
      */
-    void enableAllPerFaceOptionalComponents()
+    auto faces(Index begin, Index end = NULL_INDEX) const
+    {
+        return Base::elements(begin, end);
+    }
+
+    // --- Components ---
+
+    /**
+     * @brief Checks if the face component with the given COMP_ID is
+     * available (present at compile time and enabled at run time).
+     *
+     * Non-optional components are always available (true).
+     * Optional components return true if currently enabled, false otherwise.
+     *
+     * @tparam COMP_ID: The ID of the component to check.
+     * @return `true` if currently available, `false` otherwise.
+     */
+    template<CompId COMP_ID>
+    bool isFaceComponentAvailable() const
+    {
+        return Base::template isComponentAvailable<COMP_ID>();
+    }
+
+    /**
+     * @brief Enables the optional face component with the given COMP_ID.
+     *
+     * @tparam COMP_ID: The ID of the component to enable.
+     */
+    template<CompId COMP_ID>
+    void enableFaceComponent()
+        requires comp::HasOptionalComponent<COMP_ID, FaceComponents>
+    {
+        Base::template enableOptionalComponent<COMP_ID>();
+    }
+
+    /**
+     * @brief Disables the optional face component with the given COMP_ID.
+     * Note: Non-optional components cannot be disabled.
+     *
+     * @tparam COMP_ID: The ID of the component to disable.
+     */
+    template<CompId COMP_ID>
+    void disableFaceComponent()
+        requires comp::HasOptionalComponent<COMP_ID, FaceComponents>
+    {
+        Base::template disableOptionalComponent<COMP_ID>();
+    }
+
+    /**
+     * @brief Enables all optional face components in the container.
+     */
+    void enableAllFaceOptionalComponents()
     {
         Base::enableAllOptionalComponents();
     }
 
     /**
-     * @brief Disables all the optional components associated to the Face type
-     * contained in the FaceContainer.
+     * @brief Disables all optional face components in the container.
      */
-    void disableAllPerFaceOptionalComponents()
+    void disableAllFaceOptionalComponents()
     {
         Base::disableAllOptionalComponents();
     }
 
-    // AdjacentEdges
+    /**
+     * @brief Enables all optional face components in the container.
+     * Alias for enableAllFaceOptionalComponents().
+     */
+    void enableAllFaceComponents() { Base::enableAllOptionalComponents(); }
 
     /**
-     * @brief Checks if the Face Optional AdjacentEdges is enabled.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalAdjacentEdges Component.
-     *
-     * @return true if the Optional AdjacentEdges is enabled, false otherwise.
+     * @brief Disables all optional face components in the container.
+     * Alias for disableAllFaceOptionalComponents().
      */
-    bool isPerFaceAdjacentEdgesEnabled() const
-        requires face::HasOptionalAdjacentEdges<T>
-    {
-        return Base::template isOptionalComponentEnabled<
-            typename T::AdjacentEdges>();
-    }
+    void disableAllFaceComponents() { Base::disableAllOptionalComponents(); }
 
-    /**
-     * @brief Enable the Optional AdjacentEdges of the Face.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalAdjacentEdges Component.
-     *
-     * @note If the Face is polygonal (dynamic size, N < 0), when enabled, the
-     * adjacent edges number will be the same of the vertex number for each face
-     * of the container. This is because, for Faces, Adjacent Edges number is
-     * tied to the number of vertices.
-     */
-    void enablePerFaceAdjacentEdges() requires face::HasOptionalAdjacentEdges<T>
-    {
-        Base::template enableOptionalComponent<typename T::AdjacentEdges>();
-    }
+    VCL_COMMON_CONTAINER_COMPONENT_METHODS(Face)
+    VCL_CONTAINER_COMPONENT_METHODS(Face, AdjacentEdges, ADJACENT_EDGES)
+    VCL_CONTAINER_COMPONENT_METHODS(Face, AdjacentFaces, ADJACENT_FACES)
+    VCL_CONTAINER_COMPONENT_METHODS(Face, MaterialIndex, MATERIAL_INDEX)
+    VCL_CONTAINER_COMPONENT_METHODS(Face, WedgeColors, WEDGE_COLORS)
+    VCL_CONTAINER_COMPONENT_METHODS(Face, WedgeNormals, WEDGE_NORMALS)
+    VCL_CONTAINER_COMPONENT_METHODS(Face, WedgeTexCoords, WEDGE_TEX_COORDS)
 
-    /**
-     * @brief Disables the Optional AdjacentEdges of the Face.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalAdjacentEdges Component.
-     */
-    void disablePerFaceAdjacentEdges()
-        requires face::HasOptionalAdjacentEdges<T>
-    {
-        Base::template disableOptionalComponent<typename T::AdjacentEdges>();
-    }
-
-    // AdjacentFaces
-
-    /**
-     * @brief Checks if the Face Optional AdjacentFaces is enabled.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalAdjacentFaces Component.
-     *
-     * @return true if the Optional AdjacentFaces is enabled, false otherwise.
-     */
-    bool isPerFaceAdjacentFacesEnabled() const
-        requires face::HasOptionalAdjacentFaces<T>
-    {
-        return Base::template isOptionalComponentEnabled<
-            typename T::AdjacentFaces>();
-    }
-
-    /**
-     * @brief Enable the Optional AdjacentFaces of the Face.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalAdjacentFaces Component.
-     *
-     * @note If the Face is polygonal (dynamic size, N < 0), when enabled, the
-     * adjacent faces number will be the same of the vertex number for each face
-     * of the container. This is because, for Faces, Adjacent Faces number is
-     * tied to the number of vertices.
-     */
-    void enablePerFaceAdjacentFaces() requires face::HasOptionalAdjacentFaces<T>
-    {
-        Base::template enableOptionalComponent<typename T::AdjacentFaces>();
-    }
-
-    /**
-     * @brief Disables the Optional AdjacentFaces of the Face.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalAdjacentFaces Component.
-     */
-    void disablePerFaceAdjacentFaces()
-        requires face::HasOptionalAdjacentFaces<T>
-    {
-        Base::template disableOptionalComponent<typename T::AdjacentFaces>();
-    }
-
-    // Color
-
-    /**
-     * @brief Checks if the Face Optional Color is enabled.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalColor Component.
-     *
-     * @return true if the Optional Color is enabled, false otherwise.
-     */
-    bool isPerFaceColorEnabled() const requires face::HasOptionalColor<T>
-    {
-        return Base::template isOptionalComponentEnabled<typename T::Color>();
-    }
-
-    /**
-     * @brief Enable the Optional Color of the Face.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalColor Component.
-     */
-    void enablePerFaceColor() requires face::HasOptionalColor<T>
-    {
-        Base::template enableOptionalComponent<typename T::Color>();
-    }
-
-    /**
-     * @brief Disables the Optional Color of the Face.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalColor Component.
-     */
-    void disablePerFaceColor() requires face::HasOptionalColor<T>
-    {
-        Base::template disableOptionalComponent<typename T::Color>();
-    }
-
-    // Mark
-
-    /**
-     * @brief Checks if the Face Optional Mark is enabled.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalMark Component.
-     *
-     * @return true if the Optional Mark is enabled, false otherwise.
-     */
-    bool isPerFaceMarkEnabled() const requires face::HasOptionalMark<T>
-    {
-        return Base::template isOptionalComponentEnabled<typename T::Mark>();
-    }
-
-    /**
-     * @brief Enable the Optional Mark of the Face.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalMark Component.
-     */
-    void enablePerFaceMark() requires face::HasOptionalMark<T>
-    {
-        Base::template enableOptionalComponent<typename T::Mark>();
-    }
-
-    /**
-     * @brief Disables the Optional Mark of the Face.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalMark Component.
-     */
-    void disablePerFaceMark() requires face::HasOptionalMark<T>
-    {
-        Base::template disableOptionalComponent<typename T::Mark>();
-    }
-
-    // MaterialIndex
-
-    /**
-     * @brief Checks if the Face Optional MaterialIndex is enabled.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalMaterialIndex Component.
-     *
-     * @return true if the Optional MaterialIndex is enabled, false otherwise.
-     */
-    bool isPerFaceMaterialIndexEnabled() const
-        requires face::HasOptionalMaterialIndex<T>
-    {
-        return Base::template isOptionalComponentEnabled<
-            typename T::MaterialIndex>();
-    }
-
-    /**
-     * @brief Enable the Optional MaterialIndex of the Face.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalMaterialIndex Component.
-     */
-    void enablePerFaceMaterialIndex() requires face::HasOptionalMaterialIndex<T>
-    {
-        Base::template enableOptionalComponent<typename T::MaterialIndex>();
-    }
-
-    /**
-     * @brief Disables the Optional MaterialIndex of the Face.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalMaterialIndex Component.
-     */
-    void disablePerFaceMaterialIndex()
-        requires face::HasOptionalMaterialIndex<T>
-    {
-        Base::template disableOptionalComponent<typename T::MaterialIndex>();
-    }
-
-    // Normal
-
-    /**
-     * @brief Checks if the Face Optional Normal is enabled.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalNormal Component.
-     *
-     * @return true if the Optional Normal is enabled, false otherwise.
-     */
-    bool isPerFaceNormalEnabled() const requires face::HasOptionalNormal<T>
-    {
-        return Base::template isOptionalComponentEnabled<typename T::Normal>();
-    }
-
-    /**
-     * @brief Enable the Optional Normal of the Face.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalNormal Component.
-     */
-    void enablePerFaceNormal() requires face::HasOptionalNormal<T>
-    {
-        Base::template enableOptionalComponent<typename T::Normal>();
-    }
-
-    /**
-     * @brief Disables the Optional Normal of the Face.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalNormal Component.
-     */
-    void disablePerFaceNormal() requires face::HasOptionalNormal<T>
-    {
-        Base::template disableOptionalComponent<typename T::Normal>();
-    }
-
-    // PrincipalCurvature
-
-    /**
-     * @brief Checks if the Face Optional PrincipalCurvature is enabled.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalPrincipalCurvature Component.
-     *
-     * @return true if the Optional PrincipalCurvature is enabled, false
-     * otherwise.
-     */
-    bool isPerFacePrincipalCurvatureEnabled() const
-        requires face::HasOptionalPrincipalCurvature<T>
-    {
-        return Base::template isOptionalComponentEnabled<
-            typename T::PrincipalCurvature>();
-    }
-
-    /**
-     * @brief Enable the Optional PrincipalCurvature of the Face.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalPrincipalCurvature Component.
-     */
-    void enablePerFacePrincipalCurvature()
-        requires face::HasOptionalPrincipalCurvature<T>
-    {
-        Base::template enableOptionalComponent<
-            typename T::PrincipalCurvature>();
-    }
-
-    /**
-     * @brief Disables the Optional PrincipalCurvature of the Face.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalPrincipalCurvature Component.
-     */
-    void disablePerFacePrincipalCurvature()
-        requires face::HasOptionalPrincipalCurvature<T>
-    {
-        Base::template disableOptionalComponent<
-            typename T::PrincipalCurvature>();
-    }
-
-    // Quality
-
-    /**
-     * @brief Checks if the Face Optional Quality is enabled.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalQuality Component.
-     *
-     * @return true if the Optional Quality is enabled, false otherwise.
-     */
-    bool isPerFaceQualityEnabled() const requires face::HasOptionalQuality<T>
-    {
-        return Base::template isOptionalComponentEnabled<typename T::Quality>();
-    }
-
-    /**
-     * @brief Enable the Optional Quality of the Face.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalQuality Component.
-     */
-    void enablePerFaceQuality() requires face::HasOptionalQuality<T>
-    {
-        Base::template enableOptionalComponent<typename T::Quality>();
-    }
-
-    /**
-     * @brief Disables the Optional Quality of the Face.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalQuality Component.
-     */
-    void disablePerFaceQuality() requires face::HasOptionalQuality<T>
-    {
-        Base::template disableOptionalComponent<typename T::Quality>();
-    }
-
-    // WedgeColors
-
-    /**
-     * @brief Checks if the Face Optional WedgeColors is enabled.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalWedgeColors Component.
-     *
-     * @return true if the Optional WedgeColors is enabled, false otherwise.
-     */
-    bool isPerFaceWedgeColorsEnabled() const
-        requires face::HasOptionalWedgeColors<T>
-    {
-        return Base::template isOptionalComponentEnabled<
-            typename T::WedgeColors>();
-    }
-
-    /**
-     * @brief Enable the Optional WedgeColors of the Face.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalWedgeColors Component.
-     *
-     * @note If the Face is polygonal (dynamic size, N < 0), when enabled, the
-     * wedge colors number will be the same of the vertex number for each face
-     * of the container. This is because, for Faces, Wedge Colors number is tied
-     * to the number of vertices.
-     */
-    void enablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>
-    {
-        Base::template enableOptionalComponent<typename T::WedgeColors>();
-    }
-
-    /**
-     * @brief Disables the Optional WedgeColors of the Face.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalWedgeColors Component.
-     */
-    void disablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>
-    {
-        Base::template disableOptionalComponent<typename T::WedgeColors>();
-    }
-
-    // WedgeTexCoords
-
-    /**
-     * @brief Checks if the Face Optional WedgeTexCoords is enabled.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalWedgeTexCoords Component.
-     *
-     * @return true if the Optional WedgeTexCoords is enabled, false otherwise.
-     */
-    bool isPerFaceWedgeTexCoordsEnabled() const
-        requires face::HasOptionalWedgeTexCoords<T>
-    {
-        return Base::template isOptionalComponentEnabled<
-            typename T::WedgeTexCoords>();
-    }
-
-    /**
-     * @brief Enable the Optional WedgeTexCoords of the Face.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalWedgeTexCoords Component.
-     *
-     * @note If the Face is polygonal (dynamic size, N < 0), when enabled, the
-     * wedge texcoord number will be the same of the vertex number for each face
-     * of the container. This is because, for Faces, Wedge TexCoords number is
-     * tied to the number of vertices.
-     */
-    void enablePerFaceWedgeTexCoords()
-        requires face::HasOptionalWedgeTexCoords<T>
-    {
-        Base::template enableOptionalComponent<typename T::WedgeTexCoords>();
-    }
-
-    /**
-     * @brief Disables the Optional WedgeTexCoords of the Face.
-     *
-     * @note This function is available only if the Face Element has the
-     * OptionalWedgeTexCoords Component.
-     */
-    void disablePerFaceWedgeTexCoords()
-        requires face::HasOptionalWedgeTexCoords<T>
-    {
-        Base::template disableOptionalComponent<typename T::WedgeTexCoords>();
-    }
-
-    // Custom Components
+    // --- Custom Components ---
 
     /**
      * @brief Checks if Faces have a custom component with the given name.
@@ -958,11 +534,12 @@ public:
      * @note This function is available only if the Face Element has the
      * CustomComponents Component.
      *
+     * @param[in] name: The name of the custom component to check.
      * @return `true` if the Face Element has a custom component with the given
      * name.
      */
-    bool hasPerFaceCustomComponent(const std::string& name) const
-        requires face::HasCustomComponents<T>
+    bool hasFaceCustomComponent(const std::string& name) const
+        requires face::HasCustomComponents<FaceComponents>
     {
         return Base::hasElemCustomComponent(name);
     }
@@ -977,8 +554,8 @@ public:
      * @return A vector of strings representing all the names of the custom
      * components.
      */
-    std::vector<std::string> perFaceCustomComponentNames() const
-        requires face::HasCustomComponents<T>
+    std::vector<std::string> faceCustomComponentNames() const
+        requires face::HasCustomComponents<FaceComponents>
     {
         return Base::elemCustomComponentNames();
     }
@@ -988,29 +565,19 @@ public:
      * given name has the same type of the given template argument type of this
      * function.
      *
-     * For example, the following code checks if the component called `cc` is of
-     * type `double`:
-     * @code{.cpp}
-     * if (m.isPerFaceCustomComponentOfType<double>("cc")) {
-     *   ...
-     * }
-     * @endcode
-     *
      * @note This function is available only if the Face Element has the
      * CustomComponents Component.
      *
-     * @tparam K: the type of the custom component to check.
-     *
-     * @param[in] name: the name of the custom component to check.
+     * @tparam K: The type of the custom component to check.
+     * @param[in] name: The name of the custom component to check.
      * @throws std::out_of_range if no custom component of the given name was
      * found.
-     *
      * @return `true` if the custom component is of the same type of the
      * template argument.
      */
     template<typename K>
-    bool isPerFaceCustomComponentOfType(const std::string& name) const
-        requires face::HasCustomComponents<T>
+    bool isFaceCustomComponentOfType(const std::string& name) const
+        requires face::HasCustomComponents<FaceComponents>
     {
         return Base::template isElemCustomComponentOfType<K>(name);
     }
@@ -1022,42 +589,34 @@ public:
      * @note This function is available only if the Face Element has the
      * CustomComponents Component.
      *
-     * @param[in] name: the name of the custom component to get the
+     * @param[in] name: The name of the custom component to get the
      * std::type_index from.
      * @throws std::out_of_range if no custom component of the given name was
      * found.
-     *
      * @return The std::type_index of the custom component having the given
      * input name.
      */
-    std::type_index perFaceCustomComponentType(const std::string& name) const
-        requires face::HasCustomComponents<T>
+    std::type_index faceCustomComponentType(const std::string& name) const
+        requires face::HasCustomComponents<FaceComponents>
     {
-        return Base::elemComponentType(name);
+        return Base::elemCustomComponentType(name);
     }
 
     /**
      * @brief Returns a vector containing all the names of the custom components
-     * associated to the Edge Element having the same type of the given template
-     * argument type of this function.
-     *
-     * For example, the following code gets a vector containing all the custom
-     * components of type `double`:
-     * @code{.cpp}
-     * std::vector<std::string> cdouble =
-     *     m.perFaceCustomComponentNamesOfType<double>();
-     * @endcode
+     * associated to the Face Element having the same type of the given
+     * template argument type of this function.
      *
      * @note This function is available only if the Face Element has the
      * CustomComponents Component.
      *
-     * @tparam K: the type of the custom component names.
+     * @tparam K: The type of the custom component names.
      * @return A vector of strings representing the names of the custom
      * components of a given type.
      */
     template<typename K>
-    std::vector<std::string> perFaceCustomComponentNamesOfType() const
-        requires face::HasCustomComponents<T>
+    std::vector<std::string> faceCustomComponentNamesOfType() const
+        requires face::HasCustomComponents<FaceComponents>
     {
         return Base::template elemCustomComponentNamesOfType<K>();
     }
@@ -1069,12 +628,12 @@ public:
      * @note This function is available only if the Face Element has the
      * CustomComponents Component.
      *
-     * @tparam K: the type of the custom component added to the Face.
-     * @param[in] name: the name of the custom component added to the Face.
+     * @tparam K: The type of the custom component added to the Face.
+     * @param[in] name: The name of the custom component added to the Face.
      */
     template<typename K>
-    void addPerFaceCustomComponent(const std::string& name)
-        requires face::HasCustomComponents<T>
+    void addFaceCustomComponent(const std::string& name)
+        requires face::HasCustomComponents<FaceComponents>
     {
         Base::template addElemCustomComponent<K>(name);
     }
@@ -1083,16 +642,16 @@ public:
      * @brief Deletes the custom component of the given name from the Face
      * Element.
      *
-     * The function does nothing if the custom component does not exists.
+     * The function does nothing if the custom component does not exist.
      *
      * @note This function is available only if the Face Element has the
      * CustomComponents Component.
      *
-     * @param[in] name: the name of the custom component that will be removed
+     * @param[in] name: The name of the custom component that will be removed
      * from the Face.
      */
-    void deletePerFaceCustomComponent(const std::string& name)
-        requires face::HasCustomComponents<T>
+    void deleteFaceCustomComponent(const std::string& name)
+        requires face::HasCustomComponents<FaceComponents>
     {
         Base::deleteElemCustomComponent(name);
     }
@@ -1101,46 +660,19 @@ public:
      * @brief Returns a vector handle to the custom component having the type K
      * and the given name.
      *
-     * The handle can be used like a normal std::vector, but does not have
-     * access to the modifiers member functions (resize, push_back...). The
-     * handle contains **references** to the custom component, therefore you can
-     * modify the custom component by modifying the element of the handle vector
-     * normally. Since the handle stores references, there are no copies
-     * performed when calling this function.
-     *
-     * For example, assuming that the mesh has a Face custom component named
-     * `cc` of type int:
-     *
-     * @code{.cpp}
-     * auto handle = m.getPerFaceCustomComponentVectorHandle<int>("cc");
-     * for (Face& e : m.faces() {
-     *    handle[m.index(e)] = 5; // e.customComponent<int>("cc") == 5
-     *    assert(e.customComponent<int>("cc") == 5);
-     * }
-     * @endcode
-     *
-     * Using handles allows to access more efficiently to custom components
-     * rather accessing from an element object. However, note that references
-     * are binded to the container of the mesh.
-     *
      * @note This function is available only if the Face Element has the
      * CustomComponents Component.
      *
-     * @note Since the handle contains references, any operation that changes
-     * the size of the container could be destructive and invalidate the
-     * references contained in the handle.
-     *
-     * @tparam K: the type of the custom component on which return the handle.
-     *
-     * @param[in] name: name of the custom component on which return the handle.
-     * @throws std::out_of_range if no custom component of the given name was
-     * found.
-     *
-     * @return a vector handle that allows to access to the custom component.
+     * @tparam K: The type of the custom component for which to return the
+     * handle.
+     * @param[in] name: Name of the custom component for which to return the
+     * handle.
+     * @return A vector handle that allows access to the custom component.
      */
     template<typename K>
-    CustomComponentVectorHandle<K> perFaceCustomComponentVectorHandle(
-        const std::string& name) requires face::HasCustomComponents<T>
+    CustomComponentVectorHandle<K> faceCustomComponentVectorHandle(
+        const std::string& name)
+        requires face::HasCustomComponents<FaceComponents>
     {
         return Base::template customComponentVectorHandle<K>(name);
     }
@@ -1149,146 +681,136 @@ public:
      * @brief Returns a const vector handle to the custom component having type
      * K and the given name.
      *
-     * The handle can be used like a normal std::vector, but does not have
-     * access to the modifiers member functions (resize, push_back...). The
-     * handle contains **const references** to the custom component, therefore
-     * you can access to the custom component by accessing the element of the
-     * handle vector normally. Since the handle stores references, there are no
-     * copies performed when calling this function.
-     *
-     * For example, assuming that the mesh has a Face custom component named
-     * `cc` of type int:
-     *
-     * @code{.cpp}
-     * // access to the const handle by making const the template parameter:
-     * auto handle = m.perFaceCustomComponentVectorHandle<const int>("cc");
-     * int sum = 0;
-     * for (const Face& e : m.faces() {
-     *    sum += handle[m.index(e)];
-     *    // handle[m.index(e)] = 5; // not allowed, because the handle is const
-     * }
-     * @endcode
-     *
-     * Using handles allows to access more efficiently to custom components
-     * rather accessing from an element object. However, note that references
-     * are binded to the container of the mesh.
-     *
      * @note This function is available only if the Face Element has the
      * CustomComponents Component.
      *
-     * @note Since the handle contains references, any operation that changes
-     * the size of the container could be destructive and invalidate the
-     * references contained in the handle.
-     *
-     * @tparam K: the type of the custom component on which return the handle.
-     * @param[in] name: name of the custom component on which return the handle.
-     *
-     * @return a const vector handle that allows to access to the custom
+     * @tparam K: The type of the custom component for which to return the
+     * handle.
+     * @param[in] name: Name of the custom component for which to return the
+     * handle.
+     * @return A const vector handle that allows access to the custom
      * component.
      */
     template<typename K>
-    ConstCustomComponentVectorHandle<K> perFaceCustomComponentVectorHandle(
-        const std::string& name) const requires face::HasCustomComponents<T>
+    ConstCustomComponentVectorHandle<K> faceCustomComponentVectorHandle(
+        const std::string& name) const
+        requires face::HasCustomComponents<FaceComponents>
     {
         return Base::template customComponentVectorHandle<K>(name);
     }
 
     /**
-     * @brief Serializes in the given output stream all the custom components of
-     * the Face Element of type K.
+     * @brief Serializes all per-face custom components of type K stored in
+     * this container to the given output stream.
      *
-     * @note This function is available only if the Face Element has the
-     * CustomComponents Component.
-     *
-     * @param[in] os: the output stream where the custom components will be
-     * serialized.
+     * @tparam K: The type of the custom components to serialize.
+     * @param os: The output stream to write to.
      */
     template<typename K>
-    void serializePerFaceCustomComponentsOfType(std::ostream& os) const
-        requires face::HasCustomComponents<T>
+    void serializeFaceCustomComponentsOfType(std::ostream& os) const
+        requires face::HasCustomComponents<FaceComponents>
     {
-        Base::template serializePerElementCustomComponentsOfType<K>(os);
+        Base::template serializeElemCustomComponentsOfType<K>(os);
     }
 
     /**
-     * @brief Deserializes in the given input stream all the custom components
-     * of the Face Element of type K.
+     * @brief Deserializes all per-face custom components of type K from the
+     * given input stream and stores them into this container.
      *
-     * @note This function is available only if the Face Element has the
-     * CustomComponents Component.
-     *
-     * @param[in] is: the input stream where the custom components will be
-     * deserialized.
+     * @tparam K: The type of the custom components to deserialize.
+     * @param is: The input stream to read from.
      */
     template<typename K>
-    void deserializePerFaceCustomComponentsOfType(std::istream& is)
-        requires face::HasCustomComponents<T>
+    void deserializeFaceCustomComponentsOfType(std::istream& is)
+        requires face::HasCustomComponents<FaceComponents>
     {
-        Base::template deserializePerElementCustomComponentsOfType<K>(is);
+        Base::template deserializeElemCustomComponentsOfType<K>(is);
     }
 
 protected:
     /**
-     * @brief This function manages the case where we try to import into a
-     * TriMesh a PolyMesh Faces have been already imported, but without vertex
-     * pointers and other components that depend on the number of vertices (e.g.
-     * wedges)
+     * @brief Imports all faces from the corresponding container of the
+     * other mesh into this container.
+     *
+     * If importing into a triangle mesh from a mesh with non-triangle faces
+     * (e.g. quad or polygonal), the faces are triangulated using ear-cutting.
+     *
+     * @param[in] m: The other mesh to import from.
      */
-    template<typename OthMesh>
-    void manageImportTriFromPoly(const OthMesh& m)
+    template<typename OtherMesh>
+    void importFrom(const OtherMesh& m)
     {
-        using ParentMesh  = Base::ParentMeshType;
-        using VertexType  = ParentMesh::VertexType;
-        using MVertexType = OthMesh::VertexType;
-        using MFaceType   = OthMesh::FaceType;
+        Base::importFrom(m);
+        manageImportTriFromPoly(m);
+    }
 
-        using VertexContainer = ParentMesh::VertexContainer;
+    /**
+     * @brief Manages conversion from polygonal or n-gon faces to triangles
+     * when importing into a triangle mesh.
+     *
+     * Non-triangular faces are triangulated using the ear-cutting algorithm.
+     * The first triangle occupies the original face index, and additional
+     * triangles are appended to the container.
+     */
+    template<typename OtherMesh>
+    void manageImportTriFromPoly(const OtherMesh& m)
+    {
+        if constexpr (OtherMesh::template hasContainerOf<ElemId::FACE>()) {
+            using OtherFace = OtherMesh::ConstFace;
 
-        // if this is not a triangle mesh nor a polygon mesh (meaning that we
-        // can't control the number of vertex pointers in this mesh), and this
-        // mesh does not have the same number of vertex pointers of the other,
-        // it means that we don't know how to convert these type of meshes (e.g.
-        // we don't know how to convert a polygon mesh into a quad mesh, or
-        // convert a quad mesh into a pentagonal mesh...)
-        static_assert(
-            !(FaceType::VERTEX_COUNT != 3 && FaceType::VERTEX_COUNT > 0 &&
-              FaceType::VERTEX_COUNT != MFaceType::VERTEX_COUNT),
-            "Cannot import from that type of Mesh. Don't know how to "
-            "convert faces.");
+            // if this is not a triangle mesh nor a polygon mesh (meaning that
+            // we can't control the number of vertex references in this mesh),
+            // and this mesh does not have the same number of vertex references
+            // of the other, it means that we don't know how to convert these
+            // type of meshes (e.g. we don't know how to convert a polygon mesh
+            // into a quad mesh, or convert a quad mesh into a pentagonal
+            // mesh...)
+            static_assert(
+                !(Face::VERTEX_COUNT != 3 && Face::VERTEX_COUNT > 0 &&
+                  Face::VERTEX_COUNT != OtherFace::VERTEX_COUNT),
+                "Cannot import from that type of Mesh. Don't know how to "
+                "convert faces.");
 
-        // we need to manage conversion from poly or faces with cardinality > 3
-        // (e.g. quads) to triangle meshes. In this case, we triangulate the
-        // polygon using the earcut algorithm.
-        if constexpr (
-            FaceType::VERTEX_COUNT == 3 &&
-            (MFaceType::VERTEX_COUNT > 3 || MFaceType::VERTEX_COUNT < 0)) {
-            VertexType*        base   = &Base::mParentMesh->vertex(0);
-            const MVertexType* mvbase = &m.vertex(0);
+            // we need to manage conversion from poly or faces with cardinality
+            // > 3 (e.g. quads) to triangle meshes. In this case, we triangulate
+            // the polygon using the earcut algorithm.
+            if constexpr (
+                Face::VERTEX_COUNT == 3 &&
+                (OtherFace::VERTEX_COUNT > 3 || OtherFace::VERTEX_COUNT < 0)) {
+                for (const auto& mf : m.faces()) {
+                    // if the current face has the same number of vertices of
+                    // this mf face (3), then the vertex indices have been
+                    // correctly imported from the component importFrom
+                    // function. The component importFrom function does
+                    // nothing when importing from a face with at least 4
+                    // vertices
+                    if (mf.vertexCount() != 3) {
+                        // triangulate mf; the first triangle of the
+                        // triangulation will be this->face(mf.index()); the
+                        // other triangles will be added at the end of the
+                        // container
 
-            for (const MFaceType& mf : m.faces()) {
-                // if the current face has the same number of vertices of this
-                // faces (3), then the vertex pointers have been correctly
-                // imported from the import pointers function. The import
-                // pointers function does nothing when importing from a face
-                // with at least 4 vertices
-                if (mf.vertexCount() != FaceType::VERTEX_COUNT) {
-                    // triangulate mf; the first triangle of the triangulation
-                    // will be this->face(m.index(mf)); the other triangles will
-                    // be added at the end of the container
-                    std::vector<uint> tris =
-                        earCut(mf.vertices() | views::positions);
-                    FaceType& f = face(m.index(mf));
-                    importTriPointersHelper(f, mf, base, mvbase, tris, 0);
+                        std::vector<uint> tris =
+                            vcl::earCut(mf.vertices() | vcl::views::positions);
 
-                    // number of other faces to add
-                    uint nf  = tris.size() / 3 - 1;
-                    uint fid = addFaces(nf);
+                        if (tris.size() >= 3) {
+                            Face f = face(mf.index());
+                            importTriCorners(f, mf, tris, 0);
 
-                    uint i = 3; // index that cycles into tris
-                    for (; fid < faceContainerSize(); ++fid) {
-                        FaceType& f = face(fid);
-                        importTriPointersHelper(f, mf, base, mvbase, tris, i);
-                        i += 3;
+                            // number of other faces to add
+                            uint  nf      = tris.size() / 3 - 1;
+                            Index baseFid = addFaces(nf);
+
+                            uint t = 3; // index that cycles into tris
+                            for (uint k = 0; k < nf; ++k, t += 3) {
+                                Face fk = face(baseFid + k);
+                                fk.importFrom(mf, false);
+                                importTriCorners(fk, mf, tris, t);
+                            }
+                        }
+                        else {
+                            this->deleteFace(mf.index());
+                        }
                     }
                 }
             }
@@ -1296,123 +818,72 @@ protected:
     }
 
 private:
-    void addFaceHelper(T& f) { /* base case: no need to add vertices */ }
-
-    template<typename... V>
-    void addFaceHelper(T& f, typename T::VertexType* v, V... args)
+    template<std::unsigned_integral OtherIndex>
+    static constexpr Index castIndex(OtherIndex idx) noexcept
     {
-        // position on which add the vertex
-        const std::size_t n = f.vertexCount() - sizeof...(args) - 1;
-        f.setVertex(n, v); // set the vertex
-        // set the remanining vertices, recursive variadics
-        addFaceHelper(f, args...);
+        if constexpr (std::same_as<Index, OtherIndex>) {
+            return idx;
+        }
+        else {
+            return idx == vcl::NULL_INDEX<OtherIndex> ? NULL_INDEX :
+                                                        static_cast<Index>(idx);
+        }
     }
 
-    template<typename... V>
-    void addFaceHelper(T& f, uint vid, V... args)
-    {
-        // position on which add the vertex
-        const std::size_t n = f.vertexCount() - sizeof...(args) - 1;
-        f.setVertex(n, vid); // set the vertex
-        // set the remanining vertices, recursive variadics
-        addFaceHelper(f, args...);
-    }
-
-    template<typename MFaceType, typename VertexType, typename MVertexType>
-    static void importTriPointersHelper(
-        FaceType&                f,
-        const MFaceType&         mf,
-        VertexType*              base,
-        const MVertexType*       mvbase,
+    template<typename OtherFace>
+    static void importTriCorners(
+        Face&                    f,
+        const OtherFace&         mf,
         const std::vector<uint>& tris,
         uint                     basetri)
     {
-        f.importFrom(mf); // import all the components from mf
-        for (uint i = basetri, j = 0; i < basetri + 3; i++, j++) {
-            f.setVertex(j, base + (mf.vertex(tris[i]) - mvbase));
+        for (uint j = 0; j < 3; ++j) {
+            f.setVertex(j, castIndex(mf.vertexIndex(tris[basetri + j])));
+        }
 
-            // wedge colors
-            if constexpr (
-                face::HasWedgeColors<FaceType> &&
-                face::HasWedgeColors<MFaceType>) {
-                if (comp::isWedgeColorsAvailableOn(f) &&
-                    comp::isWedgeColorsAvailableOn(mf)) {
-                    f.wedgeColor(j) = mf.wedgeColor(tris[i]);
+        // Wedge Colors
+        if constexpr (
+            comp::HasWedgeColors<Face> && comp::HasWedgeColors<OtherFace>) {
+            if (f.template isComponentAvailable<CompId::WEDGE_COLORS>() &&
+                mf.template isComponentAvailable<CompId::WEDGE_COLORS>()) {
+                for (uint j = 0; j < 3; ++j) {
+                    f.wedge(j).color() = mf.wedge(tris[basetri + j]).color();
                 }
             }
+        }
 
-            // wedge texcoords
-            if constexpr (
-                face::HasWedgeTexCoords<FaceType> &&
-                face::HasWedgeTexCoords<MFaceType>) {
-                if (comp::isWedgeTexCoordsAvailableOn(f) &&
-                    comp::isWedgeTexCoordsAvailableOn(mf)) {
-                    using ST = typename FaceType::WedgeTexCoordType::ScalarType;
-                    f.wedgeTexCoord(j) =
-                        mf.wedgeTexCoord(tris[i]).template cast<ST>();
+        // Wedge TexCoords
+        if constexpr (
+            comp::HasWedgeTexCoords<Face> &&
+            comp::HasWedgeTexCoords<OtherFace>) {
+            if (f.template isComponentAvailable<CompId::WEDGE_TEX_COORDS>() &&
+                mf.template isComponentAvailable<CompId::WEDGE_TEX_COORDS>()) {
+                using S = typename std::remove_cvref_t<
+                    decltype(f.wedge(0).texCoord())>::ScalarType;
+                for (uint j = 0; j < 3; ++j) {
+                    f.wedge(j).texCoord() = mf.wedge(tris[basetri + j])
+                                                .texCoord()
+                                                .template cast<S>();
+                }
+            }
+        }
+
+        // Wedge Normals
+        if constexpr (
+            comp::HasWedgeNormals<Face> && comp::HasWedgeNormals<OtherFace>) {
+            if (f.template isComponentAvailable<CompId::WEDGE_NORMALS>() &&
+                mf.template isComponentAvailable<CompId::WEDGE_NORMALS>()) {
+                using S = typename std::remove_cvref_t<
+                    decltype(f.wedge(0).normal())>::ScalarType;
+                for (uint j = 0; j < 3; ++j) {
+                    f.wedge(j).normal() =
+                        mf.wedge(tris[basetri + j]).normal().template cast<S>();
                 }
             }
         }
     }
 };
 
-/* Concepts */
-
-/**
- * @brief A concept that checks whether a class has (inherits from) an
- * FaceContainer class.
- *
- * The concept is satisfied when `T` is a class that instantiates or derives
- * from a FaceContainer class having any Face element type.
- *
- * @tparam T: The type to be tested for conformity to the HasFaceContainer.
- *
- * @ingroup containers
- * @ingroup containers_concepts
- */
-template<typename T>
-concept HasFaceContainer = std::derived_from< // same type or derived type
-    std::remove_cvref_t<T>,
-    FaceContainer<typename RemoveRef<T>::FaceType>>;
-
-} // namespace mesh
-
-/**
- * @brief HasFaces concepts is satisfied when at least one of its
- * template types is (or inherits from) a @ref vcl::mesh::FaceContainer. It can
- * be used both to check if a Mesh has faces, or if in a list of types there is
- * a FaceContainer.
- *
- * In the following example, a MyMesh type can be instantiated only if one of
- * its template Args is a FaceContainer:
- * @code{.cpp}
- * template <typename... Args> requires HasFaces<Args...>
- * class MyMesh {
- *     // ...
- * };
- *
- * // ...
- *
- * MyMesh<vcl::VertexContainer<MyVertex>> m1; // not ok
- * MyMesh<vcl::FaceContainer<MyFace>> m2; // ok
- * MyMesh<vcl::VertexContainer<MyVertex>, vcl::FaceContainer<MyFace>> m3; // ok
- * @endcode
- *
- * To check if a type has (inherits from) FaceContainer:
- * @code{.cpp}
- * if constexpr (vcl::HasFaces<MyMeshType>) {
- *     // ...
- * }
- * @endcode
- *
- * @note This concept does not check if a Mesh is a valid FaceMesh.
- * To do that, use the @ref vcl::FaceMeshConcept.
- *
- * @ingroup containers_concepts
- */
-template<typename... Args>
-concept HasFaces = (mesh::HasFaceContainer<Args> || ...);
-
-} // namespace vcl
+} // namespace vcl::mesh
 
 #endif // VCL_MESH_CONTAINERS_FACE_CONTAINER_H

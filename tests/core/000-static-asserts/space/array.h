@@ -8,9 +8,9 @@
 #ifndef ARRAY_H
 #define ARRAY_H
 
-#include <vclib/space.h>
+#include <vclib/space/core.h>
 
-void arrayStaticAsserts()
+inline void arrayStaticAsserts()
 {
     using namespace vcl;
 

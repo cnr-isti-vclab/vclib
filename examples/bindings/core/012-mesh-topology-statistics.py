@@ -32,8 +32,8 @@ def mesh_topology_statistics():
     range_mesh = vcl.TriMesh()
     vcl.load_mesh(range_mesh, f"{VCLIB_EXAMPLE_MESHES_PATH}/rangemap.ply")
 
-    range_mesh.enable_per_face_adjacent_faces()
-    vcl.update_per_face_adjacent_faces(range_mesh)
+    range_mesh.enable_face_adjacent_faces()
+    vcl.update_face_adjacent_faces(range_mesh)
 
     print(f"Range mesh: {range_mesh.vertex_count()} vertices, "
           f"{range_mesh.face_count()} faces")
@@ -57,8 +57,8 @@ def mesh_topology_statistics():
     mesh.set_name("Brain Mesh")
 
     # Enable adjacency information for topology checks
-    mesh.enable_per_face_adjacent_faces()
-    vcl.update_per_face_adjacent_faces(mesh)
+    mesh.enable_face_adjacent_faces()
+    vcl.update_face_adjacent_faces(mesh)
 
     # Check if mesh is water tight
     water_tight = vcl.is_water_tight(mesh)

@@ -31,24 +31,24 @@ inline MeshInfo plyFormatCapability()
 
     info.setMaterials();
 
-    info.setPerVertexPosition();
-    info.setPerVertexNormal();
-    info.setPerVertexColor();
-    info.setPerVertexQuality();
-    info.setPerVertexTexCoord();
-    info.setPerVertexMaterialIndex();
-    info.setPerVertexCustomComponents();
+    info.setVertexPosition();
+    info.setVertexNormal();
+    info.setVertexColor();
+    info.setVertexQuality();
+    info.setVertexTexCoord();
+    info.setVertexMaterialIndex();
+    info.setVertexCustomComponents();
 
-    info.setPerFaceVertexReferences();
-    info.setPerFaceColor();
-    info.setPerFaceNormal();
-    info.setPerFaceQuality();
-    info.setPerFaceWedgeTexCoords();
-    info.setPerFaceMaterialIndex();
-    info.setPerFaceCustomComponents();
+    info.setFaceVertexReferences();
+    info.setFaceColor();
+    info.setFaceNormal();
+    info.setFaceQuality();
+    info.setFaceWedgeTexCoords();
+    info.setFaceMaterialIndex();
+    info.setFaceCustomComponents();
 
-    info.setPerEdgeVertexReferences();
-    info.setPerEdgeColor();
+    info.setEdgeVertexReferences();
+    info.setEdgeColor();
 
     return info;
 }

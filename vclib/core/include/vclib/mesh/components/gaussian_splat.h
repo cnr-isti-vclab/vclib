@@ -8,8 +8,7 @@
 #ifndef VCL_MESH_COMPONENTS_GAUSSIAN_SPLAT_H
 #define VCL_MESH_COMPONENTS_GAUSSIAN_SPLAT_H
 
-#include "base/component.h"
-#include "base/predicates.h"
+#include "base/component_predicates.h"
 
 #include <vclib/space/core.h>
 
@@ -31,38 +30,30 @@ namespace vcl::comp {
  *
  * @tparam Scalar: The scalar type used for the coordinates and parameters of
  * the Gaussian Splat (e.g. float or double).
- * @tparam ParentElemType: This template argument must be `void` if the
- * component needs to be stored horizontally, or the type of the parent element
- * that will contain this component if the component needs to be stored
- * vertically.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
+ * @tparam OPT: If true, the component will be optional.
  *
  * @ingroup components
  */
-template<typename Scalar, typename ParentElemType = void, bool OPT = false>
+template<typename Scalar, bool OPT = false>
 class GaussianSplat :
         public Component<
-            GaussianSplat<Scalar, ParentElemType, OPT>,
             CompId::GAUSSIAN_SPLAT,
             vcl::GaussianSplat<Scalar>,
-            ParentElemType,
-            !std::is_same_v<ParentElemType, void>,
             OPT>
 {
-    using Base = Component<
-        GaussianSplat<Scalar, ParentElemType, OPT>,
-        CompId::GAUSSIAN_SPLAT,
-        vcl::GaussianSplat<Scalar>,
-        ParentElemType,
-        !std::is_same_v<ParentElemType, void>,
-        OPT>;
+    using Base =
+        Component<CompId::GAUSSIAN_SPLAT, vcl::GaussianSplat<Scalar>, OPT>;
 
 public:
     /**
      * @brief Exposes the type of the Gaussian Splat.
      */
     using GaussianSplatType = vcl::GaussianSplat<Scalar>;
+
+    /**
+     * @brief Exposes the scalar type used by the Gaussian Splat.
+     */
+    using ScalarType = Scalar;
 
     /* Constructors */
 
@@ -74,103 +65,61 @@ public:
     /* Member functions */
 
     /**
-     * @brief Returns a const reference of the Gaussian Splat of the element.
-     * @return a const reference of the Gaussian Splat of the element.
-     */
-    const GaussianSplatType& gaussianSplat() const { return Base::data(); }
-
-    /**
      * @brief Returns a reference of the Gaussian Splat of the element.
      * @return a reference of the Gaussian Splat of the element.
      */
-    GaussianSplatType& gaussianSplat() { return Base::data(); }
+    decltype(auto) gaussianSplat(this auto&& self)
+    {
+        return Base::compData(self);
+    }
 
 protected:
     // Component interface functions
-    template<typename Element>
-    void importFrom(const Element& e, bool = true);
-
-    void serialize(std::ostream& os) const
-    {
-        gaussianSplat().serialize(os);
-    }
-
-    void deserialize(std::istream& is)
-    {
-        gaussianSplat().deserialize(is);
-    }
+    template<typename OtherElement>
+    void importFrom(this auto&& self, const OtherElement& e, bool = true);
 };
 
 /* concepts */
 
 /**
- * @brief A concept that checks whether a type T (that should be an Element) has
- * the GaussianSplat component (inherits from it).
+ * @brief A concept that checks whether a type T (which can be a TypeWrapper of
+ * components, an ElementProxy, an ElementContainer, or a Mesh) has the
+ * GaussianSplat component (COMP_ID = CompId::GAUSSIAN_SPLAT).
  *
- * The concept is satisfied if T is a class that inherits from
- * vcl::comp::GaussianSplat, with any template arguments.
- *
- * Note that this concept does not discriminate between the Horizontal
- * GaussianSplat component and the vertical OptionalGaussianSplat component,
- * therefore it does not guarantee that a template Element type that satisfies
- * this concept provides the GaussianSplat component at runtime (it is
- * guaranteed only that the proper member functions are available at compile
- * time).
- *
- * @tparam T: The type to be tested for conformity to the HasGaussianSplat.
+ * @tparam T: The type to be tested for conformity to HasGaussianSplat.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasGaussianSplat =
-    TTB::IsDerivedFromSpecializationOfV<T, GaussianSplat>;
+concept HasGaussianSplat = HasComponent<CompId::GAUSSIAN_SPLAT, T>;
 
 /**
- * @brief A concept that checks whether a type T (that should be an Element) has
- * the GaussianSplat component (inherits from it), and that the component is
- * optional.
+ * @brief A concept that checks whether a type T has the GaussianSplat
+ * component and it is optional.
  *
- * @tparam T: The type to be tested for conformity to the
- * HasOptionalGaussianSplat.
+ * @tparam T: The type to be tested for conformity to HasOptionalGaussianSplat.
  *
  * @ingroup components_concepts
  */
 template<typename T>
 concept HasOptionalGaussianSplat =
     HasGaussianSplat<T> &&
-    IsOptionalComponent<typename RemoveRef<T>::GaussianSplat>;
+    HasOptionalComponent<CompId::GAUSSIAN_SPLAT, T>;
 
 /* importFrom function */
 
-template<typename Scalar, typename ParentElemType, bool OPT>
-template<typename Element>
-void GaussianSplat<Scalar, ParentElemType, OPT>::importFrom(
-    const Element& e,
+template<typename Scalar, bool OPT>
+template<typename OtherElement>
+void GaussianSplat<Scalar, OPT>::importFrom(
+    this auto&&         self,
+    const OtherElement& e,
     bool)
 {
-    if constexpr (HasGaussianSplat<Element>) {
-        if (isGaussianSplatAvailableOn(e)) {
-            gaussianSplat() = e.gaussianSplat().template cast<Scalar>();
+    if constexpr (HasGaussianSplat<OtherElement>) {
+        if (e.template isComponentAvailable<CompId::GAUSSIAN_SPLAT>()) {
+            self.gaussianSplat() = e.gaussianSplat().template cast<Scalar>();
         }
     }
-}
-
-/* Detector function to check if a class has GaussianSplat available */
-
-/**
- * @brief Checks if the given Element has GaussianSplat component available.
- *
- * This function returns `true` also if the component is horizontal and always
- * available in the element. The runtime check is performed only when the
- * component is optional.
- *
- * @param[in] element: The element to check.
- * @return `true` if the element has GaussianSplat component available, `false`
- * otherwise.
- */
-bool isGaussianSplatAvailableOn(const auto& element)
-{
-    return isComponentAvailableOn<CompId::GAUSSIAN_SPLAT>(element);
 }
 
 /* Specialization Aliases */
@@ -179,31 +128,23 @@ bool isGaussianSplatAvailableOn(const auto& element)
  * @brief The GaussianSplatf class is an alias of the GaussianSplat component
  * that uses float precision.
  *
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
+ * @tparam OPT: If true, the component will be optional.
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool OPT = false>
-using GaussianSplatf = GaussianSplat<float, ElementType, OPT>;
+template<bool OPT = false>
+using GaussianSplatf = GaussianSplat<float, OPT>;
 
 /**
  * @brief The GaussianSplatd class is an alias of the GaussianSplat component
  * that uses double precision.
  *
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
+ * @tparam OPT: If true, the component will be optional.
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool OPT = false>
-using GaussianSplatd = GaussianSplat<double, ElementType, OPT>;
+template<bool OPT = false>
+using GaussianSplatd = GaussianSplat<double, OPT>;
 
 } // namespace vcl::comp
 

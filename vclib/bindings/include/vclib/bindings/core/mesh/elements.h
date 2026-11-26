@@ -9,6 +9,7 @@
 #define VCL_BINDINGS_CORE_MESH_ELEMENTS_H
 
 #include "elements/edge.h"
+#include "elements/element.h"
 #include "elements/face.h"
 #include "elements/vertex.h"
 

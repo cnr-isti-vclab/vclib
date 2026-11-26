@@ -30,19 +30,19 @@ namespace vcl {
  *
  * @param[in/out] mesh: the mesh on which clear the per element adjacent faces.
  */
-template<uint ELEM_ID, FaceMeshConcept MeshType>
-void clearPerElementAdjacentFaces(MeshType& mesh)
+template<ElemId ELEM_ID, FaceMeshConcept MeshType>
+void clearElementAdjacentFaces(MeshType& mesh)
 {
-    requirePerElementComponent<ELEM_ID, CompId::ADJACENT_FACES>(mesh);
+    requireElementComponent<ELEM_ID, CompId::ADJACENT_FACES>(mesh);
 
-    using AdjacentFacesType = comp::ComponentTypeFromID<
+    using AdjacentFacesType = comp::ComponentTypeT<
         CompId::ADJACENT_FACES,
         typename MeshType::template ElementType<ELEM_ID>::Components>;
 
-    for (auto& e : mesh.template elements<ELEM_ID>()) {
+    for (auto e : mesh.template elements<ELEM_ID>()) {
         if constexpr (comp::IsTiedToVertexCount<AdjacentFacesType>) {
             for (uint i = 0; i < e.adjFaceCount(); ++i) {
-                e.setAdjFace(i, nullptr);
+                e.setAdjFace(i, MeshType::NULL_INDEX);
             }
         }
         else {
@@ -66,19 +66,19 @@ void clearPerElementAdjacentFaces(MeshType& mesh)
  *
  * @param[in/out] mesh: the mesh on which clear the per element adjacent edges.
  */
-template<uint ELEM_ID, EdgeMeshConcept MeshType>
-void clearPerElementAdjacentEdges(MeshType& mesh)
+template<ElemId ELEM_ID, EdgeMeshConcept MeshType>
+void clearElementAdjacentEdges(MeshType& mesh)
 {
-    requirePerElementComponent<ELEM_ID, CompId::ADJACENT_EDGES>(mesh);
+    requireElementComponent<ELEM_ID, CompId::ADJACENT_EDGES>(mesh);
 
-    using AdjacentEdgesType = comp::ComponentTypeFromID<
+    using AdjacentEdgesType = comp::ComponentTypeT<
         CompId::ADJACENT_EDGES,
         typename MeshType::template ElementType<ELEM_ID>::Components>;
 
-    for (auto& e : mesh.template elements<ELEM_ID>()) {
+    for (auto e : mesh.template elements<ELEM_ID>()) {
         if constexpr (comp::IsTiedToVertexCount<AdjacentEdgesType>) {
             for (uint i = 0; i < e.adjEdgeCount(); ++i) {
-                e.setAdjEdges(i, nullptr);
+                e.setAdjEdge(i, MeshType::NULL_INDEX);
             }
         }
         else {
@@ -99,12 +99,12 @@ void clearPerElementAdjacentEdges(MeshType& mesh)
  * @param[in/out] mesh: the mesh on which clear the per element adjacent
  * vertices.
  */
-template<uint ELEM_ID, MeshConcept MeshType>
-void clearPerElementAdjacentVertices(MeshType& mesh)
+template<ElemId ELEM_ID, MeshConcept MeshType>
+void clearElementAdjacentVertices(MeshType& mesh)
 {
-    requirePerElementComponent<ELEM_ID, CompId::ADJACENT_VERTICES>(mesh);
+    requireElementComponent<ELEM_ID, CompId::ADJACENT_VERTICES>(mesh);
 
-    for (auto& e : mesh.template elements<ELEM_ID>()) {
+    for (auto e : mesh.template elements<ELEM_ID>()) {
         e.clearAdjVertices();
     }
 }
@@ -121,9 +121,9 @@ void clearPerElementAdjacentVertices(MeshType& mesh)
  * @param[in/out] mesh: the mesh on which clear the per vertex adjacent faces.
  */
 template<FaceMeshConcept MeshType>
-void clearPerVertexAdjacentFaces(MeshType& mesh)
+void clearVertexAdjacentFaces(MeshType& mesh)
 {
-    clearPerElementAdjacentFaces<ElemId::VERTEX>(mesh);
+    clearElementAdjacentFaces<ElemId::VERTEX>(mesh);
 }
 
 /**
@@ -135,20 +135,17 @@ void clearPerVertexAdjacentFaces(MeshType& mesh)
  * @param[in/out] mesh:  the mesh on which update the per vertex adjacent faces.
  */
 template<FaceMeshConcept MeshType>
-void updatePerVertexAdjacentFaces(MeshType& mesh)
+void updateVertexAdjacentFaces(MeshType& mesh)
 {
-    clearPerVertexAdjacentFaces(mesh);
+    clearVertexAdjacentFaces(mesh);
 
-    using VertexType = MeshType::VertexType;
-    using FaceType   = MeshType::FaceType;
-
-    for (VertexType& v : mesh.vertices()) {
+    for (auto v : mesh.vertices()) {
         v.clearAdjFaces();
     }
 
-    for (FaceType& f : mesh.faces()) {
-        for (VertexType* v : f.vertices()) {
-            v->pushAdjFace(&f);
+    for (auto f : mesh.faces()) {
+        for (auto v : f.vertices()) {
+            v.pushAdjFace(f);
         }
     }
 }
@@ -166,9 +163,9 @@ void updatePerVertexAdjacentFaces(MeshType& mesh)
  * vertices.
  */
 template<MeshConcept MeshType>
-void clearPerVertexAdjacentVertices(MeshType& mesh)
+void clearVertexAdjacentVertices(MeshType& mesh)
 {
-    clearPerElementAdjacentVertices<ElemId::VERTEX>(mesh);
+    clearElementAdjacentVertices<ElemId::VERTEX>(mesh);
 }
 
 /**
@@ -183,13 +180,11 @@ void clearPerVertexAdjacentVertices(MeshType& mesh)
  * @param[in/out] mesh: the mesh on which update the per vertex adjacent faces.
  */
 template<MeshConcept MeshType>
-void updatePerVertexAdjacentVertices(
-    MeshType& mesh,
-    bool      includeOnlyFaces = false)
+void updateVertexAdjacentVertices(MeshType& mesh, bool includeOnlyFaces = false)
 {
-    clearPerVertexAdjacentVertices(mesh);
+    clearVertexAdjacentVertices(mesh);
 
-    using VertexType = MeshType::VertexType;
+    using IndexType = MeshType::IndexType;
 
     if constexpr (FaceMeshConcept<MeshType>) {
         // vector that contains edges sorted trough unordered vertex pointers
@@ -201,30 +196,28 @@ void updatePerVertexAdjacentVertices(
             fillAndSortMeshEdgeUtilVector(mesh);
 
         // store the last pair of vertices
-        VertexType* v1 = nullptr;
-        VertexType* v2 = nullptr;
+        IndexType v1 = MeshType::NULL_INDEX;
+        IndexType v2 = MeshType::NULL_INDEX;
         for (uint i = 0; i < vec.size(); ++i) {
             // if this pair is different from the last pair
             if (vec[i].v[0] != v1 || vec[i].v[1] != v2) {
                 // update last pair
                 v1 = vec[i].v[0];
                 v2 = vec[i].v[1];
-                v1->pushAdjVertex(v2); // set the pair as adjacent
-                v2->pushAdjVertex(v1);
+                mesh.vertex(v1).pushAdjVertex(v2); // set the pair as adjacent
+                mesh.vertex(v2).pushAdjVertex(v1);
             }
         }
     }
 
     if (!includeOnlyFaces) {
         if constexpr (EdgeMeshConcept<MeshType>) {
-            using EdgeType = MeshType::EdgeType;
-
-            for (EdgeType& e : mesh.edges()) {
+            for (auto e : mesh.edges()) {
                 // set the pair as adjacent only if not already present
-                if (!e.vertex(0)->containsAdjVertex(e.vertex(1)))
-                    e.vertex(0)->pushAdjVertex(e.vertex(1));
-                if (!e.vertex(1)->containsAdjVertex(e.vertex(0)))
-                    e.vertex(1)->pushAdjVertex(e.vertex(0));
+                if (!e.vertex(0).containsAdjVertex(e.vertex(1)))
+                    e.vertex(0).pushAdjVertex(e.vertex(1));
+                if (!e.vertex(1).containsAdjVertex(e.vertex(0)))
+                    e.vertex(1).pushAdjVertex(e.vertex(0));
             }
         }
     }
@@ -242,9 +235,9 @@ void updatePerVertexAdjacentVertices(
  * @param[in/out] mesh: the mesh on which clear the per vertex adjacent edges.
  */
 template<EdgeMeshConcept MeshType>
-void clearPerVertexAdjacentEdges(MeshType& mesh)
+void clearVertexAdjacentEdges(MeshType& mesh)
 {
-    clearPerElementAdjacentEdges<ElemId::VERTEX>(mesh);
+    clearElementAdjacentEdges<ElemId::VERTEX>(mesh);
 }
 
 /**
@@ -256,15 +249,13 @@ void clearPerVertexAdjacentEdges(MeshType& mesh)
  * @param[in/out] mesh:  the mesh on which update the per vertex adjacent edges.
  */
 template<EdgeMeshConcept MeshType>
-void updatePerVertexAdjacentEdges(MeshType& mesh)
+void updateVertexAdjacentEdges(MeshType& mesh)
 {
-    clearPerVertexAdjacentEdges(mesh);
+    clearVertexAdjacentEdges(mesh);
 
-    using EdgeType = MeshType::EdgeType;
-
-    for (EdgeType& e : mesh.edges()) {
-        e.vertex(0)->pushAdjEdge(&e);
-        e.vertex(1)->pushAdjEdge(&e);
+    for (auto e : mesh.edges()) {
+        e.vertex(0).pushAdjEdge(e);
+        e.vertex(1).pushAdjEdge(e);
     }
 }
 
@@ -281,9 +272,9 @@ void updatePerVertexAdjacentEdges(MeshType& mesh)
  * @param[in/out] mesh:  the mesh on which clear the per face adjacent faces.
  */
 template<FaceMeshConcept MeshType>
-void clearPerFaceAdjacentFaces(MeshType& mesh)
+void clearFaceAdjacentFaces(MeshType& mesh)
 {
-    clearPerElementAdjacentFaces<ElemId::FACE>(mesh);
+    clearElementAdjacentFaces<ElemId::FACE>(mesh);
 }
 
 /**
@@ -308,9 +299,9 @@ void clearPerFaceAdjacentFaces(MeshType& mesh)
  * The adjacencies will cycle like:
  *
  * @code{.cpp}
- * f0->adjFace(e0) == f1;
- * f1->adjFace(e1) == f2;
- * f2->adjFace(e2) == f0;
+ * f0.adjFace(e0) == f1;
+ * f1.adjFace(e1) == f2;
+ * f2.adjFace(e2) == f0;
  * @endcode
  *
  * or a similar permutation of the faces.
@@ -318,8 +309,8 @@ void clearPerFaceAdjacentFaces(MeshType& mesh)
  * In general, an edge is non-manifold if it is true the expression:
  *
  * @code{.cpp}
- * fj = fi->adjFace(ei);
- * fj->adjFace(ej) != fi; // if true, the edge is non-manifold
+ * fj = fi.adjFace(ei);
+ * fj.adjFace(ej) != fi; // if true, the edge is non-manifold
  * @endcode
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-face
@@ -328,9 +319,9 @@ void clearPerFaceAdjacentFaces(MeshType& mesh)
  * @param[in/out] mesh:  the mesh on which update the per face adjacent faces.
  */
 template<FaceMeshConcept MeshType>
-void updatePerFaceAdjacentFaces(MeshType& mesh)
+void updateFaceAdjacentFaces(MeshType& mesh)
 {
-    requirePerFaceAdjacentFaces(mesh);
+    requireFaceAdjacentFaces(mesh);
 
     // vector that contains edges sorted trough unordered vertex pointers
     // it contains clusters of "same" edges, but each one of them has its face
@@ -351,20 +342,19 @@ void updatePerFaceAdjacentFaces(MeshType& mesh)
             // make cyclic adj on the same edge)
             auto i = base;
             auto j = i + 1;
-            if (j != vec.end()) {
-                // case of cluster composed of one element. adj of i is nullptr
-                if (*i != *j) {
-                    i->f->setAdjFace(i->e, nullptr);
+            if (j == vec.end() || *i != *j) {
+                // case of cluster composed of one element. adj of i is
+                // NULL_INDEX
+                mesh.face(i->f).setAdjFace(i->e, MeshType::NULL_INDEX);
+            }
+            else { // at least two edges in the cluster
+                while (j != vec.end() && *i == *j) {
+                    mesh.face(i->f).setAdjFace(i->e, j->f);
+                    ++i;
+                    ++j;
                 }
-                else { // at least two edges in the cluster
-                    while (j != vec.end() && *i == *j) {
-                        i->f->setAdjFace(i->e, j->f);
-                        ++i;
-                        ++j;
-                    }
-                    // i now is the last element that was equal to first
-                    i->f->setAdjFace(i->e, first->f);
-                }
+                // i now is the last element that was equal to first
+                mesh.face(i->f).setAdjFace(i->e, first->f);
             }
 
             // j is the first different edge from first (or it is vec.end()!)
@@ -392,10 +382,9 @@ void updatePerFaceAdjacentFaces(MeshType& mesh)
  * @param[in/out] mesh:  the mesh on which clear the per face adjacent edges.
  */
 template<FaceMeshConcept MeshType>
-void clearPerFaceAdjacentEdges(MeshType& mesh)
-    requires EdgeMeshConcept<MeshType>
+void clearFaceAdjacentEdges(MeshType& mesh) requires EdgeMeshConcept<MeshType>
 {
-    clearPerElementAdjacentEdges<ElemId::FACE>(mesh);
+    clearElementAdjacentEdges<ElemId::FACE>(mesh);
 }
 
 /**
@@ -418,34 +407,32 @@ void clearPerFaceAdjacentEdges(MeshType& mesh)
  * @param[in/out] mesh: the mesh on which update the per face adjacent edges.
  */
 template<FaceMeshConcept MeshType>
-void updatePerFaceAdjacentEdges(MeshType& mesh)
-    requires EdgeMeshConcept<MeshType>
+void updateFaceAdjacentEdges(MeshType& mesh) requires EdgeMeshConcept<MeshType>
 {
-    using FaceType = MeshType::FaceType;
+    using FaceType = FaceType<MeshType>;
 
-    using AdjacentEdgesType = comp::ComponentTypeFromID<
-        CompId::ADJACENT_EDGES,
-        typename FaceType::Components>;
+    using AdjacentEdgesType = comp::
+        ComponentTypeT<CompId::ADJACENT_EDGES, typename FaceType::Components>;
 
-    clearPerFaceAdjacentEdges(mesh);
+    clearFaceAdjacentEdges(mesh);
 
     // vector that contains edges sorted trough unordered vertex pointers
     std::vector<MeshEdgeUtil<MeshType>> vec =
         fillAndSortMeshEdgeUtilVector(mesh);
 
-    for (auto& e : mesh.edges()) {
-        MeshEdgeUtil<MeshType> meu(e.vertex(0), e.vertex(1));
+    for (auto e : mesh.edges()) {
+        MeshEdgeUtil<MeshType> meu(e.vertexIndex(0), e.vertexIndex(1));
 
         // binary search for the edge in the sorted vector
         auto it = std::lower_bound(vec.begin(), vec.end(), meu);
 
         while (it != vec.end() && *it == meu) {
-            auto* f = it->f; // the face adjacent to the edge e
+            auto f = it->f; // the face adjacent to the edge e
             if constexpr (comp::IsTiedToVertexCount<AdjacentEdgesType>) {
-                f->setAdjEdges(it->e, &e);
+                mesh.face(f).setAdjEdge(it->e, e);
             }
             else {
-                f->pushAdjEdge(&e);
+                mesh.face(f).pushAdjEdge(e);
             }
             ++it;
         }
@@ -464,10 +451,9 @@ void updatePerFaceAdjacentEdges(MeshType& mesh)
  * @param[in/out] mesh: the mesh on which clear the per edge adjacent faces.
  */
 template<EdgeMeshConcept MeshType>
-void clearPerEdgeAdjacentFaces(MeshType& mesh)
-    requires FaceMeshConcept<MeshType>
+void clearEdgeAdjacentFaces(MeshType& mesh) requires FaceMeshConcept<MeshType>
 {
-    clearPerElementAdjacentFaces<ElemId::EDGE>(mesh);
+    clearElementAdjacentFaces<ElemId::EDGE>(mesh);
 }
 
 /**
@@ -482,23 +468,22 @@ void clearPerEdgeAdjacentFaces(MeshType& mesh)
  * @param[in/out] mesh: the mesh on which update the per edge adjacent faces.
  */
 template<EdgeMeshConcept MeshType>
-void updatePerEdgeAdjacentFaces(MeshType& mesh)
-    requires FaceMeshConcept<MeshType>
+void updateEdgeAdjacentFaces(MeshType& mesh) requires FaceMeshConcept<MeshType>
 {
-    clearPerEdgeAdjacentFaces(mesh);
+    clearEdgeAdjacentFaces(mesh);
 
     // vector that contains edges sorted trough unordered vertex pointers
     std::vector<MeshEdgeUtil<MeshType>> vec =
         fillAndSortMeshEdgeUtilVector(mesh);
 
-    for (auto& e : mesh.edges()) {
-        MeshEdgeUtil<MeshType> meu(e.vertex(0), e.vertex(1));
+    for (auto e : mesh.edges()) {
+        MeshEdgeUtil<MeshType> meu(e.vertexIndex(0), e.vertexIndex(1));
 
         // binary search for the edge in the sorted vector
         auto it = std::lower_bound(vec.begin(), vec.end(), meu);
 
         while (it != vec.end() && *it == meu) {
-            auto* f = it->f; // the face adjacent to the edge e
+            auto f = it->f; // the face adjacent to the edge e
             e.pushAdjFace(f);
             ++it;
         }
@@ -517,9 +502,9 @@ void updatePerEdgeAdjacentFaces(MeshType& mesh)
  * @param[in/out] mesh: the mesh on which clear the per edge adjacent edges.
  */
 template<EdgeMeshConcept MeshType>
-void clearPerEdgeAdjacentEdges(MeshType& mesh)
+void clearEdgeAdjacentEdges(MeshType& mesh)
 {
-    clearPerElementAdjacentEdges<ElemId::EDGE>(mesh);
+    clearElementAdjacentEdges<ElemId::EDGE>(mesh);
 }
 
 /**
@@ -530,26 +515,26 @@ void clearPerEdgeAdjacentEdges(MeshType& mesh)
  * @param[in/out] mesh: the mesh on which update the per edge adjacent faces.
  */
 template<EdgeMeshConcept MeshType>
-void updatePerEdgeAdjacentEdges(MeshType& mesh)
+void updateEdgeAdjacentEdges(MeshType& mesh)
 {
-    using EdgeType = MeshType::EdgeType;
+    using EdgeType = EdgeType<MeshType>;
 
     // for each vertex, save the edges incident in it
-    std::vector<std::list<EdgeType*>> edgeMap(mesh.vertexContainerSize());
+    std::vector<std::list<EdgeType>> edgeMap(mesh.vertexContainerSize());
 
-    clearPerEdgeAdjacentEdges(mesh);
+    clearEdgeAdjacentEdges(mesh);
 
-    for (EdgeType& e : mesh.edges()) {
-        edgeMap[e.vertex(0)->index()].push_back(&e);
-        edgeMap[e.vertex(1)->index()].push_back(&e);
+    for (EdgeType e : mesh.edges()) {
+        edgeMap[e.vertexIndex(0)].push_back(e);
+        edgeMap[e.vertexIndex(1)].push_back(e);
     }
 
-    for (const std::list<EdgeType*>& edges : edgeMap) {
+    for (std::list<EdgeType>& edges : edgeMap) {
         // all the edges in edges are adjacent to each other
         for (auto it1 = edges.begin(); it1 != edges.end(); ++it1) {
             for (auto it2 = std::next(it1); it2 != edges.end(); ++it2) {
-                (*it1)->pushAdjEdge(*it2);
-                (*it2)->pushAdjEdge(*it1);
+                it1->pushAdjEdge(it2->index());
+                it2->pushAdjEdge(it1->index());
             }
         }
     }

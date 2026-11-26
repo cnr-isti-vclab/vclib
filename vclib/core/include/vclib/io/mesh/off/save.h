@@ -32,11 +32,11 @@ void saveOff(
     if (!settings.info.isEmpty())
         meshInfo = settings.info.intersect(meshInfo);
 
-    if (meshInfo.hasPerVertexNormal())
+    if (meshInfo.hasVertexNormal())
         fp << "N";
-    if (meshInfo.hasPerVertexColor())
+    if (meshInfo.hasVertexColor())
         fp << "C";
-    if (meshInfo.hasPerVertexTexCoord())
+    if (meshInfo.hasVertexTexCoord())
         fp << "ST";
     fp << "OFF" << std::endl;
 
@@ -46,12 +46,10 @@ void saveOff(
     fp << "#" << std::endl;
     fp << "####" << std::endl;
 
-    uint vn = 0;
+    uint vn = m.vertexCount();
+    ;
     uint fn = 0;
     uint en = 0;
-    if constexpr (HasVertices<MeshType>) {
-        vn = m.vertexCount();
-    }
     if constexpr (HasFaces<MeshType>) {
         fn = m.faceCount();
     }
@@ -62,54 +60,49 @@ void saveOff(
     fp << std::endl; // remove last char (a space) and add a newline
 
     // vertices
-    if constexpr (HasVertices<MeshType>) {
-        using VertexType = MeshType::VertexType;
-        for (const VertexType& v : m.vertices()) {
-            io::writeDouble(fp, v.position().x(), false);
-            io::writeDouble(fp, v.position().y(), false);
-            io::writeDouble(fp, v.position().z(), false);
+    for (auto v : m.vertices()) {
+        io::writeDouble(fp, v.position().x(), false);
+        io::writeDouble(fp, v.position().y(), false);
+        io::writeDouble(fp, v.position().z(), false);
 
-            if constexpr (HasPerVertexColor<MeshType>) {
-                if (meshInfo.hasPerVertexColor()) {
-                    io::writeInt(fp, v.color().red(), false);
-                    io::writeInt(fp, v.color().green(), false);
-                    io::writeInt(fp, v.color().blue(), false);
-                    io::writeInt(fp, v.color().alpha(), false);
-                }
+        if constexpr (HasVertexColor<MeshType>) {
+            if (meshInfo.hasVertexColor()) {
+                io::writeInt(fp, v.color().red(), false);
+                io::writeInt(fp, v.color().green(), false);
+                io::writeInt(fp, v.color().blue(), false);
+                io::writeInt(fp, v.color().alpha(), false);
             }
-            if constexpr (HasPerVertexNormal<MeshType>) {
-                if (meshInfo.hasPerVertexNormal()) {
-                    io::writeDouble(fp, v.normal().x(), false);
-                    io::writeDouble(fp, v.normal().y(), false);
-                    io::writeDouble(fp, v.normal().z(), false);
-                }
-            }
-            if constexpr (HasPerVertexTexCoord<MeshType>) {
-                if (meshInfo.hasPerVertexTexCoord()) {
-                    io::writeDouble(fp, v.texCoord().u(), false);
-                    io::writeDouble(fp, v.texCoord().v(), false);
-                }
-            }
-
-            fp << std::endl;
         }
+        if constexpr (HasVertexNormal<MeshType>) {
+            if (meshInfo.hasVertexNormal()) {
+                io::writeDouble(fp, v.normal().x(), false);
+                io::writeDouble(fp, v.normal().y(), false);
+                io::writeDouble(fp, v.normal().z(), false);
+            }
+        }
+        if constexpr (HasVertexTexCoord<MeshType>) {
+            if (meshInfo.hasVertexTexCoord()) {
+                io::writeDouble(fp, v.texCoord().u(), false);
+                io::writeDouble(fp, v.texCoord().v(), false);
+            }
+        }
+
+        fp << std::endl;
     }
 
     // faces
     if constexpr (HasFaces<MeshType>) {
-        using VertexType = MeshType::VertexType;
-        using FaceType   = MeshType::FaceType;
-
+        using IndexType = MeshType::IndexType;
         // indices of vertices that do not consider deleted vertices
-        std::vector<uint> vIndices = m.vertexCompactIndices();
+        std::vector<IndexType> vIndices = m.vertexCompactIndices();
 
-        for (const FaceType& f : m.faces()) {
+        for (auto f : m.faces()) {
             io::writeInt(fp, f.vertexCount(), false);
-            for (const VertexType* v : f.vertices()) {
-                io::writeInt(fp, vIndices[m.index(v)], false);
+            for (auto vi : f.vertexIndices()) {
+                io::writeInt(fp, vIndices[vi], false);
             }
-            if constexpr (HasPerFaceColor<MeshType>) {
-                if (meshInfo.hasPerFaceColor()) {
+            if constexpr (HasFaceColor<MeshType>) {
+                if (meshInfo.hasFaceColor()) {
                     io::writeInt(fp, f.color().red(), false);
                     io::writeInt(fp, f.color().green(), false);
                     io::writeInt(fp, f.color().blue(), false);

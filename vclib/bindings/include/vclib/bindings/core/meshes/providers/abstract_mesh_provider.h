@@ -27,6 +27,27 @@ inline void initAbstractMeshProvider(pybind11::module& m)
     provider.def("face_count", &vcl::AbstractMeshProvider::faceCount);
     provider.def("edge_count", &vcl::AbstractMeshProvider::edgeCount);
 
+    provider.def(
+        "vertex_container_size",
+        &vcl::AbstractMeshProvider::vertexContainerSize);
+    provider.def(
+        "face_container_size", &vcl::AbstractMeshProvider::faceContainerSize);
+    provider.def(
+        "edge_container_size", &vcl::AbstractMeshProvider::edgeContainerSize);
+
+    provider.def(
+        "is_vertex_deleted", &vcl::AbstractMeshProvider::isVertexDeleted);
+    provider.def("is_face_deleted", &vcl::AbstractMeshProvider::isFaceDeleted);
+    provider.def("is_edge_deleted", &vcl::AbstractMeshProvider::isEdgeDeleted);
+
+    provider.def(
+        "has_vertex_normals", &vcl::AbstractMeshProvider::hasVertexNormals);
+    provider.def(
+        "has_face_normals", &vcl::AbstractMeshProvider::hasFaceNormals);
+    provider.def("vertex_normal", &vcl::AbstractMeshProvider::vertexNormal);
+    provider.def("face_normal", &vcl::AbstractMeshProvider::faceNormal);
+    provider.def("face_barycenter", &vcl::AbstractMeshProvider::faceBarycenter);
+
     provider.def("face_vertices", &vcl::AbstractMeshProvider::faceVertices);
     provider.def("edge_vertices", &vcl::AbstractMeshProvider::edgeVertices);
 

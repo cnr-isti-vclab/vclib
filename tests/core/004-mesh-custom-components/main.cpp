@@ -19,26 +19,26 @@ TEMPLATE_TEST_CASE(
     "",
     vcl::TriMesh,
     vcl::TriMeshf,
-    vcl::TriMeshIndexed,
-    vcl::TriMeshIndexedf)
+    vcl::TriMesh64,
+    vcl::TriMesh64f)
 {
     using TriMesh = TestType;
 
     TriMesh m;
     m.addVertices(10);
 
-    m.template addPerVertexCustomComponent<int>("flag");
+    m.template addVertexCustomComponent<int>("flag");
 
-    REQUIRE(m.hasPerVertexCustomComponent("flag"));
+    REQUIRE(m.hasVertexCustomComponent("flag"));
 
-    for (typename TriMesh::Vertex& v : m.vertices()) {
+    for (auto&& v : m.vertices()) {
         v.template customComponent<int>("flag") = -4;
     }
 
     REQUIRE(m.vertex(3).template customComponent<int>("flag") == -4);
 
     vcl::CustomComponentVectorHandle<int> v =
-        m.template perVertexCustomComponentVectorHandle<int>("flag");
+        m.template vertexCustomComponentVectorHandle<int>("flag");
 
     int tmp = 8;
     for (auto& m : v) {
@@ -54,7 +54,30 @@ TEMPLATE_TEST_CASE(
     REQUIRE(tmp == 8);
     REQUIRE(m.vertex(9).template customComponent<int>("flag") == 8);
 
-    m.deletePerVertexCustomComponent("flag");
+    // Test Iterator operator[] and random_access_iterator concept
+    static_assert(std::random_access_iterator<
+                  typename vcl::CustomComponentVectorHandle<int>::Iterator>);
+    static_assert(
+        std::random_access_iterator<
+            typename vcl::CustomComponentVectorHandle<int>::ConstIterator>);
+    auto it = v.begin();
+    REQUIRE(it[0] == 4);
+    REQUIRE(it[1] == 2);
 
-    REQUIRE(!m.hasPerVertexCustomComponent("flag"));
+    m.deleteVertexCustomComponent("flag");
+
+    REQUIRE(!m.hasVertexCustomComponent("flag"));
+
+    // Test replacement of a custom component with a different type
+    m.template addVertexCustomComponent<int>("val");
+    m.vertex(0).template customComponent<int>("val") = 42;
+    m.template addVertexCustomComponent<float>("val");
+    REQUIRE(m.template isVertexCustomComponentOfType<float>("val"));
+    REQUIRE(!m.template isVertexCustomComponentOfType<int>("val"));
+    REQUIRE(m.vertex(0).template customComponent<float>("val") == 0.0f);
+
+    // Test resize and const access
+    m.resizeVertices(20);
+    const TriMesh& constM = m;
+    REQUIRE(constM.vertex(15).template customComponent<float>("val") == 0.0f);
 }

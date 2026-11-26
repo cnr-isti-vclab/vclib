@@ -16,8 +16,10 @@ void materialsComponentStaticAsserts()
 
     class NoMaterialsMesh :
             public vcl::Mesh<
-                mesh::VertexContainer<trimesh::Vertex<double, false>>,
-                mesh::FaceContainer<trimesh::Face<double, false>>>
+                mesh::VertexContainer<
+                    trimesh::VertexComponents<float, uint>,
+                    uint>,
+                mesh::FaceContainer<trimesh::FaceComponents<float, uint>, uint>>
     {
     public:
         using ScalarType = double;
@@ -25,55 +27,55 @@ void materialsComponentStaticAsserts()
 
     // plain components
     static_assert(
-        comp::HasMaterials<mesh::Materials>,
+        HasMaterials<mesh::Materials>,
         "mesh::Materials does not satisfy the HasMaterials concept");
     static_assert(
-        comp::HasMaterials<const mesh::Materials>,
+        HasMaterials<const mesh::Materials>,
         "const mesh::Materials does not satisfy the HasMaterials "
         "concept");
     static_assert(
-        comp::HasMaterials<mesh::Materials&>,
+        HasMaterials<mesh::Materials&>,
         "mesh::Materials& does not satisfy the HasMaterials concept");
     static_assert(
-        comp::HasMaterials<const mesh::Materials&>,
+        HasMaterials<const mesh::Materials&>,
         "const mesh::Materials& does not satisfy the HasMaterials "
         "concept");
     static_assert(
-        comp::HasMaterials<mesh::Materials&&>,
+        HasMaterials<mesh::Materials&&>,
         "mesh::Materials&& does not satisfy the HasMaterials concept");
 
     // trimesh
     static_assert(
-        comp::HasMaterials<TriMesh>,
+        HasMaterials<TriMesh>,
         "TriMesh does not satisfy the HasMaterials concept");
     static_assert(
-        comp::HasMaterials<const TriMesh>,
+        HasMaterials<const TriMesh>,
         "const TriMesh does not satisfy the HasMaterials concept");
     static_assert(
-        comp::HasMaterials<TriMesh&>,
+        HasMaterials<TriMesh&>,
         "TriMesh& does not satisfy the HasMaterials concept");
     static_assert(
-        comp::HasMaterials<const TriMesh&>,
+        HasMaterials<const TriMesh&>,
         "const TriMesh& does not satisfy the HasMaterials concept");
     static_assert(
-        comp::HasMaterials<TriMesh&&>,
+        HasMaterials<TriMesh&&>,
         "TriMesh&& does not satisfy the HasMaterials concept");
 
     // no materials mesh
     static_assert(
-        !comp::HasMaterials<NoMaterialsMesh>,
+        !HasMaterials<NoMaterialsMesh>,
         "NoMaterialsMesh does satisfy the HasMaterials concept");
     static_assert(
-        !comp::HasMaterials<const NoMaterialsMesh>,
+        !HasMaterials<const NoMaterialsMesh>,
         "const NoMaterialsMesh does satisfy the HasMaterials concept");
     static_assert(
-        !comp::HasMaterials<NoMaterialsMesh&>,
+        !HasMaterials<NoMaterialsMesh&>,
         "NoMaterialsMesh& does satisfy the HasMaterials concept");
     static_assert(
-        !comp::HasMaterials<const NoMaterialsMesh&>,
+        !HasMaterials<const NoMaterialsMesh&>,
         "const NoMaterialsMesh& does satisfy the HasMaterials concept");
     static_assert(
-        !comp::HasMaterials<NoMaterialsMesh&&>,
+        !HasMaterials<NoMaterialsMesh&&>,
         "NoMaterialsMesh&& does satisfy the HasMaterials concept");
 }
 

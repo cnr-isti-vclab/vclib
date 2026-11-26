@@ -1,0 +1,96 @@
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
+
+#ifndef MESH_COMPONENTS_H
+#define MESH_COMPONENTS_H
+
+#include <vclib/meshes.h>
+
+inline void meshComponentsStaticAsserts()
+{
+    using namespace vcl;
+
+    static_assert(
+        HasBoundingBox<TriMesh>, "TriMesh does not satisfy the HasBoundingBox");
+    static_assert(
+        HasBoundingBox<const TriMesh>,
+        "const TriMesh does not satisfy the HasBoundingBox");
+    static_assert(
+        HasBoundingBox<TriMesh&>,
+        "TriMesh& does not satisfy the HasBoundingBox");
+    static_assert(
+        HasBoundingBox<const TriMesh&>,
+        "const TriMesh& does not satisfy the HasBoundingBox");
+    static_assert(
+        HasBoundingBox<TriMesh&&>,
+        "TriMesh&& does not satisfy the HasBoundingBox");
+
+    static_assert(HasColor<TriMesh>, "TriMesh does not satisfy the HasColor");
+    static_assert(
+        HasColor<const TriMesh>, "const TriMesh does not satisfy the HasColor");
+    static_assert(HasColor<TriMesh&>, "TriMesh& does not satisfy the HasColor");
+    static_assert(
+        HasColor<const TriMesh&>,
+        "const TriMesh& does not satisfy the HasColor");
+    static_assert(
+        HasColor<TriMesh&&>, "TriMesh&& does not satisfy the HasColor");
+
+    static_assert(
+        HasCustomComponents<TriMesh>,
+        "TriMesh does not satisfy the HasCustomComponents");
+    static_assert(
+        HasCustomComponents<const TriMesh>,
+        "const TriMesh does not satisfy the HasCustomComponents");
+    static_assert(
+        HasCustomComponents<TriMesh&>,
+        "TriMesh& does not satisfy the HasCustomComponents");
+    static_assert(
+        HasCustomComponents<const TriMesh&>,
+        "const TriMesh& does not satisfy the HasCustomComponents");
+    static_assert(
+        HasCustomComponents<TriMesh&&>,
+        "TriMesh&& does not satisfy the HasCustomComponents");
+
+    static_assert(
+        HasMaterials<TriMesh>, "TriMesh does not satisfy the HasMaterials");
+    static_assert(
+        HasMaterials<const TriMesh>,
+        "const TriMesh does not satisfy the HasMaterials");
+    static_assert(
+        HasMaterials<TriMesh&>, "TriMesh& does not satisfy the HasMaterials");
+    static_assert(
+        HasMaterials<const TriMesh&>,
+        "const TriMesh& does not satisfy the HasMaterials");
+    static_assert(
+        HasMaterials<TriMesh&&>, "TriMesh&& does not satisfy the HasMaterials");
+
+    static_assert(HasName<TriMesh>, "TriMesh does not satisfy the HasName");
+    static_assert(
+        HasName<const TriMesh>, "const TriMesh does not satisfy the HasName");
+    static_assert(HasName<TriMesh&>, "TriMesh& does not satisfy the HasName");
+    static_assert(
+        HasName<const TriMesh&>, "const TriMesh& does not satisfy the HasName");
+    static_assert(HasName<TriMesh&&>, "TriMesh&& does not satisfy the HasName");
+
+    static_assert(
+        HasTransformMatrix<TriMesh>,
+        "TriMesh does not satisfy the HasTransformMatrix");
+    static_assert(
+        HasTransformMatrix<const TriMesh>,
+        "const TriMesh does not satisfy the HasTransformMatrix");
+    static_assert(
+        HasTransformMatrix<TriMesh&>,
+        "TriMesh& does not satisfy the HasTransformMatrix");
+    static_assert(
+        HasTransformMatrix<const TriMesh&>,
+        "const TriMesh& does not satisfy the HasTransformMatrix");
+    static_assert(
+        HasTransformMatrix<TriMesh&&>,
+        "TriMesh&& does not satisfy the HasTransformMatrix");
+}
+
+#endif // MESH_COMPONENTS_H

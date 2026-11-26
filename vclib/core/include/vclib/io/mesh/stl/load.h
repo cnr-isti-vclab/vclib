@@ -91,13 +91,13 @@ void readStlBin(
 
     if (settings.enableOptionalComponents) {
         if (colored)
-            loadedInfo.setPerFaceColor();
+            loadedInfo.setFaceColor();
         enableOptionalComponentsFromInfo(loadedInfo, m);
     }
     else if (colored) {
-        if constexpr (HasPerFaceColor<MeshType>) {
-            if (isPerFaceColorAvailable(m))
-                loadedInfo.setPerFaceColor();
+        if constexpr (HasFaceColor<MeshType>) {
+            if (m.isFaceColorAvailable())
+                loadedInfo.setFaceColor();
         }
     }
 
@@ -133,10 +133,10 @@ void readStlBin(
             io::readShort<unsigned short>(fp, std::endian::little);
 
         if constexpr (HasFaces<MeshType>) {
-            using FaceType = MeshType::FaceType;
+            using FaceType = FaceType<MeshType>;
 
-            uint      fi = m.addFace();
-            FaceType& f  = m.face(fi);
+            uint     fi = m.addFace();
+            FaceType f  = m.face(fi);
             // we have a polygonal mesh
             if constexpr (FaceType::VERTEX_COUNT < 0) {
                 // need to resize the face to the right number of verts
@@ -144,14 +144,14 @@ void readStlBin(
             }
             for (uint j = 0; j < 3; ++j)
                 f.setVertex(j, vi + j);
-            if (HasPerFaceNormal<MeshType>) {
+            if constexpr (HasFaceNormal<MeshType>) {
                 using ST = FaceType::NormalType::ScalarType;
-                if (isPerFaceNormalAvailable(m)) {
+                if (m.isFaceNormalAvailable()) {
                     f.normal() = norm.cast<ST>();
                 }
             }
-            if (HasPerFaceColor<MeshType>) {
-                if (isPerFaceColorAvailable(m) && colored) {
+            if constexpr (HasFaceColor<MeshType>) {
+                if (m.isFaceColorAvailable() && colored) {
                     Color c;
                     if (magicsMode)
                         c.setBgr5(attr);
@@ -226,10 +226,10 @@ void readStlAscii(
                 readAndTokenizeNextNonEmptyLine(fp); // endfacet
 
                 if constexpr (HasFaces<MeshType>) {
-                    using FaceType = MeshType::FaceType;
+                    using FaceType = FaceType<MeshType>;
                     uint fi        = m.addFace();
 
-                    FaceType& f = m.face(fi);
+                    FaceType f = m.face(fi);
                     // we have a polygonal mesh
                     if constexpr (FaceType::VERTEX_COUNT < 0) {
                         // need to resize the face to the right number of verts
@@ -237,9 +237,9 @@ void readStlAscii(
                     }
                     for (uint j = 0; j < 3; ++j)
                         f.setVertex(j, vi + j);
-                    if (HasPerFaceNormal<MeshType>) {
+                    if constexpr (HasFaceNormal<MeshType>) {
                         using ST = FaceType::NormalType::ScalarType;
-                        if (isPerFaceNormalAvailable(m)) {
+                        if (m.isFaceNormalAvailable()) {
                             f.normal() = normal.cast<ST>();
                         }
                     }
@@ -302,12 +302,12 @@ void loadStl(
 {
     loadedInfo.clear();
     loadedInfo.setVertices();
-    loadedInfo.setPerVertexPosition();
+    loadedInfo.setVertexPosition();
 
     if constexpr (HasFaces<MeshType>) {
         loadedInfo.setFaces();
-        loadedInfo.setPerFaceVertexReferences();
-        loadedInfo.setPerFaceNormal();
+        loadedInfo.setFaceVertexReferences();
+        loadedInfo.setFaceNormal();
     }
 
     log.log(0, "Loading STL file");

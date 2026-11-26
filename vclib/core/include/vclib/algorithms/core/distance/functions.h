@@ -44,19 +44,6 @@ concept BoundedDistFunctionExists =
  * If the distance function for your types is not defined, you can write your
  * own vcl::distance overload that defines a proper distance function.
  *
- * @note The distFunction works only for non-pointer types, because generally
- * the overloads of vcl::distance do not take pointers as input. This means that
- * you cannot ask for the distance function between a vcl::Point3d and a
- * vcl::Vertex*. If you are working with template types that you don't know if
- * they are pointers or not, you can do the following:
- * @code{.cpp}
- * // don't know if T1 and T2 are pointers or non-pointers
- * auto f = distFunction<RemoveCVRefAndPointer<T1>,
- * RemoveCVRefAndPointer<T2>>();
- * // obj1 is of type T1, obj2 is of type T2 (may be pointers or non-pointers)
- * auto dist = f(dereferencePtr(obj1), dereferencePtr(obj2));
- * @endcode
- *
  * @ingroup core_distance
  */
 template<typename Obj1, typename Obj2>
@@ -89,20 +76,6 @@ auto distFunction()
  * If the distance function for your types is not defined, you can write your
  * own vcl::boundedDistance (or vcl::distance) overload that defines a proper
  * bounded distance function.
- *
- * @note The boundedDistFunction works only for non-pointer types, because
- * generally the overloads of vcl::distance and vcl::boundedDistance do not take
- * pointers as input. This means that you cannot ask for the distance function
- * between a vcl::Point3d and a vcl::Vertex*. If you are working with template
- * types that you don't know if they are pointers or not, you can do the
- * following:
- * @code{.cpp}
- * // don't know if T1 and T2 are pointers or non-pointers
- * auto f = boundedDistFunction<RemoveCVRefAndPointer<T1>,
- * RemoveCVRefAndPointer<T2>, double>();
- * // obj1 is of type T1, obj2 is of type T2 (may be pointers or non-pointers)
- * auto dist = f(dereferencePtr(obj1), dereferencePtr(obj2), maxDist);
- * @endcode
  *
  * @ingroup core_distance
  */

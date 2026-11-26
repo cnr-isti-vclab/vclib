@@ -25,9 +25,8 @@ namespace vcl {
 template<PolygonMeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType createDodecahedron(LogType& log = nullLogger)
 {
-    using VertexType   = MeshType::VertexType;
-    using PositionType = VertexType::PositionType;
-    using ScalarType   = PositionType::ScalarType;
+    using PositionType = PositionType<MeshType>;
+    using ScalarType   = ScalarType<MeshType>;
 
     MeshType mesh;
 
@@ -107,7 +106,7 @@ MeshType createDodecahedron(LogType& log = nullLogger)
     log.log(75, "Copying vertices into TriMesh...");
 
     MeshType mesh;
-    using ST = MeshType::VertexType::PositionType::ScalarType;
+    using ST = ScalarType<MeshType>;
     mesh.reserveVertices(pmesh.vertexCount());
     for (const auto& v : pmesh.vertices()) {
         mesh.addVertex(v.position().cast<ST>());
@@ -120,9 +119,9 @@ MeshType createDodecahedron(LogType& log = nullLogger)
         std::vector<uint> ind = earCut(f);
         for (uint i = 0; i < ind.size(); i += 3) {
             mesh.addFace(
-                pmesh.index(f.vertex(ind[i])),
-                pmesh.index(f.vertex(ind[i + 1])),
-                pmesh.index(f.vertex(ind[i + 2])));
+                f.vertexIndex(ind[i]),
+                f.vertexIndex(ind[i + 1]),
+                f.vertexIndex(ind[i + 2]));
         }
     }
 

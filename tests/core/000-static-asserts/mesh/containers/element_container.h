@@ -14,10 +14,9 @@ void elementContainerStaticAsserts()
 {
     using namespace vcl;
 
-    using VertexContainer =
-        mesh::VertexContainer<trimesh::Vertex<float, false>>;
-    using FaceContainer = mesh::FaceContainer<trimesh::Face<float, false>>;
-    using EdgeContainer = mesh::EdgeContainer<edgemesh::Edge<float, false>>;
+    using VertexContainer = mesh::VertexContainer<trimesh::VertexComponents<>>;
+    using FaceContainer   = mesh::FaceContainer<trimesh::FaceComponents<>>;
+    using EdgeContainer   = mesh::EdgeContainer<edgemesh::EdgeComponents<>>;
 
     static_assert(
         mesh::ElementContainerConcept<VertexContainer>,
@@ -35,8 +34,10 @@ void elementContainerStaticAsserts()
         mesh::ElementContainerConcept<VertexContainer&&>,
         "VertexContainer&& does not satisfy the ElementContainerConcept");
 
+    VertexContainer vc;
+
     static_assert(
-        std::random_access_iterator<VertexContainer::VertexIterator>,
+        std::random_access_iterator<decltype(vc.begin())>,
         "The VertexIterator of VertexContainer is not a random access "
         "iterator");
 

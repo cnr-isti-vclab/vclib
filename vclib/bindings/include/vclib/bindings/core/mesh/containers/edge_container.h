@@ -16,14 +16,21 @@
 
 namespace vcl::bind {
 
-template<MeshConcept MeshType, typename... Options>
+template<EdgeMeshConcept MeshType, typename... Options>
 void initEdgeContainer(pybind11::class_<MeshType, Options...>& ct)
 {
     namespace py = pybind11;
 
-    using EdgeType = MeshType::EdgeType;
+    using EdgeType = vcl::EdgeType<MeshType>;
 
     initContainer<EdgeType>(ct, "edge");
+
+    ct.def("add_edge", [](MeshType& t, const std::vector<uint>& e) {
+        return t.addEdge(e);
+    });
+    ct.def("add_edge", [](MeshType& t, uint v0, uint v1) {
+        return t.addEdge(v0, v1);
+    });
 }
 
 } // namespace vcl::bind

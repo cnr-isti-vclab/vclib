@@ -42,6 +42,7 @@ foreach(MODULE ${PYTHON_MODULES})
         CONFIGURE_DEPENDS
         "src/vclib/bindings/${MODULE}/*.cpp"
     )
+
     list(APPEND MODULE_HEADERS "include/vclib/bindings/utils.h")
     list(APPEND MODULE_SOURCES "src/vclib/bindings/${MODULE}.cpp")
 
@@ -95,3 +96,21 @@ install(
     DESTINATION
         ${CMAKE_INSTALL_LIBDIR}/python${VCLIB_PYTHON_VERSION}/site-packages/vclib
 )
+
+if(CMAKE_EXPORT_COMPILE_COMMANDS)
+    find_package(Python QUIET)
+    if(NOT Python_EXECUTABLE)
+        set(Python_EXECUTABLE python3)
+    endif()
+
+    add_custom_target(
+        vclib_bindings_enrich_compile_commands
+        ALL
+        COMMAND
+            ${Python_EXECUTABLE}
+            "${CMAKE_SOURCE_DIR}/cmake/enrich_compile_commands.py"
+            "${CMAKE_BINARY_DIR}" "${CMAKE_SOURCE_DIR}"
+        COMMENT
+            "Enriching compile_commands.json with bindings headers for clangd"
+    )
+endif()

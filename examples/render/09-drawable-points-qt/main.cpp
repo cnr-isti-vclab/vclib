@@ -31,7 +31,7 @@ std::shared_ptr<vcl::DrawablePoints> getDrawablePoints(vcl::uint nPoints)
         // load bunny and use its vertices as points
         auto m =
             vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
-        vcl::updatePerVertexAndFaceNormals(m);
+        vcl::updateVertexAndFaceNormals(m);
 
         nPoints = m.vertexCount();
 

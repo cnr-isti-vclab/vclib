@@ -26,24 +26,23 @@ struct LaplacianInfo
     ScalarType   cnt;
 };
 
-template<typename MeshType, typename PositionType>
+template<typename MeshType>
 void accumulateLaplacianInfo(
-    const MeshType&                           m,
-    std::vector<LaplacianInfo<PositionType>>& data,
-    bool                                      cotangentFlag = false)
+    const MeshType&                                     m,
+    std::vector<LaplacianInfo<PositionType<MeshType>>>& data,
+    bool                                                cotangentFlag = false)
 {
-    using ScalarType = PositionType::ScalarType;
-    using VertexType = MeshType::VertexType;
-    using FaceType   = MeshType::FaceType;
+    using PositionType = PositionType<MeshType>;
+    using ScalarType   = PositionType::ScalarType;
 
     ScalarType weight = 1.0f;
 
-    for (const FaceType& f : m.faces()) {
+    for (auto&& f : m.faces()) {
         for (uint j = 0; j < f.vertexCount(); ++j) {
             if (!f.edgeOnBorder(j)) {
-                const VertexType&   v0 = *f.vertex(j);
-                const VertexType&   v1 = *f.vertexMod(j + 1);
-                const VertexType&   v2 = *f.vertexMod(j + 2);
+                auto                v0 = f.vertex(j);
+                auto                v1 = f.vertexMod(j + 1);
+                auto                v2 = f.vertexMod(j + 2);
                 const PositionType& p0 = v0.position();
                 const PositionType& p1 = v1.position();
                 const PositionType& p2 = v2.position();
@@ -52,42 +51,37 @@ void accumulateLaplacianInfo(
                     weight           = std::tan((M_PI * 0.5) - angle);
                 }
 
-                data[m.index(v0)].sum +=
-                    f.vertexMod(j + 1)->position() * weight;
-                data[m.index(v1)].sum += f.vertex(j)->position() * weight;
-                data[m.index(v0)].cnt += weight;
-                data[m.index(v1)].cnt += weight;
+                data[v0.index()].sum += p1 * weight;
+                data[v1.index()].sum += p0 * weight;
+                data[v0.index()].cnt += weight;
+                data[v1.index()].cnt += weight;
             }
         }
     }
     // si azzaera i dati per i vertici di bordo
-    for (const FaceType& f : m.faces()) {
+    for (auto&& f : m.faces()) {
         for (uint j = 0; j < f.vertexCount(); ++j) {
             if (f.edgeOnBorder(j)) {
-                const VertexType&   v0 = *f.vertex(j);
-                const VertexType&   v1 = *f.vertexMod(j + 1);
-                const PositionType& p0 = v0.position();
-                const PositionType& p1 = v1.position();
-                data[m.index(v0)].sum  = p0;
-                data[m.index(v1)].sum  = p1;
-                data[m.index(v0)].cnt  = 1;
-                data[m.index(v1)].cnt  = 1;
+                auto v0              = f.vertex(j);
+                auto v1              = f.vertexMod(j + 1);
+                data[v0.index()].sum = v0.position();
+                data[v1.index()].sum = v1.position();
+                data[v0.index()].cnt = 1;
+                data[v1.index()].cnt = 1;
             }
         }
     }
 
     // se l'edge j e' di bordo si deve mediare solo con gli adiacenti
-    for (const FaceType& f : m.faces()) {
+    for (auto&& f : m.faces()) {
         for (uint j = 0; j < f.vertexCount(); ++j) {
             if (f.edgeOnBorder(j)) {
-                const VertexType&   v0 = *f.vertex(j);
-                const VertexType&   v1 = *f.vertexMod(j + 1);
-                const PositionType& p0 = v0.position();
-                const PositionType& p1 = v1.position();
-                data[m.index(v0)].sum += p1;
-                data[m.index(v1)].sum += p0;
-                ++data[m.index(v0)].cnt;
-                ++data[m.index(v1)].cnt;
+                auto v0 = f.vertex(j);
+                auto v1 = f.vertexMod(j + 1);
+                data[v0.index()].sum += v1.position();
+                data[v1.index()].sum += v0.position();
+                ++data[v0.index()].cnt;
+                ++data[v1.index()].cnt;
             }
         }
     }
@@ -116,8 +110,7 @@ void laplacianSmoothing(
     bool      smoothSelected  = false,
     bool      cotangentWeight = false /*, CallBackPos *cb*/)
 {
-    using VertexType   = MeshType::VertexType;
-    using PositionType = VertexType::PositionType;
+    using PositionType = PositionType<MeshType>;
 
     const detail::LaplacianInfo<PositionType> lpz = {PositionType(0, 0, 0), 0};
 
@@ -125,11 +118,11 @@ void laplacianSmoothing(
         std::vector<detail::LaplacianInfo<PositionType>> laplData(
             m.vertexContainerSize(), lpz);
         detail::accumulateLaplacianInfo(m, laplData, cotangentWeight);
-        for (VertexType& v : m.vertices()) {
-            if (laplData[m.index(v)].cnt > 0) {
+        for (auto v : m.vertices()) {
+            if (laplData[v.index()].cnt > 0) {
                 if (!smoothSelected || v.selected()) {
-                    v.position() = (v.position() + laplData[m.index(v)].sum) /
-                                   (laplData[m.index(v)].cnt + 1);
+                    v.position() = (v.position() + laplData[v.index()].sum) /
+                                   (laplData[v.index()].cnt + 1);
                 }
             }
         }
@@ -144,8 +137,7 @@ void taubinSmoothing(
     float     mu,
     bool      smoothSelected = false /*, CallBackPos *cb*/)
 {
-    using VertexType   = MeshType::VertexType;
-    using PositionType = VertexType::PositionType;
+    using PositionType = PositionType<MeshType>;
 
     const detail::LaplacianInfo<PositionType> lpz = {PositionType(0, 0, 0), 0};
 
@@ -153,11 +145,11 @@ void taubinSmoothing(
         std::vector<detail::LaplacianInfo<PositionType>> laplData(
             m.vertexContainerSize(), lpz);
         detail::accumulateLaplacianInfo(m, laplData);
-        for (VertexType& v : m.vertices()) {
-            if (laplData[m.index(v)].cnt > 0) {
+        for (auto v : m.vertices()) {
+            if (laplData[v.index()].cnt > 0) {
                 if (!smoothSelected || v.selected()) {
                     PositionType delta =
-                        laplData[m.index(v)].sum / laplData[m.index(v)].cnt -
+                        laplData[v.index()].sum / laplData[v.index()].cnt -
                         v.position();
                     v.position() = v.position() + delta * lambda;
                 }
@@ -165,11 +157,11 @@ void taubinSmoothing(
         }
         std::fill(laplData.begin(), laplData.end(), lpz);
         detail::accumulateLaplacianInfo(m, laplData);
-        for (VertexType& v : m.vertices()) {
-            if (laplData[m.index(v)].cnt > 0) {
+        for (auto v : m.vertices()) {
+            if (laplData[v.index()].cnt > 0) {
                 if (!smoothSelected || v.selected()) {
                     PositionType delta =
-                        laplData[m.index(v)].sum / laplData[m.index(v)].cnt -
+                        laplData[v.index()].sum / laplData[v.index()].cnt -
                         v.position();
                     v.position() = v.position() + delta * mu;
                 }
@@ -179,7 +171,7 @@ void taubinSmoothing(
 }
 
 /**
- * @brief smoothPerVertexNormalsPointCloud
+ * @brief smoothVertexNormalsPointCloud
  *
  * Requirements:
  * - Mesh:
@@ -192,44 +184,43 @@ void taubinSmoothing(
  * @param iterCount
  */
 template<MeshConcept MeshType, PointConcept PointType>
-void smoothPerVertexNormalsPointCloud(
+void smoothVertexNormalsPointCloud(
     MeshType&                m,
     const KDTree<PointType>& tree,
     uint                     neighborCount,
     uint                     iterCount)
 {
-    requirePerVertexNormal(m);
+    requireVertexNormal(m);
 
     using Scalar     = PointType::ScalarType;
-    using VertexType = MeshType::VertexType;
-    using NormalType = VertexType::NormalType;
+    using NormalType = VertexType<MeshType>::NormalType;
 
     std::vector<NormalType> TD(m.vertexContainerSize(), NormalType(0, 0, 0));
 
     for (uint ii = 0; ii < iterCount; ++ii) {
-        for (const VertexType& v : m.vertices()) {
+        for (const auto& v : m.vertices()) {
             std::vector<Scalar> distances;
 
-            std::vector<uint> neighbors = tree.kNearestNeighborsIndices(
+            std::vector<std::size_t> neighbors = tree.kNearestNeighborsIndices(
                 v.position(), neighborCount, distances);
 
-            for (uint nid : neighbors) {
+            for (auto nid : neighbors) {
                 if (m.vertex(nid).normal() * v.normal() > 0) {
-                    TD[m.index(v)] += m.vertex(nid).normal();
+                    TD[v.index()] += m.vertex(nid).normal();
                 }
                 else {
-                    TD[m.index(v)] -= m.vertex(nid).normal();
+                    TD[v.index()] -= m.vertex(nid).normal();
                 }
             }
         }
-        for (VertexType& v : m.vertices()) {
-            v.normal() = TD[m.index(v)];
+        for (auto v : m.vertices()) {
+            v.normal() = TD[v.index()];
         }
     }
 }
 
 /**
- * @brief smoothPerVertexNormalsPointCloud
+ * @brief smoothVertexNormalsPointCloud
  *
  * Requirements:
  * - Mesh:
@@ -241,14 +232,14 @@ void smoothPerVertexNormalsPointCloud(
  * @param iterCount
  */
 template<MeshConcept MeshType>
-void smoothPerVertexNormalsPointCloud(
+void smoothVertexNormalsPointCloud(
     MeshType& m,
     uint      neighborCount,
     uint      iterCount)
 {
-    using PointType = MeshType::VertexType::PositionType;
+    using PointType = PositionType<MeshType>;
     KDTree<PointType> tree(m);
-    smoothPerVertexNormalsPointCloud(m, tree, neighborCount, iterCount);
+    smoothVertexNormalsPointCloud(m, tree, neighborCount, iterCount);
 }
 
 } // namespace vcl

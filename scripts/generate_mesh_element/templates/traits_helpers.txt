@@ -1,0 +1,62 @@
+// ============================================================================
+// %EL_UC%TypeHelper
+// ============================================================================
+
+template<typename T>
+struct %EL_UC%TypeHelper
+{
+};
+
+// 1. %EL_UC%MeshConcept
+template<%EL_UC%MeshConcept M>
+struct %EL_UC%TypeHelper<M>
+{
+    using type = typename M::%EL_UC%;
+};
+
+// 2. %EL_UC%ContainerConcept
+template<mesh::%EL_UC%ContainerConcept C>
+struct %EL_UC%TypeHelper<C>
+{
+    using type = typename C::ElementType;
+};
+
+// 3. %EL_UC%Concept
+template<%EL_UC%Concept E>
+struct %EL_UC%TypeHelper<E>
+{
+    using type = E;
+};
+
+// ============================================================================
+// Const%EL_UC%TypeHelper
+// ============================================================================
+
+template<typename T>
+struct Const%EL_UC%TypeHelper
+{
+};
+
+// 1. %EL_UC%MeshConcept
+template<%EL_UC%MeshConcept M>
+struct Const%EL_UC%TypeHelper<M>
+{
+    using type = typename M::Const%EL_UC%;
+};
+
+// 2. %EL_UC%ContainerConcept
+template<mesh::%EL_UC%ContainerConcept C>
+struct Const%EL_UC%TypeHelper<C>
+{
+    using type = typename C::ConstElementType;
+};
+
+// 3. %EL_UC%Concept
+template<%EL_UC%Concept E>
+struct Const%EL_UC%TypeHelper<E>
+{
+    using Container =
+        std::remove_cvref_t<decltype(std::declval<E&>().parentContainer())>;
+    using type = typename Container::ConstElementType;
+};
+

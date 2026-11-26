@@ -10,7 +10,7 @@
 
 #include <vclib/space/core.h>
 
-void cameraStaticAsserts()
+inline void cameraStaticAsserts()
 {
     using namespace vcl;
 

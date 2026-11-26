@@ -17,7 +17,7 @@
 // 2. Add custom components to the mesh itself
 // 3. Use custom components for algorithm development and data storage
 
-auto meshCustomComponents()
+inline auto meshCustomComponents()
 {
     std::cout << "=== VCLib Example 009: Mesh Custom Components ===\n\n";
 
@@ -43,15 +43,15 @@ auto meshCustomComponents()
     std::cout << "---------------------------------\n";
 
     // Add custom integer component for vertex processing flags
-    mesh.addPerVertexCustomComponent<int>("processingFlag");
-    std::cout << "Added per-vertex custom component 'processingFlag'\n";
+    mesh.addVertexCustomComponent<int>("processingFlag");
+    std::cout << "Added vertex custom component 'processingFlag'\n";
 
     // Check if component exists
     std::cout << "Has processingFlag component: "
-              << mesh.hasPerVertexCustomComponent("processingFlag") << "\n";
+              << mesh.hasVertexCustomComponent("processingFlag") << "\n";
 
     // Set values for processing flags
-    for (auto& vertex : mesh.vertices()) {
+    for (auto vertex : mesh.vertices()) {
         // Mark boundary vertices differently (simplified check)
         bool isBoundary =
             (vertex.index() % 10 == 0); // Simplified boundary detection
@@ -62,7 +62,7 @@ auto meshCustomComponents()
 
     // another way to access custom components, is to use the handle
     auto vertexFlagHandle =
-        mesh.perVertexCustomComponentVectorHandle<int>("processingFlag");
+        mesh.vertexCustomComponentVectorHandle<int>("processingFlag");
 
     int boundaryCount = 0;
     for (const auto& f : vertexFlagHandle) {
@@ -74,29 +74,29 @@ auto meshCustomComponents()
               << " vertices as boundary candidates\n";
 
     // Add custom Point3f component for storing original positions
-    mesh.addPerVertexCustomComponent<vcl::Point3f>("originalPosition");
-    std::cout << "Added per-vertex custom component 'originalPosition'\n";
+    mesh.addVertexCustomComponent<vcl::Point3f>("originalPosition");
+    std::cout << "Added vertex custom component 'originalPosition'\n";
 
     // Store original positions before any transformation
-    for (auto& vertex : mesh.vertices()) {
+    for (auto vertex : mesh.vertices()) {
         vertex.customComponent<vcl::Point3f>("originalPosition") =
             vertex.position().cast<float>();
     }
 
     // Add custom double component for vertex quality/error metrics
-    mesh.addPerVertexCustomComponent<double>("quality");
-    std::cout << "Added per-vertex custom component 'quality'\n";
+    mesh.addVertexCustomComponent<double>("quality");
+    std::cout << "Added vertex custom component 'quality'\n";
 
     // Calculate a simple quality metric (distance from centroid)
     auto centroid = vcl::barycenter(mesh);
-    for (auto& vertex : mesh.vertices()) {
+    for (auto vertex : mesh.vertices()) {
         double distFromCenter = (vertex.position() - centroid).norm();
         vertex.customComponent<double>("quality") = distFromCenter;
     }
 
     // Find min/max quality values
     auto qualityHandle =
-        mesh.perVertexCustomComponentVectorHandle<double>("quality");
+        mesh.vertexCustomComponentVectorHandle<double>("quality");
     auto minMaxQuality =
         std::minmax_element(qualityHandle.begin(), qualityHandle.end());
     std::cout << "Quality range: [" << *minMaxQuality.first << ", "
@@ -110,26 +110,25 @@ auto meshCustomComponents()
     std::cout << "------------------------------\n";
 
     // Add custom component for face areas
-    mesh.addPerFaceCustomComponent<double>("area");
-    std::cout << "Added per-face custom component 'area'\n";
+    mesh.addFaceCustomComponent<double>("area");
+    std::cout << "Added face custom component 'area'\n";
 
     // Calculate and store face areas
-    for (auto& face : mesh.faces()) {
+    for (auto face : mesh.faces()) {
         face.customComponent<double>("area") = vcl::faceArea(face);
     }
 
     // Add custom component for face material IDs
-    mesh.addPerFaceCustomComponent<int>("materialID");
-    std::cout << "Added per-face custom component 'materialID'\n";
+    mesh.addFaceCustomComponent<int>("materialID");
+    std::cout << "Added face custom component 'materialID'\n";
 
     // Assign material IDs based on face area
-    auto faceAreaHandle =
-        mesh.perFaceCustomComponentVectorHandle<double>("area");
+    auto faceAreaHandle = mesh.faceCustomComponentVectorHandle<double>("area");
     double totalArea =
         std::accumulate(faceAreaHandle.begin(), faceAreaHandle.end(), 0.0);
     double avgArea = totalArea / mesh.faceCount();
 
-    for (auto& face : mesh.faces()) {
+    for (auto face : mesh.faces()) {
         double area       = face.customComponent<double>("area");
         int    materialID = (area > avgArea) ?
                                 1 :
@@ -137,7 +136,7 @@ auto meshCustomComponents()
         face.customComponent<int>("materialID") = materialID;
     }
 
-    // Count faces per material
+    // Count material assignments
     int material0Count = 0, material1Count = 0;
     for (const auto& face : mesh.faces()) {
         if (face.customComponent<int>("materialID") == 0) {
@@ -151,11 +150,11 @@ auto meshCustomComponents()
               << material1Count << " large faces\n";
 
     // Add custom string component for face labels
-    mesh.addPerFaceCustomComponent<std::string>("label");
-    std::cout << "Added per-face custom component 'label'\n";
+    mesh.addFaceCustomComponent<std::string>("label");
+    std::cout << "Added face custom component 'label'\n";
 
     // Assign descriptive labels
-    for (auto& face : mesh.faces()) {
+    for (auto face : mesh.faces()) {
         int materialID = face.customComponent<int>("materialID");
 
         std::string label = (materialID == 1) ? "large_face" : "small_face";
@@ -221,7 +220,7 @@ auto meshCustomComponents()
     std::cout << "Applying selective smoothing based on processing flags...\n";
 
     // Store positions before smoothing
-    for (auto& vertex : mesh.vertices()) {
+    for (auto vertex : mesh.vertices()) {
         vertex.customComponent<vcl::Point3f>("originalPosition") =
             vertex.position().cast<float>();
     }
@@ -235,8 +234,8 @@ auto meshCustomComponents()
     }
 
     // Apply smoothing only to flagged vertices
-    mesh.enablePerVertexAdjacentVertices();
-    vcl::updatePerVertexAdjacentVertices(mesh);
+    mesh.enableVertexAdjacentVertices();
+    vcl::updateVertexAdjacentVertices(mesh);
 
     for (const auto& vertex : mesh.vertices()) {
         if (vertex.customComponent<int>("processingFlag") == 1) {
@@ -244,8 +243,8 @@ auto meshCustomComponents()
             vcl::Point3d avgPos(0, 0, 0);
             int          adjCount = 0;
 
-            for (const auto* adjVertex : vertex.adjVertices()) {
-                avgPos += adjVertex->position();
+            for (auto adjVertex : vertex.adjVertices()) {
+                avgPos += adjVertex.position();
                 adjCount++;
             }
 
@@ -259,7 +258,7 @@ auto meshCustomComponents()
     }
 
     // Apply new positions
-    for (auto& vertex : mesh.vertices()) {
+    for (auto vertex : mesh.vertices()) {
         vertex.position() = newPositions[vertex.index()];
     }
 
@@ -311,19 +310,19 @@ auto meshCustomComponents()
     // Type checking
     std::cout << "\nType checking examples:\n";
     std::cout << "  processingFlag is int: "
-              << mesh.isPerVertexCustomComponentOfType<int>("processingFlag")
+              << mesh.isVertexCustomComponentOfType<int>("processingFlag")
               << "\n";
     std::cout << "  processingFlag is double: "
-              << mesh.isPerVertexCustomComponentOfType<double>("processingFlag")
+              << mesh.isVertexCustomComponentOfType<double>("processingFlag")
               << "\n";
     std::cout << "  area is double: "
-              << mesh.isPerFaceCustomComponentOfType<double>("area") << "\n";
+              << mesh.isFaceCustomComponentOfType<double>("area") << "\n";
 
     // Remove a component (cleanup example)
-    mesh.deletePerVertexCustomComponent("processingFlag");
+    mesh.deleteVertexCustomComponent("processingFlag");
     std::cout << "\nRemoved processingFlag component\n";
     std::cout << "Has processingFlag component: "
-              << mesh.hasPerVertexCustomComponent("processingFlag") << "\n";
+              << mesh.hasVertexCustomComponent("processingFlag") << "\n";
 
     // ========================================
     // SUMMARY
@@ -334,15 +333,13 @@ auto meshCustomComponents()
 
     std::cout << "1. VERTEX CUSTOM COMPONENTS:\n";
     std::cout
-        << "   - addPerVertexCustomComponent<T>(name): add typed component\n";
-    std::cout
-        << "   - vertex.customComponent<T>(name): access component data\n";
-    std::cout
-        << "   - perVertexCustomComponentVectorHandle<T>(): bulk access\n\n";
+        << "   - addVertexCustomComponent<T>(name): add typed component\n";
+    std::cout << "   - vertex.customComponent<T>(name): access vertex "
+                 "component data\n";
+    std::cout << "   - vertexCustomComponentVectorHandle<T>(): bulk access\n\n";
 
     std::cout << "2. FACE CUSTOM COMPONENTS:\n";
-    std::cout
-        << "   - addPerFaceCustomComponent<T>(name): add typed component\n";
+    std::cout << "   - addFaceCustomComponent<T>(name): add typed component\n";
     std::cout << "   - face.customComponent<T>(name): access component data\n";
     std::cout
         << "   - Support for various types: int, double, string, Point3d\n\n";
@@ -353,11 +350,9 @@ auto meshCustomComponents()
     std::cout << "   - Store global properties and statistics\n\n";
 
     std::cout << "4. COMPONENT MANAGEMENT:\n";
-    std::cout << "   - hasPerVertexCustomComponent(name): check existence\n";
-    std::cout
-        << "   - isPerVertexCustomComponentOfType<T>(name): type checking\n";
-    std::cout
-        << "   - deletePerVertexCustomComponent(name): remove component\n\n";
+    std::cout << "   - hasVertexCustomComponent(name): check existence\n";
+    std::cout << "   - isVertexCustomComponentOfType<T>(name): type checking\n";
+    std::cout << "   - deleteVertexCustomComponent(name): remove component\n\n";
 
     std::cout << "Custom components are essential for:\n";
     std::cout << "- Algorithm development and intermediate data storage\n";
