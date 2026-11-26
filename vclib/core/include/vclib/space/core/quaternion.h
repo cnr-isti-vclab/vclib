@@ -137,7 +137,7 @@ public:
     {
         std::size_t h = 0;
         for (size_t i = 0; i < 4; ++i)
-            hashCombine(h, Base::operator()(i));
+            hashCombine(h, Base::coeffs()(i));
         return h;
     }
 
