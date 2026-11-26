@@ -105,6 +105,20 @@ def mesh_matrix_conversion():
     print(f"- Vertices: {poly_vertices.shape[0]}x{poly_vertices.shape[1]}")
     print(f"- Faces: {poly_faces.shape[0]}x{poly_faces.shape[1]}")
 
+    tri_poly_faces, tri_poly_index_map = (
+        vcl.triangulated_face_vertex_indices_matrix_with_index_map(poly_mesh)
+    )
+
+    print(
+        f"- Triangulated faces: "
+        f"{tri_poly_faces.shape[0]}x{tri_poly_faces.shape[1]}"
+    )
+    mapped_polys = [
+        tri_poly_index_map.polygon(t)
+        for t in range(min(4, tri_poly_index_map.triangle_count()))
+    ]
+    print(f"- First 4 triangles -> original polygon indices: {mapped_polys}")
+
     # ****** Creating meshes from scratch with matrices ******
 
     print("\n=== Creating Mesh from Scratch ===")

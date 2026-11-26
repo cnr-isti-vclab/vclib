@@ -21,23 +21,35 @@ void initUpdateNormalAlgorithms(pybind11::module& m)
         []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
             m.def(
                 "clear_vertex_normals",
-                [](MeshType& m) { return clearVertexNormals(m); },
-                "mesh"_a);
+                [](MeshType& m, AbstractLogger& log) {
+                    return clearVertexNormals(m, log);
+                },
+                "mesh"_a,
+                "log"_a = py::cast(&vcl::nullLogger));
 
             m.def(
                 "clear_referenced_vertex_normals",
-                [](MeshType& m) { return clearReferencedVertexNormals(m); },
-                "mesh"_a);
+                [](MeshType& m, AbstractLogger& log) {
+                    return clearReferencedVertexNormals(m, log);
+                },
+                "mesh"_a,
+                "log"_a = py::cast(&vcl::nullLogger));
 
             m.def(
                 "normalize_vertex_normals",
-                [](MeshType& m) { return normalizeVertexNormals(m); },
-                "mesh"_a);
+                [](MeshType& m, AbstractLogger& log) {
+                    return normalizeVertexNormals(m, log);
+                },
+                "mesh"_a,
+                "log"_a = py::cast(&vcl::nullLogger));
 
             m.def(
                 "normalize_referenced_vertex_normals",
-                [](MeshType& m) { return normalizeReferencedVertexNormals(m); },
-                "mesh"_a);
+                [](MeshType& m, AbstractLogger& log) {
+                    return normalizeReferencedVertexNormals(m, log);
+                },
+                "mesh"_a,
+                "log"_a = py::cast(&vcl::nullLogger));
 
             m.def(
                 "multiply_vertex_normals_by_matrix",
@@ -74,13 +86,19 @@ void initUpdateNormalAlgorithms(pybind11::module& m)
                            pybind11::module& m, MeshType = MeshType()) {
         m.def(
             "clear_face_normals",
-            [](MeshType& m) { return vcl::clearFaceNormals(m); },
-            "mesh"_a);
+            [](MeshType& m, AbstractLogger& log) {
+                return vcl::clearFaceNormals(m, log);
+            },
+            "mesh"_a,
+            "log"_a = py::cast(&vcl::nullLogger));
 
         m.def(
             "normalize_face_normals",
-            [](MeshType& m) { return vcl::normalizeFaceNormals(m); },
-            "mesh"_a);
+            [](MeshType& m, AbstractLogger& log) {
+                return vcl::normalizeFaceNormals(m, log);
+            },
+            "mesh"_a,
+            "log"_a = py::cast(&vcl::nullLogger));
 
         m.def(
             "multiply_face_normals_by_matrix",
@@ -180,6 +198,55 @@ void initUpdateNormalAlgorithms(pybind11::module& m)
     };
 
     defForAllMeshTypes(m, fFaceMeshes);
+
+    auto fEdgeMeshes = []<EdgeMeshConcept MeshType>(
+                           pybind11::module& m, MeshType = MeshType()) {
+        m.def(
+            "clear_edge_normals",
+            [](MeshType& m, AbstractLogger& log) {
+                return vcl::clearElementNormals<ElemId::EDGE>(m, log);
+            },
+            "mesh"_a,
+            "log"_a = py::cast(&vcl::nullLogger));
+
+        m.def(
+            "normalize_edge_normals",
+            [](MeshType& m, AbstractLogger& log) {
+                return vcl::normalizeElementNormals<ElemId::EDGE>(m, log);
+            },
+            "mesh"_a,
+            "log"_a = py::cast(&vcl::nullLogger));
+
+        m.def(
+            "multiply_edge_normals_by_matrix",
+            [](MeshType&             m,
+               const vcl::Matrix33d& mat,
+               bool                  removeScalingFromMatrix,
+               AbstractLogger&       log) {
+                return vcl::multiplyElementNormalsByMatrix<ElemId::EDGE>(
+                    m, mat, removeScalingFromMatrix, log);
+            },
+            "mesh"_a,
+            "matrix"_a,
+            "remove_scaling_from_matrix"_a = true,
+            "log"_a                        = py::cast(&vcl::nullLogger));
+
+        m.def(
+            "multiply_edge_normals_by_matrix",
+            [](MeshType&             m,
+               const vcl::Matrix44d& mat,
+               bool                  removeScalingFromMatrix,
+               AbstractLogger&       log) {
+                return vcl::multiplyElementNormalsByMatrix<ElemId::EDGE>(
+                    m, mat, removeScalingFromMatrix, log);
+            },
+            "mesh"_a,
+            "matrix"_a,
+            "remove_scaling_from_matrix"_a = true,
+            "log"_a                        = py::cast(&vcl::nullLogger));
+    };
+
+    defForAllMeshTypes(m, fEdgeMeshes);
 }
 
 } // namespace vcl::bind::detail

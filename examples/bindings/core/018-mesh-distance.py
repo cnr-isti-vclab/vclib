@@ -112,6 +112,24 @@ def mesh_distance():
     print(f"  Mean distance: {cube_result.meanDist}")
     print(f"  RMS distance:  {cube_result.RMSDist}")
 
+    # Compare distance between different mesh types (TriMesh vs PointCloud)
+    print("\n=== Distance Between Different Mesh Types ===")
+
+    log = vcl.ConsoleLogger()
+    sampled_cloud = vcl.montecarlo_point_sampling(
+        smoothed_mesh, 5000
+    ).to_point_cloud()
+
+    cloud_result = vcl.hausdorff_distance(
+        mesh, sampled_cloud, vcl.HAUSDORFF_VERTEX_UNIFORM, log=log
+    )
+
+    print("Bunny (TriMesh) vs Sampled PointCloud Distance Results:")
+    print(f"  Min distance:  {cloud_result.minDist}")
+    print(f"  Max distance:  {cloud_result.maxDist}")
+    print(f"  Mean distance: {cloud_result.meanDist}")
+    print(f"  RMS distance:  {cloud_result.RMSDist}")
+
     print("\nExample completed successfully!")
 
     return mesh, smoothed_mesh, taubin_mesh, cube

@@ -119,6 +119,24 @@ inline void meshDistance()
     std::cout << "  Mean distance: " << cubeResult.meanDist << std::endl;
     std::cout << "  RMS distance:  " << cubeResult.RMSDist << std::endl;
 
+    /****** Distance between different mesh types ******/
+
+    std::cout << "\n=== Distance Between Different Mesh Types ===" << std::endl;
+
+    vcl::PointCloud sampledCloud =
+        vcl::montecarloPointSampling(smoothedMesh, 5000)
+            .toMesh<vcl::PointCloud>();
+
+    auto cloudResult = vcl::hausdorffDistance(
+        mesh, sampledCloud, log, vcl::HAUSDORFF_VERTEX_UNIFORM);
+
+    std::cout << "Bunny (TriMesh) vs Sampled PointCloud Distance Results:"
+              << std::endl;
+    std::cout << "  Min distance:  " << cloudResult.minDist << std::endl;
+    std::cout << "  Max distance:  " << cloudResult.maxDist << std::endl;
+    std::cout << "  Mean distance: " << cloudResult.meanDist << std::endl;
+    std::cout << "  RMS distance:  " << cloudResult.RMSDist << std::endl;
+
     std::cout << "\nExample completed successfully!" << std::endl;
 }
 

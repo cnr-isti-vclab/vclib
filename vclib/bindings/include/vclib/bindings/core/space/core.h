@@ -15,11 +15,17 @@
 #include "core/image.h"
 #include "core/material.h"
 #include "core/matrix.h"
+#include "core/plane.h"
 #include "core/point.h"
+#include "core/polygon.h"
 #include "core/principal_curvature.h"
+#include "core/quaternion.h"
+#include "core/ray.h"
+#include "core/segment.h"
 #include "core/sphere.h"
 #include "core/tex_coord.h"
 #include "core/texture_descriptor.h"
+#include "core/triangle.h"
 
 #include <pybind11/pybind11.h>
 
@@ -39,10 +45,16 @@ inline void initCore(pybind11::module& m)
     initImage(m);
     initMaterial(m);
     initMatrix(m);
+    initPlane(m);
+    initPolygon(m);
     initPrincipalCurvature(m);
+    initQuaternion(m);
+    initRay(m);
+    initSegment(m);
     initSphere(m);
     initTexCoord(m);
     initTextureDescriptor(m);
+    initTriangle(m);
 }
 
 } // namespace vcl::bind

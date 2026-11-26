@@ -23,7 +23,7 @@ void initUpdateColorAlgorithms(pybind11::module& m)
         []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
             m.def(
                 "set_vertex_color",
-                [](MeshType& m, Color c, bool onlySelected = false) {
+                [](MeshType& m, const Color& c, bool onlySelected) {
                     return setVertexColor(m, c, onlySelected);
                 },
                 "mesh"_a,
@@ -47,10 +47,10 @@ void initUpdateColorAlgorithms(pybind11::module& m)
 
             m.def(
                 "set_vertex_color_perlin_noise",
-                [](MeshType& m,
-                   Point3d&  period,
-                   Point3d&  offset,
-                   bool      onlySelected) {
+                [](MeshType&      m,
+                   const Point3d& period,
+                   const Point3d& offset,
+                   bool           onlySelected) {
                     return setVertexColorPerlinNoise(
                         m, period, offset, onlySelected);
                 },
@@ -61,12 +61,12 @@ void initUpdateColorAlgorithms(pybind11::module& m)
 
             m.def(
                 "set_vertex_perlin_color",
-                [](MeshType& m,
-                   double    period,
-                   Point3d&  offset,
-                   Color&    color1,
-                   Color&    color2,
-                   bool      onlySelected) {
+                [](MeshType&      m,
+                   double         period,
+                   const Point3d& offset,
+                   const Color&   color1,
+                   const Color&   color2,
+                   bool           onlySelected) {
                     return setVertexPerlinColor(
                         m, period, offset, color1, color2, onlySelected);
                 },

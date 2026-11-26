@@ -503,12 +503,12 @@ public:
                     (p2[0] - p0[0]) * (p1[1] - p0[1])) /
                    2;
         }
-        if constexpr (DIM == 3) {
+        else if constexpr (DIM == 3) {
             return normal(p0, p1, p2).norm() / 2;
         }
         else {
             // heron's formula
-            ScalarType s = perimeter() / 2;
+            ScalarType s = perimeter(p0, p1, p2) / 2;
             return std::sqrt(
                 s * (s - p0.dist(p1)) * (s - p1.dist(p2)) * (s - p2.dist(p0)));
         }

@@ -1,5 +1,6 @@
 import os
 import platform
+import re
 import shutil
 import subprocess
 import sys
@@ -12,6 +13,83 @@ from setuptools.command.bdist_wheel import bdist_wheel as _bdist_wheel
 
 with open('VERSION', 'r') as f:
     vclib_version = f.read().strip()
+
+
+def _parse_macos_arches(raw_arches):
+    """Parse whitespace/semicolon/comma-separated macOS architecture names."""
+    arches = []
+    for token in re.split(r"[\s;,]+", raw_arches.strip()):
+        if token in ("x86_64", "arm64") and token not in arches:
+            arches.append(token)
+    return arches
+
+
+def _get_macos_target_arches(plat_name=None):
+    """Resolve target macOS architectures from environment, plat_name, or host."""
+    if os.environ.get("VCLIB_MACOS_UNIVERSAL", "").strip() == "1":
+        return ["x86_64", "arm64"]
+
+    cmake_osx_arches = os.environ.get("CMAKE_OSX_ARCHITECTURES", "")
+    if cmake_osx_arches.strip():
+        arches = _parse_macos_arches(cmake_osx_arches)
+        if arches:
+            return arches
+
+    archflags = os.environ.get("ARCHFLAGS", "")
+    if archflags.strip():
+        arches = _parse_macos_arches(
+            " ".join(re.findall(r"-arch\s+([^\s]+)", archflags))
+        )
+        if arches:
+            return arches
+
+    if plat_name:
+        normalized = plat_name.lower().replace("-", "_")
+        if normalized.endswith("_universal2") or normalized == "universal2":
+            return ["x86_64", "arm64"]
+        if normalized.endswith("_x86_64"):
+            return ["x86_64"]
+        if normalized.endswith("_arm64"):
+            return ["arm64"]
+
+    return ["arm64"] if platform.machine() == "arm64" else ["x86_64"]
+
+
+def _get_macos_deployment_target():
+    """Return explicit macOS deployment target from environment if configured."""
+    target = (
+        os.environ.get("MACOSX_DEPLOYMENT_TARGET")
+        or os.environ.get("CMAKE_OSX_DEPLOYMENT_TARGET")
+        or ""
+    ).strip()
+    return target or None
+
+
+def _get_macos_cmake_args(plat_name=None):
+    """Build macOS-specific CMake flags for cross or universal2 wheel builds."""
+    args = []
+    arches = _get_macos_target_arches(plat_name)
+    deploy_target = _get_macos_deployment_target()
+
+    explicit_arch = bool(
+        os.environ.get("VCLIB_MACOS_UNIVERSAL", "").strip() == "1"
+        or os.environ.get("CMAKE_OSX_ARCHITECTURES", "").strip()
+        or os.environ.get("ARCHFLAGS", "").strip()
+        or (plat_name and "universal2" in plat_name.lower())
+    )
+    if len(arches) > 1 or explicit_arch:
+        args.append(f"-DCMAKE_OSX_ARCHITECTURES={';'.join(arches)}")
+    if deploy_target:
+        args.append(f"-DCMAKE_OSX_DEPLOYMENT_TARGET={deploy_target}")
+    if len(arches) > 1:
+        # Avoid linking single-arch Homebrew libraries into universal2 wheels.
+        args.extend([
+            "-DVCLIB_ALLOW_SYSTEM_TBB=OFF",
+            "-DVCLIB_ALLOW_SYSTEM_GLFW=OFF",
+            "-DVCLIB_ALLOW_SYSTEM_BGFX=OFF",
+        ])
+    return args
+
 
 try:
     class bdist_wheel(_bdist_wheel):
@@ -28,11 +106,13 @@ try:
                 glibc_version = glibc_version.replace('.', '_')
                 platform_tag = 'manylinux_' + glibc_version + '_' + arch
             elif platform.system() == 'Darwin':
-                arch = platform.machine()
-                pltf = 'macosx_11_0_x86_64'
-                if arch == 'arm64':
-                    pltf = 'macosx_11_0_arm64'
-                platform_tag = pltf
+                arches = _get_macos_target_arches(getattr(self, 'plat_name', None))
+                deploy_target = _get_macos_deployment_target() or '11.0'
+                deploy_tag = deploy_target.replace('.', '_')
+                if '_' not in deploy_tag:
+                    deploy_tag += '_0'
+                arch_tag = 'universal2' if set(arches) >= {'x86_64', 'arm64'} else arches[0]
+                platform_tag = f'macosx_{deploy_tag}_{arch_tag}'
             return a, b, platform_tag
 except ImportError:
     bdist_wheel = None
@@ -55,6 +135,10 @@ class CMakeBuild(build_ext):
             "-UPython*",
             f"-DPython_EXECUTABLE={sys.executable}"
         ]
+
+        if platform.system() == "Darwin":
+            plat_name = getattr(self.distribution, "_vclib_plat_name", None)
+            cmake_args.extend(_get_macos_cmake_args(plat_name))
 
         if os.environ.get("VCLIB_USE_CCACHE") == "1":
             cmake_args.extend([
@@ -116,6 +200,7 @@ class CustomSDist(sdist):
 
 class CustomBDistWheel(bdist_wheel):
     def run(self):
+        self.distribution._vclib_plat_name = getattr(self, "plat_name", None)
         self.run_command("build_ext")
         super().run()
 

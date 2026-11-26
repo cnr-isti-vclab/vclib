@@ -15,6 +15,8 @@
 #include <vclib/mesh.h>
 #include <vclib/space/core.h>
 
+#include <utility>
+
 /**
  * @defgroup export_matrix Export Mesh to Matrix Algorithms
  *
@@ -209,6 +211,55 @@ Matrix faceVertexIndicesMatrix(const MeshType& mesh)
 
 /**
  * @brief Get a \#T*3 Matrix of integers containing the vertex indices for each
+ * triangle obtained by the triangulation of the faces of a Mesh, together with
+ * the TriPolyIndexBiMap mapping each triangle index to its originating face
+ * index.
+ *
+ * This function works with every Matrix type that satisfies the MatrixConcept.
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * auto [F, indexMap] =
+ *     vcl::triangulatedFaceVertexIndicesMatrixWithIndexMap<Eigen::MatrixXi>(
+ *         myMesh);
+ * @endcode
+ *
+ * @throws vcl::MissingCompactnessException if the vertex container is not
+ * compact.
+ *
+ * @tparam Matrix: type of the matrix to be returned, it must satisfy the
+ * MatrixConcept.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * FaceMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return a pair containing the \#T*3 matrix of vertex indices and the
+ * TriPolyIndexBiMap from triangle index to face index
+ *
+ * @ingroup export_matrix
+ */
+template<MatrixConcept Matrix, FaceMeshConcept MeshType>
+std::pair<Matrix, TriPolyIndexBiMap>
+triangulatedFaceVertexIndicesMatrixWithIndexMap(const MeshType& mesh)
+{
+    requireVertexCompactness(mesh);
+
+    auto tCount = vcl::triangulatedFaceCount(mesh);
+
+    Matrix            tM(tCount, 3);
+    TriPolyIndexBiMap indexMap;
+
+    MatrixStorageType stg = matrixStorageType<Matrix>();
+
+    triangulatedFaceVertexIndicesToBuffer(
+        mesh, tM.data(), indexMap, stg, tCount);
+
+    return {std::move(tM), std::move(indexMap)};
+}
+
+/**
+ * @brief Get a \#T*3 Matrix of integers containing the vertex indices for each
  * triangle obtained by the triangulation of the faces of a Mesh.
  *
  * This function works with every Matrix type that satisfies the MatrixConcept.
@@ -229,28 +280,14 @@ Matrix faceVertexIndicesMatrix(const MeshType& mesh)
  * FaceMeshConcept.
  *
  * @param[in] mesh: input mesh
- * @param[out] indexMap: map from triangle index to face index
  * @return \#T*3 matrix of vertex indices
  *
  * @ingroup export_matrix
  */
 template<MatrixConcept Matrix, FaceMeshConcept MeshType>
-Matrix triangulatedFaceVertexIndicesMatrix(
-    const MeshType&    mesh,
-    TriPolyIndexBiMap& indexMap = detail::indexMap)
+Matrix triangulatedFaceVertexIndicesMatrix(const MeshType& mesh)
 {
-    requireVertexCompactness(mesh);
-
-    auto tCount = vcl::triangulatedFaceCount(mesh);
-
-    Matrix tM(tCount, 3);
-
-    MatrixStorageType stg = matrixStorageType<Matrix>();
-
-    triangulatedFaceVertexIndicesToBuffer(
-        mesh, tM.data(), indexMap, stg, tCount);
-
-    return tM;
+    return triangulatedFaceVertexIndicesMatrixWithIndexMap<Matrix>(mesh).first;
 }
 
 /**

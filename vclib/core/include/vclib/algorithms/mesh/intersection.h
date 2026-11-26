@@ -75,7 +75,7 @@ EdgeMesh intersection(const MeshType& m, const PlaneType& pl)
     std::vector<double> qH(m.vertexContainerSize());
 
     for (auto&& v : m.vertices())
-        qH[v.index()] = pl.dist(v.position());
+        qH[v.index()] = distance(v.position(), pl, true);
 
     for (auto&& f : m.faces()) {
         std::vector<PositionType> ptVec;
@@ -96,17 +96,18 @@ EdgeMesh intersection(const MeshType& m, const PlaneType& pl)
                 double q0 = qH[f.vertexIndex(j)];
                 double q1 = qH[f.vertexIndexMod(j + 1)];
 
-                std::pair<PositionType, PositionType> seg(p0, p1);
-                PositionType pp = pl.segmentIntersection(seg);
-                ptVec.push_back(pp);
-                if constexpr (HasVertexNormal<MeshType>) {
-                    if (m.isVertexNormalAvailable()) {
-                        const auto&  n0 = f.vertex(j).normal();
-                        const auto&  n1 = f.vertexMod(j + 1).normal();
-                        PositionType nn =
-                            (n0 * std::abs(q1) + n1 * std::abs(q0)) /
-                            std::abs(q0 - q1);
-                        nmVec.push_back(nn);
+                Segment<PositionType> seg(p0, p1);
+                if (auto pp = vcl::intersection(pl, seg)) {
+                    ptVec.push_back(*pp);
+                    if constexpr (HasVertexNormal<MeshType>) {
+                        if (m.isVertexNormalAvailable()) {
+                            const auto&  n0 = f.vertex(j).normal();
+                            const auto&  n1 = f.vertexMod(j + 1).normal();
+                            PositionType nn =
+                                (n0 * std::abs(q1) + n1 * std::abs(q0)) /
+                                std::abs(q0 - q1);
+                            nmVec.push_back(nn);
+                        }
                     }
                 }
             }

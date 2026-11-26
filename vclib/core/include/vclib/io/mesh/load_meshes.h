@@ -16,6 +16,9 @@
 #include "capability.h"
 #include "settings.h"
 
+#include <utility>
+#include <vector>
+
 namespace vcl {
 
 /**
@@ -41,9 +44,10 @@ inline std::set<FileFormat> loadMeshesFormats()
 }
 
 /**
- * @brief Loads a list of meshes from a file with the given filename and
- * stores it in the given vector. Checks automatically the file format to
- * load from the given filename.
+ * @brief Loads a list of meshes from a file with the given filename, stores it
+ * in the given vector, and returns a vector of MeshInfo describing the loaded
+ * components for each mesh. Checks automatically the file format to load from
+ * the given filename.
  *
  * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
  * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
@@ -51,11 +55,11 @@ inline std::set<FileFormat> loadMeshesFormats()
  * @param[out] meshes: The vector of mesh objects in which to store the loaded
  * meshes.
  * @param[in] filename: The filename of the file containing the mesh data.
- * @param[out] loadedInfo: Vector of information about the meshes components
- * that have been loaded from the file.
  * @param[in] settings: settings for loading the file.
  * @param[in, out] log: The logger object to use for logging messages during
  * loading. Default is the nullLogger object.
+ * @return Vector of MeshInfo objects describing the components loaded from the
+ * file for each mesh.
  *
  * @throws vcl::UnknownFileFormatException if the file extension is not
  * recognized.
@@ -63,16 +67,15 @@ inline std::set<FileFormat> loadMeshesFormats()
  * @ingroup load_mesh
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void loadMeshes(
+std::vector<MeshInfo> loadMeshesWithInfo(
     std::vector<MeshType>& meshes,
     const std::string&     filename,
-    std::vector<MeshInfo>& loadedInfo,
     const LoadSettings&    settings,
     LogType&               log = nullLogger)
 {
     FileFormat ff = FileInfo::fileFormat(filename);
 
-    loadedInfo.clear();
+    std::vector<MeshInfo> loadedInfo;
 
 #ifdef VCLIB_WITH_TINYGLTF
     if (ff == gltfFileFormat()) {
@@ -82,12 +85,15 @@ void loadMeshes(
         throw UnknownFileFormatException(ff.extensions().front());
     }
 #endif
+
+    return loadedInfo;
 }
 
 /**
- * @brief Loads a list of meshes from a file with the given filename and
- * stores it in the given vector. Checks automatically the file format to
- * load from the given filename.
+ * @brief Loads a list of meshes from a file with the given filename, stores it
+ * in the given vector, and returns a vector of MeshInfo describing the loaded
+ * components for each mesh. Checks automatically the file format to load from
+ * the given filename.
  *
  * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
  * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
@@ -95,11 +101,11 @@ void loadMeshes(
  * @param[out] meshes: The vector of mesh objects in which to store the loaded
  * meshes.
  * @param[in] filename: The filename of the file containing the mesh data.
- * @param[out] loadedInfo: Vector of information about the meshes components
- * that have been loaded from the file.
  * @param[in, out] log: The logger object to use for logging messages during
  * loading. Default is the nullLogger object.
  * @param[in] settings: settings for loading the file.
+ * @return Vector of MeshInfo objects describing the components loaded from the
+ * file for each mesh.
  *
  * @throws vcl::UnknownFileFormatException if the file extension is not
  * recognized.
@@ -107,14 +113,76 @@ void loadMeshes(
  * @ingroup load_mesh
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void loadMeshes(
+std::vector<MeshInfo> loadMeshesWithInfo(
     std::vector<MeshType>& meshes,
     const std::string&     filename,
-    std::vector<MeshInfo>& loadedInfo,
     LogType&               log      = nullLogger,
     const LoadSettings&    settings = LoadSettings())
 {
-    loadMeshes(meshes, filename, loadedInfo, settings, log);
+    return loadMeshesWithInfo(meshes, filename, settings, log);
+}
+
+/**
+ * @brief Loads a list of meshes from a file with the given filename and
+ * returns a pair containing the loaded meshes vector and a vector of MeshInfo
+ * describing the loaded components for each mesh. Checks automatically the file
+ * format to load from the given filename.
+ *
+ * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
+ * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
+ *
+ * @param[in] filename: The filename of the file containing the mesh data.
+ * @param[in] settings: settings for loading the file.
+ * @param[in, out] log: The logger object to use for logging messages during
+ * loading. Default is the nullLogger object.
+ * @return A pair containing the vector of loaded mesh objects and a vector of
+ * MeshInfo objects describing the components loaded for each mesh.
+ *
+ * @throws vcl::UnknownFileFormatException if the file extension is not
+ * recognized.
+ *
+ * @ingroup load_mesh
+ */
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+std::pair<std::vector<MeshType>, std::vector<MeshInfo>> loadMeshesWithInfo(
+    const std::string&  filename,
+    const LoadSettings& settings,
+    LogType&            log = nullLogger)
+{
+    std::vector<MeshType> v;
+    std::vector<MeshInfo> loadedInfo =
+        loadMeshesWithInfo(v, filename, settings, log);
+    return {std::move(v), std::move(loadedInfo)};
+}
+
+/**
+ * @brief Loads a list of meshes from a file with the given filename and
+ * returns a pair containing the loaded meshes vector and a vector of MeshInfo
+ * describing the loaded components for each mesh. Checks automatically the file
+ * format to load from the given filename.
+ *
+ * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
+ * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
+ *
+ * @param[in] filename: The filename of the file containing the mesh data.
+ * @param[in, out] log: The logger object to use for logging messages during
+ * loading. Default is the nullLogger object.
+ * @param[in] settings: settings for loading the file.
+ * @return A pair containing the vector of loaded mesh objects and a vector of
+ * MeshInfo objects describing the components loaded for each mesh.
+ *
+ * @throws vcl::UnknownFileFormatException if the file extension is not
+ * recognized.
+ *
+ * @ingroup load_mesh
+ */
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+std::pair<std::vector<MeshType>, std::vector<MeshInfo>> loadMeshesWithInfo(
+    const std::string&  filename,
+    LogType&            log      = nullLogger,
+    const LoadSettings& settings = LoadSettings())
+{
+    return loadMeshesWithInfo<MeshType>(filename, settings, log);
 }
 
 /**
@@ -144,8 +212,7 @@ void loadMeshes(
     const LoadSettings&    settings,
     LogType&               log = nullLogger)
 {
-    std::vector<MeshInfo> loadedInfo;
-    loadMeshes(meshes, filename, loadedInfo, settings, log);
+    loadMeshesWithInfo(meshes, filename, settings, log);
 }
 
 /**
@@ -175,74 +242,7 @@ void loadMeshes(
     LogType&               log      = nullLogger,
     const LoadSettings&    settings = LoadSettings())
 {
-    std::vector<MeshInfo> loadedInfo;
-    loadMeshes(meshes, filename, loadedInfo, settings, log);
-}
-
-/**
- * @brief Loads a list of meshes from a file with the given filename and
- * stores it in the returned vector. Checks automatically the file format to
- * load from the given filename.
- *
- * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
- * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
- *
- * @param[in] filename: The filename of the file containing the mesh data.
- * @param[out] loadedInfo: Vector of information about the meshes components
- * that have been loaded from the file.
- * @param[in] settings: settings for loading the file.
- * @param[in, out] log: The logger object to use for logging messages during
- * loading. Default is the nullLogger object.
- * @return The vector of mesh objects in which to store the loaded meshes.
- *
- * @throws vcl::UnknownFileFormatException if the file extension is not
- * recognized.
- *
- * @ingroup load_mesh
- */
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-std::vector<MeshType> loadMeshes(
-    const std::string&     filename,
-    std::vector<MeshInfo>& loadedInfo,
-    const LoadSettings&    settings,
-    LogType&               log = nullLogger)
-{
-    std::vector<MeshType> v;
-    loadMeshes(v, filename, loadedInfo, settings, log);
-    return v;
-}
-
-/**
- * @brief Loads a list of meshes from a file with the given filename and
- * stores it in the returned vector. Checks automatically the file format to
- * load from the given filename.
- *
- * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
- * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
- *
- * @param[in] filename: The filename of the file containing the mesh data.
- * @param[out] loadedInfo: Vector of information about the meshes components
- * that have been loaded from the file.
- * @param[in, out] log: The logger object to use for logging messages during
- * loading. Default is the nullLogger object.
- * @param[in] settings: settings for loading the file.
- * @return The vector of mesh objects in which to store the loaded meshes.
- *
- * @throws vcl::UnknownFileFormatException if the file extension is not
- * recognized.
- *
- * @ingroup load_mesh
- */
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-std::vector<MeshType> loadMeshes(
-    const std::string&     filename,
-    std::vector<MeshInfo>& loadedInfo,
-    LogType&               log      = nullLogger,
-    const LoadSettings&    settings = LoadSettings())
-{
-    std::vector<MeshType> v;
-    loadMeshes(v, filename, loadedInfo, settings, log);
-    return v;
+    loadMeshesWithInfo(meshes, filename, settings, log);
 }
 
 /**
@@ -271,8 +271,7 @@ std::vector<MeshType> loadMeshes(
     LogType&            log = nullLogger)
 {
     std::vector<MeshType> v;
-    std::vector<MeshInfo> loadedInfo;
-    loadMeshes(v, filename, loadedInfo, settings, log);
+    loadMeshes(v, filename, settings, log);
     return v;
 }
 
@@ -302,8 +301,7 @@ std::vector<MeshType> loadMeshes(
     const LoadSettings& settings = LoadSettings())
 {
     std::vector<MeshType> v;
-    std::vector<MeshInfo> loadedInfo;
-    loadMeshes(v, filename, loadedInfo, settings, log);
+    loadMeshes(v, filename, settings, log);
     return v;
 }
 
