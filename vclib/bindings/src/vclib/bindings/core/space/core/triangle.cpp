@@ -26,15 +26,14 @@ void populateTriangle(pybind11::module& m)
     py::class_<T> c(m, cName.c_str());
     c.def(py::init<>());
     c.def(
-        py::init([](const PointType& p0,
-                    const PointType& p1,
-                    const PointType& p2) {
-            T t;
-            t.point0() = p0;
-            t.point1() = p1;
-            t.point2() = p2;
-            return t;
-        }),
+        py::init(
+            [](const PointType& p0, const PointType& p1, const PointType& p2) {
+                T t;
+                t.point0() = p0;
+                t.point1() = p1;
+                t.point2() = p2;
+                return t;
+            }),
         "p0"_a,
         "p1"_a,
         "p2"_a);
@@ -61,21 +60,15 @@ void populateTriangle(pybind11::module& m)
 
     c.def("point0", [](const T& t) { return t.point0(); });
     c.def(
-        "set_point0",
-        [](T& t, const PointType& p) { t.point0() = p; },
-        "p0"_a);
+        "set_point0", [](T& t, const PointType& p) { t.point0() = p; }, "p0"_a);
 
     c.def("point1", [](const T& t) { return t.point1(); });
     c.def(
-        "set_point1",
-        [](T& t, const PointType& p) { t.point1() = p; },
-        "p1"_a);
+        "set_point1", [](T& t, const PointType& p) { t.point1() = p; }, "p1"_a);
 
     c.def("point2", [](const T& t) { return t.point2(); });
     c.def(
-        "set_point2",
-        [](T& t, const PointType& p) { t.point2() = p; },
-        "p2"_a);
+        "set_point2", [](T& t, const PointType& p) { t.point2() = p; }, "p2"_a);
 
     c.def(
         "side_length",

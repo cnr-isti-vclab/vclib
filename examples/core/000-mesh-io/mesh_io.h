@@ -41,8 +41,8 @@ inline auto loadMeshes()
     // To know what data was loaded, you can use loadMeshWithInfo, which returns
     // a MeshInfo object describing the loaded data.
 
-    vcl::MeshInfo info = vcl::loadMeshWithInfo(
-        mesh0, VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+    vcl::MeshInfo info =
+        vcl::loadMeshWithInfo(mesh0, VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
     std::println("Mesh has per face color: {}", info.hasFaceColor());
 

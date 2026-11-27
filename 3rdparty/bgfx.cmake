@@ -7,8 +7,8 @@
 
 include(FetchContent)
 
-set(BGFX_VERSION 1.172.9657-621)
-set(BGFX_PRECOMPILED_TAG v1.1.0)
+set(BGFX_VERSION 1.172.9657-622)
+set(BGFX_PRECOMPILED_TAG v1.1.1)
 
 function(_vclib_download_precompiled_bgfx OUT_DIR OUT_PLATFORM)
     set(${OUT_DIR} "" PARENT_SCOPE)

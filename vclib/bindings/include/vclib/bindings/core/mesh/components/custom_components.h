@@ -82,7 +82,8 @@ struct PyCustomObject
             obj = pybind11::object();
         }
         else {
-            // Avoid Py_DECREF after interpreter finalization (e.g. late static teardown).
+            // Avoid Py_DECREF after interpreter finalization (e.g. late static
+            // teardown).
             (void) obj.release();
         }
     }
@@ -247,8 +248,7 @@ inline std::type_index resolveCustomComponentTypeIndex(
         return typeid(Color);
 
     throw std::invalid_argument(
-        "Unsupported custom component type '" +
-        std::string(py::str(compType)) +
+        "Unsupported custom component type '" + std::string(py::str(compType)) +
         "'. Supported types: int, float, str, Point2, Point3, Point4, Color, "
         "object, or MeshInfo.DataType.");
 }
@@ -259,8 +259,7 @@ inline std::type_index resolveCustomComponentTypeIndex(
  * Unsupported types (including bool, dict, list, etc.) fall back to
  * PyCustomObject.
  */
-inline std::type_index inferMeshCustomComponentTypeIndex(
-    pybind11::handle value)
+inline std::type_index inferMeshCustomComponentTypeIndex(pybind11::handle value)
 {
     namespace py = pybind11;
 
@@ -316,7 +315,8 @@ inline pybind11::object customComponentPyType(std::type_index ti)
 
 /**
  * @brief Checks if actualType matches expectedType. MeshInfo.DataType requires
- * an exact type match; Python int/float match any integral or floating C++ type.
+ * an exact type match; Python int/float match any integral or floating C++
+ * type.
  */
 inline bool isCustomComponentTypeMatch(
     std::type_index  actualType,
@@ -361,7 +361,8 @@ Point<double, DIM> castPyObjectToPoint(pybind11::handle obj)
     }
     if (py::isinstance<py::buffer>(obj)) {
         try {
-            return P(pyBufferToEigen<1, DIM>(obj.cast<py::buffer>()).transpose());
+            return P(
+                pyBufferToEigen<1, DIM>(obj.cast<py::buffer>()).transpose());
         }
         catch (const std::exception& e) {
             throw BadCustomComponentTypeException(e.what());
@@ -461,9 +462,10 @@ T castFromPyObject(pybind11::handle obj)
 }
 
 /**
- * @brief Exposes a stored C++ value to Python: Point2/3/4 and Color are returned
- * via reference_internal so in-place mutations affect the mesh/element;
- * PyCustomObject unwraps its Python object; scalars/strings are copied.
+ * @brief Exposes a stored C++ value to Python: Point2/3/4 and Color are
+ * returned via reference_internal so in-place mutations affect the
+ * mesh/element; PyCustomObject unwraps its Python object; scalars/strings are
+ * copied.
  */
 template<typename T>
 pybind11::object toPyCustomComponentValue(T& val, pybind11::handle parent)
@@ -473,9 +475,9 @@ pybind11::object toPyCustomComponentValue(T& val, pybind11::handle parent)
     if constexpr (std::is_same_v<T, PyCustomObject>) {
         return val.obj;
     }
-    else if constexpr (
-        isCustomComponentPointV<T> || std::is_same_v<T, Color>) {
-        return py::cast(&val, py::return_value_policy::reference_internal, parent);
+    else if constexpr (isCustomComponentPointV<T> || std::is_same_v<T, Color>) {
+        return py::cast(
+            &val, py::return_value_policy::reference_internal, parent);
     }
     else {
         return py::cast(val);
@@ -653,7 +655,8 @@ std::vector<std::string> containerCustomComponentNamesOfType(
     pybind11::handle compType)
 {
     std::vector<std::string> res;
-    for (const auto& name : mesh.template elementCustomComponentNames<ELEM_ID>()) {
+    for (const auto& name :
+         mesh.template elementCustomComponentNames<ELEM_ID>()) {
         if (isCustomComponentTypeMatch(
                 mesh.template elementCustomComponentType<ELEM_ID>(name),
                 compType)) {
@@ -723,7 +726,8 @@ pybind11::object getContainerCustomComponentArray(
             py::list    res(count);
             std::size_t i = 0;
             for (const auto& el : mesh.template elements<ELEM_ID>()) {
-                res[i++] = py::str(el.template customComponent<std::string>(name));
+                res[i++] =
+                    py::str(el.template customComponent<std::string>(name));
             }
             return res;
         }
@@ -901,7 +905,11 @@ void setContainerCustomComponentArray(
                 return;
             }
             assignSequenceColumn<ELEM_ID, Color>(
-                mesh, name, values, count, "a (N, 4) array or sequence of Color");
+                mesh,
+                name,
+                values,
+                count,
+                "a (N, 4) array or sequence of Color");
         }
         else {
             assignSequenceColumn<ELEM_ID, T>(

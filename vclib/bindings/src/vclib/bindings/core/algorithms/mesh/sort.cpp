@@ -26,9 +26,9 @@ void defElemSort(pybind11::module& m, const std::string& elemName)
 
     m.def(
         ("sort_" + elemName + "_indices_by_function").c_str(),
-        [](const MeshType&    mesh,
-           py::function       func,
-           bool               getIndicesAsIfContainerCompact) {
+        [](const MeshType& mesh,
+           py::function    func,
+           bool            getIndicesAsIfContainerCompact) {
             std::function<bool(ConstElemType, ConstElemType)> cppFunc =
                 [&mesh, &func](ConstElemType a, ConstElemType b) -> bool {
                 auto& mutMesh = const_cast<MeshType&>(mesh);
@@ -49,10 +49,10 @@ void defElemSort(pybind11::module& m, const std::string& elemName)
 
 void initSortAlgorithms(pybind11::module& m)
 {
-    auto fAllMeshes = []<MeshConcept MeshType>(
-                          pybind11::module& m, MeshType = MeshType()) {
-        detail::defElemSort<ElemId::VERTEX, MeshType>(m, "vertex");
-    };
+    auto fAllMeshes =
+        []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
+            detail::defElemSort<ElemId::VERTEX, MeshType>(m, "vertex");
+        };
     defForAllMeshTypes(m, fAllMeshes);
 
     auto fFaceMeshes = []<FaceMeshConcept MeshType>(
