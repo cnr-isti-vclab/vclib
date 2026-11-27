@@ -15,6 +15,8 @@
 
 #include <vclib/mesh.h>
 
+#include <cmath>
+
 namespace vcl::detail {
 
 template<MeshConcept MeshType, VertexConcept VertexType, typename Stream>
@@ -116,16 +118,27 @@ void readPlyVertexProperty(
                 }
                 else if (p.name >= ply::scale_0 && p.name <= ply::scale_2) {
                     int a = p.name - ply::scale_0;
-                    v.gaussianSplat().scale()[a] =
-                        io::readPrimitiveType<Scalar>(file, p.type, end);
+                    v.gaussianSplat().scale()[a] = std::exp(
+                        io::readPrimitiveType<Scalar>(file, p.type, end));
                     hasBeenRead = true;
                 }
                 else if (p.name >= ply::rot_0 && p.name <= ply::rot_3) {
                     int a = p.name - ply::rot_0;
-                    v.gaussianSplat().rotation().coeffs()[a] =
+                    // 3DGS PLY stores quaternion as (w, x, y, z);
+                    // Eigen::Quaternion::coeffs() is (x, y, z, w)
+                    v.gaussianSplat().rotation().coeffs()[(a + 3) % 4] =
                         io::readPrimitiveType<Scalar>(file, p.type, end);
                     hasBeenRead = true;
                 }
+            }
+        }
+    }
+    else if (p.name == ply::unknown) {
+        if constexpr (HasVertexCustomComponents<MeshType>) {
+            if (mesh.hasVertexCustomComponent(p.unknownPropertyName)) {
+                io::readCustomComponent(
+                    file, v, p.unknownPropertyName, p.type, end);
+                hasBeenRead = true;
             }
         }
     }
@@ -263,13 +276,21 @@ void readPlyVertices(
 
     log.startProgress("Reading vertices", header.vertexCount());
 
+    uint shCoeffCount = 0;
+    if constexpr (HasVertexGaussianSplat<MeshType>) {
+        if (m.isVertexGaussianSplatAvailable()) {
+            shCoeffCount = header.gaussianSplatSHCoeffsCount();
+        }
+    }
+
     for (uint vid = 0; vid < header.vertexCount(); ++vid) {
         auto v = m.vertex(vid);
         // Find the count of the spherical harmonics coefficients
         if constexpr (HasVertexGaussianSplat<MeshType>) {
-            uint shCoeffCount = header.gaussianSplatSHCoeffsCount();
-            if (shCoeffCount > 0)
-                v.gaussianSplat().resizeSHCoeffs(shCoeffCount);
+            if (m.isVertexGaussianSplatAvailable()) {
+                if (shCoeffCount > 0)
+                    v.gaussianSplat().resizeSHCoeffs(shCoeffCount);
+            }
         }
         if (header.format() == ply::ASCII) {
             detail::readPlyVertexTxt(

@@ -17,6 +17,7 @@
 #include <vclib/space/complex.h>
 #include <vclib/version.h>
 
+#include <charconv>
 #include <clocale>
 #include <string>
 #include <vector>
@@ -209,7 +210,7 @@ public:
                 case ply::material_index: mod.setVertexMaterialIndex(); break;
                 case ply::f_dc_0:
                 case ply::f_dc_1:
-                case ply::f_dc_2:
+                case ply::f_dc_2: mod.setVertexGaussianSplat(); break;
                 case ply::f_rest_0:
                 case ply::f_rest_1:
                 case ply::f_rest_2:
@@ -221,6 +222,8 @@ public:
                 case ply::f_rest_8:
                     if (mod.vertexGaussianSplatSHDegree() < 1)
                         mod.setVertexGaussianSplatSHDegree(1);
+                    mod.setVertexGaussianSplat();
+                    break;
                 case ply::f_rest_9:
                 case ply::f_rest_10:
                 case ply::f_rest_11:
@@ -238,6 +241,8 @@ public:
                 case ply::f_rest_23:
                     if (mod.vertexGaussianSplatSHDegree() < 2)
                         mod.setVertexGaussianSplatSHDegree(2);
+                    mod.setVertexGaussianSplat();
+                    break;
                 case ply::f_rest_24:
                 case ply::f_rest_25:
                 case ply::f_rest_26:
@@ -258,7 +263,10 @@ public:
                 case ply::f_rest_41:
                 case ply::f_rest_42:
                 case ply::f_rest_43:
-                case ply::f_rest_44: mod.setVertexGaussianSplatSHDegree(3);
+                case ply::f_rest_44:
+                    mod.setVertexGaussianSplatSHDegree(3);
+                    mod.setVertexGaussianSplat();
+                    break;
                 case ply::opacity:
                 case ply::scale_0:
                 case ply::scale_1:
@@ -362,8 +370,11 @@ public:
 
     uint gaussianSplatSHCoeffsCount() const
     {
-        return (getInfo().vertexGaussianSplatSHDegree() + 1) *
-                (getInfo().vertexGaussianSplatSHDegree() + 1) * 3;
+        MeshInfo info = getInfo();
+        if (!info.hasVertexGaussianSplat())
+            return 0;
+        return (info.vertexGaussianSplatSHDegree() + 1) *
+               (info.vertexGaussianSplatSHDegree() + 1) * 3;
     }
 
     uint faceCount() const
@@ -976,11 +987,14 @@ private:
             pn = ply::rot_2;
         if (name == "rot_3")
             pn = ply::rot_3;
-        auto it = name.find("f_rest_");
-        if (it != std::string::npos) {
-            int index = std::stoi(name.substr(it + 7));
-            assert(index >= 0 && index < 45);
-            pn = static_cast<ply::PropertyName>(ply::f_rest_0 + index);
+        if (name.starts_with("f_rest_")) {
+            int         index = -1;
+            const char* begin = name.data() + 7;
+            const char* end   = name.data() + name.size();
+            auto [ptr, ec]    = std::from_chars(begin, end, index);
+            if (ec == std::errc() && ptr == end && index >= 0 && index < 45) {
+                pn = static_cast<ply::PropertyName>(ply::f_rest_0 + index);
+            }
         }
 
         return pn;
