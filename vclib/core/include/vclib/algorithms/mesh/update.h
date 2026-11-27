@@ -12,6 +12,7 @@
 #include "update/bounding_box.h"
 #include "update/color.h"
 #include "update/curvature.h"
+#include "update/gaussian_splat.h"
 #include "update/normal.h"
 #include "update/quality.h"
 #include "update/selection.h"

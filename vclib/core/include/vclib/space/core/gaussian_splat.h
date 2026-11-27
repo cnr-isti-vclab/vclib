@@ -13,7 +13,9 @@
 #include "quaternion.h"
 
 #include <algorithm>
-#include <array>
+#include <cmath>
+#include <stdexcept>
+#include <vector>
 
 namespace vcl {
 
@@ -22,7 +24,12 @@ namespace vcl {
  * - an opacity (1 scalar) component
  * - a scale (3 scalars) component
  * - a rotation (1 quat = 4 scalars) component
- * - 48 spherical harmonics components
+ * - a variable-size vector of spherical harmonics (SH) coefficients of size
+ *   `SH_COLOR * (degree + 1)^2` (empty when uninitialized)
+ *
+ * When the spherical harmonics coefficients vector is empty (e.g., after default
+ * construction or `resizeSHCoeffs(0)`), the SH degree is set to `UINT_NULL`,
+ * which acts as a sentinel value indicating that no SH coefficients are stored.
  *
  * The Covariance matrix of the 3D gaussian can be calculated from
  * the scale and rotation components.
@@ -58,33 +65,57 @@ public:
     /**
      * @brief The number of the spherical harmonics coefficients
      */
-    static constexpr uint SH_DEGREE = 3;
     static constexpr uint SH_COLOR = 3; // RGB color channels
-    static constexpr uint SH_COEFF_COUNT =
-        SH_COLOR * (SH_DEGREE+1)*(SH_DEGREE+1);
-        // e.g. l = 0..3 -> (1+3+5+7)*3 = 48
 
     /**
      * @brief The type of spherical harmonics coefficients array of the
      * 3D gaussian.
      */
-    using SHCoeffArrayType = std::array<ScalarType, SH_COEFF_COUNT>;
+    using SHCoeffVectorType = std::vector<ScalarType>;
 
 private:
-    ScalarType       mOpacity{1};
-    PointType        mScale {1, 1, 1};
-    QuatType         mRotation {1, 0, 0, 0}; // Identity rotation
-    SHCoeffArrayType mSHCoeffs {};           // Initialized to zeros
+    ScalarType        mOpacity  {1};
+    PointType         mScale    {1, 1, 1};
+    QuatType          mRotation {1, 0, 0, 0}; // Identity rotation
+    uint              mSHDegree {UINT_NULL};  // UINT_NULL when SH coeffs are empty
+    SHCoeffVectorType mSHCoeffs {};           // Initialized with zero elements
 
 public:
+    /**
+     * @brief Default constructor.
+     *
+     * Initializes the 3D gaussian with opacity 1, scale (1, 1, 1), identity
+     * rotation, an empty spherical harmonics vector, and `shDegree()` set to
+     * `UINT_NULL`.
+     */
     GaussianSplat() = default;
 
+    /**
+     * @brief Constructs a GaussianSplat with the given opacity, scale,
+     * rotation, and spherical harmonics coefficients.
+     *
+     * If `shCoeffs` is empty, `shDegree()` is set to `UINT_NULL`. Otherwise,
+     * `shCoeffs.size()` must equal `SH_COLOR * (degree + 1)^2` for a
+     * non-negative integer `degree`.
+     *
+     * @param[in] opacity: The opacity of the 3D gaussian.
+     * @param[in] scale: The scale of the 3D gaussian.
+     * @param[in] rotation: The rotation quaternion of the 3D gaussian.
+     * @param[in] shCoeffs: The spherical harmonics coefficients vector.
+     *
+     * @throws std::runtime_error if a vector of an invalid size is provided.
+     */
     GaussianSplat(
-        const PointType&        scale,
-        const QuatType&         rotation,
-        const SHCoeffArrayType& shCoeffs) :
-            mScale(scale), mRotation(rotation), mSHCoeffs(shCoeffs)
+        ScalarType               opacity,
+        const PointType&         scale,
+        const QuatType&          rotation,
+        const SHCoeffVectorType& shCoeffs) :
+            mOpacity(opacity),
+            mScale(scale),
+            mRotation(rotation),
+            mSHCoeffs(shCoeffs)
     {
+        mSHDegree = getDegreeFromSize(mSHCoeffs.size());
     }
 
     /**
@@ -109,29 +140,56 @@ public:
     decltype(auto) rotation(this auto&& self) { return (self.mRotation); }
 
     /**
-     * @brief Returns a reference to the spherical harmonics coefficients of the
+     * @brief Returns a const reference to the spherical harmonics coefficients of the
      * GaussianSplat object.
      *
-     * @return A reference to the spherical harmonics coefficients of the
+     * @return A const reference to the spherical harmonics coefficients of the
      * GaussianSplat object.
      */
-    decltype(auto) shCoeffs(this auto&& self) { return (self.mSHCoeffs); }
+    const auto& shCoeffs(this const auto& self) { return self.mSHCoeffs; }
 
     /**
      * @brief Returns a reference to the spherical harmonics coefficient at the
      * specified index of the GaussianSplat object.
      *
      * @param[in] i: The index of the spherical harmonics coefficient to
-     * retrieve. Must be less than SH_COEFF_COUNT.
+     * retrieve. Must be less than mSHCoeffs.size().
      *
      * @return A reference to the spherical harmonics coefficient at the
      * specified index of the GaussianSplat object.
      */
-    decltype(auto) shCoeffAt(this auto&& self, uint i)
+    decltype(auto) shCoeffAt(this auto& self, uint i)
     {
-        assert(i < self.SH_COEFF_COUNT);
+        assert(i < self.mSHCoeffs.size());
 
         return self.mSHCoeffs[i];
+    }
+
+    /**
+     * @brief Returns the spherical harmonics degree of the GaussianSplat object,
+     * or `UINT_NULL` if no spherical harmonics coefficients are stored.
+     *
+     * @return The degree of the GaussianSplat object, or `UINT_NULL` if empty.
+     */
+    uint shDegree() const { return mSHDegree; }
+
+    /**
+     * @brief Resizes the spherical harmonics vector.
+     *
+     * If `size == 0`, the spherical harmonics vector is cleared and `shDegree()`
+     * is set to `UINT_NULL`. Otherwise, `size` must equal
+     * `SH_COLOR * (degree + 1)^2` for a non-negative integer `degree`.
+     *
+     * @param[in] size: The uint argument used to resize the vector
+     * containing the spherical harmonics coefficients of the GaussianSplat
+     * object.
+     *
+     * @throws std::runtime_error if an invalid size is provided.
+     */
+    void resizeSHCoeffs(uint size)
+    {
+        mSHDegree = getDegreeFromSize(size);
+        mSHCoeffs.resize(size);
     }
 
     /**
@@ -181,19 +239,22 @@ public:
      *
      * The member function takes a variable number of scalar arguments, which
      * are used to set the spherical harmonics coefficients of the GaussianSplat
-     * object. The number of arguments must be equal to the number of spherical
-     * harmonics coefficients of the GaussianSplat object, which
-     * is determined by the static member SH_COEFF_COUNT.
+     * object. The number of arguments must be either 0 (which clears the
+     * coefficients and sets `shDegree()` to `UINT_NULL`) or equal to:
+     *     `SH_COLOR * (degree + 1)^2`
+     * where `degree` is a non-negative integer.
      *
      * @tparam Scalars: The types of the scalar arguments.
      *
      * @param[in] scalars: The scalar arguments used to set the
      * spherical harmonics coefficients of the GaussianSplat object.
+     *
+     * @throws std::runtime_error if an invalid number of arguments is provided.
      */
     template<typename... Scalars>
     void setSHCoeffs(Scalars... scalars)
-        requires (sizeof...(scalars) == SH_COEFF_COUNT)
     {
+        mSHDegree = getDegreeFromSize(sizeof...(scalars));
         mSHCoeffs = {static_cast<ScalarType>(scalars)...};
     }
 
@@ -201,10 +262,20 @@ public:
      * @brief Sets all the spherical harmonics coefficients of the
      * GaussianSplat object by making a copy of the specified coefficients.
      *
-     * @param[in] coeffs: The array argument used to set the
+     * @param[in] coeffs: The vector argument used to set the
      * spherical harmonics coefficients of the GaussianSplat object.
+     * Its size must be either 0 (which clears the coefficients and sets
+     * `shDegree()` to `UINT_NULL`) or equal to:
+     *     `SH_COLOR * (degree + 1)^2`
+     * where `degree` is a non-negative integer.
+     *
+     * @throws std::runtime_error if a vector of an invalid size is provided.
      */
-    void setSHCoeffs(const SHCoeffArrayType& coeffs) { mSHCoeffs = coeffs; }
+    void setSHCoeffs(const SHCoeffVectorType& coeffs)
+    {
+        mSHDegree = getDegreeFromSize(coeffs.size());
+        mSHCoeffs = coeffs;
+    }
 
     /**
      * @brief Casts the GaussianSplat object to a different scalar type.
@@ -225,7 +296,7 @@ public:
             return *this;
         }
         else {
-            std::array<S, SH_COEFF_COUNT> coeffs;
+            std::vector<S> coeffs(mSHCoeffs.size());
 
             std::transform(
                 mSHCoeffs.begin(),
@@ -234,6 +305,7 @@ public:
                 [](ScalarType value) { return static_cast<S>(value); });
 
             return GaussianSplat<S>(
+                static_cast<S>(mOpacity),
                 mScale.template cast<S>(),
                 mRotation.template cast<S>(),
                 coeffs);
@@ -248,10 +320,8 @@ public:
      */
     void serialize(std::ostream& os) const
     {
-        vcl::serialize(os, mOpacity);
-        mScale.serialize(os);
-        vcl::serializeN(os, mRotation.coeffs().data(), 4);
-        vcl::serializeN(os, mSHCoeffs.data(), SH_COEFF_COUNT);
+        vcl::serialize(os, mOpacity, mScale, mRotation, mSHDegree);
+        vcl::serialize(os, mSHCoeffs);
     }
 
     /**
@@ -260,10 +330,29 @@ public:
      */
     void deserialize(std::istream& is)
     {
-        vcl::deserialize(is, mOpacity);
-        mScale.deserialize(is);
-        vcl::deserializeN(is, mRotation.coeffs().data(), 4);
-        vcl::deserializeN(is, mSHCoeffs.data(), SH_COEFF_COUNT);
+        vcl::deserialize(is, mOpacity, mScale, mRotation, mSHDegree);
+        vcl::deserialize(is, mSHCoeffs);
+    }
+
+private:
+    static uint getDegreeFromSize(std::size_t size)
+    {
+        if (size == 0)
+            return UINT_NULL;
+
+        if (size % SH_COLOR != 0)
+            throw std::runtime_error(
+                "Argument error: Invalid vector size\n");
+
+        std::size_t k = size / SH_COLOR;
+        std::size_t r = static_cast<std::size_t>(
+            std::round(std::sqrt(static_cast<double>(k))));
+
+        if (r * r != k)
+            throw std::runtime_error(
+                "Argument error: Invalid vector size\n");
+
+        return static_cast<uint>(r - 1);
     }
 };
 

@@ -31,6 +31,7 @@ using VertexComponents = vcl::VertexComponents<
     vert::OptionalQuality<Scalar>,
     vert::OptionalAdjacentVertices<Index>,
     vert::OptionalTexCoord<Scalar>,
+    vert::OptionalGaussianSplat<Scalar>,
     vert::OptionalMaterialIndex,
     vert::CustomComponents>;
 

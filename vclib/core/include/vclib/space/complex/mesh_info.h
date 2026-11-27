@@ -11,6 +11,7 @@
 #include <vclib/base.h>
 #include <vclib/mesh.h>
 
+#include <algorithm>
 #include <array>
 #include <bitset>
 #include <string>
@@ -89,6 +90,7 @@ public:
         QUALITY,
         TEXCOORD,
         MATERIAL_INDEX,
+        GAUSSIAN_SPLAT,
         WEDGE_TEXCOORDS,
         CUSTOM_COMPONENTS,
         MATERIALS,
@@ -129,6 +131,9 @@ private:
 
     // Mesh Type
     MeshType mType = MeshType::UNKNOWN;
+
+    // Gaussian Splat Spherical Harmonics Degree (UINT_NULL when unset/empty)
+    uint mGaussianSplatSHDegree = UINT_NULL;
 
 public:
     /**
@@ -194,6 +199,22 @@ public:
         if constexpr (HasVertexMaterialIndex<Mesh>) {
             if (m.isVertexMaterialIndexAvailable()) {
                 setVertexMaterialIndex(true, PrimitiveType::USHORT);
+            }
+        }
+        if constexpr (HasVertexGaussianSplat<Mesh>) {
+            if (m.isVertexGaussianSplatAvailable()) {
+                setVertexGaussianSplat(
+                    true,
+                    getType<typename VertexType<
+                        Mesh>::GaussianSplatType::ScalarType>());
+                uint degree = UINT_NULL;
+                for (const auto& v : m.vertices()) {
+                    uint d = v.gaussianSplat().shDegree();
+                    if (d != UINT_NULL && (degree == UINT_NULL || d > degree)) {
+                        degree = d;
+                    }
+                }
+                setVertexGaussianSplatSHDegree(degree);
             }
         }
         if constexpr (HasVertexCustomComponents<Mesh>) {
@@ -296,7 +317,8 @@ public:
         for (auto& v : mElemCustomComponents)
             v.clear();
 
-        mType = MeshType::UNKNOWN;
+        mType                  = MeshType::UNKNOWN;
+        mGaussianSplatSHDegree = UINT_NULL;
     }
 
     /**
@@ -416,6 +438,15 @@ public:
     }
 
     /**
+     * @brief Returns true if the current object has Vertex Gaussian Splat.
+     * @return true if the current object has Vertex Gaussian Splat.
+     */
+    bool hasVertexGaussianSplat() const
+    {
+        return hasElementComponent(VERTEX, GAUSSIAN_SPLAT);
+    }
+
+    /**
      * @brief Returns true if the current object has Vertex Custom Components.
      * @return true if the current object has Vertex Custom Components.
      */
@@ -506,6 +537,8 @@ public:
 
     bool hasMaterials() const { return hasElementComponent(MESH, MATERIALS); }
 
+    uint vertexGaussianSplatSHDegree() const { return mGaussianSplatSHDegree; }
+
     /*
      * Setter functions: they are used by the load functions to tell which
      * Elements/Components are loaded from a file, and they can be used by the
@@ -593,6 +626,20 @@ public:
         DataType t = PrimitiveType::USHORT)
     {
         setElementComponent(VERTEX, MATERIAL_INDEX, b, t);
+    }
+
+    void setVertexGaussianSplat(
+        bool     b = true,
+        DataType t = PrimitiveType::DOUBLE)
+    {
+        setElementComponent(VERTEX, GAUSSIAN_SPLAT, b, t);
+        if (!b)
+            mGaussianSplatSHDegree = UINT_NULL;
+    }
+
+    void setVertexGaussianSplatSHDegree(uint degree)
+    {
+        mGaussianSplatSHDegree = degree;
     }
 
     void setVertexCustomComponents(bool b = true)
@@ -765,6 +812,11 @@ public:
         return elementComponentType(VERTEX, MATERIAL_INDEX);
     }
 
+    DataType vertexGaussianSplatType() const
+    {
+        return elementComponentType(VERTEX, GAUSSIAN_SPLAT);
+    }
+
     DataType faceBitFlagsType() const
     {
         return elementComponentType(FACE, BIT_FLAGS);
@@ -860,6 +912,19 @@ public:
             res.mType = mType;
         }
         res.mElemCustomComponents = mElemCustomComponents;
+
+        if (res.hasVertexGaussianSplat()) {
+            if (mGaussianSplatSHDegree == UINT_NULL) {
+                res.mGaussianSplatSHDegree = info.mGaussianSplatSHDegree;
+            }
+            else if (info.mGaussianSplatSHDegree == UINT_NULL) {
+                res.mGaussianSplatSHDegree = mGaussianSplatSHDegree;
+            }
+            else {
+                res.mGaussianSplatSHDegree = std::min(
+                    mGaussianSplatSHDegree, info.mGaussianSplatSHDegree);
+            }
+        }
 
         return res;
     }
@@ -1016,6 +1081,11 @@ void enableOptionalComponentsFromInfo(MeshInfo& info, MeshType& m)
         if (info.hasVertexMaterialIndex()) {
             if (!enableIfVertexMaterialIndexOptional(m)) {
                 info.setVertexMaterialIndex(false);
+            }
+        }
+        if (info.hasVertexGaussianSplat()) {
+            if (!enableIfVertexGaussianSplatOptional(m)) {
+                info.setVertexGaussianSplat(false);
             }
         }
         if (info.hasVertexCustomComponents()) {

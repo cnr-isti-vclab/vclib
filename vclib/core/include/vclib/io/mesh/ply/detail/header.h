@@ -17,6 +17,7 @@
 #include <vclib/space/complex.h>
 #include <vclib/version.h>
 
+#include <charconv>
 #include <clocale>
 #include <string>
 #include <vector>
@@ -207,6 +208,79 @@ public:
                 case ply::quality: mod.setVertexQuality(); break;
                 case ply::texture_u: mod.setVertexTexCoord(); break;
                 case ply::material_index: mod.setVertexMaterialIndex(); break;
+                case ply::f_dc_0:
+                case ply::f_dc_1:
+                case ply::f_dc_2:
+                    if (mod.vertexGaussianSplatSHDegree() == UINT_NULL)
+                        mod.setVertexGaussianSplatSHDegree(0);
+                    mod.setVertexGaussianSplat();
+                    break;
+                case ply::f_rest_0:
+                case ply::f_rest_1:
+                case ply::f_rest_2:
+                case ply::f_rest_3:
+                case ply::f_rest_4:
+                case ply::f_rest_5:
+                case ply::f_rest_6:
+                case ply::f_rest_7:
+                case ply::f_rest_8:
+                    if (mod.vertexGaussianSplatSHDegree() == UINT_NULL ||
+                        mod.vertexGaussianSplatSHDegree() < 1)
+                        mod.setVertexGaussianSplatSHDegree(1);
+                    mod.setVertexGaussianSplat();
+                    break;
+                case ply::f_rest_9:
+                case ply::f_rest_10:
+                case ply::f_rest_11:
+                case ply::f_rest_12:
+                case ply::f_rest_13:
+                case ply::f_rest_14:
+                case ply::f_rest_15:
+                case ply::f_rest_16:
+                case ply::f_rest_17:
+                case ply::f_rest_18:
+                case ply::f_rest_19:
+                case ply::f_rest_20:
+                case ply::f_rest_21:
+                case ply::f_rest_22:
+                case ply::f_rest_23:
+                    if (mod.vertexGaussianSplatSHDegree() == UINT_NULL ||
+                        mod.vertexGaussianSplatSHDegree() < 2)
+                        mod.setVertexGaussianSplatSHDegree(2);
+                    mod.setVertexGaussianSplat();
+                    break;
+                case ply::f_rest_24:
+                case ply::f_rest_25:
+                case ply::f_rest_26:
+                case ply::f_rest_27:
+                case ply::f_rest_28:
+                case ply::f_rest_29:
+                case ply::f_rest_30:
+                case ply::f_rest_31:
+                case ply::f_rest_32:
+                case ply::f_rest_33:
+                case ply::f_rest_34:
+                case ply::f_rest_35:
+                case ply::f_rest_36:
+                case ply::f_rest_37:
+                case ply::f_rest_38:
+                case ply::f_rest_39:
+                case ply::f_rest_40:
+                case ply::f_rest_41:
+                case ply::f_rest_42:
+                case ply::f_rest_43:
+                case ply::f_rest_44:
+                    mod.setVertexGaussianSplatSHDegree(3);
+                    mod.setVertexGaussianSplat();
+                    break;
+                case ply::opacity:
+                case ply::scale_0:
+                case ply::scale_1:
+                case ply::scale_2:
+                case ply::rot_0:
+                case ply::rot_1:
+                case ply::rot_2:
+                case ply::rot_3: mod.setVertexGaussianSplat(); break;
                 case ply::unknown:
                     if (p.type <= ply::PropertyType::DOUBLE) {
                         mod.addVertexCustomComponent(
@@ -298,6 +372,16 @@ public:
     {
         assert(hasVertices());
         return mElements[mVertElemPos].elementCount;
+    }
+
+    uint gaussianSplatSHCoeffsCount() const
+    {
+        MeshInfo info = getInfo();
+        if (!info.hasVertexGaussianSplat() ||
+            info.vertexGaussianSplatSHDegree() == UINT_NULL)
+            return 0;
+        return (info.vertexGaussianSplatSHDegree() + 1) *
+               (info.vertexGaussianSplatSHDegree() + 1) * 3;
     }
 
     uint faceCount() const
@@ -468,6 +552,30 @@ public:
                 tcn.name = ply::material_index;
                 tcn.type = info.vertexMaterialIndexType();
                 vElem.properties.push_back(tcn);
+            }
+            if (info.hasVertexGaussianSplat()) {
+                if (info.vertexGaussianSplatSHDegree() != UINT_NULL) {
+                    uint degree = info.vertexGaussianSplatSHDegree() > 3 ?
+                                      3 :
+                                      info.vertexGaussianSplatSHDegree();
+                    uint shCoeffCount = (degree + 1) * (degree + 1) * 3;
+
+                    for (uint propName = ply::f_dc_0;
+                         propName < ply::f_dc_0 + shCoeffCount;
+                         ++propName) {
+                        PlyProperty coeff;
+                        coeff.name = static_cast<ply::PropertyName>(propName);
+                        coeff.type = info.vertexGaussianSplatType();
+                        vElem.properties.push_back(coeff);
+                    }
+                }
+                for (uint propName = ply::opacity; propName <= ply::rot_3;
+                     ++propName) {
+                    PlyProperty prop;
+                    prop.name = static_cast<ply::PropertyName>(propName);
+                    prop.type = info.vertexGaussianSplatType();
+                    vElem.properties.push_back(prop);
+                }
             }
             if (info.hasVertexCustomComponents()) {
                 for (const auto& cc : info.vertexCustomComponents()) {
@@ -870,6 +978,38 @@ private:
             pn = ply::occlusion_texture;
         if (name == "emissive_texture")
             pn = ply::emissive_texture;
+        // gaussian splat properties
+        if (name == "f_dc_0")
+            pn = ply::f_dc_0;
+        if (name == "f_dc_1")
+            pn = ply::f_dc_1;
+        if (name == "f_dc_2")
+            pn = ply::f_dc_2;
+        if (name == "opacity")
+            pn = ply::opacity;
+        if (name == "scale_0")
+            pn = ply::scale_0;
+        if (name == "scale_1")
+            pn = ply::scale_1;
+        if (name == "scale_2")
+            pn = ply::scale_2;
+        if (name == "rot_0")
+            pn = ply::rot_0;
+        if (name == "rot_1")
+            pn = ply::rot_1;
+        if (name == "rot_2")
+            pn = ply::rot_2;
+        if (name == "rot_3")
+            pn = ply::rot_3;
+        if (name.starts_with("f_rest_")) {
+            int         index = -1;
+            const char* begin = name.data() + 7;
+            const char* end   = name.data() + name.size();
+            auto [ptr, ec]    = std::from_chars(begin, end, index);
+            if (ec == std::errc() && ptr == end && index >= 0 && index < 45) {
+                pn = static_cast<ply::PropertyName>(ply::f_rest_0 + index);
+            }
+        }
 
         return pn;
     }
@@ -900,6 +1040,9 @@ private:
         ply::PropertyName n,
         bool              meshlabCompatibility = false)
     {
+        // manage f_rest_ properties in a generic way...
+        if (n >= ply::f_rest_0 && n <= ply::f_rest_44)
+            return "f_rest_" + std::to_string(n - ply::f_rest_0);
         switch (n) {
         case ply::x: return "x";
         case ply::y: return "y";
@@ -938,6 +1081,17 @@ private:
         case ply::normal_texture: return "normal_texture";
         case ply::occlusion_texture: return "occlusion_texture";
         case ply::emissive_texture: return "emissive_texture";
+        case ply::f_dc_0: return "f_dc_0";
+        case ply::f_dc_1: return "f_dc_1";
+        case ply::f_dc_2: return "f_dc_2";
+        case ply::opacity: return "opacity";
+        case ply::scale_0: return "scale_0";
+        case ply::scale_1: return "scale_1";
+        case ply::scale_2: return "scale_2";
+        case ply::rot_0: return "rot_0";
+        case ply::rot_1: return "rot_1";
+        case ply::rot_2: return "rot_2";
+        case ply::rot_3: return "rot_3";
         default: return "unknown";
         }
     }

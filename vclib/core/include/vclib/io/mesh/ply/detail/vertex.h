@@ -15,6 +15,8 @@
 
 #include <vclib/mesh.h>
 
+#include <cmath>
+
 namespace vcl::detail {
 
 template<MeshConcept MeshType, VertexConcept VertexType, typename Stream>
@@ -95,6 +97,39 @@ void readPlyVertexProperty(
                 v.materialIndex() =
                     io::readPrimitiveType<ushort>(file, p.type, end);
                 hasBeenRead = true;
+            }
+        }
+    }
+    // Gaussian Splat properties
+    else if (p.name >= ply::f_dc_0 && p.name <= ply::rot_3) {
+        if constexpr (HasVertexGaussianSplat<MeshType>) {
+            using Scalar = VertexType::GaussianSplatType::ScalarType;
+            if (mesh.isVertexGaussianSplatAvailable()) {
+                if (p.name >= ply::f_dc_0 && p.name <= ply::f_rest_44) {
+                    int a = p.name - ply::f_dc_0;
+                    v.gaussianSplat().shCoeffAt(a) =
+                        io::readPrimitiveType<Scalar>(file, p.type, end);
+                    hasBeenRead = true;
+                }
+                else if (p.name == ply::opacity) {
+                    v.gaussianSplat().opacity() =
+                        io::readPrimitiveType<Scalar>(file, p.type, end);
+                    hasBeenRead = true;
+                }
+                else if (p.name >= ply::scale_0 && p.name <= ply::scale_2) {
+                    int a = p.name - ply::scale_0;
+                    v.gaussianSplat().scale()[a] = std::exp(
+                        io::readPrimitiveType<Scalar>(file, p.type, end));
+                    hasBeenRead = true;
+                }
+                else if (p.name >= ply::rot_0 && p.name <= ply::rot_3) {
+                    int a = p.name - ply::rot_0;
+                    // 3DGS PLY stores quaternion as (w, x, y, z);
+                    // Eigen::Quaternion::coeffs() is (x, y, z, w)
+                    v.gaussianSplat().rotation().coeffs()[(a + 3) % 4] =
+                        io::readPrimitiveType<Scalar>(file, p.type, end);
+                    hasBeenRead = true;
+                }
             }
         }
     }
@@ -210,6 +245,57 @@ void writePlyVertices(
                     hasBeenWritten = true;
                 }
             }
+            else if (p.name >= ply::f_dc_0 && p.name <= ply::rot_3) {
+                if constexpr (HasVertexGaussianSplat<MeshType>) {
+                    if (mesh.isVertexGaussianSplatAvailable()) {
+                        if (p.name >= ply::f_dc_0 && p.name <= ply::f_rest_44) {
+                            uint a = p.name - ply::f_dc_0;
+                            if (a < v.gaussianSplat().shCoeffs().size()) {
+                                io::writeProperty(
+                                    file,
+                                    v.gaussianSplat().shCoeffAt(a),
+                                    p.type,
+                                    format);
+                            }
+                            else {
+                                io::writeProperty(file, 0, p.type, format);
+                            }
+                            hasBeenWritten = true;
+                        }
+                        else if (p.name == ply::opacity) {
+                            io::writeProperty(
+                                file,
+                                v.gaussianSplat().opacity(),
+                                p.type,
+                                format);
+                            hasBeenWritten = true;
+                        }
+                        else if (
+                            p.name >= ply::scale_0 && p.name <= ply::scale_2) {
+                            uint a = p.name - ply::scale_0;
+                            io::writeProperty(
+                                file,
+                                std::log(v.gaussianSplat().scale()[a]),
+                                p.type,
+                                format);
+                            hasBeenWritten = true;
+                        }
+                        else if (p.name >= ply::rot_0 && p.name <= ply::rot_3) {
+                            uint a = p.name - ply::rot_0;
+                            // 3DGS PLY stores quaternion as (w, x, y, z);
+                            // Eigen::Quaternion::coeffs() is (x, y, z, w)
+                            io::writeProperty(
+                                file,
+                                v.gaussianSplat()
+                                    .rotation()
+                                    .coeffs()[(a + 3) % 4],
+                                p.type,
+                                format);
+                            hasBeenWritten = true;
+                        }
+                    }
+                }
+            }
             else if (p.name == ply::unknown) {
                 if constexpr (HasVertexCustomComponents<MeshType>) {
                     if (mesh.hasVertexCustomComponent(p.unknownPropertyName)) {
@@ -241,8 +327,22 @@ void readPlyVertices(
 
     log.startProgress("Reading vertices", header.vertexCount());
 
+    uint shCoeffCount = 0;
+    if constexpr (HasVertexGaussianSplat<MeshType>) {
+        if (m.isVertexGaussianSplatAvailable()) {
+            shCoeffCount = header.gaussianSplatSHCoeffsCount();
+        }
+    }
+
     for (uint vid = 0; vid < header.vertexCount(); ++vid) {
         auto v = m.vertex(vid);
+        // Find the count of the spherical harmonics coefficients
+        if constexpr (HasVertexGaussianSplat<MeshType>) {
+            if (m.isVertexGaussianSplatAvailable()) {
+                if (shCoeffCount > 0)
+                    v.gaussianSplat().resizeSHCoeffs(shCoeffCount);
+            }
+        }
         if (header.format() == ply::ASCII) {
             detail::readPlyVertexTxt(
                 file, v, m, header.vertexProperties(), header.isVcgGenerated());
