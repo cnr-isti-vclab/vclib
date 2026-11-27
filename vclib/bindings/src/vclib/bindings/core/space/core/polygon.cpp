@@ -46,8 +46,7 @@ void populatePolygon(pybind11::module& m)
         [](Poly& p, const PointType& pt) { p.pushBack(pt); },
         "point"_a);
 
-    c.def(
-        "point", [](const Poly& p, uint i) { return p.point(i); }, "i"_a);
+    c.def("point", [](const Poly& p, uint i) { return p.point(i); }, "i"_a);
     c.def(
         "set_point",
         [](Poly& p, uint i, const PointType& pt) { p.point(i) = pt; },

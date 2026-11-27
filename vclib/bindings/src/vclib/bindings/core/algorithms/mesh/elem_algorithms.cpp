@@ -35,46 +35,46 @@ void initElemAlgorithms(pybind11::module& m)
     namespace py = pybind11;
     using namespace py::literals;
 
-    auto fAllMeshes = []<MeshConcept MeshType>(
-                          pybind11::module& m, MeshType = MeshType()) {
-        using VertexType = vcl::VertexType<MeshType>;
+    auto fAllMeshes =
+        []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
+            using VertexType = vcl::VertexType<MeshType>;
 
-        m.def(
-            "bounding_box",
-            [](const VertexType& v) {
-                detail::checkValidElementProxy(v);
-                return vcl::boundingBox(v);
-            },
-            "vertex"_a);
+            m.def(
+                "bounding_box",
+                [](const VertexType& v) {
+                    detail::checkValidElementProxy(v);
+                    return vcl::boundingBox(v);
+                },
+                "vertex"_a);
 
-        m.def(
-            "distance",
-            [](const VertexType& v, const Point3d& p) {
-                detail::checkValidElementProxy(v);
-                return vcl::distance(v, p);
-            },
-            "vertex"_a,
-            "point"_a);
+            m.def(
+                "distance",
+                [](const VertexType& v, const Point3d& p) {
+                    detail::checkValidElementProxy(v);
+                    return vcl::distance(v, p);
+                },
+                "vertex"_a,
+                "point"_a);
 
-        m.def(
-            "distance",
-            [](const Point3d& p, const VertexType& v) {
-                detail::checkValidElementProxy(v);
-                return vcl::distance(p, v);
-            },
-            "point"_a,
-            "vertex"_a);
+            m.def(
+                "distance",
+                [](const Point3d& p, const VertexType& v) {
+                    detail::checkValidElementProxy(v);
+                    return vcl::distance(p, v);
+                },
+                "point"_a,
+                "vertex"_a);
 
-        m.def(
-            "distance",
-            [](const VertexType& v1, const VertexType& v2) {
-                detail::checkValidElementProxy(v1);
-                detail::checkValidElementProxy(v2);
-                return vcl::distance(v1, v2);
-            },
-            "v1"_a,
-            "v2"_a);
-    };
+            m.def(
+                "distance",
+                [](const VertexType& v1, const VertexType& v2) {
+                    detail::checkValidElementProxy(v1);
+                    detail::checkValidElementProxy(v2);
+                    return vcl::distance(v1, v2);
+                },
+                "v1"_a,
+                "v2"_a);
+        };
     defForAllMeshTypes(m, fAllMeshes);
 
     auto fFaceMeshes = []<FaceMeshConcept MeshType>(

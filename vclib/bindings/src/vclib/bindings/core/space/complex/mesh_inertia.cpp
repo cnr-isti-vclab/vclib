@@ -75,7 +75,9 @@ struct PyMeshInertia
     {
         checkNonZeroVolume();
         return std::visit(
-            [](const auto& mi) { return mi.template inertiaTensor<Matrix33d>(); },
+            [](const auto& mi) {
+                return mi.template inertiaTensor<Matrix33d>();
+            },
             inertia);
     }
 
@@ -105,7 +107,7 @@ void initMeshInertia(pybind11::module& m)
 
     auto fFaceMeshes = []<FaceMeshConcept MeshType>(
                            py::class_<PyMeshInertia>& c,
-                           MeshType                   = MeshType()) {
+                           MeshType = MeshType()) {
         c.def(py::init<const MeshType&>(), "mesh"_a);
     };
     defForAllMeshTypes(c, fFaceMeshes);

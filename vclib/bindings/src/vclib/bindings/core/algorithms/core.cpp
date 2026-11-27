@@ -334,19 +334,18 @@ void initCoreAlgorithms(pybind11::module& m)
             return vcl::fitPlaneToPointCloud<double>(pts);
         });
 
-    auto fitWeightedPlane =
-        [](py::handle points, const std::vector<double>& weights) {
-            auto pts = pyToPointVector<3>(points);
-            if (pts.empty()) {
-                throw std::invalid_argument(
-                    "Cannot fit plane to an empty point set.");
-            }
-            if (pts.size() != weights.size()) {
-                throw WrongSizeException(
-                    "Weights size must match point count.");
-            }
-            return vcl::fitPlaneToWeightedPointCloud<Point3d>(pts, weights);
-        };
+    auto fitWeightedPlane = [](py::handle                 points,
+                               const std::vector<double>& weights) {
+        auto pts = pyToPointVector<3>(points);
+        if (pts.empty()) {
+            throw std::invalid_argument(
+                "Cannot fit plane to an empty point set.");
+        }
+        if (pts.size() != weights.size()) {
+            throw WrongSizeException("Weights size must match point count.");
+        }
+        return vcl::fitPlaneToWeightedPointCloud<Point3d>(pts, weights);
+    };
     m.def(
         "fit_plane_to_weighted_point_cloud",
         [fitWeightedPlane](

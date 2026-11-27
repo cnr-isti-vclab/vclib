@@ -509,8 +509,8 @@ void defForAllEdgeTypes(pybind11::module_& pymod, auto&& function)
 }
 
 /**
- * @brief Converts a (N, DIM) NumPy array or Python sequence of Points/coordinates
- * into a std::vector<Point<double, DIM>>.
+ * @brief Converts a (N, DIM) NumPy array or Python sequence of
+ * Points/coordinates into a std::vector<Point<double, DIM>>.
  */
 template<uint DIM>
 std::vector<Point<double, DIM>> pyToPointVector(pybind11::handle obj)

@@ -28,7 +28,7 @@ void populateKDTree(pybind11::module& m)
     using PointType = Point<Scalar, DIM>;
     using KT        = KDTree<PointType>;
 
-    std::string   cName = "KDTree" + std::to_string(DIM);
+    std::string    cName = "KDTree" + std::to_string(DIM);
     py::class_<KT> c(m, cName.c_str());
 
     // Register typed Mesh constructors before the catch-all py::object points
@@ -206,7 +206,7 @@ void populateKDTree(pybind11::module& m)
         "neighbors_indices_in_distance_with_distances",
         [](const KT& kt, const PointType& queryPoint, Scalar dist) {
             std::vector<Scalar> dists;
-            auto indices =
+            auto                indices =
                 kt.neighborsIndicesInDistance(queryPoint, dist, dists);
             return std::make_pair(std::move(indices), std::move(dists));
         },
