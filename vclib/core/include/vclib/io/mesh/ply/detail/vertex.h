@@ -99,55 +99,33 @@ void readPlyVertexProperty(
         }
     }
     // Gaussian Splat properties
-    else if (p.name >= ply::f_dc_0 && p.name <= ply::f_rest_44) {
+    else if (p.name >= ply::f_dc_0 && p.name <= ply::rot_3) {
         if constexpr (HasVertexGaussianSplat<MeshType>) {
             using Scalar = VertexType::GaussianSplatType::ScalarType;
             if (mesh.isVertexGaussianSplatAvailable()) {
-                int a = p.name - ply::f_dc_0;
-                v.gaussianSplat().shCoeffAt(a) =
-                    io::readPrimitiveType<Scalar>(file, p.type, end);
-                hasBeenRead = true;
-            }
-        }
-    }
-    else if (p.name == ply::opacity) {
-        if constexpr (HasVertexGaussianSplat<MeshType>) {
-            using Scalar = VertexType::GaussianSplatType::ScalarType;
-            if (mesh.isVertexGaussianSplatAvailable()) {
-                v.gaussianSplat().opacity() =
-                    io::readPrimitiveType<Scalar>(file, p.type, end);
-                hasBeenRead = true;
-            }
-        }
-    }
-    else if (p.name >= ply::scale_0 && p.name <= ply::scale_2) {
-        if constexpr (HasVertexGaussianSplat<MeshType>) {
-            using Scalar = VertexType::GaussianSplatType::ScalarType;
-            if (mesh.isVertexGaussianSplatAvailable()) {
-                int a = p.name - ply::scale_0;
-                v.gaussianSplat().scale()[a] =
-                    io::readPrimitiveType<Scalar>(file, p.type, end);
-                hasBeenRead = true;
-            }
-        }
-    }
-    else if (p.name >= ply::rot_0 && p.name <= ply::rot_3) {
-        if constexpr (HasVertexGaussianSplat<MeshType>) {
-            using Scalar = VertexType::GaussianSplatType::ScalarType;
-            if (mesh.isVertexGaussianSplatAvailable()) {
-                int a = p.name - ply::rot_0;
-                v.gaussianSplat().rotation().coeffs()[a] =
-                    io::readPrimitiveType<Scalar>(file, p.type, end);
-                hasBeenRead = true;
-            }
-        }
-    }
-    else if (p.name == ply::unknown) {
-        if constexpr (HasVertexCustomComponents<MeshType>) {
-            if (mesh.hasVertexCustomComponent(p.unknownPropertyName)) {
-                io::readCustomComponent(
-                    file, v, p.unknownPropertyName, p.type, end);
-                hasBeenRead = true;
+                if (p.name >= ply::f_dc_0 && p.name <= ply::f_rest_44) {
+                    int a = p.name - ply::f_dc_0;
+                    v.gaussianSplat().shCoeffAt(a) =
+                        io::readPrimitiveType<Scalar>(file, p.type, end);
+                    hasBeenRead = true;
+                }
+                else if (p.name == ply::opacity) {
+                    v.gaussianSplat().opacity() =
+                        io::readPrimitiveType<Scalar>(file, p.type, end);
+                    hasBeenRead = true;
+                }
+                else if (p.name >= ply::scale_0 && p.name <= ply::scale_2) {
+                    int a = p.name - ply::scale_0;
+                    v.gaussianSplat().scale()[a] =
+                        io::readPrimitiveType<Scalar>(file, p.type, end);
+                    hasBeenRead = true;
+                }
+                else if (p.name >= ply::rot_0 && p.name <= ply::rot_3) {
+                    int a = p.name - ply::rot_0;
+                    v.gaussianSplat().rotation().coeffs()[a] =
+                        io::readPrimitiveType<Scalar>(file, p.type, end);
+                    hasBeenRead = true;
+                }
             }
         }
     }

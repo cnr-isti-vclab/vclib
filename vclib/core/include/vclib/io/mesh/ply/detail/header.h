@@ -362,15 +362,6 @@ public:
 
     uint gaussianSplatSHCoeffsCount() const
     {
-        // uint shCoeffCount = 0;
-        // for (const PlyProperty& p : mElements[mVertElemPos].properties) {
-        //     if (p.name >= ply::f_dc_0 &&
-        //         p.name <= ply::f_rest_44 &&
-        //         p.name - ply::f_dc_0 + 1 > shCoeffCount)
-        //     {
-        //         shCoeffCount = p.name - ply::f_dc_0 + 1;
-        //     }
-        // }
         return (getInfo().vertexGaussianSplatSHDegree() + 1) *
                 (getInfo().vertexGaussianSplatSHDegree() + 1) * 3;
     }
