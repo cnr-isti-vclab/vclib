@@ -11,6 +11,7 @@
 #include <vclib/base.h>
 #include <vclib/mesh.h>
 
+#include <algorithm>
 #include <array>
 #include <bitset>
 #include <string>
@@ -131,8 +132,8 @@ private:
     // Mesh Type
     MeshType mType = MeshType::UNKNOWN;
 
-    // Gaussian Splat Spherical Harmonics Degree
-    uint mGaussianSplatSHDegree = 0;
+    // Gaussian Splat Spherical Harmonics Degree (UINT_NULL when unset/empty)
+    uint mGaussianSplatSHDegree = UINT_NULL;
 
 public:
     /**
@@ -206,6 +207,14 @@ public:
                     true,
                     getType<typename VertexType<
                         Mesh>::GaussianSplatType::ScalarType>());
+                uint degree = UINT_NULL;
+                for (const auto& v : m.vertices()) {
+                    uint d = v.gaussianSplat().shDegree();
+                    if (d != UINT_NULL && (degree == UINT_NULL || d > degree)) {
+                        degree = d;
+                    }
+                }
+                setVertexGaussianSplatSHDegree(degree);
             }
         }
         if constexpr (HasVertexCustomComponents<Mesh>) {
@@ -308,7 +317,8 @@ public:
         for (auto& v : mElemCustomComponents)
             v.clear();
 
-        mType = MeshType::UNKNOWN;
+        mType                  = MeshType::UNKNOWN;
+        mGaussianSplatSHDegree = UINT_NULL;
     }
 
     /**
@@ -623,6 +633,8 @@ public:
         DataType t = PrimitiveType::DOUBLE)
     {
         setElementComponent(VERTEX, GAUSSIAN_SPLAT, b, t);
+        if (!b)
+            mGaussianSplatSHDegree = UINT_NULL;
     }
 
     void setVertexGaussianSplatSHDegree(uint degree)
@@ -900,6 +912,19 @@ public:
             res.mType = mType;
         }
         res.mElemCustomComponents = mElemCustomComponents;
+
+        if (res.hasVertexGaussianSplat()) {
+            if (mGaussianSplatSHDegree == UINT_NULL) {
+                res.mGaussianSplatSHDegree = info.mGaussianSplatSHDegree;
+            }
+            else if (info.mGaussianSplatSHDegree == UINT_NULL) {
+                res.mGaussianSplatSHDegree = mGaussianSplatSHDegree;
+            }
+            else {
+                res.mGaussianSplatSHDegree = std::min(
+                    mGaussianSplatSHDegree, info.mGaussianSplatSHDegree);
+            }
+        }
 
         return res;
     }

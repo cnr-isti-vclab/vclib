@@ -37,6 +37,8 @@ inline MeshInfo plyFormatCapability()
     info.setVertexQuality();
     info.setVertexTexCoord();
     info.setVertexMaterialIndex();
+    info.setVertexGaussianSplat();
+    info.setVertexGaussianSplatSHDegree(3);
     info.setVertexCustomComponents();
 
     info.setFaceVertexReferences();

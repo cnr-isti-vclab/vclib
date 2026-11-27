@@ -245,6 +245,57 @@ void writePlyVertices(
                     hasBeenWritten = true;
                 }
             }
+            else if (p.name >= ply::f_dc_0 && p.name <= ply::rot_3) {
+                if constexpr (HasVertexGaussianSplat<MeshType>) {
+                    if (mesh.isVertexGaussianSplatAvailable()) {
+                        if (p.name >= ply::f_dc_0 && p.name <= ply::f_rest_44) {
+                            uint a = p.name - ply::f_dc_0;
+                            if (a < v.gaussianSplat().shCoeffs().size()) {
+                                io::writeProperty(
+                                    file,
+                                    v.gaussianSplat().shCoeffAt(a),
+                                    p.type,
+                                    format);
+                            }
+                            else {
+                                io::writeProperty(file, 0, p.type, format);
+                            }
+                            hasBeenWritten = true;
+                        }
+                        else if (p.name == ply::opacity) {
+                            io::writeProperty(
+                                file,
+                                v.gaussianSplat().opacity(),
+                                p.type,
+                                format);
+                            hasBeenWritten = true;
+                        }
+                        else if (
+                            p.name >= ply::scale_0 && p.name <= ply::scale_2) {
+                            uint a = p.name - ply::scale_0;
+                            io::writeProperty(
+                                file,
+                                std::log(v.gaussianSplat().scale()[a]),
+                                p.type,
+                                format);
+                            hasBeenWritten = true;
+                        }
+                        else if (p.name >= ply::rot_0 && p.name <= ply::rot_3) {
+                            uint a = p.name - ply::rot_0;
+                            // 3DGS PLY stores quaternion as (w, x, y, z);
+                            // Eigen::Quaternion::coeffs() is (x, y, z, w)
+                            io::writeProperty(
+                                file,
+                                v.gaussianSplat()
+                                    .rotation()
+                                    .coeffs()[(a + 3) % 4],
+                                p.type,
+                                format);
+                            hasBeenWritten = true;
+                        }
+                    }
+                }
+            }
             else if (p.name == ply::unknown) {
                 if constexpr (HasVertexCustomComponents<MeshType>) {
                     if (mesh.hasVertexCustomComponent(p.unknownPropertyName)) {
