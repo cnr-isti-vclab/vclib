@@ -25,11 +25,7 @@ void initQuaternion(pybind11::module& m)
     py::class_<Q> c(m, "Quaternion");
     c.def(py::init<>());
     c.def(
-        py::init<Scalar, Scalar, Scalar, Scalar>(),
-        "w"_a,
-        "x"_a,
-        "y"_a,
-        "z"_a);
+        py::init<Scalar, Scalar, Scalar, Scalar>(), "w"_a, "x"_a, "y"_a, "z"_a);
     c.def(py::init<Scalar, const Point3d&>(), "angle"_a, "axis"_a);
     c.def(py::init<const Matrix33d&>(), "rot_matrix"_a);
     c.def(py::init<const Matrix44d&>(), "rot_matrix"_a);

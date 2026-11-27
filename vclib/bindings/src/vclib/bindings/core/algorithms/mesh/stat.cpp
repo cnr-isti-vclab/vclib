@@ -26,7 +26,7 @@ void defWeightedBarycenter(pybind11::module& m)
 
     m.def(
         "weighted_barycenter",
-        [](const MeshType& m,
+        [](const MeshType&                                            m,
            const pybind11::array_t<double, pybind11::array::c_style>& weights) {
             if (weights.ndim() != 1 ||
                 static_cast<std::size_t>(weights.shape(0)) != m.vertexCount()) {

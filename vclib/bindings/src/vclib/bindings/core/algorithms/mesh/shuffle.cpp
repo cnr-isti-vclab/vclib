@@ -56,10 +56,10 @@ void defElemShuffle(pybind11::module& m, const std::string& elemName)
 
 void initShuffleAlgorithms(pybind11::module& m)
 {
-    auto fAllMeshes = []<MeshConcept MeshType>(
-                          pybind11::module& m, MeshType = MeshType()) {
-        detail::defElemShuffle<ElemId::VERTEX, MeshType>(m, "vertex");
-    };
+    auto fAllMeshes =
+        []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
+            detail::defElemShuffle<ElemId::VERTEX, MeshType>(m, "vertex");
+        };
     defForAllMeshTypes(m, fAllMeshes);
 
     auto fFaceMeshes = []<FaceMeshConcept MeshType>(
