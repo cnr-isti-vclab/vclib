@@ -135,6 +135,9 @@ inline void* getDisplayId()
  * This class encapsulates QApplication and ensures proper initialization and
  * teardown. It correctly shuts down the rendering context (if BGFX is used)
  * during destruction, avoiding crashes caused by late static resource cleanup.
+ * Render windows must be destroyed before the application. With bgfx, Qt
+ * initializes a hidden default surface, so Qt windows require swap-chain
+ * support and cannot attach to a context initialized with another window.
  */
 class Application
 {

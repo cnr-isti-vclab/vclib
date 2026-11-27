@@ -48,7 +48,8 @@ private:
     bgfx::FrameBufferHandle mFbh             = BGFX_INVALID_HANDLE;
 
     // size of the canvas
-    Point2<uint> mSize = {0, 0};
+    Point2<uint> mSize             = {0, 0};
+    bool         mSurfaceSuspended = false;
 
     vcl::Color mDefaultClearColor = vcl::Color::Black;
 
@@ -79,7 +80,7 @@ public:
         onResize(width, height);
     }
 
-    ~CanvasBGFX() { releaseResources(); }
+    ~CanvasBGFX() { onClose(); }
 
     Point2<uint> size() const { return mSize; }
 
@@ -144,8 +145,31 @@ public:
     {
         if (bgfx::isValid(mFbh) || Context::instance().isValidViewId(mViewId)) {
             releaseResources();
-            // process the deferred destruction of the resources
+            // Wait for the render thread to process deferred destruction.
             bgfx::frame();
+            bgfx::frame();
+        }
+    }
+
+    void onSurfaceHidden()
+    {
+        if (mWinId && bgfx::isValid(mFbh)) {
+            // Qt may destroy the native surface when a window is hidden.
+            mSurfaceSuspended = true;
+            bgfx::setViewFrameBuffer(mViewId, BGFX_INVALID_HANDLE);
+            bgfx::destroy(mFbh);
+            mFbh = BGFX_INVALID_HANDLE;
+            bgfx::frame();
+            bgfx::frame();
+        }
+    }
+
+    void onSurfaceShown(void* winId)
+    {
+        if (mSurfaceSuspended) {
+            mWinId = winId;
+            mSurfaceSuspended = false;
+            onResize(mSize.x(), mSize.y());
         }
     }
 
@@ -158,6 +182,8 @@ public:
     void onResize(uint width, uint height)
     {
         mSize = {width, height};
+        if (mSurfaceSuspended)
+            return;
 
         auto& ctx = Context::instance();
         if (mWinId && bgfx::isValid(mFbh)) {
@@ -189,6 +215,9 @@ public:
      */
     void onPaint()
     {
+        if (mSurfaceSuspended)
+            return;
+
         const bool newReadRequested =
             (mReadRequest != std::nullopt && mReadRequest->isPending());
 

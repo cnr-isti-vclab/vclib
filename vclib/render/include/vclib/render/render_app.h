@@ -179,6 +179,24 @@ private:
 
     void wmPaint() { CanvasType::onPaint(); }
 
+    void wmSurfaceHidden()
+    {
+        if constexpr (requires(CanvasType& canvas) {
+                          canvas.onSurfaceHidden();
+                      }) {
+            CanvasType::onSurfaceHidden();
+        }
+    }
+
+    void wmSurfaceShown()
+    {
+        if constexpr (requires(CanvasType& canvas, void* window) {
+                          canvas.onSurfaceShown(window);
+                      }) {
+            CanvasType::onSurfaceShown((void*) WindowManagerType::winId());
+        }
+    }
+
     void wmClose()
     {
         // release the resources of the drawers (in reverse order of
@@ -445,6 +463,11 @@ class RenderApp<WindowManagerT, CanvasT, Drawers...>::WM
      * triggers a paint event.
      */
     static void paint(RenderApp* r) { r->wmPaint(); }
+
+    // Suspend and recreate a canvas swap chain when its native surface changes.
+    static void surfaceHidden(RenderApp* r) { r->wmSurfaceHidden(); }
+
+    static void surfaceShown(RenderApp* r) { r->wmSurfaceShown(); }
 
     /**
      * @brief The WindowManagerType calls this member function right before the

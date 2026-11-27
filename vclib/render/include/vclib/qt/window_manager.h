@@ -40,6 +40,9 @@ public:
             RenderAppConcept<DerivedRenderApp>,
             "The DerivedRenderApp must satisfy the RenderAppConcept.");
         setSurfaceType(QSurface::OpenGLSurface);
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+        detail::WindowManagerNative::initBgfxContext();
+#endif
     }
 
     explicit WindowManager(
@@ -115,6 +118,14 @@ public:
 protected:
     bool event(QEvent* event) override
     {
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+        if (event->type() == QEvent::Hide) {
+            DerivedRenderApp::WM::surfaceHidden(derived());
+        }
+        else if (event->type() == QEvent::Show) {
+            DerivedRenderApp::WM::surfaceShown(derived());
+        }
+#endif
         if (event->type() == QEvent::UpdateRequest) {
             DerivedRenderApp::WM::paint(derived());
             return true;

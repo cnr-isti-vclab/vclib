@@ -68,6 +68,7 @@ public:
             Qt::WA_PaintOnScreen); // do not remove - needed on macos and x
         setAttribute(Qt::WA_DontCreateNativeAncestors);
         setAttribute(Qt::WA_NativeWindow);
+        detail::WindowManagerNative::initBgfxContext();
 #endif
         setFocusPolicy(Qt::StrongFocus);
     }
@@ -219,7 +220,14 @@ protected:
     void showEvent(QShowEvent* event) override
     {
         Base::showEvent(event);
+        DerivedRenderApp::WM::surfaceShown(derived());
         DerivedRenderApp::WM::init(derived());
+    }
+
+    void hideEvent(QHideEvent* event) override
+    {
+        DerivedRenderApp::WM::surfaceHidden(derived());
+        Base::hideEvent(event);
     }
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
     void initializeGL() override { DerivedRenderApp::WM::init(derived()); }
