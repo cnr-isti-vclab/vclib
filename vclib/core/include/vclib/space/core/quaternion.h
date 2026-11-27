@@ -126,6 +126,24 @@ public:
     }
 
     /**
+     * @brief Serializes the quaternion to the given output stream.
+     * @param[in] os: The output stream.
+     */
+    void serialize(std::ostream& os) const
+    {
+        vcl::serializeN(os, Base::coeffs().data(), 4);
+    }
+
+    /**
+     * @brief Deserializes the quaternion from the given input stream.
+     * @param[in] is: The input stream.
+     */
+    void deserialize(std::istream& is)
+    {
+        vcl::deserializeN(is, Base::coeffs().data(), 4);
+    }
+
+    /**
      * @brief Computes the hash value of the quaternion.
      *
      * This function computes a hash value of the quaternion, which can be used

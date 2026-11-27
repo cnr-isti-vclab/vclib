@@ -13,7 +13,9 @@
 #include "quaternion.h"
 
 #include <algorithm>
-#include <array>
+#include <cmath>
+#include <stdexcept>
+#include <vector>
 
 namespace vcl {
 
@@ -22,7 +24,12 @@ namespace vcl {
  * - an opacity (1 scalar) component
  * - a scale (3 scalars) component
  * - a rotation (1 quat = 4 scalars) component
- * - 48 spherical harmonics components
+ * - a variable-size vector of spherical harmonics (SH) coefficients of size
+ *   `SH_COLOR * (degree + 1)^2` (empty when uninitialized)
+ *
+ * When the spherical harmonics coefficients vector is empty (e.g., after default
+ * construction or `resizeSHCoeffs(0)`), the SH degree is set to `UINT_NULL`,
+ * which acts as a sentinel value indicating that no SH coefficients are stored.
  *
  * The Covariance matrix of the 3D gaussian can be calculated from
  * the scale and rotation components.
@@ -70,30 +77,45 @@ private:
     ScalarType        mOpacity  {1};
     PointType         mScale    {1, 1, 1};
     QuatType          mRotation {1, 0, 0, 0}; // Identity rotation
-    uint              mSHDegree {0};
+    uint              mSHDegree {UINT_NULL};  // UINT_NULL when SH coeffs are empty
     SHCoeffVectorType mSHCoeffs {};           // Initialized with zero elements
 
 public:
+    /**
+     * @brief Default constructor.
+     *
+     * Initializes the 3D gaussian with opacity 1, scale (1, 1, 1), identity
+     * rotation, an empty spherical harmonics vector, and `shDegree()` set to
+     * `UINT_NULL`.
+     */
     GaussianSplat() = default;
 
     /**
+     * @brief Constructs a GaussianSplat with the given opacity, scale,
+     * rotation, and spherical harmonics coefficients.
+     *
+     * If `shCoeffs` is empty, `shDegree()` is set to `UINT_NULL`. Otherwise,
+     * `shCoeffs.size()` must equal `SH_COLOR * (degree + 1)^2` for a
+     * non-negative integer `degree`.
+     *
+     * @param[in] opacity: The opacity of the 3D gaussian.
+     * @param[in] scale: The scale of the 3D gaussian.
+     * @param[in] rotation: The rotation quaternion of the 3D gaussian.
+     * @param[in] shCoeffs: The spherical harmonics coefficients vector.
+     *
      * @throws std::runtime_error if a vector of an invalid size is provided.
      */
     GaussianSplat(
+        ScalarType               opacity,
         const PointType&         scale,
         const QuatType&          rotation,
         const SHCoeffVectorType& shCoeffs) :
-            mScale(scale), mRotation(rotation)
-    {       
-        double intPart;
-        double fracPart = std::modf(std::sqrt(shCoeffs.size() / static_cast<float>(SH_COLOR)), &intPart);
-
-        if (fracPart != 0.0 || intPart <= 0 || intPart > 4)
-            throw std::runtime_error(
-                "Argument error: Invalid vector size\n");
-
-        mSHDegree = static_cast<uint>(intPart) - 1;
-        mSHCoeffs(shCoeffs);
+            mOpacity(opacity),
+            mScale(scale),
+            mRotation(rotation),
+            mSHCoeffs(shCoeffs)
+    {
+        mSHDegree = getDegreeFromSize(mSHCoeffs.size());
     }
 
     /**
@@ -144,17 +166,23 @@ public:
     }
 
     /**
-     * @brief Returns the degree of the GaussianSplat object.
+     * @brief Returns the spherical harmonics degree of the GaussianSplat object,
+     * or `UINT_NULL` if no spherical harmonics coefficients are stored.
      *
-     * @return The degree of the GaussianSplat object.
+     * @return The degree of the GaussianSplat object, or `UINT_NULL` if empty.
      */
     uint shDegree() const { return mSHDegree; }
 
     /**
      * @brief Resizes the spherical harmonics vector.
      *
+     * If `size == 0`, the spherical harmonics vector is cleared and `shDegree()`
+     * is set to `UINT_NULL`. Otherwise, `size` must equal
+     * `SH_COLOR * (degree + 1)^2` for a non-negative integer `degree`.
+     *
      * @param[in] size: The uint argument used to resize the vector
-     * containing the spherical harmonics coefficients of the GaussianSplat object.
+     * containing the spherical harmonics coefficients of the GaussianSplat
+     * object.
      *
      * @throws std::runtime_error if an invalid size is provided.
      */
@@ -211,16 +239,17 @@ public:
      *
      * The member function takes a variable number of scalar arguments, which
      * are used to set the spherical harmonics coefficients of the GaussianSplat
-     * object. The number of arguments must be equal to:
-     *     SH_COLOR * (degree + 1)^2
-     * where degree is an integer between 0 and 3, with bounds included.
+     * object. The number of arguments must be either 0 (which clears the
+     * coefficients and sets `shDegree()` to `UINT_NULL`) or equal to:
+     *     `SH_COLOR * (degree + 1)^2`
+     * where `degree` is a non-negative integer.
      *
      * @tparam Scalars: The types of the scalar arguments.
      *
      * @param[in] scalars: The scalar arguments used to set the
      * spherical harmonics coefficients of the GaussianSplat object.
      *
-     * @throws std::runtime_error if a vector of an invalid size is provided.
+     * @throws std::runtime_error if an invalid number of arguments is provided.
      */
     template<typename... Scalars>
     void setSHCoeffs(Scalars... scalars)
@@ -235,9 +264,10 @@ public:
      *
      * @param[in] coeffs: The vector argument used to set the
      * spherical harmonics coefficients of the GaussianSplat object.
-     * The number of arguments must be equal to:
-     *     SH_COLOR * (degree + 1)^2
-     * where degree is an integer between 0 and 3, with bounds included.
+     * Its size must be either 0 (which clears the coefficients and sets
+     * `shDegree()` to `UINT_NULL`) or equal to:
+     *     `SH_COLOR * (degree + 1)^2`
+     * where `degree` is a non-negative integer.
      *
      * @throws std::runtime_error if a vector of an invalid size is provided.
      */
@@ -266,7 +296,7 @@ public:
             return *this;
         }
         else {
-            std::array<S, mSHCoeffs.size()> coeffs;
+            std::vector<S> coeffs(mSHCoeffs.size());
 
             std::transform(
                 mSHCoeffs.begin(),
@@ -275,6 +305,7 @@ public:
                 [](ScalarType value) { return static_cast<S>(value); });
 
             return GaussianSplat<S>(
+                static_cast<S>(mOpacity),
                 mScale.template cast<S>(),
                 mRotation.template cast<S>(),
                 coeffs);
@@ -289,10 +320,8 @@ public:
      */
     void serialize(std::ostream& os) const
     {
-        vcl::serialize(os, mOpacity);
-        mScale.serialize(os);
-        vcl::serializeN(os, mRotation.coeffs().data(), 4);
-        vcl::serializeN(os, mSHCoeffs.data(), mSHCoeffs.size());
+        vcl::serialize(os, mOpacity, mScale, mRotation, mSHDegree);
+        vcl::serialize(os, mSHCoeffs);
     }
 
     /**
@@ -301,22 +330,29 @@ public:
      */
     void deserialize(std::istream& is)
     {
-        vcl::deserialize(is, mOpacity);
-        mScale.deserialize(is);
-        vcl::deserializeN(is, mRotation.coeffs().data(), 4);
-        vcl::deserializeN(is, mSHCoeffs.data(), mSHCoeffs.size());
+        vcl::deserialize(is, mOpacity, mScale, mRotation, mSHDegree);
+        vcl::deserialize(is, mSHCoeffs);
     }
 
 private:
-    int getDegreeFromSize(int size) const {
-        double intPart;
-        double fracPart = std::modf(std::sqrt(size / static_cast<float>(SH_COLOR)), &intPart);
+    static uint getDegreeFromSize(std::size_t size)
+    {
+        if (size == 0)
+            return UINT_NULL;
 
-        if (fracPart != 0.0 || intPart <= 0 || intPart > 4)
+        if (size % SH_COLOR != 0)
             throw std::runtime_error(
                 "Argument error: Invalid vector size\n");
 
-        return static_cast<uint>(intPart) - 1;
+        std::size_t k = size / SH_COLOR;
+        std::size_t r = static_cast<std::size_t>(
+            std::round(std::sqrt(static_cast<double>(k))));
+
+        if (r * r != k)
+            throw std::runtime_error(
+                "Argument error: Invalid vector size\n");
+
+        return static_cast<uint>(r - 1);
     }
 };
 
