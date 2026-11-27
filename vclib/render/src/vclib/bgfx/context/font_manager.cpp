@@ -7,6 +7,7 @@
 
 #include <vclib/bgfx/context/font_manager.h>
 
+#include <algorithm>
 #include <fstream>
 #include <vector>
 
@@ -18,10 +19,13 @@ FontManager::FontManager()
 
 FontManager::~FontManager()
 {
-    for (auto& [fontName, handle] : mFontMap) {
+    for (auto& [key, entry] : mFontMap) {
+        mFontManager.destroyFont(entry.first);
+    }
+    for (auto& [fontName, handle] : mBaseFontMap) {
         mFontManager.destroyFont(handle);
     }
-    for (auto& [pair, handle] : mTTMap) {
+    for (auto& [fontName, handle] : mTTMap) {
         mFontManager.destroyTtf(handle);
     }
 }
@@ -64,33 +68,52 @@ bgfx::FontHandle FontManager::getFontHandle(
     uint16_t      fontSize)
 {
     std::string fontName = VclFont::FONT_NAMES[font];
-    auto        it       = mFontMap.find({fontName, fontSize});
-    if (it != mFontMap.end()) {
-        return it->second;
+    if (mTTMap.find(fontName) == mTTMap.end()) {
+        loadFont(font);
     }
-    else {
-        if (mTTMap.find(fontName) == mTTMap.end()) {
-            loadFont(font);
-        }
-        return getFontHandle(fontName, fontSize);
-    }
+    return getFontHandle(fontName, fontSize);
 }
 
 bgfx::FontHandle FontManager::getFontHandle(
     const std::string& fontName,
     uint16_t           fontSize)
 {
-    auto it = mFontMap.find({fontName, fontSize});
+    fontSize    = std::max<uint16_t>(fontSize, 1);
+    FontKey key = {fontName, fontSize};
+    auto    it  = mFontMap.find(key);
     if (it != mFontMap.end()) {
-        return it->second;
+        mFontLRU.splice(mFontLRU.begin(), mFontLRU, it->second.second);
+        return it->second.first;
     }
-    else {
+
+    auto baseIt = mBaseFontMap.find(fontName);
+    if (baseIt == mBaseFontMap.end()) {
         bgfx::TrueTypeHandle ttHandle = mTTMap.at(fontName);
-        bgfx::FontHandle     font =
-            mFontManager.createFontByPixelSize(ttHandle, 0, fontSize);
-        mFontMap[{fontName, fontSize}] = font;
-        return font;
+        bgfx::FontHandle     baseFont = mFontManager.createFontByPixelSize(
+            ttHandle,
+            0,
+            BASE_SDF_FONT_SIZE,
+            FONT_TYPE_DISTANCE,
+            SDF_GLYPH_PADDING,
+            SDF_GLYPH_PADDING);
+        baseIt = mBaseFontMap.emplace(fontName, baseFont).first;
     }
+
+    while (!mFontLRU.empty() &&
+           (mFontMap.size() >= MAX_CACHED_SCALED_FONTS ||
+            mBaseFontMap.size() + mFontMap.size() >= MAX_OPENED_FONT)) {
+        const FontKey& oldestKey = mFontLRU.back();
+        auto           oldestIt  = mFontMap.find(oldestKey);
+        mFontManager.destroyFont(oldestIt->second.first);
+        mFontMap.erase(oldestIt);
+        mFontLRU.pop_back();
+    }
+
+    bgfx::FontHandle scaledFont =
+        mFontManager.createScaledFontToPixelSize(baseIt->second, fontSize);
+    mFontLRU.push_front(key);
+    mFontMap.emplace(key, std::make_pair(scaledFont, mFontLRU.begin()));
+    return scaledFont;
 }
 
 bgfx::FontManager& FontManager::getBGFXFontManager()

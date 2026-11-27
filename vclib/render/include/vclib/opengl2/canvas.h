@@ -276,15 +276,18 @@ public:
      * @brief Automatically called by the DerivedRenderApp when a drawer asks
      * to read the ID at a specific point.
      *
-     * @param point The point where the ID must be read.
-     * @param callback The callback function that will be called when the ID is
-     * read.
+     * @param[in] point: The point where the ID must be read.
+     * @param[in] callback: The callback function that will be called when the
+     * ID is read.
+     * @param[in] radius: The radius of the area around the point where the ID
+     * must be read. If radius is 0, only the point is read.
      * @return always false
      * @note this function is not supported in opengl2
      */
     [[nodiscard]] bool onReadId(
         const Point2i&     point,
-        CallbackReadBuffer callback = nullptr)
+        CallbackReadBuffer callback = nullptr,
+        uint               radius = 0)
     {
         return false;
     }

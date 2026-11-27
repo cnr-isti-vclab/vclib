@@ -353,9 +353,10 @@ private:
 
     [[nodiscard]] bool dReadId(
         const Point2i&                      point,
-        ReadBufferTypes::CallbackReadBuffer callback = nullptr)
+        ReadBufferTypes::CallbackReadBuffer callback = nullptr,
+        uint                                radius   = 0)
     {
-        return CanvasType::onReadId(point, callback);
+        return CanvasType::onReadId(point, callback, radius);
     }
 
     void dScreenshot(const std::string& filename, uint multiplier = 1)
@@ -760,6 +761,8 @@ public: // TODO - remove this when C++26 is supported
      * `void callback(const ReadData& value)`, where `value` is the
      * ID value read from the canvas encoded into 4 bytes (unsigned 32 bit
      * integer).
+     * @param[in] radius: The radius of the area around the point where the ID
+     * must be read. If radius is 0, only the point is read.
      *
      * @return true if the ID request is successfully submitted, false
      * otherwise.
@@ -767,9 +770,10 @@ public: // TODO - remove this when C++26 is supported
     [[nodiscard]] static bool readId(
         RenderApp*                          r,
         const Point2i&                      point,
-        ReadBufferTypes::CallbackReadBuffer callback = nullptr)
+        ReadBufferTypes::CallbackReadBuffer callback = nullptr,
+        uint                                radius   = 0)
     {
-        return r->dReadId(point, callback);
+        return r->dReadId(point, callback, radius);
     }
 
     /**

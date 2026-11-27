@@ -765,10 +765,10 @@ public:
                 return;
             }
 
-            // unproject the point
-            const Point3f p2d(p.x(), vp[3] - p.y(), depth);
-            auto          unproj = unprojectScreenPosition(
-                p2d, MatrixType(proj * view), vp, homogeneousNDC);
+            // unproject the point (p is in window coordinates, top-left origin)
+            const Point3f winPos(p.x(), p.y(), depth);
+            auto          unproj = unprojectWindowPosition(
+                winPos, MatrixType(proj * view), vp, homogeneousNDC);
 
             this->focus(unproj);
             derived()->update();
@@ -780,7 +780,11 @@ public:
             derived()->update();
     }
 
-    void readIdRequest(double x, double y, std::function<void(uint)> idCallback)
+    void readElementIdRequest(
+        double                                    x,
+        double                                    y,
+        std::function<void(ushort, ushort, uint)> idCallback,
+        uint                                      radius = 0)
     {
         using ReadData = ReadBufferTypes::ReadData;
 
@@ -788,23 +792,72 @@ public:
             return;
 
         // get point
-        const Point2d p(x, y);
+        const Point2i p(static_cast<int>(x), static_cast<int>(y));
 
-        // create the callback
+        const auto canvasSize = DRA::DRW::canvasSize(derived());
+
+        // Compute the exact clamped window dimensions matching
+        // ReadFromGPUBuffer
+        const int startX = std::max(0, p.x() - static_cast<int>(radius));
+        const int endX   = std::min(
+            static_cast<int>(canvasSize.x()) - 1,
+            p.x() + static_cast<int>(radius));
+        const int startY = std::max(0, p.y() - static_cast<int>(radius));
+        const int endY   = std::min(
+            static_cast<int>(canvasSize.y()) - 1,
+            p.y() + static_cast<int>(radius));
+
+        const int winWidth  = endX - startX + 1;
+        const int winHeight = endY - startY + 1;
+
+        // Exact position of the click relative to the window origin (startX,
+        // startY)
+        const int clickX = p.x() - startX;
+        const int clickY = p.y() - startY;
+
         auto callback = [=, this](const ReadData& dt) {
             const auto& data = std::get<ReadBufferTypes::ByteData>(dt);
-            assert(data.size() == 4);
-            // TODO: check how to do this properly
-            const uint id = *(uint32_t*) &data[0];
+
+            assert(data.size() % 8 == 0 && "Corrupted ID buffer size");
+            assert(
+                data.size() == static_cast<size_t>(winWidth * winHeight * 8) &&
+                "Buffer size mismatch");
+
+            ushort bestObjectId    = 0xFFFF;
+            ushort bestElementType = 0xFFFF;
+            uint   bestElementId   = 0;
+            double min_dist        = 1e9;
+
+            size_t count = data.size() / 8;
+            for (size_t i = 0; i < count; ++i) {
+                const uint id_with_type =
+                    *reinterpret_cast<const uint32_t*>(&data[i * 8]);
+                const ushort objectId    = id_with_type >> 16;
+                const ushort elementType = id_with_type & 0xFFFF;
+                const uint   elementId =
+                    *reinterpret_cast<const uint32_t*>(&data[i * 8 + 4]);
+
+                if (objectId != 0xFFFF) {
+                    int    px   = i % winWidth;
+                    int    py   = i / winWidth;
+                    double dist = (px - clickX) * (px - clickX) +
+                                  (py - clickY) * (py - clickY);
+                    if (dist < min_dist) {
+                        min_dist        = dist;
+                        bestObjectId    = objectId;
+                        bestElementType = elementType;
+                        bestElementId   = elementId;
+                    }
+                }
+            }
 
             mReadRequested = false;
 
-            idCallback(id);
+            idCallback(bestObjectId, bestElementType, bestElementId);
             derived()->update();
         };
 
-        mReadRequested =
-            DRA::DRW::readId(derived(), Point2i(p.x(), p.y()), callback);
+        mReadRequested = DRA::DRW::readId(derived(), p, callback, radius);
         if (mReadRequested)
             derived()->update();
     }
