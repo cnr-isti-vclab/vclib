@@ -7,6 +7,13 @@
 
 $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
+#ifdef SURFACE_SECTION_ON
+// cross section
+$input v_worldPos, v_discardFlag
+
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
+#endif
+
 #include <vclib/bgfx/drawable/drawable_mesh/surface_pbr/common.sh>
 
 #include <vclib/bgfx/drawable/drawable_mesh/mesh_data_uniforms.sh>
@@ -34,6 +41,10 @@ SAMPLERCUBE(s_specular, VCL_MRB_CUBEMAP1);
 
 void main()
 {
+#ifdef SURFACE_SECTION_ON
+    discardIfCrossSectionClipped(v_discardFlag, v_worldPos);
+#endif
+
     // texcoord to use
     bool useTexture = isSurfaceTexVertex() || isSurfaceTexWedge();
 

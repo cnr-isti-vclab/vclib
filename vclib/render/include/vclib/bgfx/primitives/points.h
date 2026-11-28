@@ -13,6 +13,8 @@
 #include <vclib/base.h>
 #include <vclib/space/core.h>
 
+#include <vclib/render/settings/cross_section_settings.h>
+
 namespace vcl {
 
 /**
@@ -67,6 +69,8 @@ public:
         float        depthOffset    = 0.0f;
         Color        selectionColor = Color(0x88FF9732, Color::Format::ABGR);
         bool         selectionVisibility = false;
+        
+        CrossSectionSettings crossSectionSettings;
     };
 
 private:
@@ -194,6 +198,15 @@ public:
      * @return The current visual settings.
      */
     const Settings& settings() const { return mSettings; }
+
+    /**
+     * @brief Returns the current cross section settings.
+     * @return The current cross section settings.
+     */
+    const CrossSectionSettings& crossSectionSettings() const
+    {
+        return mSettings.crossSectionSettings;
+    }
 
     /**
      * @brief Returns whether the point set has valid vertex positions.
@@ -476,6 +489,16 @@ public:
     void setSettings(const Settings& settings)
     {
         mSettings              = settings;
+        mIsUpdateProgramNeeded = true;
+    }
+
+    /**
+     * @brief Sets the cross section settings.
+     * @param[in] settings: The cross section settings to apply.
+     */
+    void setCrossSectionSettings(const CrossSectionSettings& settings)
+    {
+        mSettings.crossSectionSettings = settings;
         mIsUpdateProgramNeeded = true;
     }
 
