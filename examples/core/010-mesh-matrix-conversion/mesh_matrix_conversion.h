@@ -122,6 +122,18 @@ inline auto meshMatrixConversion()
     std::cout << "- Faces: " << polyFaces.rows() << "x" << polyFaces.cols()
               << std::endl;
 
+    auto [triPolyFaces, triPolyIndexMap] =
+        vcl::triangulatedFaceVertexIndicesMatrixWithIndexMap<Eigen::MatrixXi>(
+            polyMesh);
+
+    std::cout << "- Triangulated faces: " << triPolyFaces.rows() << "x"
+              << triPolyFaces.cols() << std::endl;
+    std::cout << "- First 4 triangles -> original polygon indices:";
+    for (vcl::uint t = 0; t < 4 && t < triPolyIndexMap.triangleCount(); ++t) {
+        std::cout << " " << triPolyIndexMap.polygon(t);
+    }
+    std::cout << std::endl;
+
     /****** Creating meshes from scratch with matrices ******/
 
     std::cout << "\n=== Creating Mesh from Scratch ===" << std::endl;

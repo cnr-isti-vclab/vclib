@@ -10,6 +10,7 @@
 
 #include "component_view.h"
 
+#include <vclib/bindings/core/mesh/components/custom_components.h>
 #include <vclib/bindings/utils.h>
 
 #include <vclib/mesh.h>
@@ -284,6 +285,12 @@ void initContainer(
 
     detail::addOptionalComponentFunctions<ELEM_ID, CompId::WEDGE_TEX_COORDS>(
         c, name, "wedge_tex_coords");
+
+    if constexpr (MeshType::template hasElementComponent<
+                      ELEM_ID,
+                      CompId::CUSTOM_COMPONENTS>()) {
+        initContainerCustomComponents<ELEM_ID>(c, name);
+    }
 }
 
 } // namespace vcl::bind

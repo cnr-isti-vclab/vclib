@@ -23,13 +23,11 @@ inline vcl::DrawableMesh<MeshType> getDrawableMesh(
         filename = VCLIB_EXAMPLE_MESHES_PATH "/" + filename;
     }
 
-    vcl::MeshInfo info;
-
     vcl::ConsoleLogger log;
 
     log.startTimer();
 
-    MeshType m = vcl::loadMesh<MeshType>(filename, info, log);
+    auto [m, info] = vcl::loadMeshWithInfo<MeshType>(filename, log);
 
     log.stopTimer();
     log.log("Loaded mesh in {:.3f} seconds.", log.time());

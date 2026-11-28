@@ -57,7 +57,8 @@ auto weightedCovarianceMatrixOfPointCloud(
         m += e.outerProduct(e);
         wsum += weights[i];
     }
-    return m / wsum;
+    m /= wsum;
+    return m;
 }
 
 } // namespace vcl

@@ -40,8 +40,11 @@ void initUpdateSelectionTopologyBorderAlgorithms(pybind11::module& m)
 
             m.def(
                 "update_vertex_adjacent_vertices",
-                [](MeshType& m) { return updateVertexAdjacentVertices(m); },
-                "mesh"_a);
+                [](MeshType& m, bool includeOnlyFaces) {
+                    return updateVertexAdjacentVertices(m, includeOnlyFaces);
+                },
+                "mesh"_a,
+                "include_only_faces"_a = false);
         };
 
     defForAllMeshTypes(m, fAllMeshes);
@@ -77,7 +80,7 @@ void initUpdateSelectionTopologyBorderAlgorithms(pybind11::module& m)
 
         m.def(
             "select_crease_face_edges",
-            [](MeshType& m, double arn, double arp, double abe) {
+            [](MeshType& m, double arn, double arp, bool abe) {
                 return selectCreaseFaceEdges(m, arn, arp, abe);
             },
             "mesh"_a,

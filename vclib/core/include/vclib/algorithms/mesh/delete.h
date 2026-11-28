@@ -32,9 +32,29 @@
 
 namespace vcl {
 
-namespace detail {
-
-template<MeshConcept MeshType, ElemId ELEM_ID>
+/**
+ * @brief Deletes all elements of type `ELEM_ID` from the mesh whose
+ * corresponding flag in the range is evaluated to `true`.
+ *
+ * This function iterates over all valid elements of type `ELEM_ID` and deletes
+ * those whose corresponding flag in `elemFilterRng` is `true`. It also updates
+ * all internal references in the mesh so that references to the deleted
+ * elements are properly invalidated.
+ *
+ * @tparam ELEM_ID: The element ID to delete (e.g., vertex, edge, face).
+ * @tparam MeshType: type of the input mesh. It must satisfy the `MeshConcept`.
+ *
+ * @param[in,out] m: input mesh, to be modified in-place.
+ * @param[in] elemFilterRng: range of values that are evaluated as booleans,
+ * one for each valid element of the input mesh. Its type must satisfy the
+ * `Range` concept. If the value is `true`, the corresponding element is
+ * deleted.
+ *
+ * @return The number of elements deleted.
+ *
+ * @ingroup delete
+ */
+template<ElemId ELEM_ID, MeshConcept MeshType>
 auto deleteElementsIf(MeshType& m, Range auto&& elemFilterRng)
 {
     using IndexType = MeshType::IndexType;
@@ -64,7 +84,28 @@ auto deleteElementsIf(MeshType& m, Range auto&& elemFilterRng)
     return count;
 }
 
-template<MeshConcept MeshType, ElemId ELEM_ID>
+/**
+ * @brief Deletes all elements of type `ELEM_ID` from the mesh that satisfy the
+ * provided filter function.
+ *
+ * This function iterates over all valid elements of type `ELEM_ID` and deletes
+ * those for which `elemFilter` returns `true`. It also updates all internal
+ * references in the mesh so that references to the deleted elements are
+ * properly invalidated.
+ *
+ * @tparam ELEM_ID: The element ID to delete (e.g., vertex, edge, face).
+ * @tparam MeshType: type of the input mesh. It must satisfy the `MeshConcept`.
+ *
+ * @param[in,out] m: input mesh, to be modified in-place.
+ * @param[in] elemFilter: a function that takes an element as input and returns
+ * a boolean value that tells whether the element should be deleted (`true`) or
+ * kept (`false`).
+ *
+ * @return The number of elements deleted.
+ *
+ * @ingroup delete
+ */
+template<ElemId ELEM_ID, MeshConcept MeshType>
 auto deleteElementsIf(
     MeshType&                                                    m,
     const std::function<bool(
@@ -73,10 +114,8 @@ auto deleteElementsIf(
     auto view =
         m.template elements<ELEM_ID>() | std::views::transform(elemFilter);
 
-    return deleteElementsIf<MeshType, ELEM_ID>(m, view);
+    return deleteElementsIf<ELEM_ID>(m, view);
 }
-
-} // namespace detail
 
 /**
  * @brief Deletes all vertices from the mesh that satisfy the provided filter
@@ -103,7 +142,7 @@ auto deleteVerticesIf(
     MeshType&                                                  m,
     const std::function<bool(typename MeshType::ConstVertex)>& vertexFilter)
 {
-    return detail::deleteElementsIf<MeshType, ElemId::VERTEX>(m, vertexFilter);
+    return deleteElementsIf<ElemId::VERTEX>(m, vertexFilter);
 }
 
 /**
@@ -129,8 +168,7 @@ auto deleteVerticesIf(
 template<MeshConcept MeshType>
 auto deleteVerticesIf(MeshType& m, Range auto&& vertexFilterRng)
 {
-    return detail::deleteElementsIf<MeshType, ElemId::VERTEX>(
-        m, vertexFilterRng);
+    return deleteElementsIf<ElemId::VERTEX>(m, vertexFilterRng);
 }
 
 /**
@@ -159,7 +197,7 @@ auto deleteFacesIf(
     MeshType&                                                m,
     const std::function<bool(typename MeshType::ConstFace)>& faceFilter)
 {
-    return detail::deleteElementsIf<MeshType, ElemId::FACE>(m, faceFilter);
+    return deleteElementsIf<ElemId::FACE>(m, faceFilter);
 }
 
 /**
@@ -186,7 +224,7 @@ auto deleteFacesIf(
 template<FaceMeshConcept MeshType>
 auto deleteFacesIf(MeshType& m, Range auto&& faceFilterRng)
 {
-    return detail::deleteElementsIf<MeshType, ElemId::FACE>(m, faceFilterRng);
+    return deleteElementsIf<ElemId::FACE>(m, faceFilterRng);
 }
 
 /**
@@ -215,7 +253,7 @@ auto deleteEdgesIf(
     MeshType&                                                m,
     const std::function<bool(typename MeshType::ConstEdge)>& edgeFilter)
 {
-    return detail::deleteElementsIf<MeshType, ElemId::EDGE>(m, edgeFilter);
+    return deleteElementsIf<ElemId::EDGE>(m, edgeFilter);
 }
 
 /**
@@ -242,7 +280,7 @@ auto deleteEdgesIf(
 template<EdgeMeshConcept MeshType>
 auto deleteEdgesIf(MeshType& m, Range auto&& edgeFilterRng)
 {
-    return detail::deleteElementsIf<MeshType, ElemId::EDGE>(m, edgeFilterRng);
+    return deleteElementsIf<ElemId::EDGE>(m, edgeFilterRng);
 }
 
 } // namespace vcl

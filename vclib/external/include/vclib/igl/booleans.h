@@ -579,16 +579,15 @@ MeshType meshBoolean(const MeshType& m0, const MeshType& m1, MeshBoolean op)
     using EigenMatrixX3m = Eigen::Matrix<ScalarType, Eigen::Dynamic, 3>;
 
     // vcl to eigen meshes
-    TriPolyIndexBiMap m0BiMap;
-    TriPolyIndexBiMap m1BiMap;
-
     auto V0 = vcl::vertexPositionsMatrix<EigenMatrixX3m>(m0);
-    auto F0 =
-        vcl::triangulatedFaceVertexIndicesMatrix<Eigen::MatrixX3i>(m0, m0BiMap);
+    auto [F0, m0BiMap] =
+        vcl::triangulatedFaceVertexIndicesMatrixWithIndexMap<Eigen::MatrixX3i>(
+            m0);
 
     auto V1 = vcl::vertexPositionsMatrix<EigenMatrixX3m>(m1);
-    auto F1 =
-        vcl::triangulatedFaceVertexIndicesMatrix<Eigen::MatrixX3i>(m1, m1BiMap);
+    auto [F1, m1BiMap] =
+        vcl::triangulatedFaceVertexIndicesMatrixWithIndexMap<Eigen::MatrixX3i>(
+            m1);
 
     EigenMatrixX3m  VR;
     Eigen::MatrixXi FR;

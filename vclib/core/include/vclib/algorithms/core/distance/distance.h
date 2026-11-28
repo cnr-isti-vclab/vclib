@@ -352,16 +352,15 @@ auto boundedDistance(
  *
  * @ingroup core_distance
  */
-template<
-    Point3Concept    PointType,
-    Triangle3Concept TriangleType,
-    typename ScalarType>
+template<Point3Concept PointType, Triangle3Concept TriangleType>
 auto distance(
     const PointType&    p,
     const TriangleType& triangle,
     PointType&          closest,
     bool                signedDist = false)
 {
+    using ScalarType = PointType::ScalarType;
+
     ScalarType maxDist = std::numeric_limits<ScalarType>::max();
     return boundedDistance(p, triangle, maxDist, closest, signedDist);
 }
@@ -380,15 +379,14 @@ auto distance(
  *
  * @ingroup core_distance
  */
-template<
-    Point3Concept    PointType,
-    Triangle3Concept TriangleType,
-    typename ScalarType>
+template<Point3Concept PointType, Triangle3Concept TriangleType>
 auto distance(
     const PointType&    p,
     const TriangleType& triangle,
     bool                signedDist = false)
 {
+    using ScalarType = PointType::ScalarType;
+
     PointType closest;
 
     ScalarType maxDist = std::numeric_limits<ScalarType>::max();
@@ -400,10 +398,7 @@ auto distance(
  *
  * @ingroup core_distance
  */
-template<
-    Triangle3Concept TriangleType,
-    Point3Concept    PointType,
-    typename ScalarType>
+template<Triangle3Concept TriangleType, Point3Concept PointType>
 auto distance(
     const TriangleType& triangle,
     const PointType&    p,

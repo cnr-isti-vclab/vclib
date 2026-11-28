@@ -5,16 +5,24 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include "mesh_sphere_intersection.h"
+#include "mesh_intersection.h"
 
 #include <vclib/render/mesh_viewer.h>
 
 int main(int argc, char** argv)
 {
-    auto meshes = meshSphereIntersection();
+    auto meshes = meshIntersection();
 
     std::apply(
-        [](auto&&... args) { (vcl::updateVertexAndFaceNormals(args), ...); },
+        [](auto&&... args) {
+            (
+                [](auto& mesh) {
+                    if constexpr (vcl::FaceMeshConcept<decltype(mesh)>) {
+                        vcl::updateVertexAndFaceNormals(mesh);
+                    }
+                }(args),
+                ...);
+        },
         meshes);
 
     return std::apply(

@@ -40,11 +40,10 @@ def load_meshes():
     # The loaded mesh is adapted to the type of mesh you want to use (e.g.
     # loading a file that contains a polygonal mesh in a TriMesh object).
 
-    # To know what data was loaded, you can pass a MeshInfo object to the
-    # load function.
+    # To know what data was loaded, you can use load_mesh_with_info, which
+    # returns a MeshInfo object describing the loaded data.
 
-    info = vcl.MeshInfo()
-    vcl.load_mesh(mesh0, VCLIB_EXAMPLE_MESHES_PATH + "/bunny.obj", info)
+    info = vcl.load_mesh_with_info(mesh0, VCLIB_EXAMPLE_MESHES_PATH + "/bunny.obj")
     print("Mesh has per face color: " + str(info.has_face_color()))
 
     # You can control settings fro loading a mesh using the load function arguments.
